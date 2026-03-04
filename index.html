@@ -12,14 +12,14 @@
 ════════════════════════════════════════════════════ */
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 :root {
-  --ink:    #060604;
-  --ink2:   #0d0d0b;
-  --paper:  #f5f0e6;
-  --gold:   #00b2ca;
-  --gold2:  #193762;
-  --rust:   #a05020;
-  --dim:    rgba(245,240,230,.5);
-  --E:      cubic-bezier(.16,1,.3,1);
+  --ink:    #111111; /* Noir très profond, fond principal */
+  --ink2:   #1A1A1A; /* Noir légèrement plus clair pour les sections */
+  --paper:  #F4F4F4; /* Blanc cassé pour le texte principal */
+  --gold:   #FFFFFF; /* Accentuation 1 : Blanc pur pour l'impact (au lieu du bleu/doré) */
+  --gold2:  #888888; /* Accentuation 2 : Gris pour les éléments secondaires */
+  --rust:   #555555; /* Accentuation 3 : Gris foncé */
+  --dim:    rgba(244, 244, 244, 0.5); /* Texte secondaire (50% d'opacité du --paper) */
+  --E:      cubic-bezier(.16,1,.3,1); /* Courbe d'animation fluide */
 }
 html { font-size: 16px; }
 body {
