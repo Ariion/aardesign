@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AAR Design — Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:    #1a2755;
+  --navy2:   #0f1a40;
+  --navy3:   #0c1530;
+  --cyan:    #00b4d8;
+  --cyan2:   #48cae4;
+  --cyan3:   #90e0ef;
+  --ink:     #080e1c;
+  --ink2:    #0d1525;
+  --ink3:    #111e35;
+  --ink4:    #152040;
+  --paper:   #e8f4f8;
+  --dim:     rgba(144,224,239,.5);
+  --faint:   rgba(0,180,216,.06);
+  --border:  rgba(0,180,216,.1);
+  --border2: rgba(0,180,216,.18);
+  --green:   #2dd4a0;
+  --red:     #f05a7e;
+  --orange:  #f0a05a;
+  --blue:    #5a8af0;
+  --ease:    cubic-bezier(.16,1,.3,1);
+  --sidebar: 270px;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;}
+body{background:var(--ink);color:var(--paper);font-family:'DM Sans',sans-serif;display:flex;overflow:hidden;-webkit-font-smoothing:antialiased;}
+::-webkit-scrollbar{width:3px;height:3px;}
+::-webkit-scrollbar-thumb{background:rgba(0,180,216,.3);border-radius:2px;}
+
+/* ── SIDEBAR ────────────────────────────── */
+.sidebar{
+  width:var(--sidebar);min-width:var(--sidebar);height:100vh;
+  background:var(--navy2);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;overflow-y:auto;z-index:100;flex-shrink:0;
+  position:relative;
+}
+/* Glowing top line */
+.sidebar::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);}
+
+.sb-logo{
+  padding:1.75rem 1.5rem;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:.75rem;
+}
+.sb-logo img{height:28px;display:block;}
+.sb-logo .sb-ver{font-family:'Syne',sans-serif;font-size:.58rem;letter-spacing:.22em;text-transform:uppercase;color:rgba(0,180,216,.45);background:rgba(0,180,216,.1);border:1px solid rgba(0,180,216,.2);padding:.18rem .55rem;border-radius:3px;margin-left:auto;}
+
+.sb-section{padding:1.3rem 1.2rem .45rem;font-family:'Syne',sans-serif;font-size:.55rem;letter-spacing:.4em;text-transform:uppercase;color:rgba(0,180,216,.4);font-weight:700;}
+
+.nav-item{
+  display:flex;align-items:center;gap:.75rem;
+  padding:.72rem 1.2rem;margin:.1rem .6rem;border-radius:6px;
+  cursor:pointer;transition:all .2s;font-size:.84rem;color:var(--dim);
+  user-select:none;position:relative;
+}
+.nav-item:hover{background:var(--faint);color:var(--paper);}
+.nav-item.active{background:linear-gradient(90deg,rgba(0,180,216,.14),rgba(0,180,216,.06));color:var(--cyan);}
+.nav-item.active::before{content:'';position:absolute;left:0;top:20%;bottom:20%;width:2px;background:var(--cyan);border-radius:0 2px 2px 0;}
+.nav-icon{font-size:.95rem;width:20px;text-align:center;flex-shrink:0;}
+.nav-badge{margin-left:auto;background:var(--red);color:white;font-size:.58rem;padding:.15rem .45rem;border-radius:10px;font-weight:700;font-family:'Syne',sans-serif;}
+
+.sb-footer{margin-top:auto;padding:1.2rem;border-top:1px solid var(--border);}
+.sb-user{display:flex;align-items:center;gap:.75rem;padding:.7rem;border-radius:8px;transition:background .2s;cursor:pointer;}
+.sb-user:hover{background:var(--faint);}
+.avatar{width:36px;height:36px;background:linear-gradient(135deg,var(--navy),var(--cyan));border:1px solid rgba(0,180,216,.3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:.7rem;color:var(--ink);flex-shrink:0;}
+.user-name{font-size:.85rem;font-weight:600;color:var(--paper);}
+.user-role{font-size:.68rem;color:var(--dim);margin-top:.1rem;}
+
+/* ── MAIN ───────────────────────────────── */
+.main{flex:1;height:100vh;overflow-y:auto;display:flex;flex-direction:column;}
+
+/* TOPBAR */
+.topbar{
+  padding:.95rem 2rem;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(8,14,28,.92);backdrop-filter:blur(16px);
+  position:sticky;top:0;z-index:50;gap:1rem;
+}
+.topbar-title{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;letter-spacing:.04em;}
+.topbar-bc{font-size:.7rem;color:var(--dim);margin-top:.1rem;}
+.topbar-right{display:flex;align-items:center;gap:.85rem;}
+.tb-search{display:flex;align-items:center;background:var(--ink2);border:1px solid var(--border);border-radius:6px;padding:.5rem .9rem;gap:.5rem;font-size:.8rem;color:var(--dim);transition:border-color .25s;}
+.tb-search:focus-within{border-color:var(--cyan);}
+.tb-search input{background:none;border:none;outline:none;color:var(--paper);font-size:.8rem;font-family:'DM Sans',sans-serif;width:170px;}
+.tb-search input::placeholder{color:var(--dim);}
+.icon-btn{width:36px;height:36px;border:1px solid var(--border);background:transparent;color:var(--dim);border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;font-size:.88rem;position:relative;}
+.icon-btn:hover{border-color:var(--cyan);color:var(--cyan);background:var(--faint);}
+.notif-dot{position:absolute;top:6px;right:6px;width:6px;height:6px;background:var(--red);border-radius:50%;}
+.view-btn{display:flex;align-items:center;gap:.5rem;padding:.5rem 1.1rem;background:linear-gradient(90deg,var(--navy),var(--navy2));border:1px solid rgba(0,180,216,.28);color:var(--cyan);font-family:'Syne',sans-serif;font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;border-radius:6px;cursor:pointer;transition:all .25s;white-space:nowrap;}
+.view-btn:hover{background:var(--cyan);color:var(--ink);border-color:var(--cyan);}
+
+.content{padding:2rem;flex:1;}
+
+/* PANELS */
+.panel{display:none;animation:panelIn .35s var(--ease);}
+.panel.active{display:block;}
+@keyframes panelIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── STAT CARDS ─────────────────────────── */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem;}
+.stat-card{
+  background:var(--ink2);border:1px solid var(--border);border-radius:10px;
+  padding:1.5rem;position:relative;overflow:hidden;transition:border-color .3s,transform .25s var(--ease);
+}
+.stat-card:hover{border-color:var(--border2);transform:translateY(-2px);}
+/* Cyan glow on top edge */
+.stat-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);opacity:0;transition:opacity .3s;}
+.stat-card:hover::before{opacity:1;}
+.stat-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--navy),var(--cyan));transform:scaleX(0);transform-origin:left;transition:transform .5s var(--ease);}
+.stat-card:hover::after{transform:scaleX(1);}
+.stat-icon{position:absolute;top:1.25rem;right:1.25rem;font-size:1.4rem;opacity:.1;}
+.stat-label{font-family:'Syne',sans-serif;font-size:.58rem;letter-spacing:.28em;text-transform:uppercase;color:var(--cyan);margin-bottom:.75rem;}
+.stat-value{font-family:'Syne',sans-serif;font-size:2.4rem;font-weight:800;background:linear-gradient(120deg,var(--paper),var(--cyan3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;}
+.stat-sub{font-size:.72rem;color:var(--dim);margin-top:.4rem;display:flex;align-items:center;gap:.4rem;}
+.stat-sub.up{color:var(--green);}
+.stat-sub.dn{color:var(--red);}
+
+/* DASH GRID */
+.dash-grid{display:grid;grid-template-columns:2fr 1fr;gap:1.5rem;}
+.dash-card{background:var(--ink2);border:1px solid var(--border);border-radius:10px;padding:1.5rem;}
+.dc-title{font-family:'Syne',sans-serif;font-size:.78rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--cyan);margin-bottom:1.25rem;display:flex;align-items:center;justify-content:space-between;}
+.dc-title a{font-family:'DM Sans',sans-serif;font-size:.72rem;color:var(--dim);text-transform:none;letter-spacing:0;cursor:pointer;transition:color .2s;}
+.dc-title a:hover{color:var(--cyan);}
+
+/* Activity */
+.act-list{display:flex;flex-direction:column;gap:.65rem;}
+.act-item{display:flex;align-items:flex-start;gap:.85rem;padding:.85rem 1rem;background:var(--ink3);border-radius:7px;border:1px solid transparent;transition:border-color .2s;}
+.act-item:hover{border-color:var(--border);}
+.act-ico{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;flex-shrink:0;}
+.act-ico.g{background:rgba(45,212,160,.12);color:var(--green);}
+.act-ico.c{background:rgba(0,180,216,.1);color:var(--cyan);}
+.act-ico.r{background:rgba(240,90,126,.1);color:var(--red);}
+.act-ico.b{background:rgba(90,138,240,.1);color:var(--blue);}
+.act-text{flex:1;font-size:.82rem;line-height:1.55;color:var(--dim);}
+.act-text strong{color:var(--paper);}
+.act-time{font-size:.68rem;color:rgba(144,224,239,.3);flex-shrink:0;margin-top:.1rem;}
+
+/* Quick actions */
+.qa-grid{display:grid;grid-template-columns:1fr 1fr;gap:.65rem;}
+.qa-btn{background:var(--ink3);border:1px solid var(--border);border-radius:8px;padding:1.1rem;text-align:center;cursor:pointer;transition:all .2s;font-size:.8rem;color:var(--dim);}
+.qa-btn:hover{border-color:var(--cyan);color:var(--cyan);background:var(--faint);}
+.qa-btn:hover .qa-ico{transform:scale(1.15);}
+.qa-ico{font-size:1.4rem;display:block;margin-bottom:.45rem;transition:transform .3s var(--ease);}
+
+/* ── TABLE ──────────────────────────────── */
+.tb-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;}
+.tb-left{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;}
+.tb-search2{display:flex;align-items:center;background:var(--ink2);border:1px solid var(--border);border-radius:6px;padding:.5rem .9rem;gap:.5rem;}
+.tb-search2 input{background:none;border:none;outline:none;color:var(--paper);font-family:'DM Sans',sans-serif;font-size:.82rem;width:180px;}
+.tb-search2 input::placeholder{color:var(--dim);}
+.flt-sel{background:var(--ink2);border:1px solid var(--border);color:var(--dim);padding:.52rem .85rem;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:.82rem;outline:none;cursor:pointer;transition:border-color .2s;}
+.flt-sel:focus,.flt-sel:hover{border-color:var(--cyan);}
+.flt-sel option{background:var(--ink);}
+
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.6rem 1.3rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:.72rem;font-weight:700;letter-spacing:.08em;cursor:pointer;border:none;transition:all .2s;white-space:nowrap;}
+.btn-cyan{background:var(--cyan);color:var(--ink);}
+.btn-cyan:hover{background:var(--cyan2);box-shadow:0 6px 24px rgba(0,180,216,.35);}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--dim);}
+.btn-outline:hover{border-color:var(--cyan);color:var(--cyan);background:var(--faint);}
+.btn-danger{background:rgba(240,90,126,.1);color:var(--red);border:1px solid rgba(240,90,126,.2);}
+.btn-danger:hover{background:rgba(240,90,126,.2);}
+.btn-sm{padding:.38rem .75rem;font-size:.66rem;}
+.btn-xs{padding:.28rem .6rem;font-size:.6rem;}
+
+.table-wrap{background:var(--ink2);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+table{width:100%;border-collapse:collapse;}
+thead{background:var(--ink3);}
+th{padding:.9rem 1.25rem;text-align:left;font-family:'Syne',sans-serif;font-size:.62rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);border-bottom:1px solid var(--border);white-space:nowrap;}
+td{padding:.95rem 1.25rem;font-size:.84rem;border-bottom:1px solid rgba(0,180,216,.05);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(0,180,216,.03);}
+.t-title{font-weight:600;font-size:.88rem;color:var(--paper);}
+.t-sub{font-size:.7rem;color:rgba(144,224,239,.35);margin-top:.15rem;}
+.img-thumb{width:40px;height:40px;border-radius:5px;background:var(--ink3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
+
+/* Tags */
+.tag{display:inline-block;padding:.2rem .6rem;border-radius:4px;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;font-family:'Syne',sans-serif;}
+.tag-cyan{background:rgba(0,180,216,.12);color:var(--cyan);border:1px solid rgba(0,180,216,.22);}
+.tag-green{background:rgba(45,212,160,.1);color:var(--green);border:1px solid rgba(45,212,160,.2);}
+.tag-red{background:rgba(240,90,126,.1);color:var(--red);border:1px solid rgba(240,90,126,.2);}
+.tag-orange{background:rgba(240,160,90,.1);color:var(--orange);border:1px solid rgba(240,160,90,.2);}
+.tag-blue{background:rgba(90,138,240,.1);color:var(--blue);border:1px solid rgba(90,138,240,.2);}
+.tag-dim{background:rgba(255,255,255,.06);color:var(--dim);}
+.tag-navy{background:rgba(26,39,85,.4);color:var(--cyan3);border:1px solid rgba(0,180,216,.12);}
+.act-row{display:flex;align-items:center;gap:.5rem;}
+
+/* ── MODAL ──────────────────────────────── */
+.modal-bd{position:fixed;inset:0;background:rgba(8,14,28,.85);backdrop-filter:blur(6px);z-index:1000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s;}
+.modal-bd.active{opacity:1;pointer-events:all;}
+.modal{background:var(--ink2);border:1px solid var(--border2);border-radius:14px;width:90%;max-width:680px;max-height:90vh;overflow-y:auto;transform:translateY(24px) scale(.97);transition:transform .35s var(--ease);}
+.modal-bd.active .modal{transform:translateY(0) scale(1);}
+/* Top cyan accent */
+.modal::before{content:'';display:block;height:2px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);}
+.modal-hd{padding:1.5rem 1.75rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.modal-title{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;letter-spacing:.06em;}
+.modal-close{width:30px;height:30px;background:var(--ink3);border:none;border-radius:50%;color:var(--dim);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.modal-close:hover{background:var(--red);color:white;}
+.modal-body{padding:1.75rem;}
+.modal-ft{padding:1.25rem 1.75rem;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:.75rem;}
+
+/* FIELDS */
+.field{margin-bottom:1.25rem;}
+.field label{display:block;font-family:'Syne',sans-serif;font-size:.6rem;letter-spacing:.25em;text-transform:uppercase;color:var(--cyan);margin-bottom:.5rem;font-weight:700;}
+.field input,.field select,.field textarea{
+  width:100%;background:var(--ink3);border:1px solid var(--border);
+  color:var(--paper);padding:.75rem 1rem;font-family:'DM Sans',sans-serif;font-size:.875rem;
+  outline:none;border-radius:7px;transition:border-color .2s,box-shadow .2s;
+}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(0,180,216,.08);}
+.field select option{background:var(--ink);}
+.field textarea{resize:vertical;min-height:110px;}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.field-hint{font-size:.7rem;color:var(--dim);margin-top:.35rem;}
+
+/* Upload zone */
+.upload-z{border:2px dashed rgba(0,180,216,.18);border-radius:8px;padding:2rem;text-align:center;cursor:pointer;transition:all .3s;color:var(--dim);}
+.upload-z:hover{border-color:var(--cyan);color:var(--cyan);background:var(--faint);}
+.upload-ico{font-size:2rem;margin-bottom:.5rem;display:block;}
+.upload-txt{font-size:.82rem;}
+
+/* ── PAGES ──────────────────────────────── */
+.page-list{display:flex;flex-direction:column;gap:.75rem;margin-bottom:2rem;}
+.page-item{background:var(--ink2);border:1px solid var(--border);border-radius:8px;padding:1rem 1.25rem;display:flex;align-items:center;gap:1rem;transition:border-color .2s;}
+.page-item:hover{border-color:var(--border2);}
+.page-drag{color:var(--dim);cursor:grab;font-size:1.1rem;opacity:.5;}
+.page-info{flex:1;}
+.page-name{font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;}
+.page-slug{font-size:.7rem;color:var(--dim);margin-top:.15rem;}
+.page-actions{display:flex;gap:.5rem;}
+
+/* Sections builder */
+.sections-list{display:flex;flex-direction:column;gap:.65rem;}
+.sec-item{background:var(--ink3);border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;gap:1rem;padding:.9rem 1.1rem;cursor:grab;transition:border-color .2s,background .2s;}
+.sec-item:hover{border-color:var(--border2);background:var(--ink4);}
+.sec-thumb{width:58px;height:34px;background:var(--ink4);border:1px solid var(--border);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:.58rem;color:var(--dim);flex-shrink:0;letter-spacing:.1em;font-family:'Syne',sans-serif;font-weight:700;}
+.sec-name{font-family:'Syne',sans-serif;font-size:.8rem;font-weight:600;}
+.sec-status{font-size:.68rem;color:var(--dim);margin-top:.1rem;}
+
+/* ── SETTINGS ───────────────────────────── */
+.settings-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem;}
+.settings-card{background:var(--ink2);border:1px solid var(--border);border-radius:10px;padding:1.5rem;position:relative;overflow:hidden;}
+.settings-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(0,180,216,.4),transparent);}
+.sc-title{font-family:'Syne',sans-serif;font-size:.76rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--cyan);margin-bottom:1.25rem;padding-bottom:.75rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.5rem;}
+.color-row{display:flex;align-items:center;justify-content:space-between;padding:.72rem 0;border-bottom:1px solid rgba(0,180,216,.05);}
+.color-row:last-child{border-bottom:none;}
+.color-lbl{font-size:.82rem;color:var(--dim);}
+.color-swatch{width:38px;height:26px;border-radius:5px;border:1px solid var(--border);cursor:pointer;transition:transform .2s;}
+.color-swatch:hover{transform:scale(1.1);}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:.72rem 0;border-bottom:1px solid rgba(0,180,216,.05);}
+.toggle-row:last-child{border-bottom:none;}
+.toggle-lbl{font-size:.82rem;color:var(--dim);}
+.toggle{width:44px;height:24px;background:var(--ink3);border:1px solid var(--border);border-radius:12px;position:relative;cursor:pointer;transition:background .25s,border-color .25s;}
+.toggle.on{background:var(--cyan);border-color:var(--cyan);}
+.toggle::after{content:'';position:absolute;width:18px;height:18px;background:white;border-radius:50%;top:2px;left:2px;transition:transform .25s var(--ease);box-shadow:0 1px 3px rgba(0,0,0,.3);}
+.toggle.on::after{transform:translateX(20px);}
+
+/* ── MESSAGES ───────────────────────────── */
+.msg-list{display:flex;flex-direction:column;gap:.65rem;}
+.msg-item{background:var(--ink2);border:1px solid var(--border);border-radius:9px;padding:1.1rem 1.4rem;cursor:pointer;transition:all .2s;display:grid;grid-template-columns:1fr auto;gap:.5rem;align-items:start;}
+.msg-item:hover{border-color:var(--border2);background:var(--ink3);transform:translateX(2px);}
+.msg-item.unread{border-left:3px solid var(--cyan);}
+.msg-name{font-family:'Syne',sans-serif;font-weight:700;font-size:.88rem;}
+.msg-subject{font-size:.82rem;color:var(--dim);margin-top:.15rem;}
+.msg-preview{font-size:.78rem;color:rgba(144,224,239,.35);margin-top:.4rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.msg-time{font-size:.7rem;color:rgba(144,224,239,.3);white-space:nowrap;}
+.unread-dot{width:7px;height:7px;background:var(--cyan);border-radius:50%;margin-top:.35rem;margin-left:auto;box-shadow:0 0 6px var(--cyan);}
+
+/* ── PRICING ───────────────────────────── */
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-top:1.5rem;}
+.pricing-card{background:var(--ink2);border:1px solid var(--border);border-radius:12px;padding:1.75rem;position:relative;transition:border-color .3s,transform .25s var(--ease);}
+.pricing-card:hover{border-color:var(--border2);transform:translateY(-3px);}
+.pricing-card.featured{border-color:var(--cyan);background:linear-gradient(160deg,var(--ink2),rgba(0,180,216,.06));}
+.pricing-card.featured::before{content:'Populaire';position:absolute;top:-10px;right:1rem;background:var(--cyan);color:var(--ink);font-size:.6rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;padding:.22rem .65rem;border-radius:4px;font-family:'Syne',sans-serif;}
+.pr-name{font-family:'Syne',sans-serif;font-size:.72rem;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:var(--cyan);margin-bottom:.85rem;}
+.pr-price{font-family:'Syne',sans-serif;font-size:2.2rem;font-weight:800;color:var(--paper);}
+.pr-price sup{font-size:1rem;vertical-align:top;margin-top:.5rem;display:inline-block;color:var(--cyan);}
+.pr-price span{font-size:.8rem;color:var(--dim);font-weight:400;}
+.pr-desc{font-size:.8rem;color:var(--dim);margin:.75rem 0 1rem;line-height:1.55;}
+.pr-features{list-style:none;display:flex;flex-direction:column;gap:.45rem;}
+.pr-features li{font-size:.8rem;color:var(--dim);display:flex;align-items:center;gap:.5rem;}
+.pr-features li::before{content:'✓';color:var(--cyan);font-size:.7rem;}
+.pr-edit{margin-top:1.25rem;display:flex;gap:.5rem;}
+
+/* ── ABOUT ──────────────────────────────── */
+.about-editor{max-width:760px;}
+
+/* ── TOAST ──────────────────────────────── */
+.toast{
+  position:fixed;bottom:1.5rem;right:1.5rem;
+  background:var(--ink2);border:1px solid var(--cyan);
+  color:var(--cyan);padding:.85rem 1.5rem;border-radius:9px;
+  font-family:'Syne',sans-serif;font-size:.82rem;font-weight:700;
+  z-index:9999;display:flex;align-items:center;gap:.6rem;
+  transform:translateY(80px);opacity:0;transition:all .4s var(--ease);
+  box-shadow:0 8px 32px rgba(0,0,0,.4),0 0 0 1px rgba(0,180,216,.1);
+}
+.toast.show{transform:translateY(0);opacity:1;}
+
+/* PAGE HEADER */
+.page-header{margin-bottom:2rem;}
+.page-header h1{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;letter-spacing:.04em;margin-bottom:.3rem;}
+.page-header p{font-size:.85rem;color:var(--dim);}
+
+/* RESPONSIVE */
+@media(max-width:1280px){
+  .stats-row{grid-template-columns:repeat(2,1fr);}
+  .dash-grid{grid-template-columns:1fr;}
+  .settings-grid{grid-template-columns:1fr;}
+  .pricing-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sb-logo">
+    <img src="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAGOAYgDASIAAhEBAxEB/8QAHAABAAICAwEAAAAAAAAAAAAAAAYHBQgCAwQB/8QAUhAAAQMDAQMHBggHDwMFAQAAAQACAwQFEQYHEiETMUFRYXGBCBQiMpHRFRcjQlaksdIWN3KCkqHBMzQ1UlNUVWJzdZOjs+HwNpSyJEN0osKV/8QAGwEBAAIDAQEAAAAAAAAAAAAAAAQFAgMGAQf/xAA5EQACAQMBBQQIBgIBBQAAAAAAAQIDBBExBRITIUEGFFFxFSJhgZGx0fAWMlKhweFC0pIjJFNicv/aAAwDAQACEQMRAD8A0yREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREARF67TRurrhFTNzhxy49TRzlexi5NJHjaSyzKWHTzq2FtTVSOjhd6rW+s4dfYFl5NMW1zCGmZh6HB+Vmo2NjY1jGhrWgAAdAXJdBTs6UY4ayVU7icnlMr692ma2TAOPKRP9R4HP2HqKxysW9UQr7dLT8N/G8w9Thze7xVduaWuLXAgg4IPQqq8t1Rny0ZOt6vEjz1PiIs9oDTs2qdWUNmi3gyV+9O8fMiHFzvZwHaQosYuclFas2VasaUHUm8JLLJtsr2RVGqKBl4vNVLQW6T9xZEBysw6XAng0dRIOerHE2FW7C9Hy0pjpqm6U8oHCTlmu49oLePhhWfSU8NJSxUtNG2KGFjY42N5mtAwAO4LtXT0tn0IQw45Z8suu0V9WrOcJuK6JffM1A2kaFumibmyCsc2opJ8mmqmDDZAOcEfNcMjh28CVFFuHtP0yzVmjay1hrfOQOVpXH5srfV7s8WnscVp9LG+KR0UjHMewlrmuGCCOcFUl/aq3qerozuez+1ntG3fE/PHk/wCGcURFBL4IiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAKZaLoOQo3VkjfTm4N7Gj3n7AovaqR1dXxUzc4cfSPUOkqxomNjjbGxoaxoAaB0AKy2dR3pOo+hDu6mFuo5IiK5K4KFayoPN68VTG4jn4nsd0+3n9qmq8d4o219vlpzjeIyw9ThzKPdUeLTa6m6hU4c8lcrY7yatLi3acl1JUx4qbl6EORxbC0//AKcM9zWqjtD6dqdS6to7HGHMMsuJ3Y/c428XnwAPjgLceipoKKjho6WNsUEEbY42N5mtaMAewKHsq33puo+nzKTtdtDh0Y2sHzlzfl/b+R3IiK/PngWsvlFaV+BdWi80se7R3XMhwODZh648eDu8nqWz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+53d8rac0j4gY2bx3iWkcPArdKtB3MHnOMZfiQ6VlXjsyvBQa3m3GOrSei/oxus6p9FtQvVZGMvgvU8rRnHFs7iPsVo+Uba/huw2bWlrBnpBCGSuaM7sb8OY49mSQe0hU7q6uguerLxcqUuNPV1088RcMHddI5wyOjgVNdlu1CbS9E6x3ijNysj8gR8C+IO9YAHg5pyfROOfn586aVWDc6c3yl18GTLu1rqNC5oLM6a5x0ymsNefgVspJs009U6l1jQW+CNzoWytlqXjmjiaQXEno4cB2kKxqp2wS4OdWOkq6F7uJp445wM9gALR3AgLFal2hWO32SbTWzizut0FUNyorHj5WQHhhuSXcc4yTkZOAOdeK3hTe9Oaa9nNszntGvcxdOjRlGT6yWEvb7cewzPlW/whYP7Kf7WJ5On/AEfrH+yb/pyJ5Vv8IWD+yn+1ijux/Wdk0xp7UNFdZJ2zV8YbAI4i4Ehjxx6uLgpc5xhftyeF/RU0KNStsCEKay+Wn/2VmiIqc7Iu7bv+LDRn9lH/AKDVTtnoH3GubTtO631nu/itVgbUtZ2TUOiNOWm2yTuqbfGxs4fEWgERBpweniFGdB7nLVefX3W47snP7FY1FCvdJZ5cvkUeyYVLexxNYeZa+1szUUFvtroKWGl3pJjgENBcQOdxJ6Bld1fbKKtjLJoG5xwe0YcPFeevgikvtC5zSSWSH1iObdx9qWiLfqayd8kji2pe1jS47rRw6FYrGXBxWP6NvPG9nmQu60UlBXSU0hzu8Wu/jDoK8qkWutzz+DGN/kuPdk4/ao6qO4gqdRxRZ0pOUE2ERFpNgREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAFdVg0hp3XuyiI6fpKSk1JQhrZyDh0j2gjDuPM8cQebe7iqVWR0/e7rYLi24Weulo6hoxvMPBw6iDwI7Ct9vVjCT31lP75EDaFrVrwToz3ZxeV4P2P2M4Xmz3WzVTqa62+po5WnBbNGW57jzEdoU32Q7PLvqDUNJX1tDNTWimlbLLLKwtEu6chjQfWyRgkcAM9OAsrQ7edUxQhlVbbVUuAxv7j2E9pw7HsAWE1btb1fqGkfRGeC3Usgw9lG0tLx1FxJd7CMrfFWsHvbzfsx/JAqT2rXg6Spxg3yct7PwWM+WTu8oDU1NqHW5hoZGy0lui83bI05a9+SXkHqzgfm56VXSIotWo6s3N9S1tLaFrQjRhpFYCIi1kkL12mukt1a2ojG8Bwc3+MOpeRF7GTi8o8aTWGWFR3G21u5OyaISNBwHkBzc8/2LjV3O22+N7uVjLnEuLIyC5xPTw+0qv0Vh6Rnj8qyRO5xzryPTc6ySvrZKmXgXHgP4o6AvMiKvlJyeWS0klhBEReHoREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAf//Z" alt="AAR Design">
+    <span class="sb-ver">Admin</span>
+  </div>
+
+  <div class="sb-section">Principal</div>
+  <div class="nav-item active" onclick="show('dashboard',this)">
+    <span class="nav-icon">◈</span> Tableau de bord
+  </div>
+
+  <div class="sb-section">Contenu</div>
+  <div class="nav-item" onclick="show('projects',this)">
+    <span class="nav-icon">⬡</span> Projets
+  </div>
+  <div class="nav-item" onclick="show('services',this)">
+    <span class="nav-icon">◻</span> Services
+  </div>
+  <div class="nav-item" onclick="show('pages',this)">
+    <span class="nav-icon">▣</span> Pages
+  </div>
+  <div class="nav-item" onclick="show('about',this)">
+    <span class="nav-icon">◎</span> À propos
+  </div>
+  <div class="nav-item" onclick="show('pricing',this)">
+    <span class="nav-icon">◇</span> Tarifs
+  </div>
+
+  <div class="sb-section">Communication</div>
+  <div class="nav-item" onclick="show('messages',this)">
+    <span class="nav-icon">✉</span> Messages
+    <span class="nav-badge">3</span>
+  </div>
+
+  <div class="sb-section">Système</div>
+  <div class="nav-item" onclick="show('settings',this)">
+    <span class="nav-icon">⚙</span> Paramètres
+  </div>
+
+  <div class="sb-footer">
+    <div class="sb-user">
+      <div class="avatar">AA</div>
+      <div>
+        <div class="user-name">Anthony Armand</div>
+        <div class="user-role">Administrateur</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div>
+      <div class="topbar-title" id="pageTitle">Tableau de bord</div>
+      <div class="topbar-bc" id="pageBc">AAR Design — Vue d'ensemble</div>
+    </div>
+    <div class="topbar-right">
+      <div class="tb-search">
+        <span style="opacity:.4;font-size:.85rem;">🔍</span>
+        <input type="text" placeholder="Rechercher…">
+      </div>
+      <button class="icon-btn">🔔<span class="notif-dot"></span></button>
+      <button class="view-btn" onclick="window.open('aardesign-v7.html')">↗ Voir le site</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div class="panel active" id="panel-dashboard">
+      <div class="page-header">
+        <h1>Bonjour, Anthony 👋</h1>
+        <p>Voici un aperçu de votre site AAR Design.</p>
+      </div>
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-icon">⬡</div>
+          <div class="stat-label">Projets publiés</div>
+          <div class="stat-value">7</div>
+          <div class="stat-sub up">↑ +2 ce mois</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">✉</div>
+          <div class="stat-label">Messages non lus</div>
+          <div class="stat-value">3</div>
+          <div class="stat-sub" style="color:var(--orange);">⚡ À traiter</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">◻</div>
+          <div class="stat-label">Services actifs</div>
+          <div class="stat-value">5</div>
+          <div class="stat-sub up">Tous en ligne</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">▣</div>
+          <div class="stat-label">Pages créées</div>
+          <div class="stat-value">5</div>
+          <div class="stat-sub">4 publiées</div>
+        </div>
+      </div>
+      <div class="dash-grid">
+        <div class="dash-card">
+          <div class="dc-title">Activité récente <a onclick="">Voir tout →</a></div>
+          <div class="act-list">
+            <div class="act-item"><div class="act-ico g">+</div><div class="act-text">Nouveau message de <strong>Marie L.</strong> — "Demande de devis branding"</div><div class="act-time">12 min</div></div>
+            <div class="act-item"><div class="act-ico c">✎</div><div class="act-text">Projet <strong>"Studio Noir"</strong> mis à jour</div><div class="act-time">2h</div></div>
+            <div class="act-item"><div class="act-ico b">◈</div><div class="act-text">Nouvelle page <strong>"Motion Reel 2025"</strong> créée</div><div class="act-time">Hier 18h</div></div>
+            <div class="act-item"><div class="act-ico g">+</div><div class="act-text">Projet <strong>"Appartement Haussmannien"</strong> publié</div><div class="act-time">2 jours</div></div>
+            <div class="act-item"><div class="act-ico c">✎</div><div class="act-text">Tarifs <strong>Formule Studio</strong> mis à jour</div><div class="act-time">3 jours</div></div>
+          </div>
+        </div>
+        <div class="dash-card">
+          <div class="dc-title">Actions rapides</div>
+          <div class="qa-grid">
+            <div class="qa-btn" onclick="show('projects',document.querySelectorAll('.nav-item')[1]);openModal('m-new-project')"><span class="qa-ico">⬡</span>Nouveau projet</div>
+            <div class="qa-btn" onclick="show('messages',document.querySelectorAll('.nav-item')[6])"><span class="qa-ico">✉</span>Messages (3)</div>
+            <div class="qa-btn" onclick="show('pages',document.querySelectorAll('.nav-item')[3]);openModal('m-new-page')"><span class="qa-ico">▣</span>Nouvelle page</div>
+            <div class="qa-btn" onclick="show('settings',document.querySelectorAll('.nav-item')[8])"><span class="qa-ico">⚙</span>Paramètres</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROJECTS -->
+    <div class="panel" id="panel-projects">
+      <div class="page-header"><h1>Projets</h1><p>Gérez votre portfolio — 7 projets, 4 publiés.</p></div>
+      <div class="tb-toolbar">
+        <div class="tb-left">
+          <div class="tb-search2"><span style="opacity:.4">🔍</span><input type="text" placeholder="Rechercher un projet…"></div>
+          <select class="flt-sel"><option>Toutes catégories</option><option>Branding</option><option>Web</option><option>Architecture</option><option>Motion</option><option>Painting</option></select>
+          <select class="flt-sel"><option>Tous statuts</option><option>Publié</option><option>Brouillon</option></select>
+        </div>
+        <button class="btn btn-cyan" onclick="openModal('m-new-project')">+ Nouveau projet</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Projet</th><th>Catégorie</th><th>Statut</th><th>Date</th><th>Vedette</th><th>Actions</th></tr></thead>
+          <tbody>
+            <tr><td><div style="display:flex;align-items:center;gap:.85rem"><div class="img-thumb">◈</div><div><div class="t-title">Studio Noir — Refonte de marque</div><div class="t-sub">studio-noir-branding</div></div></div></td><td><span class="tag tag-cyan">Branding</span></td><td><span class="tag tag-green">Publié</span></td><td style="color:var(--dim);font-size:.82rem">15 Jan 2025</td><td><span class="tag tag-cyan">★ Vedette</span></td><td><div class="act-row"><button class="btn btn-outline btn-sm" onclick="openModal('m-edit-project')">✎ Éditer</button><button class="btn btn-danger btn-sm">✕</button></div></td></tr>
+            <tr><td><div style="display:flex;align-items:center;gap:.85rem"><div class="img-thumb">⬡</div><div><div class="t-title">Vitrine digitale e-commerce</div><div class="t-sub">vitrine-ecommerce</div></div></div></td><td><span class="tag tag-blue">Web</span></td><td><span class="tag tag-green">Publié</span></td><td style="color:var(--dim);font-size:.82rem">08 Déc 2024</td><td><span class="tag tag-dim">—</span></td><td><div class="act-row"><button class="btn btn-outline btn-sm" onclick="openModal('m-edit-project')">✎ Éditer</button><button class="btn btn-danger btn-sm">✕</button></div></td></tr>
+            <tr><td><div style="display:flex;align-items:center;gap:.85rem"><div class="img-thumb">⬛</div><div><div class="t-title">Appartement Haussmannien</div><div class="t-sub">appt-haussmannien</div></div></div></td><td><span class="tag tag-orange">Architecture</span></td><td><span class="tag tag-green">Publié</span></td><td style="color:var(--dim);font-size:.82rem">03 Nov 2024</td><td><span class="tag tag-cyan">★ Vedette</span></td><td><div class="act-row"><button class="btn btn-outline btn-sm" onclick="openModal('m-edit-project')">✎ Éditer</button><button class="btn btn-danger btn-sm">✕</button></div></td></tr>
+            <tr><td><div style="display:flex;align-items:center;gap:.85rem"><div class="img-thumb">▶</div><div><div class="t-title">Générique de marque — TechCo</div><div class="t-sub">generique-techco</div></div></div></td><td><span class="tag tag-blue">Motion</span></td><td><span class="tag tag-orange">Brouillon</span></td><td style="color:var(--dim);font-size:.82rem">28 Oct 2024</td><td><span class="tag tag-dim">—</span></td><td><div class="act-row"><button class="btn btn-outline btn-sm" onclick="openModal('m-edit-project')">✎ Éditer</button><button class="btn btn-danger btn-sm">✕</button></div></td></tr>
+            <tr><td><div style="display:flex;align-items:center;gap:.85rem"><div class="img-thumb">◉</div><div><div class="t-title">Portrait série — Commande privée</div><div class="t-sub">portrait-serie-2023</div></div></div></td><td><span class="tag tag-navy">Painting</span></td><td><span class="tag tag-green">Publié</span></td><td style="color:var(--dim);font-size:.82rem">15 Sep 2023</td><td><span class="tag tag-dim">—</span></td><td><div class="act-row"><button class="btn btn-outline btn-sm" onclick="openModal('m-edit-project')">✎ Éditer</button><button class="btn btn-danger btn-sm">✕</button></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SERVICES -->
+    <div class="panel" id="panel-services">
+      <div class="page-header"><h1>Services</h1><p>5 services actifs affichés sur le site.</p></div>
+      <div class="tb-toolbar">
+        <div style="font-size:.84rem;color:var(--dim)">Gérez l'ordre et le contenu de vos services</div>
+        <button class="btn btn-cyan" onclick="openModal('m-new-service')">+ Nouveau service</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>N°</th><th>Service</th><th>Description</th><th>Statut</th><th>Ordre</th><th>Actions</th></tr></thead>
+          <tbody>
+            <tr><td style="color:var(--cyan);font-family:'Syne';font-weight:800">01</td><td class="t-title">Identité visuelle</td><td style="color:var(--dim);font-size:.8rem;max-width:250px">Développement complet de votre identité graphique — logo, charte, typographies...</td><td><span class="tag tag-green">Actif</span></td><td style="color:var(--dim)">1</td><td><div class="act-row"><button class="btn btn-outline btn-sm" onclick="openModal('m-edit-service')">✎</button><button class="btn btn-danger btn-sm">✕</button></div></td></tr>
+            <tr><td style="color:var(--cyan);font-family:'Syne';font-weight:800">02</td><td class="t-title">Web Design & UI/UX</td><td style="color:var(--dim);font-size:.8rem;max-width:250px">Maquettes, interfaces et expériences digitales pensées pour convertir...</td><td><span class="tag tag-green">Actif</span></td><td style="color:var(--dim)">2</td><td><div class="act-row"><button class="btn btn-outline btn-sm" onclick="openModal('m-edit-service')">✎</button><button class="btn btn-danger btn-sm">✕</button></div></td></tr>
+            <tr><td style="color:var(--cyan);font-family:'Syne';font-weight:800">03</td><td class="t-title">Architecture d'intérieur</td><td style="color:var(--dim);font-size:.8rem;max-width:250px">Conception d'espaces intérieurs harmonieux. Plans, moodboards, 3D...</td><td><span class="tag tag-green">Actif</span></td><td style="color:var(--dim)">3</td><td><div class="act-row"><button class="btn btn-outline btn-sm" onclick="openModal('m-edit-service')">✎</button><button class="btn btn-danger btn-sm">✕</button></div></td></tr>
+            <tr><td style="color:var(--cyan);font-family:'Syne';font-weight:800">04</td><td class="t-title">Motion Design & Vidéo</td><td style="color:var(--dim);font-size:.8rem;max-width:250px">Animations, génériques, motion graphics...</td><td><span class="tag tag-green">Actif</span></td><td style="color:var(--dim)">4</td><td><div class="act-row"><button class="btn btn-outline btn-sm" onclick="openModal('m-edit-service')">✎</button><button class="btn btn-danger btn-sm">✕</button></div></td></tr>
+            <tr><td style="color:var(--cyan);font-family:'Syne';font-weight:800">05</td><td class="t-title">Digital Painting</td><td style="color:var(--dim);font-size:.8rem;max-width:250px">Illustrations numériques, portraits, concept art...</td><td><span class="tag tag-green">Actif</span></td><td style="color:var(--dim)">5</td><td><div class="act-row"><button class="btn btn-outline btn-sm" onclick="openModal('m-edit-service')">✎</button><button class="btn btn-danger btn-sm">✕</button></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PAGES -->
+    <div class="panel" id="panel-pages">
+      <div class="page-header"><h1>Pages</h1><p>Gérez les pages et leurs sections.</p></div>
+      <div class="tb-toolbar">
+        <div style="font-size:.84rem;color:var(--dim)">5 pages — 4 publiées</div>
+        <button class="btn btn-cyan" onclick="openModal('m-new-page')">+ Nouvelle page</button>
+      </div>
+      <div class="page-list">
+        <div class="page-item"><span class="page-drag">⠿</span><div class="page-info"><div class="page-name">Accueil</div><div class="page-slug">aardesign.fr/</div></div><span class="tag tag-green">Publiée</span><div class="page-actions"><button class="btn btn-outline btn-sm" onclick="openModal('m-builder')">⊞ Builder</button><button class="btn btn-outline btn-sm">✎</button></div></div>
+        <div class="page-item"><span class="page-drag">⠿</span><div class="page-info"><div class="page-name">Portfolio</div><div class="page-slug">aardesign.fr/portfolio</div></div><span class="tag tag-green">Publiée</span><div class="page-actions"><button class="btn btn-outline btn-sm" onclick="openModal('m-builder')">⊞ Builder</button><button class="btn btn-outline btn-sm">✎</button></div></div>
+        <div class="page-item"><span class="page-drag">⠿</span><div class="page-info"><div class="page-name">À propos</div><div class="page-slug">aardesign.fr/a-propos</div></div><span class="tag tag-green">Publiée</span><div class="page-actions"><button class="btn btn-outline btn-sm" onclick="openModal('m-builder')">⊞ Builder</button><button class="btn btn-outline btn-sm">✎</button></div></div>
+        <div class="page-item"><span class="page-drag">⠿</span><div class="page-info"><div class="page-name">Contact</div><div class="page-slug">aardesign.fr/contact</div></div><span class="tag tag-green">Publiée</span><div class="page-actions"><button class="btn btn-outline btn-sm" onclick="openModal('m-builder')">⊞ Builder</button><button class="btn btn-outline btn-sm">✎</button></div></div>
+        <div class="page-item"><span class="page-drag">⠿</span><div class="page-info"><div class="page-name">Motion Reel 2025</div><div class="page-slug">aardesign.fr/motion-reel-2025</div></div><span class="tag tag-orange">Brouillon</span><div class="page-actions"><button class="btn btn-outline btn-sm" onclick="openModal('m-builder')">⊞ Builder</button><button class="btn btn-outline btn-sm">✎</button><button class="btn btn-danger btn-sm">✕</button></div></div>
+      </div>
+    </div>
+
+    <!-- ABOUT -->
+    <div class="panel" id="panel-about">
+      <div class="page-header"><h1>À propos</h1><p>Modifiez votre biographie et vos informations.</p></div>
+      <div class="about-editor">
+        <div class="field"><label>Titre principal</label><input type="text" value="Un designer passionné, un regard unique"></div>
+        <div class="field-row"><div class="field"><label>Prénom</label><input type="text" value="Anthony"></div><div class="field"><label>Nom</label><input type="text" value="Armand"></div></div>
+        <div class="field"><label>Paragraphe 1</label><textarea>Je suis Anthony Armand, graphiste et designer pluridisciplinaire basé en France. Depuis plus de 5 ans, j'accompagne entreprises et particuliers dans la création de leur univers visuel.</textarea></div>
+        <div class="field"><label>Paragraphe 2</label><textarea>Mon approche : comprendre votre vision, l'amplifier, et la traduire en un design qui vous ressemble vraiment.</textarea></div>
+        <div class="field-row"><div class="field"><label>Années d'expérience</label><input type="text" value="5+"></div><div class="field"><label>Nombre de projets</label><input type="text" value="80+"></div></div>
+        <div class="field"><label>Photo</label><div class="upload-z" onclick="toast('Upload photo — back-end requis')"><span class="upload-ico">📷</span><div class="upload-txt">Cliquer pour uploader ou glisser-déposer</div></div></div>
+        <div class="field"><label>CV (PDF)</label><div class="upload-z" onclick="toast('Upload CV — back-end requis')"><span class="upload-ico">📄</span><div class="upload-txt">Uploader votre CV</div></div></div>
+        <button class="btn btn-cyan" onclick="toast('✓ À propos sauvegardé !')">💾 Sauvegarder</button>
+      </div>
+    </div>
+
+    <!-- PRICING -->
+    <div class="panel" id="panel-pricing">
+      <div class="page-header"><h1>Tarifs</h1><p>Gérez vos formules et tarifs affichés sur le site.</p></div>
+      <div class="tb-toolbar">
+        <div style="font-size:.84rem;color:var(--dim)">3 formules actives</div>
+        <button class="btn btn-cyan" onclick="openModal('m-new-pricing')">+ Nouvelle formule</button>
+      </div>
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <div class="pr-name">Essentiel</div>
+          <div class="pr-price"><sup>€</sup>350 <span>/ projet</span></div>
+          <div class="pr-desc">Pour les petits projets — logo, carte de visite, réseaux sociaux.</div>
+          <ul class="pr-features"><li>Logo + variations</li><li>Charte couleurs</li><li>2 révisions incluses</li><li>Fichiers sources</li></ul>
+          <div class="pr-edit"><button class="btn btn-outline btn-sm" onclick="openModal('m-edit-pricing')">✎ Éditer</button><button class="btn btn-danger btn-sm">✕</button></div>
+        </div>
+        <div class="pricing-card featured">
+          <div class="pr-name">Studio</div>
+          <div class="pr-price"><sup>€</sup>900 <span>/ projet</span></div>
+          <div class="pr-desc">Identité visuelle complète, site web ou projet architectural.</div>
+          <ul class="pr-features"><li>Identité complète</li><li>Maquette web ou plan archi</li><li>5 révisions incluses</li><li>Support 30 jours</li><li>Fichiers sources</li></ul>
+          <div class="pr-edit"><button class="btn btn-outline btn-sm" onclick="openModal('m-edit-pricing')">✎ Éditer</button><button class="btn btn-danger btn-sm">✕</button></div>
+        </div>
+        <div class="pricing-card">
+          <div class="pr-name">Signature</div>
+          <div class="pr-price"><sup>€</sup>2500 <span>/ projet</span></div>
+          <div class="pr-desc">Projet complet sur-mesure — branding global, digital, motion.</div>
+          <ul class="pr-features"><li>Stratégie de marque</li><li>Identité + digital + motion</li><li>Révisions illimitées</li><li>Accompagnement 3 mois</li><li>Tous formats + sources</li></ul>
+          <div class="pr-edit"><button class="btn btn-outline btn-sm" onclick="openModal('m-edit-pricing')">✎ Éditer</button><button class="btn btn-danger btn-sm">✕</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MESSAGES -->
+    <div class="panel" id="panel-messages">
+      <div class="page-header"><h1>Messages</h1><p>3 messages non lus dans votre boîte de réception.</p></div>
+      <div class="tb-toolbar"><div style="font-size:.84rem;color:var(--dim)">Formulaire de contact</div><button class="btn btn-outline">✓ Tout marquer lu</button></div>
+      <div class="msg-list">
+        <div class="msg-item unread" onclick="openModal('m-message')"><div><div class="msg-name">Marie Laurent</div><div class="msg-subject">Demande de devis — Identité visuelle</div><div class="msg-preview">Bonjour, je souhaiterais obtenir un devis pour la refonte complète de l'identité visuelle de mon entreprise...</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:.3rem"><div class="msg-time">Il y a 12 min</div><div class="unread-dot"></div></div></div>
+        <div class="msg-item unread" onclick="openModal('m-message')"><div><div class="msg-name">Thomas Mercier</div><div class="msg-subject">Projet web — Application mobile</div><div class="msg-preview">Je cherche un designer pour créer l'interface d'une application de gestion de rendez-vous...</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:.3rem"><div class="msg-time">Hier, 14h20</div><div class="unread-dot"></div></div></div>
+        <div class="msg-item unread" onclick="openModal('m-message')"><div><div class="msg-name">Camille Dupont</div><div class="msg-subject">Digital painting — Commande portrait</div><div class="msg-preview">Bonjour Anthony, j'aimerais commander un portrait numérique de ma famille...</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:.3rem"><div class="msg-time">Il y a 2 jours</div><div class="unread-dot"></div></div></div>
+        <div class="msg-item" onclick="openModal('m-message')"><div><div class="msg-name">Studio Lumière</div><div class="msg-subject">Suivi projet — Brochure trimestrielle</div><div class="msg-preview">Bonjour, pouvez-vous nous envoyer la version finale de la brochure Q1 ?</div></div><div><div class="msg-time">Il y a 5 jours</div></div></div>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="panel" id="panel-settings">
+      <div class="page-header"><h1>Paramètres</h1><p>Configuration générale de votre site.</p></div>
+      <div class="settings-grid">
+        <div class="settings-card">
+          <div class="sc-title">⚙ Informations générales</div>
+          <div class="field"><label>Nom du site</label><input type="text" value="AAR Design"></div>
+          <div class="field"><label>Slogan</label><input type="text" value="Le design utile"></div>
+          <div class="field"><label>Email</label><input type="email" value="aardesign14@gmail.com"></div>
+          <div class="field"><label>Téléphone</label><input type="tel" value="06 79 46 62 19"></div>
+          <button class="btn btn-cyan" onclick="toast('✓ Informations sauvegardées !')">💾 Sauvegarder</button>
+        </div>
+        <div class="settings-card">
+          <div class="sc-title">🎨 Couleurs du site</div>
+          <div class="color-row"><span class="color-lbl">Couleur principale (cyan)</span><input type="color" class="color-swatch" value="#00b4d8"></div>
+          <div class="color-row"><span class="color-lbl">Couleur marine (navy)</span><input type="color" class="color-swatch" value="#1a2755"></div>
+          <div class="color-row"><span class="color-lbl">Fond principal</span><input type="color" class="color-swatch" value="#080e1c"></div>
+          <div class="color-row"><span class="color-lbl">Texte principal</span><input type="color" class="color-swatch" value="#e8f4f8"></div>
+          <button class="btn btn-cyan" style="margin-top:1rem" onclick="toast('✓ Couleurs appliquées !')">Appliquer</button>
+        </div>
+        <div class="settings-card">
+          <div class="sc-title">🔤 Typographie</div>
+          <div class="field"><label>Police titres</label><select><option selected>Playfair Display</option><option>Cormorant Garamond</option><option>DM Serif Display</option></select></div>
+          <div class="field"><label>Police navigation</label><select><option selected>Syne</option><option>Space Grotesk</option><option>Outfit</option></select></div>
+          <div class="field"><label>Police corps</label><select><option selected>DM Sans</option><option>Manrope</option><option>Plus Jakarta Sans</option></select></div>
+          <button class="btn btn-cyan" onclick="toast('✓ Typographie sauvegardée !')">💾 Sauvegarder</button>
+        </div>
+        <div class="settings-card">
+          <div class="sc-title">⚡ Fonctionnalités</div>
+          <div class="toggle-row"><span class="toggle-lbl">Curseur personnalisé</span><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+          <div class="toggle-row"><span class="toggle-lbl">Animations au scroll</span><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+          <div class="toggle-row"><span class="toggle-lbl">Barre de progression</span><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+          <div class="toggle-row"><span class="toggle-lbl">Bandeau défilant</span><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+          <div class="toggle-row"><span class="toggle-lbl">Section témoignages</span><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
+          <div class="toggle-row"><span class="toggle-lbl">Mode maintenance</span><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
+        </div>
+        <div class="settings-card">
+          <div class="sc-title">🔗 Réseaux sociaux</div>
+          <div class="field"><label>LinkedIn</label><input type="url" placeholder="https://linkedin.com/in/…"></div>
+          <div class="field"><label>Behance</label><input type="url" placeholder="https://behance.net/…"></div>
+          <div class="field"><label>Instagram</label><input type="url" placeholder="https://instagram.com/…"></div>
+          <div class="field"><label>Dribbble</label><input type="url" placeholder="https://dribbble.com/…"></div>
+          <button class="btn btn-cyan" onclick="toast('✓ Réseaux sauvegardés !')">💾 Sauvegarder</button>
+        </div>
+        <div class="settings-card">
+          <div class="sc-title">🔒 Sécurité</div>
+          <div class="field"><label>Mot de passe actuel</label><input type="password" placeholder="••••••••"></div>
+          <div class="field"><label>Nouveau mot de passe</label><input type="password" placeholder="••••••••"></div>
+          <div class="field"><label>Confirmer</label><input type="password" placeholder="••••••••"></div>
+          <button class="btn btn-cyan" onclick="toast('✓ Mot de passe mis à jour !')">Changer</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- ═══════════ MODALS ═══════════ -->
+
+<!-- New Project -->
+<div class="modal-bd" id="m-new-project">
+  <div class="modal">
+    <div class="modal-hd"><div class="modal-title">+ Nouveau projet</div><button class="modal-close" onclick="closeModal('m-new-project')">✕</button></div>
+    <div class="modal-body">
+      <div class="field"><label>Titre du projet</label><input type="text" placeholder="Ex: Refonte de marque — Studio X"></div>
+      <div class="field-row">
+        <div class="field"><label>Catégorie</label><select><option>Branding</option><option>Web</option><option>Architecture</option><option>Motion</option><option>Painting</option></select></div>
+        <div class="field"><label>Statut</label><select><option>Brouillon</option><option>Publié</option></select></div>
+      </div>
+      <div class="field"><label>Description courte</label><textarea placeholder="Résumé affiché dans la grille portfolio…"></textarea></div>
+      <div class="field"><label>Images du projet</label><div class="upload-z" onclick="toast('Upload — back-end requis')"><span class="upload-ico">🖼️</span><div class="upload-txt">Glisser les images ici ou cliquer pour parcourir</div></div></div>
+      <div class="field-row">
+        <div class="field"><label>Client</label><input type="text" placeholder="Nom du client"></div>
+        <div class="field"><label>Année</label><input type="text" placeholder="2025"></div>
+      </div>
+      <div class="field"><label>En vedette ?</label><select><option>Non</option><option>Oui — afficher en grand</option></select></div>
+    </div>
+    <div class="modal-ft"><button class="btn btn-outline" onclick="closeModal('m-new-project')">Annuler</button><button class="btn btn-cyan" onclick="closeModal('m-new-project');toast('✓ Projet créé !')">Créer le projet</button></div>
+  </div>
+</div>
+
+<!-- Edit Project -->
+<div class="modal-bd" id="m-edit-project">
+  <div class="modal">
+    <div class="modal-hd"><div class="modal-title">✎ Éditer le projet</div><button class="modal-close" onclick="closeModal('m-edit-project')">✕</button></div>
+    <div class="modal-body">
+      <div class="field"><label>Titre du projet</label><input type="text" value="Studio Noir — Refonte de marque"></div>
+      <div class="field-row">
+        <div class="field"><label>Catégorie</label><select><option selected>Branding</option><option>Web</option><option>Architecture</option><option>Motion</option></select></div>
+        <div class="field"><label>Statut</label><select><option>Brouillon</option><option selected>Publié</option></select></div>
+      </div>
+      <div class="field"><label>Description</label><textarea>Refonte complète de l'identité visuelle du Studio Noir. Nouveau logo, charte graphique, supports print et digital.</textarea></div>
+      <div class="field"><label>Images</label><div class="upload-z" onclick="toast('Upload — back-end requis')"><span class="upload-ico">🖼️</span><div class="upload-txt">Modifier les images du projet</div></div></div>
+    </div>
+    <div class="modal-ft"><button class="btn btn-outline" onclick="closeModal('m-edit-project')">Annuler</button><button class="btn btn-cyan" onclick="closeModal('m-edit-project');toast('✓ Projet mis à jour !')">Sauvegarder</button></div>
+  </div>
+</div>
+
+<!-- New Service -->
+<div class="modal-bd" id="m-new-service">
+  <div class="modal">
+    <div class="modal-hd"><div class="modal-title">+ Nouveau service</div><button class="modal-close" onclick="closeModal('m-new-service')">✕</button></div>
+    <div class="modal-body">
+      <div class="field"><label>Nom du service</label><input type="text" placeholder="Ex: Illustration éditoriale"></div>
+      <div class="field"><label>Description</label><textarea placeholder="Description affichée sur le site…"></textarea></div>
+      <div class="field-row">
+        <div class="field"><label>Ordre</label><input type="number" value="6"></div>
+        <div class="field"><label>Statut</label><select><option>Actif</option><option>Inactif</option></select></div>
+      </div>
+    </div>
+    <div class="modal-ft"><button class="btn btn-outline" onclick="closeModal('m-new-service')">Annuler</button><button class="btn btn-cyan" onclick="closeModal('m-new-service');toast('✓ Service créé !')">Créer</button></div>
+  </div>
+</div>
+
+<!-- Edit Service -->
+<div class="modal-bd" id="m-edit-service">
+  <div class="modal">
+    <div class="modal-hd"><div class="modal-title">✎ Éditer le service</div><button class="modal-close" onclick="closeModal('m-edit-service')">✕</button></div>
+    <div class="modal-body">
+      <div class="field"><label>Nom</label><input type="text" value="Identité visuelle"></div>
+      <div class="field"><label>Description</label><textarea>Développement complet de votre identité graphique — logo, charte, typographies, couleurs.</textarea></div>
+      <div class="field-row">
+        <div class="field"><label>Ordre</label><input type="number" value="1"></div>
+        <div class="field"><label>Statut</label><select><option selected>Actif</option><option>Inactif</option></select></div>
+      </div>
+    </div>
+    <div class="modal-ft"><button class="btn btn-outline" onclick="closeModal('m-edit-service')">Annuler</button><button class="btn btn-cyan" onclick="closeModal('m-edit-service');toast('✓ Service mis à jour !')">Sauvegarder</button></div>
+  </div>
+</div>
+
+<!-- New Page -->
+<div class="modal-bd" id="m-new-page">
+  <div class="modal">
+    <div class="modal-hd"><div class="modal-title">+ Nouvelle page</div><button class="modal-close" onclick="closeModal('m-new-page')">✕</button></div>
+    <div class="modal-body">
+      <div class="field"><label>Titre de la page</label><input type="text" placeholder="Ex: Motion Reel 2025"></div>
+      <div class="field"><label>URL (slug)</label><input type="text" placeholder="motion-reel-2025"><div class="field-hint">aardesign.fr/motion-reel-2025</div></div>
+      <div class="field"><label>Meta description (SEO)</label><textarea placeholder="Description pour les moteurs de recherche…" style="min-height:72px"></textarea></div>
+      <div class="field-row">
+        <div class="field"><label>Template</label><select><option>Page standard</option><option>Page portfolio</option><option>Page contact</option><option>Page vide</option></select></div>
+        <div class="field"><label>Statut</label><select><option>Brouillon</option><option>Publiée</option></select></div>
+      </div>
+    </div>
+    <div class="modal-ft"><button class="btn btn-outline" onclick="closeModal('m-new-page')">Annuler</button><button class="btn btn-cyan" onclick="closeModal('m-new-page');toast('✓ Page créée !')">Créer & Builder →</button></div>
+  </div>
+</div>
+
+<!-- Page Builder -->
+<div class="modal-bd" id="m-builder">
+  <div class="modal" style="max-width:760px">
+    <div class="modal-hd"><div class="modal-title">⊞ Builder de sections — Accueil</div><button class="modal-close" onclick="closeModal('m-builder')">✕</button></div>
+    <div class="modal-body">
+      <p style="font-size:.82rem;color:var(--dim);margin-bottom:1.5rem">Réorganisez les sections par glisser-déposer. Cliquez sur ✎ pour modifier.</p>
+      <div class="sections-list">
+        <div class="sec-item"><div class="sec-thumb">HERO</div><div style="flex:1"><div class="sec-name">Hero — Titre animé</div><div class="sec-status">Visible · Modifié il y a 2h</div></div><div style="display:flex;gap:.5rem"><button class="btn btn-outline btn-xs">✎</button><button class="btn btn-outline btn-xs" style="opacity:.4">👁</button></div></div>
+        <div class="sec-item"><div class="sec-thumb">MARQ</div><div style="flex:1"><div class="sec-name">Marquee — Bandeau défilant</div><div class="sec-status">Visible</div></div><div style="display:flex;gap:.5rem"><button class="btn btn-outline btn-xs">✎</button><button class="btn btn-outline btn-xs">👁</button></div></div>
+        <div class="sec-item"><div class="sec-thumb">STORY</div><div style="flex:1"><div class="sec-name">À propos — Grille 2 colonnes</div><div class="sec-status">Visible</div></div><div style="display:flex;gap:.5rem"><button class="btn btn-outline btn-xs">✎</button><button class="btn btn-outline btn-xs">👁</button></div></div>
+        <div class="sec-item"><div class="sec-thumb">DISC</div><div style="flex:1"><div class="sec-name">Disciplines — Liste animée</div><div class="sec-status">Visible</div></div><div style="display:flex;gap:.5rem"><button class="btn btn-outline btn-xs">✎</button><button class="btn btn-outline btn-xs">👁</button></div></div>
+        <div class="sec-item"><div class="sec-thumb">PORT</div><div style="flex:1"><div class="sec-name">Portfolio — Slider drag</div><div class="sec-status">Visible</div></div><div style="display:flex;gap:.5rem"><button class="btn btn-outline btn-xs">✎</button><button class="btn btn-outline btn-xs">👁</button></div></div>
+        <div class="sec-item" style="opacity:.5"><div class="sec-thumb">TESTI</div><div style="flex:1"><div class="sec-name">Témoignages</div><div class="sec-status">Masqué</div></div><div style="display:flex;gap:.5rem"><button class="btn btn-outline btn-xs">✎</button><button class="btn btn-outline btn-xs" style="color:var(--cyan);border-color:var(--cyan)">🔎</button></div></div>
+        <div class="sec-item"><div class="sec-thumb">CONT</div><div style="flex:1"><div class="sec-name">Contact — Formulaire</div><div class="sec-status">Visible</div></div><div style="display:flex;gap:.5rem"><button class="btn btn-outline btn-xs">✎</button><button class="btn btn-outline btn-xs">👁</button></div></div>
+      </div>
+      <button class="btn btn-outline" style="margin-top:1rem;width:100%" onclick="toast('Sélectionner un type de section')">+ Ajouter une section</button>
+    </div>
+    <div class="modal-ft"><button class="btn btn-outline" onclick="closeModal('m-builder')">Fermer</button><button class="btn btn-cyan" onclick="closeModal('m-builder');toast('✓ Page sauvegardée !')">💾 Sauvegarder</button></div>
+  </div>
+</div>
+
+<!-- Message -->
+<div class="modal-bd" id="m-message">
+  <div class="modal" style="max-width:600px">
+    <div class="modal-hd"><div class="modal-title">Message — Marie Laurent</div><button class="modal-close" onclick="closeModal('m-message')">✕</button></div>
+    <div class="modal-body">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem">
+        <div><div style="font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--cyan);margin-bottom:.3rem">De</div><div style="font-size:.84rem">Marie Laurent</div></div>
+        <div><div style="font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--cyan);margin-bottom:.3rem">Sujet</div><div style="font-size:.84rem">Devis — Identité visuelle</div></div>
+        <div><div style="font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--cyan);margin-bottom:.3rem">Date</div><div style="font-size:.84rem">Il y a 12 min</div></div>
+      </div>
+      <div style="background:var(--ink3);border:1px solid var(--border);border-radius:9px;padding:1.5rem;font-size:.875rem;line-height:1.85;color:var(--dim)">
+        Bonjour Anthony,<br><br>
+        Je souhaiterais obtenir un devis pour la refonte complète de l'identité visuelle de mon entreprise, Studio Lumière. Nous cherchons à moderniser notre image tout en conservant une esthétique élégante.<br><br>
+        Le projet inclurait : un nouveau logo, une charte graphique complète, des templates réseaux sociaux et des supports print.<br><br>
+        Cordialement,<br>Marie Laurent
+      </div>
+      <div class="field" style="margin-top:1.5rem"><label>Répondre</label><textarea placeholder="Bonjour Marie, merci pour votre message…" style="min-height:90px"></textarea></div>
+    </div>
+    <div class="modal-ft"><button class="btn btn-outline" onclick="closeModal('m-message')">Fermer</button><button class="btn btn-danger btn-sm">🗑 Supprimer</button><button class="btn btn-cyan" onclick="closeModal('m-message');toast('✓ Réponse envoyée !')">↩ Répondre</button></div>
+  </div>
+</div>
+
+<!-- Edit Pricing -->
+<div class="modal-bd" id="m-edit-pricing">
+  <div class="modal">
+    <div class="modal-hd"><div class="modal-title">✎ Éditer la formule</div><button class="modal-close" onclick="closeModal('m-edit-pricing')">✕</button></div>
+    <div class="modal-body">
+      <div class="field-row"><div class="field"><label>Nom</label><input type="text" value="Studio"></div><div class="field"><label>Prix (€)</label><input type="number" value="900"></div></div>
+      <div class="field"><label>Description</label><textarea>Identité visuelle complète, site web ou projet architectural.</textarea></div>
+      <div class="field"><label>Prestations (une par ligne)</label><textarea>Identité complète&#10;Maquette web ou plan archi&#10;5 révisions incluses&#10;Support 30 jours&#10;Fichiers sources</textarea></div>
+      <div class="field-row"><div class="field"><label>Populaire ?</label><select><option>Non</option><option selected>Oui</option></select></div><div class="field"><label>Statut</label><select><option selected>Visible</option><option>Masqué</option></select></div></div>
+    </div>
+    <div class="modal-ft"><button class="btn btn-outline" onclick="closeModal('m-edit-pricing')">Annuler</button><button class="btn btn-cyan" onclick="closeModal('m-edit-pricing');toast('✓ Tarif mis à jour !')">Sauvegarder</button></div>
+  </div>
+</div>
+
+<!-- New Pricing -->
+<div class="modal-bd" id="m-new-pricing">
+  <div class="modal">
+    <div class="modal-hd"><div class="modal-title">+ Nouvelle formule</div><button class="modal-close" onclick="closeModal('m-new-pricing')">✕</button></div>
+    <div class="modal-body">
+      <div class="field-row"><div class="field"><label>Nom</label><input type="text" placeholder="Premium"></div><div class="field"><label>Prix (€)</label><input type="number" placeholder="1500"></div></div>
+      <div class="field"><label>Description</label><textarea placeholder="Décrivez cette formule…"></textarea></div>
+      <div class="field"><label>Prestations incluses (une par ligne)</label><textarea placeholder="Item 1&#10;Item 2"></textarea></div>
+    </div>
+    <div class="modal-ft"><button class="btn btn-outline" onclick="closeModal('m-new-pricing')">Annuler</button><button class="btn btn-cyan" onclick="closeModal('m-new-pricing');toast('✓ Formule créée !')">Créer</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast">✓ Action effectuée</div>
+
+<script>
+const titles={dashboard:['Tableau de bord',"Vue d'ensemble"],projects:['Projets','Gestion du portfolio'],services:['Services','Gestion des services'],pages:['Pages','Gestion des pages'],about:['À propos','Contenu biographique'],pricing:['Tarifs','Formules & prix'],messages:['Messages','Boîte de réception'],settings:['Paramètres','Configuration du site']};
+function show(name,el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  if(el)el.classList.add('active');
+  if(titles[name]){document.getElementById('pageTitle').textContent=titles[name][0];document.getElementById('pageBc').textContent='AAR Design — '+titles[name][1];}
+}
+function openModal(id){document.getElementById(id).classList.add('active');}
+function closeModal(id){document.getElementById(id).classList.remove('active');}
+document.querySelectorAll('.modal-bd').forEach(bd=>bd.addEventListener('click',e=>{if(e.target===bd)bd.classList.remove('active');}));
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal-bd.active').forEach(m=>m.classList.remove('active'));});
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2800);}
+</script>
+</body>
+</html>
