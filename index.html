@@ -3,635 +3,926 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AAR Design — Galerie</title>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet">
+<title>AAR Design — Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
-html,body{width:100%;height:100%;overflow:hidden;background:#06050a;}
-body{font-family:'DM Sans',sans-serif;cursor:none;-webkit-font-smoothing:antialiased;}
+/* ─────────────────────────────────────
+   BASE
+───────────────────────────────────── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --ink: #0a0809;
+  --white: #f2ede8;
+  --dim: rgba(242,237,232,.35);
+  --gold: #c8a050;
+  --E: cubic-bezier(.16,1,.3,1);
+}
+html { scroll-behavior: smooth; }
+body {
+  background: var(--ink);
+  color: var(--white);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  overflow-x: hidden;
+  cursor: none;
+  -webkit-font-smoothing: antialiased;
+}
 
-/* CURSOR */
-#cd{position:fixed;z-index:9000;pointer-events:none;width:7px;height:7px;border-radius:50%;background:#fff;transform:translate(-50%,-50%);}
-#cr{position:fixed;z-index:8999;pointer-events:none;width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,.25);transform:translate(-50%,-50%);transition:width .45s cubic-bezier(.16,1,.3,1),height .45s cubic-bezier(.16,1,.3,1),border-color .3s;}
-body.on-card #cd{background:#c8a050;width:10px;height:10px;}
-body.on-card #cr{width:60px;height:60px;border-color:rgba(200,160,80,.5);}
+/* ─────────────────────────────────────
+   CURSOR
+───────────────────────────────────── */
+#cd {
+  position: fixed; z-index: 9999; pointer-events: none;
+  width: 7px; height: 7px; border-radius: 50%; background: var(--white);
+  transform: translate(-50%,-50%);
+  transition: width .2s, height .2s, background .3s;
+}
+#cr {
+  position: fixed; z-index: 9998; pointer-events: none;
+  width: 36px; height: 36px; border-radius: 50%;
+  border: 1px solid rgba(242,237,232,.25);
+  transform: translate(-50%,-50%);
+  transition: width .5s var(--E), height .5s var(--E), border-color .3s;
+}
+body.hov #cd { width: 12px; height: 12px; background: var(--gold); }
+body.hov #cr { width: 60px; height: 60px; border-color: rgba(200,160,80,.45); }
+body.view #cd { width: 48px; height: 48px; background: transparent; border: 1px solid var(--white); }
+body.view #cr { width: 48px; height: 48px; border-color: transparent; }
 
-/* STARS */
-#stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
+/* ─────────────────────────────────────
+   NAV
+───────────────────────────────────── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  padding: 2rem 3rem;
+  display: flex; align-items: center; justify-content: space-between;
+  transition: padding .4s var(--E), background .4s;
+}
+nav.scrolled {
+  padding: 1.2rem 3rem;
+  background: rgba(10,8,9,.85);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(242,237,232,.04);
+}
+.nav-logo {
+  font-family: 'Cinzel', serif; font-size: .55rem; letter-spacing: .4em;
+  text-transform: uppercase; color: rgba(242,237,232,.7); text-decoration: none;
+}
+.nav-logo img { height: 24px; filter: brightness(0) invert(1); opacity: .75; display: block; }
+.nav-links { display: flex; gap: 2.5rem; list-style: none; }
+.nav-links a {
+  font-family: 'Cinzel', serif; font-size: .5rem; letter-spacing: .35em;
+  text-transform: uppercase; color: rgba(242,237,232,.35); text-decoration: none;
+  transition: color .25s;
+}
+.nav-links a:hover { color: var(--white); }
+.nav-cta {
+  font-family: 'Cinzel', serif; font-size: .5rem; letter-spacing: .3em;
+  text-transform: uppercase; color: rgba(242,237,232,.5); text-decoration: none;
+  border: 1px solid rgba(242,237,232,.15); padding: .55rem 1.2rem;
+  transition: all .3s;
+}
+.nav-cta:hover { color: var(--white); border-color: rgba(242,237,232,.5); }
 
-/* GRAIN */
-#grain{position:fixed;inset:0;z-index:8900;pointer-events:none;opacity:.22;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='250' height='250' filter='url(%23n)' opacity='.06'/%3E%3C/svg%3E");}
+/* ─────────────────────────────────────
+   PROGRESS
+───────────────────────────────────── */
+#progress {
+  position: fixed; top: 0; left: 0; height: 1px; z-index: 200;
+  background: var(--gold); width: 0%; transition: width .05s;
+}
 
-/* SPACE */
-#space{position:fixed;inset:0;z-index:1;}
-#world{position:absolute;width:5000px;height:3800px;left:50%;top:50%;transform:translate(-50%,-50%);will-change:transform;}
+/* ─────────────────────────────────────
+   REVEAL
+───────────────────────────────────── */
+.reveal { opacity: 0; transform: translateY(50px); transition: opacity .9s var(--E), transform .9s var(--E); }
+.reveal.in { opacity: 1; transform: translateY(0); }
+.reveal-l { opacity: 0; transform: translateX(-40px); transition: opacity .9s var(--E), transform .9s var(--E); }
+.reveal-l.in { opacity: 1; transform: translateX(0); }
+.reveal-r { opacity: 0; transform: translateX(40px); transition: opacity .9s var(--E), transform .9s var(--E); }
+.reveal-r.in { opacity: 1; transform: translateX(0); }
+[data-d="1"] { transition-delay: .1s; }
+[data-d="2"] { transition-delay: .2s; }
+[data-d="3"] { transition-delay: .3s; }
+[data-d="4"] { transition-delay: .4s; }
+[data-d="5"] { transition-delay: .5s; }
+[data-d="6"] { transition-delay: .6s; }
+[data-d="7"] { transition-delay: .7s; }
 
-/* NAV */
-#nav{position:fixed;top:0;left:0;right:0;z-index:500;padding:1.75rem 2.5rem;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(to bottom,rgba(6,5,10,.75) 0%,transparent 100%);pointer-events:none;}
-.nl{font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:.4em;text-transform:uppercase;color:rgba(255,255,255,.18);display:flex;align-items:center;gap:.6rem;}
-.nl-dot{width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,.2);animation:blink 2.5s ease-in-out infinite;}
-@keyframes blink{0%,100%{opacity:.15}50%{opacity:.7}}
-#nav-contact{pointer-events:all;font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:.35em;text-transform:uppercase;color:rgba(255,255,255,.25);text-decoration:none;border:1px solid rgba(255,255,255,.1);padding:.5rem 1.1rem;transition:all .3s;}
-#nav-contact:hover{color:#fff;border-color:rgba(255,255,255,.4);}
+/* ─────────────────────────────────────
+   HERO
+───────────────────────────────────── */
+.hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 0 3rem 6rem;
+  position: relative; overflow: hidden;
+}
+.hero-bg {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 80% 80% at 70% 50%, rgba(100,50,15,.25) 0%, transparent 65%),
+              radial-gradient(ellipse 40% 60% at 20% 80%, rgba(30,20,60,.3) 0%, transparent 60%);
+}
+/* Floating image in hero */
+.hero-img-wrap {
+  position: absolute; inset: 0; overflow: hidden;
+}
+.hero-img {
+  position: absolute; right: 0; top: 0; bottom: 0;
+  width: 55%; height: 100%;
+  object-fit: cover; object-position: center;
+  opacity: .35;
+  filter: grayscale(30%);
+  transform: scale(1.05);
+  transition: transform 8s ease;
+}
+.hero-img-wrap::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(to right, var(--ink) 30%, transparent 70%),
+              linear-gradient(to top, var(--ink) 0%, transparent 40%);
+}
+.hero-eyebrow {
+  position: relative; z-index: 2;
+  font-family: 'Cinzel', serif; font-size: .52rem; letter-spacing: .5em;
+  text-transform: uppercase; color: var(--gold);
+  display: flex; align-items: center; gap: .75rem; margin-bottom: 1.5rem;
+}
+.hero-eyebrow::before { content: ''; width: 28px; height: 1px; background: var(--gold); }
+.hero-title {
+  position: relative; z-index: 2;
+  font-family: 'Cinzel', serif;
+  font-size: clamp(4rem, 9vw, 11rem);
+  font-weight: 900; line-height: .9;
+  letter-spacing: -.02em; color: var(--white);
+  margin-bottom: 2.5rem;
+}
+.hero-title em {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic; font-weight: 300;
+  color: rgba(242,237,232,.5); display: block;
+  font-size: .85em; line-height: 1;
+}
+.hero-bottom {
+  position: relative; z-index: 2;
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 3rem;
+}
+.hero-desc {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.15rem; font-style: italic;
+  color: rgba(242,237,232,.4); line-height: 1.8;
+  max-width: 420px;
+}
+.hero-scroll {
+  font-family: 'Cinzel', serif; font-size: .47rem; letter-spacing: .4em;
+  text-transform: uppercase; color: rgba(242,237,232,.2);
+  display: flex; align-items: center; gap: .75rem; white-space: nowrap;
+}
+.hero-scroll::after {
+  content: ''; width: 1px; height: 50px;
+  background: linear-gradient(to bottom, rgba(242,237,232,.2), transparent);
+  animation: scr 1.8s ease-in-out infinite;
+}
+@keyframes scr { 0%,100%{opacity:.2;transform:scaleY(.5)} 50%{opacity:.8;transform:scaleY(1)} }
 
-/* BOTTOM */
-#bot{position:fixed;bottom:0;left:0;right:0;z-index:500;padding:1.5rem 2.5rem;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(to top,rgba(6,5,10,.7) 0%,transparent 100%);}
-#bot a{font-family:'Cinzel',serif;font-size:.48rem;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.18);text-decoration:none;transition:color .3s;}
-#bot a:hover{color:rgba(255,255,255,.6);}
-#wcount{font-family:'Cinzel',serif;font-size:.48rem;letter-spacing:.3em;color:rgba(255,255,255,.1);}
+/* ─────────────────────────────────────
+   WORK — LIST FORMAT
+───────────────────────────────────── */
+.work { padding: 8rem 0; }
+.work-header {
+  padding: 0 3rem;
+  display: flex; align-items: flex-end; justify-content: space-between;
+  margin-bottom: 5rem;
+}
+.section-label {
+  font-family: 'Cinzel', serif; font-size: .5rem; letter-spacing: .45em;
+  text-transform: uppercase; color: var(--gold);
+  display: flex; align-items: center; gap: .6rem;
+}
+.section-label::before { content: ''; width: 24px; height: 1px; background: var(--gold); }
+.work-count {
+  font-family: 'Cormorant Garamond', serif; font-size: 1rem; font-style: italic;
+  color: rgba(242,237,232,.2);
+}
 
-/* MINIMAP */
-#mm{position:fixed;bottom:2.5rem;right:2.5rem;z-index:500;width:110px;height:84px;border:1px solid rgba(255,255,255,.07);background:rgba(6,5,10,.5);backdrop-filter:blur(8px);overflow:hidden;}
-#mm-dots{position:absolute;inset:0;}
-.mmd{position:absolute;width:4px;height:4px;border-radius:1px;background:rgba(255,255,255,.15);transform:translate(-50%,-50%);}
-.mmd.feat{background:rgba(200,160,80,.6);width:6px;height:6px;}
-#mm-vp{position:absolute;border:1px solid rgba(200,160,80,.25);pointer-events:none;}
+/* Each project row */
+.project {
+  display: grid;
+  grid-template-columns: 80px 1fr 1fr 100px;
+  align-items: center;
+  padding: 2.25rem 3rem;
+  border-top: 1px solid rgba(242,237,232,.05);
+  cursor: pointer;
+  position: relative;
+  transition: background .3s;
+  gap: 2rem;
+  text-decoration: none;
+  color: inherit;
+}
+.project:last-child { border-bottom: 1px solid rgba(242,237,232,.05); }
+.project::before {
+  content: ''; position: absolute; inset: 0;
+  background: rgba(242,237,232,.02);
+  transform: scaleY(0); transform-origin: bottom;
+  transition: transform .4s var(--E);
+}
+.project:hover::before { transform: scaleY(1); }
+.project:hover .p-num { color: var(--gold); }
+.project:hover .p-img-wrap { opacity: 1; transform: translateX(0) scale(1); }
+.project:hover .p-arrow { transform: translateX(6px); color: var(--white); }
 
-/* CARDS */
-.card{position:absolute;transform:translate(-50%,-50%);cursor:pointer;will-change:transform;}
-.card-in{position:relative;overflow:hidden;box-shadow:0 16px 60px rgba(0,0,0,.7);transition:transform .5s cubic-bezier(.16,1,.3,1),box-shadow .5s;}
-.card:hover .card-in{transform:scale(1.05) translateY(-6px);box-shadow:0 30px 100px rgba(0,0,0,.85);}
-.card img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .7s cubic-bezier(.16,1,.3,1);}
-.card:hover img{transform:scale(1.07);}
-.card-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(6,5,10,.92) 0%,rgba(6,5,10,.3) 50%,transparent 100%);opacity:0;transition:opacity .4s;display:flex;flex-direction:column;justify-content:flex-end;padding:1rem 1.1rem;}
-.card:hover .card-ov{opacity:1;}
-.card-cat{font-family:'Cinzel',serif;font-size:.42rem;letter-spacing:.3em;text-transform:uppercase;color:rgba(200,160,80,.8);margin-bottom:.3rem;}
-.card-name{font-family:'Cormorant Garamond',serif;font-size:.95rem;color:#f0ece4;line-height:1.3;}
-.card-ico{position:absolute;top:.8rem;right:.8rem;width:28px;height:28px;border-radius:50%;background:rgba(200,160,80,.85);display:flex;align-items:center;justify-content:center;font-size:.6rem;color:#06050a;opacity:0;transform:scale(.5);transition:opacity .3s,transform .3s cubic-bezier(.16,1,.3,1);}
-.card:hover .card-ico{opacity:1;transform:scale(1);}
+.p-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1rem; font-style: italic; color: rgba(242,237,232,.2);
+  transition: color .3s; white-space: nowrap;
+}
+.p-info {}
+.p-cat {
+  font-family: 'Cinzel', serif; font-size: .44rem; letter-spacing: .3em;
+  text-transform: uppercase; color: rgba(242,237,232,.25); margin-bottom: .4rem;
+}
+.p-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.4rem, 2.5vw, 2.2rem);
+  font-weight: 400; color: var(--white); line-height: 1.1;
+}
+.p-tags {
+  display: flex; gap: .5rem; flex-wrap: wrap;
+}
+.p-tag {
+  font-family: 'Cinzel', serif; font-size: .4rem; letter-spacing: .2em;
+  text-transform: uppercase; color: rgba(242,237,232,.2);
+  border: 1px solid rgba(242,237,232,.08); padding: .28rem .65rem;
+}
+.p-arrow {
+  font-size: 1rem; color: rgba(242,237,232,.2);
+  transition: transform .3s var(--E), color .3s;
+  justify-self: end;
+}
 
-/* SECTION LABELS */
-.slabel{position:absolute;transform:translate(-50%,-50%);pointer-events:none;font-family:'Cinzel',serif;font-size:5.5rem;font-weight:900;letter-spacing:.08em;color:rgba(255,255,255,.018);text-transform:uppercase;white-space:nowrap;user-select:none;}
+/* Hover image preview */
+.p-img-wrap {
+  position: fixed; pointer-events: none; z-index: 50;
+  width: 280px; height: 190px; overflow: hidden;
+  opacity: 0; transform: translateX(20px) scale(.96);
+  transition: opacity .35s var(--E), transform .35s var(--E);
+  box-shadow: 0 30px 80px rgba(0,0,0,.7);
+}
+.p-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-/* GLOW */
-.glow{position:absolute;transform:translate(-50%,-50%);border-radius:50%;filter:blur(100px);mix-blend-mode:screen;pointer-events:none;}
+/* ─────────────────────────────────────
+   FEATURED PROJECTS (big image blocks)
+───────────────────────────────────── */
+.featured { padding: 0; }
+.feat-item {
+  display: grid; min-height: 90vh;
+  position: relative; overflow: hidden;
+  cursor: pointer;
+}
+.feat-item.layout-left { grid-template-columns: 1fr 1fr; }
+.feat-item.layout-right { grid-template-columns: 1fr 1fr; }
+.feat-item.layout-full { grid-template-columns: 1fr; }
 
-/* MODAL */
-#modal{position:fixed;inset:0;z-index:2000;display:flex;align-items:center;justify-content:center;padding:2rem;opacity:0;visibility:hidden;transition:opacity .5s,visibility .5s;}
-#modal.open{opacity:1;visibility:visible;}
-#mbg{position:absolute;inset:0;background:rgba(3,2,5,.93);backdrop-filter:blur(24px);cursor:pointer;}
-#mc{position:relative;z-index:1;display:grid;grid-template-columns:1.1fr 1fr;max-width:1080px;width:100%;background:rgba(12,10,16,.85);border:1px solid rgba(255,255,255,.06);overflow:hidden;transform:translateY(24px) scale(.97);transition:transform .5s cubic-bezier(.16,1,.3,1);max-height:88vh;}
-#modal.open #mc{transform:translateY(0) scale(1);}
-#m-imgw{position:relative;min-height:380px;overflow:hidden;}
-#m-img{width:100%;height:100%;object-fit:cover;display:block;min-height:380px;}
-#m-body{padding:3rem 2.75rem;overflow-y:auto;max-height:88vh;display:flex;flex-direction:column;}
-#mclose{position:absolute;top:1.2rem;right:1.2rem;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;cursor:pointer;color:rgba(255,255,255,.4);font-size:.8rem;transition:all .2s;z-index:5;}
-#mclose:hover{background:rgba(255,255,255,.12);color:#fff;}
-#m-cat{font-family:'Cinzel',serif;font-size:.48rem;letter-spacing:.42em;text-transform:uppercase;color:rgba(200,160,80,.65);margin-bottom:.9rem;display:flex;align-items:center;gap:.5rem;}
-#m-cat::before{content:'';width:18px;height:1px;background:rgba(200,160,80,.35);}
-#m-title{font-family:'Cinzel',serif;font-size:clamp(1.5rem,2.8vw,2.5rem);font-weight:900;color:#f0ece4;line-height:1.05;margin-bottom:.6rem;}
-#m-sub{font-family:'Cormorant Garamond',serif;font-size:1rem;font-style:italic;color:rgba(200,160,80,.55);margin-bottom:1.5rem;}
-#m-desc{font-family:'Cormorant Garamond',serif;font-size:1rem;color:rgba(240,236,228,.4);line-height:1.95;font-weight:300;margin-bottom:1.75rem;}
-#m-tags{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1.75rem;}
-.mtag{font-family:'Cinzel',serif;font-size:.42rem;letter-spacing:.22em;text-transform:uppercase;padding:.3rem .65rem;border:1px solid rgba(255,255,255,.07);color:rgba(255,255,255,.25);}
-#m-year{font-family:'Cinzel',serif;font-size:.45rem;letter-spacing:.3em;color:rgba(255,255,255,.12);margin-top:auto;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.04);}
-/* Modal prev/next */
-.m-nav{position:absolute;top:50%;transform:translateY(-50%);z-index:10;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);cursor:pointer;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.4);font-size:.75rem;transition:all .2s;}
-.m-nav:hover{background:rgba(255,255,255,.12);color:#fff;}
-#mprev{left:1rem;}
-#mnext{right:1rem;}
+.feat-img {
+  position: relative; overflow: hidden;
+}
+.feat-img img {
+  width: 100%; height: 100%; min-height: 60vh;
+  object-fit: cover; display: block;
+  transition: transform 1s var(--E), filter .5s;
+  filter: brightness(.85);
+}
+.feat-item:hover .feat-img img { transform: scale(1.04); filter: brightness(.7); }
 
-/* LOADER */
-#loader{position:fixed;inset:0;z-index:9999;background:#06050a;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.75rem;transition:opacity 1s,visibility 1s;}
-#loader.out{opacity:0;visibility:hidden;}
-.llo img{height:36px;filter:brightness(0) invert(1);opacity:.65;}
-.lbw{width:150px;height:1px;background:rgba(255,255,255,.07);}
-.lbb{height:100%;background:rgba(255,255,255,.45);width:0%;}
-.ltx{font-family:'Cinzel',serif;font-size:.45rem;letter-spacing:.5em;color:rgba(255,255,255,.18);text-transform:uppercase;}
+.feat-text {
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 5rem 4rem;
+  background: var(--ink);
+  position: relative;
+}
+.feat-item.layout-right .feat-text { order: -1; }
+.feat-item.layout-full .feat-text {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: linear-gradient(to top, rgba(10,8,9,.95) 0%, rgba(10,8,9,.5) 60%, transparent 100%);
+  padding: 5rem 3rem 4rem;
+  order: 1;
+}
+.feat-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 6rem; font-weight: 300; font-style: italic;
+  color: rgba(242,237,232,.04); line-height: 1;
+  margin-bottom: -1rem;
+  user-select: none;
+}
+.feat-cat {
+  font-family: 'Cinzel', serif; font-size: .48rem; letter-spacing: .4em;
+  text-transform: uppercase; color: var(--gold);
+  margin-bottom: .75rem;
+}
+.feat-title {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(2rem, 4vw, 4rem);
+  font-weight: 900; color: var(--white); line-height: 1;
+  margin-bottom: .85rem; letter-spacing: -.01em;
+}
+.feat-title em {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic; font-weight: 300;
+  color: rgba(242,237,232,.6); display: block; font-size: .9em;
+}
+.feat-desc {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.05rem; font-style: italic;
+  color: rgba(242,237,232,.4); line-height: 1.8;
+  max-width: 400px; margin-bottom: 2rem;
+}
+.feat-link {
+  font-family: 'Cinzel', serif; font-size: .5rem; letter-spacing: .3em;
+  text-transform: uppercase; color: var(--white); text-decoration: none;
+  display: inline-flex; align-items: center; gap: .5rem;
+  border-bottom: 1px solid rgba(242,237,232,.2); padding-bottom: .25rem; width: fit-content;
+  transition: border-color .25s, gap .25s;
+}
+.feat-link:hover { border-color: var(--gold); gap: .9rem; }
+.feat-link::after { content: '→'; }
 
-@media(max-width:768px){
-  #mc{grid-template-columns:1fr;}
-  #m-imgw{min-height:220px;max-height:32vh;}
+/* ─────────────────────────────────────
+   ABOUT
+───────────────────────────────────── */
+.about {
+  padding: 10rem 3rem;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8rem;
+  align-items: center; max-width: 1400px; margin: 0 auto;
+}
+.about-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 10rem; font-weight: 300; font-style: italic;
+  color: rgba(242,237,232,.03); line-height: 1;
+  margin-bottom: -2rem; user-select: none;
+}
+.about-title {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(2.5rem, 4vw, 4.5rem);
+  font-weight: 900; line-height: .95; color: var(--white);
+  letter-spacing: -.02em; margin-bottom: 2rem;
+}
+.about-title em {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic; font-weight: 300;
+  color: var(--gold); display: block; font-size: 1.1em;
+}
+.about-body {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.15rem; color: rgba(242,237,232,.45);
+  line-height: 1.95; margin-bottom: 1.5rem;
+}
+.about-skills {
+  display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 2rem;
+}
+.skill {
+  font-family: 'Cinzel', serif; font-size: .42rem; letter-spacing: .2em;
+  text-transform: uppercase; padding: .35rem .8rem;
+  border: 1px solid rgba(242,237,232,.08); color: rgba(242,237,232,.3);
+  transition: all .2s;
+}
+.skill:hover { border-color: var(--gold); color: var(--gold); }
+.about-stats {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+  background: rgba(242,237,232,.05);
+}
+.stat {
+  padding: 2.5rem; background: var(--ink);
+  transition: background .3s;
+}
+.stat:hover { background: rgba(242,237,232,.02); }
+.stat-n {
+  font-family: 'Cinzel', serif;
+  font-size: 3.5rem; font-weight: 900; color: var(--white); line-height: 1;
+  margin-bottom: .4rem;
+}
+.stat-n sup { font-size: 1.5rem; color: var(--gold); }
+.stat-l {
+  font-family: 'Cinzel', serif; font-size: .45rem; letter-spacing: .3em;
+  text-transform: uppercase; color: rgba(242,237,232,.2);
+}
+
+/* ─────────────────────────────────────
+   MARQUEE
+───────────────────────────────────── */
+.marquee {
+  overflow: hidden; padding: 1.75rem 0;
+  border-top: 1px solid rgba(242,237,232,.05);
+  border-bottom: 1px solid rgba(242,237,232,.05);
+}
+.marquee-track {
+  display: flex; gap: 0; white-space: nowrap;
+  animation: marquee 22s linear infinite;
+}
+.marquee-item {
+  display: inline-flex; align-items: center; gap: 2rem;
+  padding: 0 2rem;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1rem; font-style: italic; color: rgba(242,237,232,.15);
+  flex-shrink: 0;
+}
+.marquee-dot { width: 4px; height: 4px; background: var(--gold); border-radius: 50%; flex-shrink: 0; opacity: .5; }
+@keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+/* ─────────────────────────────────────
+   CONTACT
+───────────────────────────────────── */
+.contact {
+  padding: 10rem 3rem; min-height: 60vh;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  max-width: 900px; margin: 0 auto;
+}
+.contact-label { margin-bottom: 2rem; }
+.contact-title {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(3rem, 7vw, 8rem);
+  font-weight: 900; line-height: .9; color: var(--white);
+  letter-spacing: -.02em; margin-bottom: 3rem;
+}
+.contact-title em {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic; font-weight: 300; color: rgba(242,237,232,.4); display: block;
+}
+.contact-links {
+  display: flex; flex-wrap: wrap; gap: 1rem;
+}
+.contact-link {
+  font-family: 'Cinzel', serif; font-size: .5rem; letter-spacing: .3em;
+  text-transform: uppercase; color: rgba(242,237,232,.4); text-decoration: none;
+  border: 1px solid rgba(242,237,232,.1); padding: .75rem 1.5rem;
+  transition: all .3s; display: flex; align-items: center; gap: .5rem;
+}
+.contact-link:hover { color: var(--white); border-color: rgba(242,237,232,.4); }
+
+/* ─────────────────────────────────────
+   FOOTER
+───────────────────────────────────── */
+footer {
+  border-top: 1px solid rgba(242,237,232,.05);
+  padding: 2.5rem 3rem;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 1.5rem;
+}
+.footer-copy {
+  font-family: 'Cinzel', serif; font-size: .45rem; letter-spacing: .3em;
+  text-transform: uppercase; color: rgba(242,237,232,.15);
+}
+.footer-links { display: flex; gap: 2rem; }
+.footer-links a {
+  font-family: 'Cinzel', serif; font-size: .45rem; letter-spacing: .25em;
+  text-transform: uppercase; color: rgba(242,237,232,.15); text-decoration: none;
+  transition: color .25s;
+}
+.footer-links a:hover { color: rgba(242,237,232,.5); }
+
+/* ─────────────────────────────────────
+   GRAIN
+───────────────────────────────────── */
+#grain {
+  position: fixed; inset: 0; z-index: 8000; pointer-events: none; opacity: .2;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='250' height='250' filter='url(%23n)' opacity='.06'/%3E%3C/svg%3E");
+}
+
+/* ─────────────────────────────────────
+   MOBILE
+───────────────────────────────────── */
+@media (max-width: 900px) {
+  nav { padding: 1.25rem 1.5rem; }
+  nav.scrolled { padding: 1rem 1.5rem; }
+  .nav-links { display: none; }
+  .hero { padding: 0 1.5rem 5rem; }
+  .project { grid-template-columns: 50px 1fr 80px; gap: 1rem; padding: 1.75rem 1.5rem; }
+  .p-tags { display: none; }
+  .feat-item.layout-left, .feat-item.layout-right { grid-template-columns: 1fr; }
+  .feat-text { padding: 3rem 1.5rem; }
+  .about { grid-template-columns: 1fr; gap: 4rem; padding: 6rem 1.5rem; }
+  .contact { padding: 6rem 1.5rem; }
+  footer { padding: 2rem 1.5rem; }
+  .work-header { padding: 0 1.5rem; }
 }
 </style>
 </head>
 <body>
 
-<div id="loader"><div class="llo"><img src="assets/Logo-Aardesign-Long.png" alt="AAR Design"></div><div class="lbw"><div class="lbb" id="lbb"></div></div><p class="ltx">Chargement de la galerie</p></div>
-
-<div id="cd"></div><div id="cr"></div>
-<canvas id="stars"></canvas>
+<div id="cd"></div>
+<div id="cr"></div>
 <div id="grain"></div>
+<div id="progress"></div>
 
-<div id="nav">
-  <a href="#"><img src="assets/Logo-Aardesign-Long.png" alt="AAR Design" style="height:22px;filter:brightness(0) invert(1);opacity:.6;display:block;pointer-events:all;"></a>
-  <div class="nl"><div class="nl-dot"></div>Déplacer la souris pour voyager</div>
-  <a href="#contact" id="nav-contact">Contact</a>
-</div>
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="nav-logo">
+    <img src="assets/Logo-Aardesign-Long.png" alt="AAR Design">
+  </a>
+  <ul class="nav-links">
+    <li><a href="#work">Travaux</a></li>
+    <li><a href="#about">À propos</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Démarrer un projet</a>
+</nav>
 
-<div id="space"><div id="world"></div></div>
+<!-- ══ HERO ══ -->
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-img-wrap">
+    <img class="hero-img" src="assets/dark/red.jpg" alt="" id="hero-img">
+  </div>
+  <p class="hero-eyebrow reveal">Digital Painting · Illustration · Direction Artistique</p>
+  <h1 class="hero-title reveal" data-d="1">
+    AAR<br>
+    <em>Design</em>
+  </h1>
+  <div class="hero-bottom reveal" data-d="2">
+    <p class="hero-desc">
+      Des univers visuels qui racontent des histoires — du steampunk au conte de fées, de l'illustration au packaging.
+    </p>
+    <p class="hero-scroll">Défiler</p>
+  </div>
+</section>
 
-<div id="mm"><div id="mm-dots"></div><div id="mm-vp"></div></div>
-
-<div id="bot">
-  <a href="admin.html">Admin ↗</a>
-  <span id="wcount"></span>
-  <a href="#" id="btn-project">Démarrer un projet →</a>
-</div>
-
-<!-- MODAL -->
-<div id="modal">
-  <div id="mbg"></div>
-  <div id="mc">
-    <div id="m-imgw">
-      <img id="m-img" src="" alt="">
-      <div class="m-nav" id="mprev">‹</div>
-      <div class="m-nav" id="mnext">›</div>
-    </div>
-    <div id="m-body">
-      <div id="m-cat"></div>
-      <h2 id="m-title"></h2>
-      <p id="m-sub"></p>
-      <p id="m-desc"></p>
-      <div id="m-tags"></div>
-      <p id="m-year"></p>
-    </div>
-    <div id="mclose">✕</div>
+<!-- MARQUEE -->
+<div class="marquee">
+  <div class="marquee-track">
+    <span class="marquee-item">Digital Painting <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Direction Artistique <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Illustration <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Packaging <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Character Design <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Branding <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Dark Fantasy <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Steampunk <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Digital Painting <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Direction Artistique <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Illustration <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Packaging <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Character Design <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Branding <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Dark Fantasy <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Steampunk <span class="marquee-dot"></span></span>
   </div>
 </div>
 
+<!-- ══ FEATURED PROJECTS ══ -->
+<section class="featured" id="work">
+
+  <!-- 01 — Voyages d'Arsène FULL -->
+  <div class="feat-item layout-full reveal">
+    <div class="feat-img">
+      <img src="assets/voyages/cappadoce.jpg" alt="Les Voyages d'Arsène">
+    </div>
+    <div class="feat-text">
+      <p class="feat-num">01</p>
+      <p class="feat-cat">Digital Painting · Packaging · Direction Artistique</p>
+      <h2 class="feat-title">Les Voyages<br><em>d'Arsène</em></h2>
+      <p class="feat-desc">6 destinations, 6 peintures plein format. Du désert de Cappadoce aux aurores de Laponie — chaque flacon est un voyage.</p>
+      <a href="#" class="feat-link">Voir le projet</a>
+    </div>
+  </div>
+
+  <!-- 02 — Steam Collection LEFT -->
+  <div class="feat-item layout-left reveal">
+    <div class="feat-img">
+      <img src="assets/steam/mockup.jpg" alt="Steam Collection">
+    </div>
+    <div class="feat-text">
+      <p class="feat-num">02</p>
+      <p class="feat-cat">Illustration · Gravure Digitale</p>
+      <h2 class="feat-title">Steam<br><em>Collection</em></h2>
+      <p class="feat-desc">6 illustrations style gravure XIXe siècle. Sablier, hibou mécanique, masque de plague doctor, cœur mécanique — un univers de cuivre et d'encre.</p>
+      <a href="#" class="feat-link">Voir le projet</a>
+    </div>
+  </div>
+
+  <!-- 03 — Dark Fantasy RIGHT -->
+  <div class="feat-item layout-right reveal">
+    <div class="feat-img">
+      <img src="assets/dark/red.jpg" alt="Dark Fantasy">
+    </div>
+    <div class="feat-text">
+      <p class="feat-num">03</p>
+      <p class="feat-cat">Digital Painting · Illustration Originale</p>
+      <h2 class="feat-title">Dark<br><em>Fantasy</em></h2>
+      <p class="feat-desc">Nécromancien, sorcières, lune de sang — une série de peintures numériques sombres où l'alchimie rencontre la magie noire.</p>
+      <a href="#" class="feat-link">Voir le projet</a>
+    </div>
+  </div>
+
+  <!-- 04 — Clopinette FULL -->
+  <div class="feat-item layout-full reveal">
+    <div class="feat-img">
+      <img src="assets/saveurs/hiver.jpg" alt="Clopinette Saveurs">
+    </div>
+    <div class="feat-text">
+      <p class="feat-num">04</p>
+      <p class="feat-cat">Illustration · Aquarelle Digitale · Édition</p>
+      <h2 class="feat-title">Saveurs<br><em>Clopinette</em></h2>
+      <p class="feat-desc">Quatre saisons, quatre univers illustrés. Des carnets de saveurs où chaque couverture raconte une saison avec des animaux, des plantes et des lumières uniques.</p>
+      <a href="#" class="feat-link">Voir le projet</a>
+    </div>
+  </div>
+
+</section>
+
+<!-- ══ WORK LIST ══ -->
+<section class="work">
+  <div class="work-header reveal">
+    <p class="section-label">Tous les projets</p>
+    <p class="work-count">35 œuvres</p>
+  </div>
+
+  <!-- Hover preview images (fixed, positioned by JS) -->
+  <div class="p-img-wrap" id="prev-img"><img src="" alt="" id="prev-img-el"></div>
+
+  <a href="#" class="project reveal" data-d="1" data-img="assets/voyages/laponie.jpg">
+    <span class="p-num">05</span>
+    <div class="p-info">
+      <p class="p-cat">Digital Painting · Packaging</p>
+      <h3 class="p-title">Aurore de Laponie</h3>
+    </div>
+    <div class="p-tags">
+      <span class="p-tag">Paysage</span>
+      <span class="p-tag">Steampunk</span>
+      <span class="p-tag">Packaging</span>
+    </div>
+    <span class="p-arrow">→</span>
+  </a>
+
+  <a href="#" class="project reveal" data-d="2" data-img="assets/voyages/fuji.jpg">
+    <span class="p-num">06</span>
+    <div class="p-info">
+      <p class="p-cat">Digital Painting · Packaging</p>
+      <h3 class="p-title">Éclat du Fuji</h3>
+    </div>
+    <div class="p-tags">
+      <span class="p-tag">Japon</span>
+      <span class="p-tag">Cerisiers</span>
+      <span class="p-tag">Steampunk</span>
+    </div>
+    <span class="p-arrow">→</span>
+  </a>
+
+  <a href="#" class="project reveal" data-d="3" data-img="assets/voyages/amazonie.jpg">
+    <span class="p-num">07</span>
+    <div class="p-info">
+      <p class="p-cat">Digital Painting · Packaging</p>
+      <h3 class="p-title">Brume d'Amazonie</h3>
+    </div>
+    <div class="p-tags">
+      <span class="p-tag">Jungle</span>
+      <span class="p-tag">Tropical</span>
+    </div>
+    <span class="p-arrow">→</span>
+  </a>
+
+  <a href="#" class="project reveal" data-d="4" data-img="assets/steam/hibou.jpg">
+    <span class="p-num">08</span>
+    <div class="p-info">
+      <p class="p-cat">Illustration · Gravure Digitale</p>
+      <h3 class="p-title">Le Sage de Fer</h3>
+    </div>
+    <div class="p-tags">
+      <span class="p-tag">Gravure</span>
+      <span class="p-tag">XIXe siècle</span>
+    </div>
+    <span class="p-arrow">→</span>
+  </a>
+
+  <a href="#" class="project reveal" data-d="5" data-img="assets/steam/main.jpg">
+    <span class="p-num">09</span>
+    <div class="p-info">
+      <p class="p-cat">Illustration · Gravure Digitale</p>
+      <h3 class="p-title">La Main d'Alchimiste</h3>
+    </div>
+    <div class="p-tags">
+      <span class="p-tag">Gravure</span>
+      <span class="p-tag">Alchimie</span>
+    </div>
+    <span class="p-arrow">→</span>
+  </a>
+
+  <a href="#" class="project reveal" data-d="6" data-img="assets/saveurs/automne.jpg">
+    <span class="p-num">10</span>
+    <div class="p-info">
+      <p class="p-cat">Illustration · Aquarelle Digitale</p>
+      <h3 class="p-title">Saveurs d'Automne</h3>
+    </div>
+    <div class="p-tags">
+      <span class="p-tag">Botanique</span>
+      <span class="p-tag">Saisonnier</span>
+    </div>
+    <span class="p-arrow">→</span>
+  </a>
+
+  <a href="#" class="project reveal" data-d="7" data-img="assets/dark/salem.jpg">
+    <span class="p-num">11</span>
+    <div class="p-info">
+      <p class="p-cat">Digital Painting · Dark Fantasy</p>
+      <h3 class="p-title">Salem</h3>
+    </div>
+    <div class="p-tags">
+      <span class="p-tag">Halloween</span>
+      <span class="p-tag">Sorcière</span>
+    </div>
+    <span class="p-arrow">→</span>
+  </a>
+
+  <a href="#" class="project reveal" data-d="1" data-img="assets/millenaire/pomme2.jpg">
+    <span class="p-num">12</span>
+    <div class="p-info">
+      <p class="p-cat">Illustration · Packaging · Identité locale</p>
+      <h3 class="p-title">La Pomme Conquérante — Millénaire Caen</h3>
+    </div>
+    <div class="p-tags">
+      <span class="p-tag">Normandie</span>
+      <span class="p-tag">Packaging</span>
+    </div>
+    <span class="p-arrow">→</span>
+  </a>
+
+  <a href="#" class="project reveal" data-d="2" data-img="assets/aristocrate/nanti.jpg">
+    <span class="p-num">13</span>
+    <div class="p-info">
+      <p class="p-cat">Illustration · Character Design</p>
+      <h3 class="p-title">Série Aristocrate</h3>
+    </div>
+    <div class="p-tags">
+      <span class="p-tag">Character design</span>
+      <span class="p-tag">Steampunk</span>
+    </div>
+    <span class="p-arrow">→</span>
+  </a>
+
+  <a href="#" class="project reveal" data-d="3" data-img="assets/pulse.jpg">
+    <span class="p-num">14</span>
+    <div class="p-info">
+      <p class="p-cat">Digital Painting · Concept Art</p>
+      <h3 class="p-title">Pulse</h3>
+    </div>
+    <div class="p-tags">
+      <span class="p-tag">Abstrait</span>
+      <span class="p-tag">Énergie</span>
+    </div>
+    <span class="p-arrow">→</span>
+  </a>
+
+  <a href="#" class="project reveal" data-d="4" data-img="assets/formation/environnement.jpg">
+    <span class="p-num">15</span>
+    <div class="p-info">
+      <p class="p-cat">Digital Painting · Formation</p>
+      <h3 class="p-title">Études & Formation</h3>
+    </div>
+    <div class="p-tags">
+      <span class="p-tag">Environnement</span>
+      <span class="p-tag">Fantasy</span>
+    </div>
+    <span class="p-arrow">→</span>
+  </a>
+
+</section>
+
+<!-- ══ ABOUT ══ -->
+<section class="about" id="about">
+  <div>
+    <p class="about-num reveal">AA</p>
+    <h2 class="about-title reveal" data-d="1">
+      Anthony<br>Armand<br><em>Rodrigues</em>
+    </h2>
+    <div class="about-skills reveal" data-d="2">
+      <span class="skill">Digital Painting</span>
+      <span class="skill">Illustration</span>
+      <span class="skill">Character Design</span>
+      <span class="skill">Direction Artistique</span>
+      <span class="skill">Packaging</span>
+      <span class="skill">Branding</span>
+      <span class="skill">Architecture d'intérieur</span>
+      <span class="skill">Motion Design</span>
+    </div>
+  </div>
+  <div>
+    <div class="section-label reveal" style="margin-bottom:2rem">À propos</div>
+    <p class="about-body reveal" data-d="1">
+      Designer pluridisciplinaire basé en France, je travaille à l'intersection du digital painting, de l'illustration narrative et de la direction artistique. Mon travail est ancré dans la narration — chaque image raconte quelque chose.
+    </p>
+    <p class="about-body reveal" data-d="2">
+      Des personnages manga en univers steampunk aux paysages fantastiques, du packaging premium aux illustrations botaniques — je construis des univers visuels cohérents, distinctifs et durables.
+    </p>
+    <div class="about-stats reveal" data-d="3">
+      <div class="stat"><div class="stat-n">5<sup>+</sup></div><div class="stat-l">Années d'expérience</div></div>
+      <div class="stat"><div class="stat-n">35<sup>+</sup></div><div class="stat-l">Œuvres réalisées</div></div>
+      <div class="stat"><div class="stat-n">8</div><div class="stat-l">Disciplines créatives</div></div>
+      <div class="stat"><div class="stat-n">FR</div><div class="stat-l">France · Remote · Int'l</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CONTACT ══ -->
+<section class="contact" id="contact">
+  <div class="section-label contact-label reveal">Parlons-nous</div>
+  <h2 class="contact-title reveal" data-d="1">
+    Un projet<br>
+    <em>en tête ?</em>
+  </h2>
+  <div class="contact-links reveal" data-d="2">
+    <a href="mailto:aardesign14@gmail.com" class="contact-link">✉ aardesign14@gmail.com</a>
+    <a href="tel:0679466219" class="contact-link">☎ 06 79 46 62 19</a>
+    <a href="https://instagram.com" target="_blank" class="contact-link">◈ Instagram</a>
+    <a href="https://behance.net" target="_blank" class="contact-link">◈ Behance</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="reveal">
+  <span class="footer-copy">© 2025 AAR Design — Anthony Armand Rodrigues</span>
+  <div class="footer-links">
+    <a href="#">Mentions légales</a>
+    <a href="admin.html">Admin</a>
+  </div>
+</footer>
+
 <script>
-// ══════════════════════════
-//  ALL PROJECTS
-// ══════════════════════════
-const projects = [
-
-  // ── VOYAGES D'ARSÈNE ──────────────────
-  { id:'v1', cat:'Digital Painting · Packaging',
-    title:'Ciel de Cappadoce', sub:'Baklava Pistache — Les Voyages d\'Arsène',
-    desc:'Peinture numérique plein format pour flacon 50ml. Paysage de Cappadoce au coucher du soleil avec cheminées de fées et dirigeable steampunk flottant dans la brume dorée.',
-    tags:['Digital Painting','Packaging','Steampunk','Paysage'],
-    year:'Arsène Valentin · 2024',
-    img:'assets/voyages/cappadoce.jpg', bg:'rgba(100,60,20,.6)',
-    x:-1200, y:-600, w:300, h:200, r:-2, feat:true },
-
-  { id:'v2', cat:'Digital Painting · Packaging',
-    title:'Soleil du Pacifique', sub:'Tahiti Banane & Coco — Les Voyages d\'Arsène',
-    desc:'Baie tropicale turquoise, palmiers, lagon et le dirigeable d\'Arsène ancré au large. Palette chaude et saturée, ambiance carte postale coloniale.',
-    tags:['Digital Painting','Packaging','Tropical'],
-    year:'Arsène Valentin · 2024',
-    img:'assets/voyages/pacifique.jpg', bg:'rgba(20,80,100,.5)',
-    x:-800, y:-800, w:260, h:180, r:1.5 },
-
-  { id:'v3', cat:'Digital Painting · Packaging',
-    title:'Aurore de Laponie', sub:'Chocolat & Pain d\'Épice — Les Voyages d\'Arsène',
-    desc:'Village enneigé sous aurore boréale, dirigeable traversant les lumières vertes et violettes du ciel nocturne arctique.',
-    tags:['Digital Painting','Packaging','Hiver','Aurore'],
-    year:'Arsène Valentin · 2024',
-    img:'assets/voyages/laponie.jpg', bg:'rgba(20,40,100,.5)',
-    x:-480, y:-900, w:260, h:180, r:-1 },
-
-  { id:'v4', cat:'Digital Painting · Packaging',
-    title:'Éclat du Fuji', sub:'Litchi Mangoustan & Gingembre — Les Voyages d\'Arsène',
-    desc:'Temple japonais sous les cerisiers en fleur, mont Fuji en arrière-plan, dirigeable survolant la cime des sakura.',
-    tags:['Digital Painting','Packaging','Japon','Cerisiers'],
-    year:'Arsène Valentin · 2024',
-    img:'assets/voyages/fuji.jpg', bg:'rgba(120,30,50,.5)',
-    x:-120, y:-1000, w:260, h:180, r:2 },
-
-  { id:'v5', cat:'Digital Painting · Packaging',
-    title:'Brume d\'Amazonie', sub:'Goyave Corossol & Pitaya — Les Voyages d\'Arsène',
-    desc:'Forêt tropicale dense avec rivière serpentant entre les lianes, jaguar tapi dans l\'ombre, dirigeable émergeant de la canopée.',
-    tags:['Digital Painting','Packaging','Jungle'],
-    year:'Arsène Valentin · 2024',
-    img:'assets/voyages/amazonie.jpg', bg:'rgba(20,80,20,.5)',
-    x:260, y:-880, w:260, h:180, r:-1.5 },
-
-  { id:'v6', cat:'Digital Painting · Packaging',
-    title:'Rivage Canadien', sub:'Donuts & Sirop d\'Érable — Les Voyages d\'Arsène',
-    desc:'Forêt canadienne à l\'automne, feuilles d\'érable rouge et or, orignal au bord du lac, dirigeable entre les épinettes.',
-    tags:['Digital Painting','Packaging','Automne','Canada'],
-    year:'Arsène Valentin · 2024',
-    img:'assets/voyages/canada.jpg', bg:'rgba(120,50,10,.5)',
-    x:620, y:-700, w:260, h:180, r:1 },
-
-  { id:'v0', cat:'Direction artistique · Packaging',
-    title:'Les Voyages d\'Arsène — Vue d\'ensemble',
-    sub:'6 destinations, 6 peintures plein format',
-    desc:'Vue d\'ensemble des 6 étiquettes cartographiques avec tampons de douane, coordonnées GPS et armoiries d\'Arsène Valentin. Direction artistique complète, cohérence de gamme.',
-    tags:['Direction artistique','Gamme complète','Brand system'],
-    year:'Arsène Valentin · 2023–2024',
-    img:'assets/voyages/cartes.jpg', bg:'rgba(80,50,20,.5)',
-    x:-900, y:-400, w:340, h:220, r:0, feat:true },
-
-  // ── STEAM COLLECTION ──────────────────
-  { id:'s0', cat:'Illustration · Packaging',
-    title:'Steam Collection — Mockup', sub:'Arsène Valentin',
-    desc:'Présentation de la gamme Steam complète en situation. 6 flacons aux illustrations style gravure XIXe sur fond parchemin texturé, bandeaux colorés latéraux.',
-    tags:['Mockup','Packaging','Présentation gamme'],
-    year:'Arsène Valentin · 2023',
-    img:'assets/steam/mockup.jpg', bg:'rgba(100,70,20,.5)',
-    x:-1300, y:200, w:340, h:220, r:-1.5, feat:true },
-
-  { id:'s1', cat:'Illustration · Gravure digitale',
-    title:'La Main d\'Alchimiste', sub:'Steam — White Choco Pistache',
-    desc:'Main articulée en métal forgé tenant un cristal magique. Rendu encre de Chine sur papier ancien, ombres hachurées, détails mécaniques précis.',
-    tags:['Gravure digitale','Steampunk','Illustration'],
-    year:'Arsène Valentin · 2023',
-    img:'assets/steam/main.jpg', bg:'rgba(80,60,15,.5)',
-    x:-950, y:150, w:220, h:280, r:2 },
-
-  { id:'s2', cat:'Illustration · Gravure digitale',
-    title:'Les Arcanes du Temps', sub:'Steam — Popcorn Caramel',
-    desc:'Sablier mécanique avec engrenages dorés, clepsydre steampunk ornée de rouages et de vapeur. Symbolique du temps suspendu.',
-    tags:['Gravure digitale','Symbolique','Steampunk'],
-    year:'Arsène Valentin · 2023',
-    img:'assets/steam/sablier.jpg', bg:'rgba(90,55,10,.5)',
-    x:-650, y:60, w:220, h:280, r:-2 },
-
-  { id:'s3', cat:'Illustration · Gravure digitale',
-    title:'Le Sage de Fer', sub:'Steam — Biscuit Caramel',
-    desc:'Hibou mécanique aux plumes d\'acier, yeux de verre lumineux, posé sur une branche d\'engrenages. Majesté et précision horlogère.',
-    tags:['Gravure digitale','Animal mécanique'],
-    year:'Arsène Valentin · 2023',
-    img:'assets/steam/hibou.jpg', bg:'rgba(70,50,10,.5)',
-    x:-380, y:160, w:220, h:280, r:1.5 },
-
-  { id:'s4', cat:'Illustration · Gravure digitale',
-    title:'Le Cœur Mécanique', sub:'Steam — Dulce de Leche',
-    desc:'Cœur anatomique steampunk avec valves, pistons et aiguilles de manomètre. Fusion du biologique et du mécanique.',
-    tags:['Gravure digitale','Anatomie','Steampunk'],
-    year:'Arsène Valentin · 2023',
-    img:'assets/steam/coeur.jpg', bg:'rgba(80,20,20,.5)',
-    x:-100, y:100, w:220, h:280, r:-1 },
-
-  { id:'s5', cat:'Illustration · Gravure digitale',
-    title:'La Gueule d\'Ange', sub:'Steam — Pâte à tartiner Noisette',
-    desc:'Masque de médecin de la peste revisité en version steampunk — lunettes à verres rouges, bec de métal soudé, cuir couturé. Tension et mystère.',
-    tags:['Gravure digitale','Masque','Gothic'],
-    year:'Arsène Valentin · 2023',
-    img:'assets/steam/gueule.jpg', bg:'rgba(60,40,10,.5)',
-    x:170, y:200, w:220, h:280, r:2 },
-
-  { id:'s6', cat:'Illustration · Gravure digitale',
-    title:'Le Fruit Défendu', sub:'Steam — Pomme Caramélisée',
-    desc:'Théière steampunk stylisée en forme de pomme mécanisée avec cheminée, robinets et voyants de pression. Objet de désir et de transgression.',
-    tags:['Gravure digitale','Objet','Steampunk'],
-    year:'Arsène Valentin · 2023',
-    img:'assets/steam/pomme.jpg', bg:'rgba(80,30,10,.5)',
-    x:440, y:120, w:220, h:280, r:-2 },
-
-  // ── CARNET SAVEURS ──────────────────
-  { id:'cs1', cat:'Illustration · Édition',
-    title:'Saveurs d\'Hiver', sub:'Clopinette · Carnet de saveurs & tarifs 2025',
-    desc:'Couverture illustrée pour catalogue saisonnier. Renard endormi dans la neige, cerf gracieux, patins à glace suspendus, stalactites de glace et flocons. Aquarelle digitale, palette froide pastel.',
-    tags:['Illustration','Aquarelle digitale','Édition','Hiver'],
-    year:'Clopinette · 2025',
-    img:'assets/saveurs/hiver.jpg', bg:'rgba(20,60,120,.4)',
-    x:900, y:-400, w:240, h:320, r:-1.5, feat:true },
-
-  { id:'cs2', cat:'Illustration · Édition',
-    title:'Saveurs d\'Automne', sub:'Clopinette · Carnet de saveurs & tarifs 2025',
-    desc:'Illustration automnale avec écureuil sur branche de chêne, feuilles d\'érable dorées, citrouilles, glands et champignons. Palette chaude et enveloppante.',
-    tags:['Illustration','Aquarelle digitale','Automne','Botanique'],
-    year:'Clopinette · 2025',
-    img:'assets/saveurs/automne.jpg', bg:'rgba(140,60,15,.4)',
-    x:1180, y:-550, w:240, h:320, r:2 },
-
-  { id:'cs3', cat:'Illustration · Édition',
-    title:'Saveurs d\'Été', sub:'Clopinette · Carnet de saveurs & tarifs 2025',
-    desc:'Composition estivale lumineuse avec fleurs sauvages, fruits gorgés de soleil et papillons. Couleurs vives et saturées pour célébrer l\'été.',
-    tags:['Illustration','Aquarelle digitale','Été'],
-    year:'Clopinette · 2025',
-    img:'assets/saveurs/ete.jpg', bg:'rgba(180,120,20,.35)',
-    x:1440, y:-350, w:240, h:320, r:-1 },
-
-  { id:'cs4', cat:'Illustration · Édition',
-    title:'Saveurs de Printemps', sub:'Clopinette · Carnet de saveurs & tarifs 2025',
-    desc:'Éclosion printanière — branches en fleur, petits animaux qui s\'éveillent, premières tulipes et jonquilles. Fraîcheur et légèreté.',
-    tags:['Illustration','Aquarelle digitale','Printemps'],
-    year:'Clopinette · 2025',
-    img:'assets/saveurs/printemps.jpg', bg:'rgba(80,140,60,.35)',
-    x:1680, y:-500, w:240, h:320, r:1.5 },
-
-  // ── HALLOWEEN / DARK FANTASY ──────────
-  { id:'h1', cat:'Digital Painting · Dark Fantasy',
-    title:'L\'Alchimiste Maudit', sub:'Illustration originale — Dark Fantasy',
-    desc:'Nécromancien steampunk en plein rituel nocturne — flammes rouges, chaudron bouillonnant, arbres morts, lune décroissante. Huile digitale sur fond sépia brûlé. Mon œuvre la plus personnelle.',
-    tags:['Digital Painting','Dark Fantasy','Steampunk','Illustration originale'],
-    year:'Personnel · 2024',
-    img:'assets/dark/red.jpg', bg:'rgba(120,20,10,.6)',
-    x:-400, y:600, w:260, h:340, r:2.5, feat:true },
-
-  { id:'h2', cat:'Digital Painting · Dark Fantasy',
-    title:'Salem', sub:'Série Halloween 2024',
-    desc:'Sorcière en vol sur fond de pleine lune — citrouilles sculptées, corbeaux et brume maléfique. Style painterly sombre à l\'encre et aux lavis.',
-    tags:['Digital Painting','Halloween','Sorcière'],
-    year:'Personnel · 2024',
-    img:'assets/dark/salem.jpg', bg:'rgba(80,20,60,.5)',
-    x:-100, y:700, w:240, h:300, r:-2 },
-
-  { id:'h3', cat:'Digital Painting · Dark Fantasy',
-    title:'Blood Moon', sub:'Série Halloween 2024',
-    desc:'Paysage lunaire rouge sang avec silhouettes fantomatiques surgissant de la brume. Atmosphère oppressante, palette monochrome cramoisie.',
-    tags:['Digital Painting','Halloween','Atmosphère'],
-    year:'Personnel · 2024',
-    img:'assets/dark/blood.jpg', bg:'rgba(100,10,10,.6)',
-    x:220, y:620, w:240, h:300, r:1.5 },
-
-  { id:'h4', cat:'Digital Painting · Dark Fantasy',
-    title:'The Cult', sub:'Série Halloween 2024',
-    desc:'Cérémonie occulte à la lueur des torches — silhouettes encapuchonnées, pentagramme incandescent, fumée d\'encens. Mystère et danger.',
-    tags:['Digital Painting','Halloween','Occulte'],
-    year:'Personnel · 2024',
-    img:'assets/dark/cult.jpg', bg:'rgba(60,30,10,.5)',
-    x:500, y:700, w:240, h:300, r:-1.5 },
-
-  // ── ARISTOCRATE ──────────────────────
-  { id:'a1', cat:'Illustration · Character design',
-    title:'Le Nanti', sub:'Série Aristocrate — Character design',
-    desc:'Personnage de gentleman dandy steampunk — habit impeccable, montre à gousset, regard hautain. Illustration couleur, style ligne claire raffinée.',
-    tags:['Character design','Steampunk','Illustration'],
-    year:'Personnel · 2024',
-    img:'assets/aristocrate/nanti.jpg', bg:'rgba(60,40,80,.5)',
-    x:-1400, y:600, w:220, h:300, r:-2 },
-
-  { id:'a2', cat:'Illustration · Character design',
-    title:'La Veste', sub:'Étude de costume — Aristocrate',
-    desc:'Étude de détail sur un manteau militaire orné — broderies, épaulettes, boutons en cuivre. Mise en valeur des matières et des textures.',
-    tags:['Étude','Costume','Textile'],
-    year:'Personnel · 2024',
-    img:'assets/aristocrate/veste.jpg', bg:'rgba(40,30,60,.5)',
-    x:-1150, y:500, w:200, h:260, r:2 },
-
-  { id:'a3', cat:'Illustration · Character design',
-    title:'Le Casque', sub:'Étude d\'équipement — Aristocrate',
-    desc:'Heaume mécanique orné de filigrane doré et de lentilles de verre fumé. Fusion entre armure médiévale et équipement steampunk.',
-    tags:['Étude','Armure','Steampunk'],
-    year:'Personnel · 2024',
-    img:'assets/aristocrate/casque.jpg', bg:'rgba(60,50,20,.5)',
-    x:-880, y:600, w:200, h:260, r:-1 },
-
-  { id:'a4', cat:'Illustration · Character design',
-    title:'L\'Explorateur', sub:'Série Aristocrate',
-    desc:'Aventurier steampunk avec boussole mécanique et carte des territoires inconnus. Le pendant du nanti — l\'homme d\'action.',
-    tags:['Character design','Explorateur','Aventure'],
-    year:'Personnel · 2024',
-    img:'assets/aristocrate/explorateur.jpg', bg:'rgba(60,40,20,.5)',
-    x:-620, y:520, w:200, h:260, r:2 },
-
-  // ── MILLÉNAIRE CAEN ──────────────────
-  { id:'m1', cat:'Illustration · Packaging',
-    title:'La Pomme Conquérante', sub:'Millénaire Caen — Identité packaging',
-    desc:'Illustration pour packaging local normand — pomme stylisée en armure de chevalier, référence à l\'histoire de Caen et de Guillaume le Conquérant.',
-    tags:['Illustration','Packaging','Identité locale','Normandie'],
-    year:'Millénaire Caen · 2024',
-    img:'assets/millenaire/pomme2.jpg', bg:'rgba(60,80,20,.5)',
-    x:900, y:400, w:260, h:200, r:-1.5, feat:true },
-
-  { id:'m2', cat:'Illustration · Packaging',
-    title:'La Pomme Conquérante II', sub:'Millénaire Caen — Variante',
-    desc:'Variante chromie chaude de l\'illustration pomme-chevalier pour déclinaison de gamme.',
-    tags:['Illustration','Packaging','Variante'],
-    year:'Millénaire Caen · 2024',
-    img:'assets/millenaire/pomme3.jpg', bg:'rgba(80,60,10,.5)',
-    x:1200, y:350, w:240, h:190, r:1.5 },
-
-  { id:'m3', cat:'Illustration · Identité',
-    title:'Cadomum', sub:'Millénaire Caen — Mascotte',
-    desc:'Mascotte illustrée de la ville de Caen — personnage historique stylisé pour événement commémoratif. Ligne claire, palette héraldique.',
-    tags:['Mascotte','Identité','Événementiel'],
-    year:'Millénaire Caen · 2024',
-    img:'assets/millenaire/cadomum.jpg', bg:'rgba(40,50,80,.5)',
-    x:1480, y:460, w:240, h:190, r:-2 },
-
-  // ── PULSE ─────────────────────────────
-  { id:'p1', cat:'Digital Painting · Concept art',
-    title:'Pulse', sub:'Illustration originale',
-    desc:'Composition abstraite-organique représentant une énergie vitale — ondes, particules, flux lumineux. Exploration de la frontière entre biologie et technologie.',
-    tags:['Concept art','Abstrait','Énergie'],
-    year:'Personnel · 2024',
-    img:'assets/pulse.jpg', bg:'rgba(20,80,120,.5)',
-    x:1800, y:-100, w:300, h:300, r:0, feat:true },
-
-  // ── FORMATION ─────────────────────────
-  { id:'f1', cat:'Digital Painting · Formation',
-    title:'Environnement Final', sub:'Exercice de formation — Paysage',
-    desc:'Paysage de fantasy finale de module de formation en digital painting. Maîtrise de l\'atmosphère, de la lumière et de la perspective aérienne.',
-    tags:['Formation','Digital Painting','Paysage','Fantasy'],
-    year:'Formation · 2025',
-    img:'assets/formation/environnement.jpg', bg:'rgba(20,50,80,.5)',
-    x:-1500, y:-300, w:280, h:200, r:1.5 },
-
-  { id:'f2', cat:'Character Design · Formation',
-    title:'Character Final — Arsène', sub:'Exercice de formation',
-    desc:'Personnage final de module character design — guerrier fantasy en armure. Proportions, costume, expression, éclairage.',
-    tags:['Formation','Character design','Fantasy'],
-    year:'Formation · 2025',
-    img:'assets/formation/character.jpg', bg:'rgba(60,30,20,.5)',
-    x:-1250, y:-450, w:220, h:280, r:-2 },
-
-  { id:'f3', cat:'Digital Painting · Formation',
-    title:'Forêt Enchantée', sub:'Module Environnement',
-    desc:'Scène de forêt mystérieuse avec rayons de lumière filtrant à travers la canopée. Travail sur la végétation, les mousses et les champignons lumineux.',
-    tags:['Formation','Forêt','Ambiance'],
-    year:'Formation · 2025',
-    img:'assets/formation/foret.jpg', bg:'rgba(20,60,20,.5)',
-    x:750, y:600, w:260, h:190, r:2 },
-
-  { id:'f4', cat:'Digital Painting · Formation',
-    title:'Halloween Challenge', sub:'Module Environnement',
-    desc:'Challenge mensuel Halloween — scène nocturne avec manoir hanté, cimetière et citrouilles. Maîtrise de l\'éclairage nocturne et des ambiances d\'horreur.',
-    tags:['Formation','Halloween','Nocturne'],
-    year:'Formation · 2024',
-    img:'assets/formation/halloween.jpg', bg:'rgba(80,30,5,.5)',
-    x:1050, y:600, w:260, h:190, r:-1.5 },
-
-  { id:'f5', cat:'Concept Art · Formation',
-    title:'Décors Science-Fiction', sub:'Module Environnement',
-    desc:'Station spatiale abandonnée, couloirs métalliques sous lumière d\'urgence rouge. Exploration de l\'ambiance SF industrielle et de la perspective.',
-    tags:['Formation','Science-fiction','Concept art'],
-    year:'Formation · 2025',
-    img:'assets/formation/sf.jpg', bg:'rgba(20,20,80,.5)',
-    x:1350, y:550, w:260, h:190, r:1 },
-];
-
-// ══════════════════════════
-//  STARS
-// ══════════════════════════
-function initStars() {
-  const c = document.getElementById('stars');
-  const ctx = c.getContext('2d');
-  c.width = window.innerWidth; c.height = window.innerHeight;
-  const stars = Array.from({length:200}, () => ({
-    x:Math.random()*c.width, y:Math.random()*c.height,
-    r:Math.random()*1.3, a:Math.random()*.5+.05,
-    s:Math.random()*.4+.05, ph:Math.random()*Math.PI*2
-  }));
-  let t=0;
-  (function draw(){
-    ctx.clearRect(0,0,c.width,c.height); t+=.006;
-    stars.forEach(s=>{
-      const op = s.a*(.6+.4*Math.sin(t*s.s+s.ph));
-      ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
-      ctx.fillStyle=`rgba(255,255,255,${op})`; ctx.fill();
-    });
-    requestAnimationFrame(draw);
-  })();
-  window.addEventListener('resize',()=>{ c.width=window.innerWidth; c.height=window.innerHeight; });
-}
-
-// ══════════════════════════
-//  BUILD WORLD
-// ══════════════════════════
-function buildWorld() {
-  const world = document.getElementById('world');
-  const mmdots = document.getElementById('mm-dots');
-  const WW=5000, WH=3800;
-
-  // Glows
-  [
-    {x:2200, y:1400, w:900, h:700, c:'rgba(100,50,15,1)'},
-    {x:3300, y:1000, w:700, h:500, c:'rgba(15,50,100,1)'},
-    {x:1400, y:2200, w:600, h:500, c:'rgba(80,10,10,1)'},
-    {x:3500, y:2200, w:500, h:400, c:'rgba(20,80,40,1)'},
-    {x:1000, y:1200, w:500, h:400, c:'rgba(40,20,80,1)'},
-  ].forEach(g=>{
-    const el=document.createElement('div'); el.className='glow';
-    el.style.cssText=`left:${g.x}px;top:${g.y}px;width:${g.w}px;height:${g.h}px;background:${g.c};opacity:.1;`;
-    world.appendChild(el);
-  });
-
-  // Section labels
-  [
-    {x:1500, y:700, t:'VOYAGES'},
-    {x:1000, y:1700, t:'STEAM'},
-    {x:3200, y:700, t:'ILLUSTRATIONS'},
-    {x:1700, y:2400, t:'FANTASY'},
-    {x:3200, y:1900, t:'FORMATION'},
-  ].forEach(z=>{
-    const el=document.createElement('div'); el.className='slabel';
-    el.style.cssText=`left:${z.x}px;top:${z.y}px;`; el.textContent=z.t;
-    world.appendChild(el);
-  });
-
-  // Cards
-  projects.forEach(p=>{
-    const wx = WW/2 + p.x;
-    const wy = WH/2 + p.y;
-    const card = document.createElement('div');
-    card.className='card'; card.dataset.id=p.id;
-    card.style.cssText=`left:${wx}px;top:${wy}px;transform:translate(-50%,-50%) rotate(${p.r}deg);`;
-    card.innerHTML=`
-      <div class="card-in" style="width:${p.w}px;height:${p.h}px;background:${p.bg};">
-        <img src="${p.img}" alt="${p.title}" loading="lazy">
-        <div class="card-ov">
-          <div class="card-cat">${p.cat}</div>
-          <div class="card-name">${p.title}</div>
-        </div>
-        <div class="card-ico">↗</div>
-      </div>`;
-    card.addEventListener('click', ()=>openModal(p.id));
-    world.appendChild(card);
-
-    // Minimap dot
-    const dot=document.createElement('div'); dot.className='mmd'+(p.feat?' feat':'');
-    dot.style.cssText=`left:${(wx/WW)*100}%;top:${(wy/WH)*100}%;`;
-    mmdots.appendChild(dot);
-  });
-
-  document.getElementById('wcount').textContent = projects.length+' œuvres';
-}
-
-// ══════════════════════════
-//  CANVAS MOTION
-// ══════════════════════════
-let wx=0,wy=0,tx=0,ty=0,mx=0,my=0;
-let isDragging=false, ldx=0, ldy=0;
-const MAX=600;
-
-function initCanvas(){
-  document.addEventListener('mousemove', e=>{
-    mx=e.clientX; my=e.clientY;
-    if(!isDragging){
-      const cx=window.innerWidth/2, cy=window.innerHeight/2;
-      tx = -(mx-cx)/cx * MAX;
-      ty = -(my-cy)/cy * (MAX*.7);
-    }
-  });
-  const sp=document.getElementById('space');
-  sp.addEventListener('mousedown',e=>{ if(e.target.closest('.card'))return; isDragging=true; ldx=e.clientX; ldy=e.clientY; });
-  document.addEventListener('mousemove',e=>{ if(!isDragging)return; tx+=(e.clientX-ldx)*2; ty+=(e.clientY-ldy)*2; ldx=e.clientX; ldy=e.clientY; });
-  document.addEventListener('mouseup',()=>{ isDragging=false; });
-
-  const MX=1200, MY=900;
-  (function tick(){
-    wx+=(tx-wx)*.055; wy+=(ty-wy)*.055;
-    wx=Math.max(-MX,Math.min(MX,wx));
-    wy=Math.max(-MY,Math.min(MY,wy));
-    document.getElementById('world').style.transform=`translate(calc(-50% + ${wx}px),calc(-50% + ${wy}px))`;
-    // minimap viewport
-    const WW=5000,WH=3800,mmW=110,mmH=84;
-    const vw=(window.innerWidth/WW)*mmW;
-    const vh=(window.innerHeight/WH)*mmH;
-    const vx=((-wx+WW/2-window.innerWidth/2)/WW)*mmW;
-    const vy=((-wy+WH/2-window.innerHeight/2)/WH)*mmH;
-    const v=document.getElementById('mm-vp');
-    v.style.cssText=`width:${vw}px;height:${vh}px;left:${vx}px;top:${vy}px;`;
-    requestAnimationFrame(tick);
-  })();
-}
-
-// ══════════════════════════
-//  CURSOR
-// ══════════════════════════
-let cdx=0,cdy=0,crx=0,cry=0;
-const cdd=document.getElementById('cd'), crr=document.getElementById('cr');
-(function animC(){
-  cdx+=(mx-cdx)*.2; cdy+=(my-cdy)*.2;
-  crx+=(mx-crx)*.09; cry+=(my-cry)*.09;
-  cdd.style.left=cdx+'px'; cdd.style.top=cdy+'px';
-  crr.style.left=crx+'px'; crr.style.top=cry+'px';
-  requestAnimationFrame(animC);
+// ── CURSOR ──
+let mx=0, my=0, cdx=0, cdy=0, crx=0, cry=0;
+const cd=document.getElementById('cd'), cr=document.getElementById('cr');
+document.addEventListener('mousemove', e=>{ mx=e.clientX; my=e.clientY; });
+(function anim(){
+  cdx+=(mx-cdx)*.22; cdy+=(my-cdy)*.22;
+  crx+=(mx-crx)*.1; cry+=(my-cry)*.1;
+  cd.style.left=cdx+'px'; cd.style.top=cdy+'px';
+  cr.style.left=crx+'px'; cr.style.top=cry+'px';
+  requestAnimationFrame(anim);
 })();
-document.addEventListener('mouseover',e=>{ if(e.target.closest('.card')) document.body.classList.add('on-card'); else document.body.classList.remove('on-card'); });
+document.querySelectorAll('a,button,.feat-item,.project,.stat').forEach(el=>{
+  el.addEventListener('mouseenter',()=>document.body.classList.add('hov'));
+  el.addEventListener('mouseleave',()=>document.body.classList.remove('hov'));
+});
 
-// ══════════════════════════
-//  MODAL
-// ══════════════════════════
-let currentIdx=0;
+// ── PROGRESS & NAV ──
+window.addEventListener('scroll',()=>{
+  const s=document.documentElement.scrollTop;
+  const h=document.documentElement.scrollHeight-window.innerHeight;
+  document.getElementById('progress').style.width=(s/h*100)+'%';
+  document.getElementById('nav').classList.toggle('scrolled',s>60);
+});
 
-function openModal(id){
-  const idx=projects.findIndex(p=>p.id===id);
-  currentIdx=idx;
-  renderModal(idx);
-  document.getElementById('modal').classList.add('open');
+// ── REVEAL ──
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in'); });
+},{threshold:.1, rootMargin:'0px 0px -60px 0px'});
+document.querySelectorAll('.reveal,.reveal-l,.reveal-r').forEach(el=>obs.observe(el));
+
+// ── HERO IMAGE PARALLAX ──
+const heroImg=document.getElementById('hero-img');
+window.addEventListener('scroll',()=>{
+  const y=window.scrollY;
+  if(heroImg) heroImg.style.transform=`scale(1.05) translateY(${y*.15}px)`;
+});
+
+// ── PROJECT LIST HOVER PREVIEW ──
+const prevWrap=document.getElementById('prev-img');
+const prevImgEl=document.getElementById('prev-img-el');
+document.querySelectorAll('.project').forEach(row=>{
+  const imgSrc=row.dataset.img;
+  row.addEventListener('mouseenter',()=>{
+    if(imgSrc){ prevImgEl.src=imgSrc; prevWrap.style.opacity='1'; prevWrap.style.transform='translateX(0) scale(1)'; }
+  });
+  row.addEventListener('mousemove',e=>{
+    const x=e.clientX+30, y=e.clientY-95;
+    prevWrap.style.left=x+'px'; prevWrap.style.top=y+'px';
+  });
+  row.addEventListener('mouseleave',()=>{
+    prevWrap.style.opacity='0'; prevWrap.style.transform='translateX(20px) scale(.96)';
+  });
+});
+
+// ── FEAT ITEM cursor text ──
+document.querySelectorAll('.feat-item').forEach(el=>{
+  el.addEventListener('mouseenter',()=>document.body.classList.add('view'));
+  el.addEventListener('mouseleave',()=>document.body.classList.remove('view'));
+});
+
+// ── COUNTER ANIM ──
+function animCount(el,target,dur=1600){
+  let start=null;
+  const suf=el.querySelector('sup')?el.querySelector('sup').outerHTML:'';
+  const step=ts=>{ if(!start)start=ts; const p=Math.min((ts-start)/dur,1); const e=1-Math.pow(1-p,3); el.innerHTML=Math.floor(e*target)+suf; if(p<1)requestAnimationFrame(step); };
+  requestAnimationFrame(step);
 }
-
-function renderModal(idx){
-  const p=projects[idx];
-  document.getElementById('m-img').src=p.img;
-  document.getElementById('m-img').style.background=p.bg;
-  document.getElementById('m-cat').textContent=p.cat;
-  document.getElementById('m-title').textContent=p.title;
-  document.getElementById('m-sub').textContent=p.sub;
-  document.getElementById('m-desc').textContent=p.desc;
-  document.getElementById('m-tags').innerHTML=p.tags.map(t=>`<span class="mtag">${t}</span>`).join('');
-  document.getElementById('m-year').textContent=p.year;
-}
-
-function closeModal(){ document.getElementById('modal').classList.remove('open'); }
-document.getElementById('mbg').addEventListener('click',closeModal);
-document.getElementById('mclose').addEventListener('click',closeModal);
-document.getElementById('mprev').addEventListener('click',()=>{ currentIdx=(currentIdx-1+projects.length)%projects.length; renderModal(currentIdx); });
-document.getElementById('mnext').addEventListener('click',()=>{ currentIdx=(currentIdx+1)%projects.length; renderModal(currentIdx); });
-document.addEventListener('keydown',e=>{ if(e.key==='Escape')closeModal(); if(e.key==='ArrowLeft')document.getElementById('mprev').click(); if(e.key==='ArrowRight')document.getElementById('mnext').click(); });
-
-// ══════════════════════════
-//  LOADER
-// ══════════════════════════
-let lp=0;
-const lb=document.getElementById('lbb');
-const li=setInterval(()=>{
-  lp+=Math.random()*18; lb.style.width=Math.min(lp,95)+'%';
-  if(lp>=100){ clearInterval(li); lb.style.width='100%'; setTimeout(()=>document.getElementById('loader').classList.add('out'),400); }
-},65);
-
-// INIT
-initStars();
-buildWorld();
-initCanvas();
+const statsObs=new IntersectionObserver(entries=>{
+  if(entries[0].isIntersecting){
+    animCount(document.querySelector('.about-stats .stat:nth-child(1) .stat-n'),5);
+    animCount(document.querySelector('.about-stats .stat:nth-child(2) .stat-n'),35);
+    animCount(document.querySelector('.about-stats .stat:nth-child(3) .stat-n'),8);
+    statsObs.disconnect();
+  }
+},{threshold:.4});
+const statsEl=document.querySelector('.about-stats');
+if(statsEl) statsObs.observe(statsEl);
 </script>
 </body>
 </html>
