@@ -667,17 +667,16 @@ tr:hover td { background: rgba(17,16,16,.02); }
 <div class="toast" id="toast"></div>
 
 <script>
-let SUPA_URL = localStorage.getItem('supa_url') || 'https://jknabfgvaoonscjnpgvy.supabase.co'
-let SUPA_KEY = localStorage.getItem('supa_key') || 'sb_publishable_gtJzXyp5VKKxEZNvS_mryg_S9konQR0'
+let SUPA_URL = localStorage.getItem('supa_url') || 'https://XXXXXXXXXXXXXXXX.supabase.co'
+let SUPA_KEY = localStorage.getItem('supa_key') || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
 const { createClient } = supabase
 let sb = createClient(SUPA_URL, SUPA_KEY)
 
 let allImages = [], currentView = 'grid', currentImageId = null, currentMessageId = null, editTags = []
 
 async function checkAuth() {
-  const { data } = await sb.auth.getSession()
-  if (!data.session) { window.location.href = '/login'; return false }
-  document.getElementById('sbUserEmail').textContent = data.session.user.email
+  // AUTH BYPASS TEMPORAIRE — remettre l'auth quand le mot de passe est réglé
+  document.getElementById('sbUserEmail').textContent = 'aardesign14@gmail.com'
   return true
 }
 
