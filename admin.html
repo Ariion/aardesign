@@ -7,547 +7,675 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,200;0,300;0,400;0,500;1,300&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-:root {
-  --bg:    #f0ede8;
-  --bg2:   #e8e4de;
-  --ink:   #111010;
-  --mid:   #888580;
-  --line:  rgba(17,16,16,.1);
-  --line2: rgba(17,16,16,.2);
-  --gold:  #b8945a;
-  --goldA: rgba(184,148,90,.1);
-  --red:   #c0392b;
-  --green: #27ae60;
-  --E:     cubic-bezier(.16,1,.3,1);
-  --sb:    256px;
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#f0ede8;--bg2:#e8e4de;--bg3:#dedad3;
+  --ink:#111010;--mid:#888580;
+  --line:rgba(17,16,16,.1);--line2:rgba(17,16,16,.18);
+  --gold:#b8945a;--goldA:rgba(184,148,90,.1);--goldB:rgba(184,148,90,.22);
+  --red:#c0392b;--green:#27ae60;
+  --E:cubic-bezier(.16,1,.3,1);
+  --sb:252px;
 }
-html, body { height: 100%; overflow: hidden; }
-body {
-  background: var(--bg); color: var(--ink);
-  font-family: 'DM Sans', sans-serif; font-weight: 300;
-  display: flex; -webkit-font-smoothing: antialiased;
-}
-::-webkit-scrollbar { width: 3px; }
-::-webkit-scrollbar-thumb { background: var(--line2); }
+html,body{height:100%;overflow:hidden;}
+body{background:var(--bg);color:var(--ink);font-family:'DM Sans',sans-serif;font-weight:300;display:flex;-webkit-font-smoothing:antialiased;}
+::-webkit-scrollbar{width:3px;height:3px;}::-webkit-scrollbar-thumb{background:var(--line2);}
 
 /* ── SIDEBAR ── */
-.sidebar {
-  width: var(--sb); min-width: var(--sb); height: 100vh;
-  background: var(--ink); color: var(--bg);
-  display: flex; flex-direction: column; overflow-y: auto;
-  flex-shrink: 0; position: relative; z-index: 100;
-  border-right: 1px solid rgba(255,255,255,.04);
+.sidebar{
+  width:var(--sb);min-width:var(--sb);height:100vh;
+  background:var(--ink);color:rgba(240,237,232,.75);
+  display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0;
+  position:relative;z-index:100;
 }
-/* Gold top line */
-.sidebar::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0;
-  height: 1px; background: linear-gradient(90deg, transparent, var(--gold), transparent);
+.sidebar::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.sb-logo{padding:1.6rem 1.4rem 1.4rem;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;gap:.75rem;}
+.sb-logo img{height:18px;filter:brightness(0) invert(1);opacity:.6;display:block;}
+.sb-logo-sep{width:1px;height:14px;background:rgba(255,255,255,.1);}
+.sb-logo-tag{font-size:.5rem;letter-spacing:.32em;text-transform:uppercase;color:rgba(255,255,255,.2);}
+.sb-group{padding:.9rem 0 0;}
+.sb-group-label{padding:.4rem 1.4rem;font-size:.46rem;letter-spacing:.42em;text-transform:uppercase;color:rgba(255,255,255,.15);margin-bottom:.1rem;}
+.ni{
+  display:flex;align-items:center;gap:.65rem;
+  padding:.56rem 1.1rem .56rem 1.4rem;
+  cursor:pointer;transition:all .18s;
+  font-size:.74rem;letter-spacing:.02em;color:rgba(255,255,255,.32);
+  user-select:none;position:relative;margin:0 .5rem;
 }
-.sb-logo {
-  padding: 1.75rem 1.5rem 1.5rem;
-  border-bottom: 1px solid rgba(255,255,255,.06);
-  display: flex; align-items: center; justify-content: space-between;
-}
-.sb-logo img { height: 20px; filter: brightness(0) invert(1); opacity: .75; display: block; }
-.sb-ver {
-  font-size: .5rem; letter-spacing: .3em; text-transform: uppercase;
-  color: rgba(255,255,255,.2); border: 1px solid rgba(255,255,255,.08);
-  padding: .18rem .5rem;
-}
-.sb-sec {
-  padding: 1.5rem 1.5rem .4rem;
-  font-size: .5rem; letter-spacing: .38em; text-transform: uppercase;
-  color: rgba(255,255,255,.18);
-}
-.ni {
-  display: flex; align-items: center; gap: .75rem;
-  padding: .68rem 1.25rem; margin: .05rem .6rem;
-  cursor: pointer; transition: all .2s;
-  font-size: .8rem; color: rgba(255,255,255,.38);
-  user-select: none; position: relative;
-}
-.ni:hover { color: rgba(255,255,255,.75); background: rgba(255,255,255,.04); }
-.ni.active { color: rgba(255,255,255,.92); }
-.ni.active::before {
-  content: ''; position: absolute; left: 0; top: 18%; bottom: 18%;
-  width: 1.5px; background: var(--gold);
-}
-.ni-ico { font-size: .82rem; width: 18px; text-align: center; flex-shrink: 0; }
-.ni-badge {
-  margin-left: auto; background: var(--red); color: white;
-  font-size: .52rem; padding: .12rem .42rem; font-weight: 500; letter-spacing: .05em;
-}
-.sb-footer {
-  margin-top: auto; padding: 1.25rem 1.25rem;
-  border-top: 1px solid rgba(255,255,255,.06);
-}
-.sb-user { display: flex; align-items: center; gap: .65rem; padding: .5rem; cursor: pointer; transition: background .2s; }
-.sb-user:hover { background: rgba(255,255,255,.04); }
-.av {
-  width: 30px; height: 30px; background: var(--gold);
-  display: flex; align-items: center; justify-content: center;
-  font-size: .6rem; color: var(--ink); flex-shrink: 0;
-}
-.u-name { font-size: .78rem; color: rgba(255,255,255,.75); }
-.u-role { font-size: .6rem; color: rgba(255,255,255,.25); margin-top: .06rem; }
+.ni:hover{color:rgba(255,255,255,.65);background:rgba(255,255,255,.035);}
+.ni.active{color:rgba(255,255,255,.88);}
+.ni.active::before{content:'';position:absolute;left:-.5rem;top:20%;bottom:20%;width:1.5px;background:var(--gold);}
+.ni-ico{font-size:.76rem;width:16px;text-align:center;flex-shrink:0;opacity:.8;}
+.ni .badge{margin-left:auto;background:var(--red);color:#fff;font-size:.48rem;padding:.1rem .38rem;min-width:16px;text-align:center;}
+.sb-bottom{margin-top:auto;padding:1.1rem 1.4rem;border-top:1px solid rgba(255,255,255,.06);}
+.sb-user{display:flex;align-items:center;gap:.65rem;}
+.av{width:28px;height:28px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:.56rem;color:var(--ink);font-weight:500;flex-shrink:0;letter-spacing:.08em;}
+.u-name{font-size:.76rem;color:rgba(255,255,255,.6);}
+.u-role{font-size:.55rem;color:rgba(255,255,255,.2);margin-top:.05rem;}
 
 /* ── MAIN ── */
-.main { flex: 1; height: 100vh; overflow-y: auto; display: flex; flex-direction: column; }
-.topbar {
-  padding: 1rem 2rem; border-bottom: 1px solid var(--line);
-  display: flex; align-items: center; justify-content: space-between;
-  background: rgba(240,237,232,.96); backdrop-filter: blur(12px);
-  position: sticky; top: 0; z-index: 50; gap: 1rem; flex-wrap: wrap;
-}
-.tb-title { font-family: 'DM Serif Display', serif; font-size: 1.05rem; font-weight: 400; }
-.tb-bc { font-size: .62rem; letter-spacing: .1em; color: var(--mid); margin-top: .1rem; }
-.tb-right { display: flex; align-items: center; gap: .6rem; }
-.tb-search {
-  display: flex; align-items: center; background: rgba(17,16,16,.04);
-  border: 1px solid var(--line); padding: .45rem .85rem; gap: .4rem;
-  transition: border-color .2s;
-}
-.tb-search:focus-within { border-color: var(--line2); }
-.tb-search input { background: none; border: none; outline: none; color: var(--ink); font-family: 'DM Sans', sans-serif; font-size: .75rem; width: 130px; }
-.tb-search input::placeholder { color: var(--mid); }
-.icon-btn {
-  width: 32px; height: 32px; border: 1px solid var(--line); background: transparent;
-  color: var(--mid); display: flex; align-items: center; justify-content: center;
-  cursor: pointer; transition: all .2s; font-size: .8rem; position: relative;
-}
-.icon-btn:hover { border-color: var(--line2); color: var(--ink); }
-.notif-dot { position: absolute; top: 5px; right: 5px; width: 5px; height: 5px; background: var(--red); border-radius: 50%; }
-.tb-btn {
-  display: flex; align-items: center; gap: .35rem;
-  padding: .45rem .9rem; font-family: 'DM Sans', sans-serif;
-  font-size: .62rem; letter-spacing: .16em; text-transform: uppercase;
-  cursor: pointer; transition: all .2s; white-space: nowrap; font-weight: 400;
-}
-.tb-btn-ink { background: var(--ink); color: var(--bg); border: 1px solid var(--ink); }
-.tb-btn-ink:hover { background: rgba(17,16,16,.82); }
-.tb-btn-out { background: transparent; border: 1px solid var(--line); color: var(--mid); }
-.tb-btn-out:hover { border-color: var(--line2); color: var(--ink); }
+.main{flex:1;height:100vh;overflow-y:auto;display:flex;flex-direction:column;min-width:0;}
 
-.content { padding: 1.75rem 2rem; flex: 1; }
-.panel { display: none; animation: pIn .3s var(--E); }
-.panel.active { display: block; }
-@keyframes pIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+/* ── TOPBAR ── */
+.topbar{
+  padding:.9rem 2rem;border-bottom:1px solid var(--line);
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(240,237,232,.94);backdrop-filter:blur(16px);
+  position:sticky;top:0;z-index:50;gap:1rem;flex-wrap:wrap;
+}
+.tb-left{}
+.tb-title{font-family:'DM Serif Display',serif;font-size:.98rem;font-weight:400;line-height:1;}
+.tb-sub{font-size:.58rem;letter-spacing:.16em;color:var(--mid);margin-top:.18rem;text-transform:uppercase;}
+.tb-right{display:flex;align-items:center;gap:.5rem;}
+.tbb{
+  display:inline-flex;align-items:center;gap:.3rem;
+  padding:.4rem .88rem;border:none;cursor:pointer;
+  font-family:'DM Sans',sans-serif;font-size:.6rem;font-weight:400;letter-spacing:.18em;text-transform:uppercase;
+  transition:all .2s;white-space:nowrap;
+}
+.tbb-ink{background:var(--ink);color:var(--bg);}
+.tbb-ink:hover{background:rgba(17,16,16,.8);}
+.tbb-out{background:transparent;border:1px solid var(--line);color:var(--mid);}
+.tbb-out:hover{border-color:var(--line2);color:var(--ink);}
+.tbb-gold{background:var(--gold);color:#fff;}
+.tbb-gold:hover{background:#a67c45;}
 
-.ph {
-  margin-bottom: 1.75rem; display: flex; align-items: flex-end;
-  justify-content: space-between; gap: 1rem; flex-wrap: wrap;
-  padding-bottom: 1.5rem; border-bottom: 1px solid var(--line);
-}
-.ph h1 { font-family: 'DM Serif Display', serif; font-size: 1.5rem; font-weight: 400; margin-bottom: .2rem; }
-.ph h1 em { font-style: italic; color: var(--mid); }
-.ph p { font-size: .75rem; color: var(--mid); }
+/* ── CONTENT ── */
+.content{padding:1.75rem 2rem;flex:1;}
+.panel{display:none;animation:pIn .28s var(--E);}
+.panel.active{display:block;}
+@keyframes pIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 
-/* ── STATS ── */
-.stats-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 1px; margin-bottom: 1.75rem; background: var(--line); }
-.sc {
-  background: var(--bg); padding: 1.5rem; position: relative;
-  cursor: default; transition: background .2s; overflow: hidden;
-}
-.sc:hover { background: var(--bg2); }
-.sc::after {
-  content: ''; position: absolute; bottom: 0; left: 0; right: 0;
-  height: 1px; background: linear-gradient(90deg, transparent, var(--gold), transparent);
-  transform: scaleX(0); transform-origin: left; transition: transform .5s var(--E);
-}
-.sc:hover::after { transform: scaleX(1); }
-.sc-ico { position: absolute; top: 1rem; right: 1rem; font-size: 1.1rem; opacity: .12; }
-.sc-label { font-size: .52rem; letter-spacing: .3em; text-transform: uppercase; color: var(--mid); margin-bottom: .65rem; }
-.sc-val { font-family: 'DM Serif Display', serif; font-size: 2.4rem; font-weight: 400; color: var(--ink); line-height: 1; }
-.sc-sub { font-size: .65rem; color: var(--mid); margin-top: .35rem; }
-.sc-sub.up { color: var(--green); }
+/* ── PAGE HEADER ── */
+.ph{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1.75rem;padding-bottom:1.4rem;border-bottom:1px solid var(--line);}
+.ph h1{font-family:'DM Serif Display',serif;font-size:1.55rem;font-weight:400;line-height:1.1;}
+.ph h1 em{font-style:italic;color:var(--mid);}
+.ph p{font-size:.72rem;color:var(--mid);margin-top:.3rem;}
 
-/* ── BUTTONS ── */
-.btn {
-  display: inline-flex; align-items: center; gap: .4rem;
-  padding: .52rem 1.1rem; font-family: 'DM Sans', sans-serif;
-  font-size: .65rem; font-weight: 400; letter-spacing: .12em; text-transform: uppercase;
-  cursor: pointer; border: none; transition: all .2s; white-space: nowrap;
-}
-.btn-ink { background: var(--ink); color: var(--bg); }
-.btn-ink:hover { background: rgba(17,16,16,.82); }
-.btn-outline { background: transparent; border: 1px solid var(--line); color: var(--mid); }
-.btn-outline:hover { border-color: var(--line2); color: var(--ink); }
-.btn-danger { background: rgba(192,57,43,.06); color: var(--red); border: 1px solid rgba(192,57,43,.15); }
-.btn-danger:hover { background: rgba(192,57,43,.12); }
-.btn-gold { background: var(--gold); color: white; }
-.btn-gold:hover { background: #a67c45; }
-.btn-sm { padding: .35rem .75rem; font-size: .6rem; }
-.btn-xs { padding: .22rem .5rem; font-size: .55rem; }
+/* ── STATS GRID ── */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-bottom:2rem;}
+.sc{background:var(--bg);padding:1.35rem 1.5rem;position:relative;overflow:hidden;transition:background .2s;}
+.sc:hover{background:var(--bg2);}
+.sc-ico{position:absolute;right:1.1rem;top:.9rem;font-size:1.1rem;opacity:.09;}
+.sc-label{font-size:.5rem;letter-spacing:.3em;text-transform:uppercase;color:var(--mid);margin-bottom:.5rem;}
+.sc-val{font-family:'DM Serif Display',serif;font-size:2.2rem;font-weight:400;line-height:1;}
+.sc-sub{font-size:.62rem;color:var(--mid);margin-top:.25rem;}
+.sc-accent{position:absolute;bottom:0;left:0;right:0;height:1.5px;background:linear-gradient(90deg,transparent,var(--gold),transparent);transform:scaleX(0);transform-origin:left;transition:transform .5s var(--E);}
+.sc:hover .sc-accent{transform:scaleX(1);}
 
-/* ── DROP ZONE ── */
-.drop-zone {
-  border: 1px dashed rgba(17,16,16,.18); padding: 3rem 2rem;
-  text-align: center; cursor: pointer; transition: all .3s;
-  color: var(--mid); margin-bottom: 1.5rem; background: rgba(17,16,16,.015);
-}
-.drop-zone:hover, .drop-zone.dragover { border-color: var(--ink); color: var(--ink); background: rgba(17,16,16,.03); }
-.dz-ico { font-size: 2rem; display: block; margin-bottom: .75rem; transition: transform .3s var(--E); }
-.drop-zone:hover .dz-ico { transform: translateY(-4px); }
-.dz-title { font-family: 'DM Serif Display', serif; font-size: 1rem; font-weight: 400; margin-bottom: .3rem; }
-.dz-sub { font-size: .72rem; }
-#fileInput { display: none; }
+/* ── CARD ── */
+.card{background:var(--bg);border:1px solid var(--line);padding:1.4rem;position:relative;}
+.card::before{content:'';position:absolute;top:0;left:15%;right:15%;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.card-label{font-size:.5rem;letter-spacing:.32em;text-transform:uppercase;color:var(--gold);margin-bottom:1.1rem;}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.5rem;}
 
-/* ── UPLOAD PROGRESS ── */
-.upload-progress { display: none; margin-bottom: 1.5rem; }
-.upload-progress.show { display: block; }
-.up-item {
-  display: flex; align-items: center; gap: 1rem;
-  padding: .7rem 1rem; background: var(--bg2);
-  border: 1px solid var(--line); margin-bottom: .4rem;
-}
-.up-thumb { width: 38px; height: 38px; object-fit: cover; flex-shrink: 0; background: var(--line); }
-.up-info { flex: 1; }
-.up-name { font-size: .75rem; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
-.up-bar-w { height: 1.5px; background: var(--line); margin-top: .4rem; overflow: hidden; }
-.up-bar { height: 100%; background: var(--ink); transition: width .3s; width: 0%; }
-.up-status { font-size: .62rem; color: var(--mid); flex-shrink: 0; }
-.up-status.done { color: var(--green); }
-.up-status.err  { color: var(--red); }
-
-/* ── LIB TOOLBAR ── */
-.lib-toolbar { display: flex; align-items: center; gap: .75rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
-.lib-search {
-  flex: 1; min-width: 180px; display: flex; align-items: center;
-  background: rgba(17,16,16,.04); border: 1px solid var(--line);
-  padding: .5rem .9rem; gap: .5rem; transition: border-color .2s;
-}
-.lib-search:focus-within { border-color: var(--line2); }
-.lib-search input { background: none; border: none; outline: none; color: var(--ink); font-family: 'DM Sans', sans-serif; font-size: .8rem; width: 100%; }
-.lib-search input::placeholder { color: var(--mid); }
-.flt {
-  background: var(--bg2); border: 1px solid var(--line); color: var(--ink);
-  padding: .5rem .85rem; font-family: 'DM Sans', sans-serif;
-  font-size: .75rem; outline: none; cursor: pointer; transition: border-color .2s;
-}
-.flt:focus, .flt:hover { border-color: var(--line2); }
-.view-toggle { display: flex; border: 1px solid var(--line); overflow: hidden; }
-.vt-btn { padding: .5rem .7rem; background: transparent; border: none; color: var(--mid); cursor: pointer; font-size: .8rem; transition: all .2s; }
-.vt-btn.active { background: var(--ink); color: var(--bg); }
-
-/* ── IMAGE GRID ── */
-.img-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(185px,1fr)); gap: 1px; background: var(--line); }
-.img-list { display: flex; flex-direction: column; gap: .45rem; }
-.img-card { background: var(--bg); cursor: pointer; transition: background .2s; position: relative; overflow: hidden; }
-.img-card:hover { background: var(--bg2); }
-.img-card-thumb { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; background: var(--bg2); }
-.img-card-thumb-ph { width: 100%; aspect-ratio: 1; background: var(--bg2); display: flex; align-items: center; justify-content: center; font-size: 2rem; color: var(--line2); }
-.img-card-overlay {
-  position: absolute; inset: 0; background: rgba(17,16,16,.72);
-  opacity: 0; transition: opacity .25s; display: flex;
-  flex-direction: column; align-items: center; justify-content: center; gap: .55rem;
-}
-.img-card:hover .img-card-overlay { opacity: 1; }
-.img-card-actions { display: flex; gap: .5rem; }
-.img-card-meta { padding: .7rem .85rem; border-top: 1px solid var(--line); }
-.img-card-title { font-size: .78rem; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.img-card-cat { font-size: .56rem; letter-spacing: .16em; text-transform: uppercase; color: var(--gold); margin-top: .15rem; }
-.img-card-size { font-size: .58rem; color: var(--mid); margin-top: .1rem; }
-.img-list-item {
-  display: flex; align-items: center; gap: 1rem; padding: .7rem 1rem;
-  background: var(--bg); border: 1px solid var(--line); transition: border-color .2s;
-}
-.img-list-item:hover { border-color: var(--line2); }
-.ili-thumb { width: 46px; height: 46px; object-fit: cover; flex-shrink: 0; background: var(--bg2); }
-.ili-thumb-ph { width: 46px; height: 46px; background: var(--bg2); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; color: var(--line2); }
-.ili-info { flex: 1; min-width: 0; }
-.ili-title { font-size: .8rem; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.ili-meta { font-size: .65rem; color: var(--mid); margin-top: .18rem; display: flex; gap: .85rem; }
-.ili-actions { display: flex; gap: .5rem; flex-shrink: 0; }
-
-/* ── EMPTY / SKELETON ── */
-.empty-state { text-align: center; padding: 5rem 2rem; color: var(--mid); }
-.empty-ico { font-size: 2.5rem; margin-bottom: 1rem; display: block; opacity: .25; }
-.empty-txt { font-family: 'DM Serif Display', serif; font-size: 1rem; color: var(--mid); }
-.empty-sub { font-size: .72rem; color: rgba(136,133,128,.5); margin-top: .5rem; }
-.loading-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(185px,1fr)); gap: 1px; background: var(--line); }
-.skeleton { background: linear-gradient(90deg,var(--bg) 25%,var(--bg2) 50%,var(--bg) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
-@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
-
-/* ── TABLE ── */
-.table-wrap { background: var(--bg); border: 1px solid var(--line); overflow: hidden; }
-table { width: 100%; border-collapse: collapse; }
-thead { background: var(--bg2); }
-th { padding: .8rem 1.2rem; text-align: left; font-size: .55rem; font-weight: 400; letter-spacing: .26em; text-transform: uppercase; color: var(--mid); border-bottom: 1px solid var(--line); white-space: nowrap; }
-td { padding: .88rem 1.2rem; font-size: .8rem; border-bottom: 1px solid var(--line); vertical-align: middle; }
-tr:last-child td { border-bottom: none; }
-tr:hover td { background: rgba(17,16,16,.02); }
+/* ── SECTION EDITOR ── */
+.sec-card{background:var(--bg);border:1px solid var(--line);margin-bottom:1.4rem;position:relative;overflow:hidden;}
+.sec-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.sec-hd{padding:.95rem 1.25rem;border-bottom:1px solid transparent;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;transition:background .18s;}
+.sec-hd:hover{background:rgba(17,16,16,.02);}
+.sec-hd.open{border-bottom-color:var(--line);}
+.sec-title{font-family:'DM Serif Display',serif;font-size:.9rem;font-weight:400;display:flex;align-items:center;gap:.7rem;}
+.sec-ico{font-size:.85rem;opacity:.45;}
+.sec-arrow{font-size:.65rem;color:var(--mid);transition:transform .25s;}
+.sec-hd.open .sec-arrow{transform:rotate(90deg);}
+.sec-body{padding:1.25rem;display:none;}
+.sec-body.open{display:block;}
 
 /* ── FIELDS ── */
-.field { margin-bottom: 1rem; }
-.field label { display: block; font-size: .55rem; letter-spacing: .24em; text-transform: uppercase; color: var(--mid); margin-bottom: .45rem; }
-.field input, .field select, .field textarea {
-  width: 100%; background: rgba(17,16,16,.025);
-  border: none; border-bottom: 1px solid var(--line);
-  color: var(--ink); padding: .72rem 0; font-family: 'DM Sans', sans-serif;
-  font-size: .875rem; font-weight: 300; outline: none; transition: border-color .2s; border-radius: 0;
+.field{margin-bottom:1rem;}
+.field:last-child{margin-bottom:0;}
+.field label{display:block;font-size:.52rem;letter-spacing:.26em;text-transform:uppercase;color:var(--mid);margin-bottom:.42rem;}
+.field input,.field select,.field textarea{
+  width:100%;background:rgba(17,16,16,.025);border:none;border-bottom:1px solid var(--line);
+  color:var(--ink);padding:.68rem 0;font-family:'DM Sans',sans-serif;font-size:.875rem;font-weight:300;
+  outline:none;transition:border-color .22s;
 }
-.field input:focus, .field select:focus, .field textarea:focus { border-bottom-color: var(--ink); }
-.field select { background: var(--bg2); border: 1px solid var(--line); padding: .72rem .75rem; }
-.field select:focus { border-color: var(--line2); }
-.field textarea { resize: vertical; min-height: 85px; border: 1px solid var(--line); padding: .72rem .75rem; }
-.field textarea:focus { border-color: var(--line2); }
-.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.field input:focus,.field select:focus,.field textarea:focus{border-bottom-color:var(--ink);}
+.field select{background:var(--bg2);border:1px solid var(--line);padding:.62rem .75rem;border-bottom:1px solid var(--line);}
+.field textarea{resize:vertical;min-height:78px;border:1px solid var(--line);padding:.68rem .75rem;}
+.field input[type="color"]{padding:.25rem 0;height:32px;cursor:pointer;background:none;border:none;border-bottom:1px solid var(--line);}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.field-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;}
+.field-hint{font-size:.6rem;color:var(--mid);margin-top:.28rem;}
 
-/* Tags */
-.tags-wrap {
-  display: flex; flex-wrap: wrap; gap: .4rem; align-items: center;
-  border-bottom: 1px solid var(--line); padding: .5rem 0; min-height: 40px; cursor: text;
-  transition: border-color .2s;
+/* ── BUTTONS ── */
+.btn{
+  display:inline-flex;align-items:center;gap:.35rem;border:none;cursor:pointer;
+  font-family:'DM Sans',sans-serif;font-size:.62rem;font-weight:400;letter-spacing:.14em;text-transform:uppercase;
+  padding:.48rem 1rem;transition:all .18s;white-space:nowrap;
 }
-.tags-wrap:focus-within { border-bottom-color: var(--ink); }
-.tag-pill {
-  display: inline-flex; align-items: center; gap: .3rem;
-  background: var(--goldA); border: 1px solid rgba(184,148,90,.25);
-  color: var(--gold); padding: .16rem .52rem; font-size: .62rem; letter-spacing: .08em;
-}
-.tag-pill button { background: none; border: none; color: inherit; cursor: pointer; opacity: .65; transition: opacity .2s; }
-.tag-pill button:hover { opacity: 1; }
-.tag-input { background: none; border: none; outline: none; color: var(--ink); font-family: 'DM Sans', sans-serif; font-size: .8rem; min-width: 80px; flex: 1; }
+.btn-ink{background:var(--ink);color:var(--bg);}
+.btn-ink:hover{background:rgba(17,16,16,.82);}
+.btn-out{background:transparent;border:1px solid var(--line);color:var(--mid);}
+.btn-out:hover{border-color:var(--line2);color:var(--ink);}
+.btn-gold{background:var(--gold);color:#fff;}
+.btn-gold:hover{background:#a67c45;}
+.btn-danger{background:rgba(192,57,43,.05);color:var(--red);border:1px solid rgba(192,57,43,.12);}
+.btn-danger:hover{background:rgba(192,57,43,.1);}
+.btn-green{background:rgba(39,174,96,.08);color:var(--green);border:1px solid rgba(39,174,96,.18);}
+.btn-sm{padding:.32rem .72rem;font-size:.56rem;}
+.btn-xs{padding:.2rem .48rem;font-size:.52rem;}
+.btn[disabled]{opacity:.45;pointer-events:none;}
 
-/* Status tags */
-.tag { display: inline-block; padding: .16rem .52rem; font-size: .56rem; letter-spacing: .12em; text-transform: uppercase; }
-.tag-gold  { background: var(--goldA); color: var(--gold); border: 1px solid rgba(184,148,90,.22); }
-.tag-green { background: rgba(39,174,96,.07); color: var(--green); }
-.tag-red   { background: rgba(192,57,43,.07); color: var(--red); }
-.tag-dim   { background: rgba(17,16,16,.05); color: var(--mid); }
+/* ── SAVE BAR ── */
+.save-bar{
+  position:sticky;bottom:0;background:rgba(240,237,232,.95);backdrop-filter:blur(12px);
+  border-top:1px solid var(--line);padding:.8rem 2rem;
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;z-index:40;
+  margin:0 -2rem;padding:0.8rem 2rem;
+}
+.save-msg{font-size:.68rem;color:var(--mid);}
+.save-msg.dirty{color:var(--gold);}
+.save-actions{display:flex;gap:.6rem;}
+
+/* ── TABLE ── */
+.tbl-wrap{border:1px solid var(--line);overflow:hidden;margin-bottom:1.5rem;}
+table{width:100%;border-collapse:collapse;}
+thead{background:var(--bg2);}
+th{padding:.72rem 1.1rem;text-align:left;font-size:.5rem;font-weight:400;letter-spacing:.28em;text-transform:uppercase;color:var(--mid);border-bottom:1px solid var(--line);white-space:nowrap;}
+td{padding:.82rem 1.1rem;font-size:.78rem;border-bottom:1px solid var(--line);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(17,16,16,.015);}
+
+/* ── TAGS / PILLS ── */
+.tag{display:inline-block;padding:.14rem .48rem;font-size:.54rem;letter-spacing:.1em;text-transform:uppercase;}
+.tag-gold{background:var(--goldA);color:var(--gold);border:1px solid var(--goldB);}
+.tag-dim{background:rgba(17,16,16,.05);color:var(--mid);}
+.pill{display:inline-flex;align-items:center;gap:.28rem;background:var(--goldA);border:1px solid var(--goldB);color:var(--gold);padding:.15rem .5rem;font-size:.6rem;}
+.pill button{background:none;border:none;color:inherit;cursor:pointer;opacity:.55;transition:opacity .18s;line-height:1;padding:0;}
+.pill button:hover{opacity:1;}
+.tags-wrap{
+  display:flex;flex-wrap:wrap;gap:.35rem;align-items:center;
+  border-bottom:1px solid var(--line);padding:.42rem 0;min-height:38px;cursor:text;
+  transition:border-color .2s;
+}
+.tags-wrap:focus-within{border-bottom-color:var(--ink);}
+.tag-inp{background:none;border:none;outline:none;color:var(--ink);font-family:'DM Sans',sans-serif;font-size:.82rem;min-width:80px;flex:1;}
+
+/* ── PROJECT LIST ── */
+.proj-list{display:flex;flex-direction:column;gap:.4rem;margin-bottom:1.5rem;}
+.proj-item{
+  display:grid;grid-template-columns:2.2rem 56px 1fr auto;
+  align-items:center;gap:1rem;
+  padding:.8rem 1rem;background:var(--bg);border:1px solid var(--line);
+  cursor:grab;transition:all .18s;
+}
+.proj-item:hover{border-color:var(--line2);background:var(--bg2);}
+.proj-item.dragging{opacity:.38;cursor:grabbing;}
+.proj-num{font-family:'DM Serif Display',serif;font-size:.95rem;color:var(--mid);}
+.proj-thumb-sm{width:56px;height:40px;object-fit:cover;display:block;border:1px solid var(--line);}
+.proj-info{}
+.proj-name{font-size:.82rem;}
+.proj-cat{font-size:.62rem;color:var(--mid);margin-top:.1rem;}
+.proj-acts{display:flex;gap:.4rem;flex-shrink:0;}
+
+/* ── IMG GRID ── */
+.img-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:1px;background:var(--line);}
+.img-th{background:var(--bg);position:relative;overflow:hidden;cursor:pointer;}
+.img-th img{width:100%;aspect-ratio:1;object-fit:cover;display:block;transition:transform .3s var(--E);}
+.img-th:hover img{transform:scale(1.05);}
+.img-th-ov{position:absolute;inset:0;background:rgba(17,16,16,.58);opacity:0;transition:opacity .22s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.5rem;}
+.img-th:hover .img-th-ov{opacity:1;}
+.img-th-name{position:absolute;bottom:0;left:0;right:0;background:rgba(17,16,16,.68);padding:.35rem .55rem;font-size:.58rem;color:rgba(255,255,255,.75);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+/* ── UPLOAD ── */
+.drop-zone{border:1px dashed rgba(17,16,16,.15);padding:2.25rem 2rem;text-align:center;cursor:pointer;transition:all .28s;color:var(--mid);margin-bottom:1rem;}
+.drop-zone:hover,.drop-zone.over{border-color:var(--ink);background:rgba(17,16,16,.02);}
+.dz-ico{font-size:1.6rem;display:block;margin-bottom:.5rem;transition:transform .3s var(--E);}
+.drop-zone:hover .dz-ico{transform:translateY(-3px);}
+.dz-t{font-family:'DM Serif Display',serif;font-size:.88rem;margin-bottom:.2rem;}
+.dz-s{font-size:.68rem;}
+.uprow{display:flex;align-items:center;gap:.75rem;padding:.55rem .85rem;background:var(--bg2);border:1px solid var(--line);margin-bottom:.35rem;}
+.uprow-thumb{width:32px;height:32px;object-fit:cover;flex-shrink:0;}
+.uprow-bar{flex:1;height:1px;background:var(--line);overflow:hidden;margin-top:.3rem;}
+.uprow-fill{height:100%;background:var(--ink);transition:width .3s;}
+.uprow-name{font-size:.72rem;margin-bottom:.15rem;}
+.uprow-st{font-size:.6rem;color:var(--mid);flex-shrink:0;width:52px;text-align:right;}
+
+/* ── COLORS ── */
+.color-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.1rem;}
+.color-item{display:flex;flex-direction:column;gap:.4rem;}
+.color-item label{font-size:.5rem;letter-spacing:.24em;text-transform:uppercase;color:var(--mid);}
+.color-preview{height:36px;border:1px solid var(--line);transition:background .2s;display:flex;align-items:center;justify-content:center;font-size:.62rem;color:var(--mid);}
+
+/* ── MARQUEE ITEMS ── */
+.mq-items{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.75rem;}
+.mq-pill{display:inline-flex;align-items:center;gap:.35rem;background:var(--bg2);border:1px solid var(--line);padding:.28rem .62rem;font-size:.72rem;transition:border-color .18s;}
+.mq-pill:hover{border-color:var(--line2);}
+.mq-pill button{background:none;border:none;cursor:pointer;color:var(--mid);transition:color .18s;font-size:.8rem;line-height:1;}
+.mq-pill button:hover{color:var(--red);}
 
 /* ── MODAL ── */
-.modal-bd {
-  position: fixed; inset: 0; background: rgba(17,16,16,.4);
-  backdrop-filter: blur(6px); z-index: 1000;
-  display: flex; align-items: center; justify-content: center;
-  opacity: 0; pointer-events: none; transition: opacity .3s;
+.modal-bd{position:fixed;inset:0;background:rgba(17,16,16,.38);backdrop-filter:blur(5px);z-index:1000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .28s;}
+.modal-bd.open{opacity:1;pointer-events:all;}
+.modal{background:var(--bg);border:1px solid var(--line);width:90%;max-width:640px;max-height:88vh;overflow-y:auto;transform:translateY(16px) scale(.97);transition:transform .32s var(--E);box-shadow:0 20px 50px rgba(17,16,16,.12);position:relative;}
+.modal::before{content:'';position:absolute;top:0;left:15%;right:15%;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.modal-bd.open .modal{transform:none;}
+.modal-hd{padding:1.1rem 1.4rem;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;}
+.modal-title{font-family:'DM Serif Display',serif;font-size:.95rem;font-weight:400;}
+.modal-x{width:24px;height:24px;background:var(--bg2);border:1px solid var(--line);color:var(--mid);font-size:.75rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .18s;}
+.modal-x:hover{background:var(--red);color:#fff;border-color:var(--red);}
+.modal-body{padding:1.4rem;}
+.modal-ft{padding:.9rem 1.4rem;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:.5rem;}
+
+/* ── MESSAGES ── */
+.msg-item{
+  display:grid;grid-template-columns:1fr auto;gap:.75rem;
+  padding:.9rem 1.1rem;background:var(--bg);border:1px solid var(--line);
+  cursor:pointer;transition:background .18s;border-left-width:2px;
 }
-.modal-bd.active { opacity: 1; pointer-events: all; }
-.modal {
-  background: var(--bg); border: 1px solid var(--line);
-  width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto;
-  transform: translateY(20px) scale(.97);
-  transition: transform .35s var(--E);
-  box-shadow: 0 24px 60px rgba(17,16,16,.14);
-  position: relative;
-}
-.modal::before { content: ''; position: absolute; top: 0; left: 20%; right: 20%; height: 1px; background: linear-gradient(90deg, transparent, var(--gold), transparent); }
-.modal-bd.active .modal { transform: translateY(0) scale(1); }
-.modal-hd { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; }
-.modal-title { font-family: 'DM Serif Display', serif; font-size: 1rem; font-weight: 400; }
-.modal-close { width: 26px; height: 26px; background: var(--bg2); border: 1px solid var(--line); color: var(--mid); font-size: .8rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .2s; }
-.modal-close:hover { background: var(--red); color: white; border-color: var(--red); }
-.modal-body { padding: 1.5rem; }
-.modal-ft { padding: 1rem 1.5rem; border-top: 1px solid var(--line); display: flex; justify-content: flex-end; gap: .6rem; }
-.img-preview { width: 100%; max-height: 240px; object-fit: contain; background: var(--bg2); display: block; margin-bottom: 1.25rem; border: 1px solid var(--line); }
-.confirm-ico { font-size: 2.5rem; text-align: center; display: block; margin-bottom: .75rem; }
-.confirm-msg { font-size: .85rem; color: var(--mid); text-align: center; line-height: 1.7; }
-.confirm-msg strong { color: var(--ink); }
+.msg-item:hover{background:var(--bg2);}
+.msg-item.unread{border-left-color:var(--gold);}
+.msg-item.read{border-left-color:transparent;}
+.msg-from{font-size:.8rem;margin-bottom:.1rem;}
+.msg-preview{font-size:.68rem;color:var(--mid);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:420px;}
+.msg-date{font-size:.6rem;color:var(--mid);text-align:right;white-space:nowrap;}
+.msg-dot{width:5px;height:5px;background:var(--gold);border-radius:50%;margin-top:.3rem;margin-left:auto;}
 
 /* ── TOAST ── */
-.toast {
-  position: fixed; bottom: 1.5rem; right: 1.5rem;
-  background: var(--ink); color: var(--bg);
-  padding: .78rem 1.35rem; font-size: .72rem; letter-spacing: .08em;
-  z-index: 9999; display: flex; align-items: center; gap: .5rem;
-  transform: translateY(60px); opacity: 0;
-  transition: all .4s var(--E);
-  box-shadow: 0 8px 28px rgba(17,16,16,.15);
+.toast{
+  position:fixed;bottom:1.4rem;right:1.4rem;
+  background:var(--ink);color:var(--bg);
+  padding:.72rem 1.25rem;font-size:.7rem;letter-spacing:.06em;
+  z-index:9999;display:flex;align-items:center;gap:.45rem;
+  transform:translateY(50px);opacity:0;transition:all .38s var(--E);
+  box-shadow:0 6px 24px rgba(17,16,16,.14);
 }
-.toast::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: var(--gold); }
-.toast.show { transform: translateY(0); opacity: 1; }
-.toast.err { background: var(--red); }
-.toast.err::before { background: rgba(255,255,255,.3); }
+.toast::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:var(--gold);}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.err{background:var(--red);}
+.toast.err::before{background:rgba(255,255,255,.25);}
 
-/* ── DASH CARDS ── */
-.dash-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; }
-.dash-card {
-  background: var(--bg); border: 1px solid var(--line); padding: 1.5rem;
-  position: relative; overflow: hidden;
-}
-.dash-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--gold), transparent); }
-.dash-card-label { font-size: .52rem; letter-spacing: .3em; text-transform: uppercase; color: var(--gold); margin-bottom: 1.1rem; }
+/* ── DOTS LOADER ── */
+.dots{display:inline-flex;gap:3px;vertical-align:middle;}
+.dots span{width:3.5px;height:3.5px;background:currentColor;border-radius:50%;animation:dt .8s ease-in-out infinite;}
+.dots span:nth-child(2){animation-delay:.15s;}
+.dots span:nth-child(3){animation-delay:.3s;}
+@keyframes dt{0%,80%,100%{transform:scale(.5);opacity:.4}40%{transform:scale(1);opacity:1}}
 
-/* ── SETTINGS CARDS ── */
-.settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-.setting-card { background: var(--bg); border: 1px solid var(--line); padding: 1.5rem; position: relative; }
-.setting-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--gold), transparent); }
-.setting-card-label { font-size: .52rem; letter-spacing: .3em; text-transform: uppercase; color: var(--gold); margin-bottom: 1.25rem; padding-bottom: .75rem; border-bottom: 1px solid var(--line); }
+/* ── EMPTY STATE ── */
+.empty{padding:3.5rem 2rem;text-align:center;color:var(--mid);}
+.empty-ico{font-size:1.8rem;display:block;margin-bottom:.65rem;opacity:.4;}
+.empty-t{font-family:'DM Serif Display',serif;font-size:.9rem;margin-bottom:.3rem;}
+.empty-s{font-size:.72rem;}
 
-@media(max-width:1200px) { .stats-row{grid-template-columns:repeat(2,1fr);} .dash-grid{grid-template-columns:1fr;} .settings-grid{grid-template-columns:1fr;} }
+@media(max-width:1100px){.stats-row{grid-template-columns:repeat(2,1fr);}}
 </style>
 </head>
 <body>
 
-<!-- SIDEBAR -->
+<!-- ═══ SIDEBAR ═══ -->
 <aside class="sidebar">
   <div class="sb-logo">
     <img src="assets/Logo-Aardesign-Long.png" alt="AAR Design">
-    <span class="sb-ver">Admin</span>
+    <div class="sb-logo-sep"></div>
+    <span class="sb-logo-tag">Studio</span>
   </div>
-  <div class="sb-sec">Principal</div>
-  <div class="ni active" onclick="show('dashboard',this)"><span class="ni-ico">◈</span> Dashboard</div>
-  <div class="sb-sec">Médias</div>
-  <div class="ni" onclick="show('library',this)"><span class="ni-ico">🖼</span> Bibliothèque</div>
-  <div class="sb-sec">Contenu</div>
-  <div class="ni" onclick="show('projects',this)"><span class="ni-ico">⬡</span> Projets</div>
-  <div class="ni" onclick="show('messages',this)"><span class="ni-ico">✉</span> Messages <span class="ni-badge" id="msgBadge" style="display:none">0</span></div>
-  <div class="sb-sec">Système</div>
-  <div class="ni" onclick="show('settings',this)"><span class="ni-ico">⚙</span> Paramètres</div>
-  <div class="sb-footer">
+
+  <div class="sb-group">
+    <div class="sb-group-label">Vue d'ensemble</div>
+    <div class="ni active" onclick="nav('dashboard',this)"><span class="ni-ico">◈</span>Dashboard</div>
+  </div>
+
+  <div class="sb-group">
+    <div class="sb-group-label">Éditeur de site</div>
+    <div class="ni" onclick="nav('hero',this)"><span class="ni-ico">✦</span>Hero</div>
+    <div class="ni" onclick="nav('projects',this)"><span class="ni-ico">⬡</span>Projets</div>
+    <div class="ni" onclick="nav('about',this)"><span class="ni-ico">◎</span>À propos</div>
+    <div class="ni" onclick="nav('contact',this)"><span class="ni-ico">✉</span>Contact</div>
+    <div class="ni" onclick="nav('nav',this)"><span class="ni-ico">≡</span>Navigation</div>
+    <div class="ni" onclick="nav('marquee',this)"><span class="ni-ico">↔</span>Marquee</div>
+    <div class="ni" onclick="nav('design',this)"><span class="ni-ico">◐</span>Design</div>
+  </div>
+
+  <div class="sb-group">
+    <div class="sb-group-label">Médias</div>
+    <div class="ni" onclick="nav('library',this)"><span class="ni-ico">⊞</span>Bibliothèque</div>
+  </div>
+
+  <div class="sb-group">
+    <div class="sb-group-label">Messagerie</div>
+    <div class="ni" onclick="nav('messages',this)"><span class="ni-ico">⊠</span>Messages<span class="badge" id="msgBadge" style="display:none">0</span></div>
+  </div>
+
+  <div class="sb-group">
+    <div class="sb-group-label">Système</div>
+    <div class="ni" onclick="nav('settings',this)"><span class="ni-ico">⚙</span>Paramètres</div>
+  </div>
+
+  <div class="sb-bottom">
     <div class="sb-user">
       <div class="av">AA</div>
       <div>
         <div class="u-name">Anthony Armand</div>
-        <div class="u-role" id="sbUserEmail">chargement…</div>
+        <div class="u-role" id="sbEmail">aardesign14@gmail.com</div>
       </div>
     </div>
   </div>
 </aside>
 
-<!-- MAIN -->
+<!-- ═══ MAIN ═══ -->
 <div class="main">
-  <div class="topbar">
-    <div>
+  <header class="topbar">
+    <div class="tb-left">
       <div class="tb-title" id="pageTitle">Dashboard</div>
-      <div class="tb-bc" id="pageBc">AAR Design — Vue d'ensemble</div>
+      <div class="tb-sub" id="pageSub">Vue d'ensemble</div>
     </div>
     <div class="tb-right">
-      <div class="tb-search">
-        <span style="opacity:.35;font-size:.75rem">🔍</span>
-        <input type="text" placeholder="Rechercher…">
-      </div>
-      <button class="icon-btn"><span>🔔</span><span class="notif-dot"></span></button>
-      <button class="tb-btn tb-btn-ink" onclick="window.open('/')">↗ Voir le site</button>
-      <button class="tb-btn tb-btn-out" onclick="doLogout()">↩ Déconnexion</button>
+      <button class="tbb tbb-gold" id="publishBtn" onclick="publishSite()" style="display:none">
+        <span id="pubLabel">↑ Publier</span>
+      </button>
+      <button class="tbb tbb-out" onclick="window.open('/')">↗ Site</button>
+      <button class="tbb tbb-out" onclick="doLogout()">Déconnexion</button>
     </div>
-  </div>
+  </header>
 
   <div class="content">
 
-    <!-- DASHBOARD -->
+    <!-- ══ DASHBOARD ══ -->
     <div class="panel active" id="panel-dashboard">
-      <div class="ph">
-        <div>
-          <h1>Bonjour, <em>Anthony</em></h1>
-          <p>Vue d'ensemble de votre portfolio AAR Design.</p>
-        </div>
-      </div>
+      <div class="ph"><div><h1>Bonjour, <em>Anthony</em></h1><p>Voici l'état de votre portfolio.</p></div></div>
       <div class="stats-row">
-        <div class="sc"><div class="sc-ico">🖼</div><div class="sc-label">Images</div><div class="sc-val" id="stat-images">—</div><div class="sc-sub">Bibliothèque</div></div>
-        <div class="sc"><div class="sc-ico">⬡</div><div class="sc-label">Projets</div><div class="sc-val" id="stat-projects">—</div><div class="sc-sub">Portfolio</div></div>
-        <div class="sc"><div class="sc-ico">✉</div><div class="sc-label">Messages</div><div class="sc-val" id="stat-messages">—</div><div class="sc-sub up" id="stat-messages-sub">Non lus</div></div>
-        <div class="sc"><div class="sc-ico">💾</div><div class="sc-label">Stockage</div><div class="sc-val" id="stat-storage">—</div><div class="sc-sub">Utilisé</div></div>
+        <div class="sc"><div class="sc-ico">⬡</div><div class="sc-label">Projets</div><div class="sc-val" id="st-proj">—</div><div class="sc-sub">En ligne</div><div class="sc-accent"></div></div>
+        <div class="sc"><div class="sc-ico">⊞</div><div class="sc-label">Images</div><div class="sc-val" id="st-img">—</div><div class="sc-sub">Bibliothèque</div><div class="sc-accent"></div></div>
+        <div class="sc"><div class="sc-ico">⊠</div><div class="sc-label">Messages</div><div class="sc-val" id="st-msg">—</div><div class="sc-sub">Non lus</div><div class="sc-accent"></div></div>
+        <div class="sc"><div class="sc-ico">◐</div><div class="sc-label">Sections</div><div class="sc-val">7</div><div class="sc-sub">Éditables</div><div class="sc-accent"></div></div>
       </div>
-      <div class="dash-grid">
-        <div class="dash-card">
-          <div class="dash-card-label">Dernières images uploadées</div>
-          <div id="recentImages" style="display:grid;grid-template-columns:repeat(5,1fr);gap:.65rem"></div>
-        </div>
-        <div class="dash-card">
-          <div class="dash-card-label">Actions rapides</div>
-          <div style="display:flex;flex-direction:column;gap:.65rem">
-            <button class="btn btn-ink" style="width:100%;justify-content:center" onclick="show('library',document.querySelectorAll('.ni')[1]);triggerUpload()">🖼 Uploader des images</button>
-            <button class="btn btn-outline" style="width:100%;justify-content:center" onclick="show('library',document.querySelectorAll('.ni')[1])">📁 Gérer la bibliothèque</button>
-            <button class="btn btn-outline" style="width:100%;justify-content:center" onclick="show('messages',document.querySelectorAll('.ni')[3])">✉ Lire les messages</button>
+      <div style="display:grid;grid-template-columns:2fr 1fr;gap:1.5rem">
+        <div class="card">
+          <div class="card-label">Accès rapide</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem">
+            <button class="btn btn-out" style="justify-content:flex-start" onclick="nav('hero',qni(1))">✦ Hero</button>
+            <button class="btn btn-out" style="justify-content:flex-start" onclick="nav('projects',qni(2))">⬡ Projets</button>
+            <button class="btn btn-out" style="justify-content:flex-start" onclick="nav('about',qni(3))">◎ À propos</button>
+            <button class="btn btn-out" style="justify-content:flex-start" onclick="nav('contact',qni(4))">✉ Contact</button>
+            <button class="btn btn-out" style="justify-content:flex-start" onclick="nav('design',qni(7))">◐ Design</button>
+            <button class="btn btn-out" style="justify-content:flex-start" onclick="nav('library',qni(8))">⊞ Bibliothèque</button>
           </div>
         </div>
+        <div class="card">
+          <div class="card-label">Images récentes</div>
+          <div id="recentImgs" style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px"></div>
+        </div>
       </div>
     </div>
 
-    <!-- LIBRARY -->
-    <div class="panel" id="panel-library">
-      <div class="ph">
-        <div><h1>Bibliothèque</h1><p id="lib-count">Chargement…</p></div>
-        <div style="display:flex;gap:.65rem">
-          <button class="btn btn-outline btn-sm" onclick="loadLibrary()">↺ Actualiser</button>
-          <button class="btn btn-ink" onclick="triggerUpload()">+ Uploader</button>
+    <!-- ══ HERO ══ -->
+    <div class="panel" id="panel-hero">
+      <div class="ph"><div><h1>Section <em>Hero</em></h1><p>La première impression du portfolio.</p></div></div>
+      <div class="sec-card">
+        <div class="sec-hd open" onclick="toggleSec(this)">
+          <div class="sec-title"><span class="sec-ico">✦</span>Textes</div><span class="sec-arrow">▶</span>
+        </div>
+        <div class="sec-body open">
+          <div class="field"><label>Ligne d'introduction (au-dessus du titre)</label><input type="text" id="h-intro"></div>
+          <div class="field-row">
+            <div class="field"><label>Titre — ligne 1</label><input type="text" id="h-t1"></div>
+            <div class="field"><label>Titre — ligne 2</label><input type="text" id="h-t2"></div>
+          </div>
+          <div class="field"><label>Titre — ligne 3 (italique)</label><input type="text" id="h-t3"></div>
+          <div class="field"><label>Description sous le titre</label><textarea id="h-desc"></textarea></div>
+          <div class="field"><label>Texte "Défiler"</label><input type="text" id="h-scroll" placeholder="Défiler"></div>
         </div>
       </div>
-      <input type="file" id="fileInput" multiple accept="image/*" onchange="handleFiles(this.files)">
-      <div class="drop-zone" id="dropZone" onclick="triggerUpload()">
-        <span class="dz-ico">☁</span>
-        <div class="dz-title">Glisser vos images ici</div>
-        <div class="dz-sub">ou cliquer — JPG, PNG, WebP, GIF</div>
-      </div>
-      <div class="upload-progress" id="uploadProgress"></div>
-      <div class="lib-toolbar">
-        <div class="lib-search">
-          <span style="opacity:.35">🔍</span>
-          <input type="text" placeholder="Rechercher…" id="libSearch" oninput="filterImages()">
-        </div>
-        <select class="flt" id="catFilter" onchange="filterImages()">
-          <option value="">Toutes catégories</option>
-          <option>Branding</option><option>Web</option><option>Painting</option>
-          <option>Illustration</option><option>Photos</option><option>Non classé</option>
-        </select>
-        <select class="flt" id="sortFilter" onchange="filterImages()">
-          <option value="newest">Plus récentes</option>
-          <option value="oldest">Plus anciennes</option>
-          <option value="name">Nom A→Z</option>
-          <option value="size">Taille</option>
-        </select>
-        <div class="view-toggle">
-          <button class="vt-btn active" id="gridBtn" onclick="setView('grid')">⊞</button>
-          <button class="vt-btn" id="listBtn" onclick="setView('list')">☰</button>
+      <div class="save-bar">
+        <span class="save-msg" id="sm-hero">Modifiez les champs puis sauvegardez.</span>
+        <div class="save-actions">
+          <button class="btn btn-out btn-sm" onclick="loadHero()">↺ Annuler</button>
+          <button class="btn btn-gold" onclick="saveSection('hero')">💾 Sauvegarder</button>
         </div>
       </div>
-      <div id="imagesContainer"></div>
     </div>
 
-    <!-- PROJECTS -->
+    <!-- ══ PROJECTS ══ -->
     <div class="panel" id="panel-projects">
       <div class="ph">
-        <div><h1>Projets</h1><p id="proj-count">Chargement…</p></div>
-        <button class="btn btn-ink" onclick="openModal('m-new-project')">+ Nouveau</button>
+        <div><h1>Section <em>Projets</em></h1><p>Gérez l'ordre, les titres, les images de chaque projet.</p></div>
+        <button class="btn btn-ink" onclick="openProj(-1)">+ Nouveau projet</button>
       </div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Projet</th><th>Catégorie</th><th>Statut</th><th>Année</th><th>Actions</th></tr></thead>
-          <tbody id="projectsBody"><tr><td colspan="5" style="text-align:center;color:var(--mid);padding:3rem">Chargement…</td></tr></tbody>
-        </table>
+      <div class="proj-list" id="projList"></div>
+      <div class="save-bar">
+        <span class="save-msg" id="sm-projects">Glissez pour réordonner. ✎ pour éditer.</span>
+        <button class="btn btn-gold" onclick="saveProjOrder()">💾 Sauvegarder l'ordre</button>
       </div>
     </div>
 
-    <!-- MESSAGES -->
-    <div class="panel" id="panel-messages">
-      <div class="ph">
-        <div><h1>Messages</h1><p id="msg-count">Chargement…</p></div>
-        <button class="btn btn-outline btn-sm" onclick="markAllRead()">✓ Tout marquer lu</button>
+    <!-- ══ ABOUT ══ -->
+    <div class="panel" id="panel-about">
+      <div class="ph"><div><h1>Section <em>À propos</em></h1><p>Votre biographie et statistiques.</p></div></div>
+      <div class="sec-card">
+        <div class="sec-hd open" onclick="toggleSec(this)">
+          <div class="sec-title"><span class="sec-ico">◎</span>Présentation</div><span class="sec-arrow">▶</span>
+        </div>
+        <div class="sec-body open">
+          <div class="field-row">
+            <div class="field"><label>Prénom</label><input type="text" id="ab-fn"></div>
+            <div class="field"><label>Nom (italique)</label><input type="text" id="ab-ln"></div>
+          </div>
+          <div class="field"><label>Paragraphe 1</label><textarea id="ab-p1"></textarea></div>
+          <div class="field"><label>Paragraphe 2</label><textarea id="ab-p2"></textarea></div>
+          <div class="field"><label>Texte du lien CTA</label><input type="text" id="ab-cta"></div>
+        </div>
       </div>
-      <div id="msgList" style="display:flex;flex-direction:column;gap:.5rem"></div>
+      <div class="sec-card">
+        <div class="sec-hd open" onclick="toggleSec(this)">
+          <div class="sec-title"><span class="sec-ico">◈</span>Statistiques</div><span class="sec-arrow">▶</span>
+        </div>
+        <div class="sec-body open">
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem" id="statsGrid"></div>
+        </div>
+      </div>
+      <div class="save-bar">
+        <span class="save-msg" id="sm-about">Modifiez puis sauvegardez.</span>
+        <div class="save-actions">
+          <button class="btn btn-out btn-sm" onclick="loadAbout()">↺ Annuler</button>
+          <button class="btn btn-gold" onclick="saveSection('about')">💾 Sauvegarder</button>
+        </div>
+      </div>
     </div>
 
-    <!-- SETTINGS -->
-    <div class="panel" id="panel-settings">
-      <div class="ph"><div><h1>Paramètres</h1><p>Configuration Supabase et du site.</p></div></div>
-      <div class="settings-grid">
-        <div class="setting-card">
-          <div class="setting-card-label">🔌 Connexion Supabase</div>
-          <div class="field"><label>URL Supabase</label><input type="text" id="cfg-url" placeholder="https://xxxx.supabase.co"></div>
-          <div class="field"><label>Clé publique (anon key)</label><input type="text" id="cfg-key" placeholder="eyJhbGci…"></div>
-          <button class="btn btn-ink" onclick="saveConfig()">💾 Sauvegarder</button>
+    <!-- ══ CONTACT ══ -->
+    <div class="panel" id="panel-contact">
+      <div class="ph"><div><h1>Section <em>Contact</em></h1><p>Coordonnées et liens sociaux.</p></div></div>
+      <div class="sec-card">
+        <div class="sec-hd open" onclick="toggleSec(this)">
+          <div class="sec-title"><span class="sec-ico">✉</span>Titre & coordonnées</div><span class="sec-arrow">▶</span>
         </div>
-        <div class="setting-card">
-          <div class="setting-card-label">🔒 Mot de passe</div>
-          <div class="field"><label>Nouveau mot de passe</label><input type="password" id="new-pwd" placeholder="••••••••"></div>
-          <div class="field"><label>Confirmer</label><input type="password" id="confirm-pwd" placeholder="••••••••"></div>
-          <button class="btn btn-ink" onclick="changePwd()">Changer</button>
+        <div class="sec-body open">
+          <div class="field-row">
+            <div class="field"><label>Titre ligne 1</label><input type="text" id="ct-t1"></div>
+            <div class="field"><label>Titre ligne 2 (italique)</label><input type="text" id="ct-t2"></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>Email</label><input type="email" id="ct-email"></div>
+            <div class="field"><label>Téléphone</label><input type="tel" id="ct-phone"></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>Instagram (URL)</label><input type="url" id="ct-ig"></div>
+            <div class="field"><label>Behance (URL)</label><input type="url" id="ct-be"></div>
+          </div>
+          <div class="field"><label>Texte copyright (footer)</label><input type="text" id="ct-copy"></div>
         </div>
-        <div class="setting-card">
-          <div class="setting-card-label">📋 Catégories</div>
-          <div style="display:flex;flex-wrap:wrap;gap:.5rem">
-            <span class="tag tag-gold">Branding</span><span class="tag tag-gold">Web</span>
-            <span class="tag tag-gold">Painting</span><span class="tag tag-gold">Illustration</span>
-            <span class="tag tag-gold">Photos</span><span class="tag tag-dim">Non classé</span>
+      </div>
+      <div class="save-bar">
+        <span class="save-msg" id="sm-contact">Modifiez puis sauvegardez.</span>
+        <div class="save-actions">
+          <button class="btn btn-out btn-sm" onclick="loadContact()">↺ Annuler</button>
+          <button class="btn btn-gold" onclick="saveSection('contact')">💾 Sauvegarder</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ NAV ══ -->
+    <div class="panel" id="panel-nav">
+      <div class="ph"><div><h1>Section <em>Navigation</em></h1><p>Liens et CTA de la barre de navigation.</p></div></div>
+      <div class="sec-card">
+        <div class="sec-hd open" onclick="toggleSec(this)">
+          <div class="sec-title"><span class="sec-ico">≡</span>Liens</div><span class="sec-arrow">▶</span>
+        </div>
+        <div class="sec-body open">
+          <div class="field-row">
+            <div class="field"><label>Lien 1 — Texte</label><input type="text" id="nv-l1"></div>
+            <div class="field"><label>Lien 1 — Ancre</label><input type="text" id="nv-a1" placeholder="#work"></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>Lien 2 — Texte</label><input type="text" id="nv-l2"></div>
+            <div class="field"><label>Lien 2 — Ancre</label><input type="text" id="nv-a2" placeholder="#about"></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>Lien 3 — Texte</label><input type="text" id="nv-l3"></div>
+            <div class="field"><label>Lien 3 — Ancre</label><input type="text" id="nv-a3" placeholder="#contact"></div>
+          </div>
+          <div class="field"><label>Bouton CTA</label><input type="text" id="nv-cta"></div>
+        </div>
+      </div>
+      <div class="save-bar">
+        <span class="save-msg" id="sm-nav">Modifiez puis sauvegardez.</span>
+        <div class="save-actions">
+          <button class="btn btn-out btn-sm" onclick="loadNav()">↺ Annuler</button>
+          <button class="btn btn-gold" onclick="saveSection('nav')">💾 Sauvegarder</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ MARQUEE ══ -->
+    <div class="panel" id="panel-marquee">
+      <div class="ph"><div><h1>Bandeaux <em>Marquee</em></h1><p>Les deux bandeaux défilants du site.</p></div></div>
+      <div class="sec-card">
+        <div class="sec-hd open" onclick="toggleSec(this)">
+          <div class="sec-title"><span class="sec-ico">↔</span>Marquee 1 — Disciplines</div><span class="sec-arrow">▶</span>
+        </div>
+        <div class="sec-body open">
+          <div class="mq-items" id="mq1-items"></div>
+          <div style="display:flex;gap:.6rem">
+            <input type="text" id="mq1-in" placeholder="Ajouter…" style="flex:1;border:none;border-bottom:1px solid var(--line);background:transparent;padding:.5rem 0;font-family:'DM Sans',sans-serif;font-size:.82rem;outline:none;color:var(--ink)">
+            <button class="btn btn-ink btn-sm" onclick="mqAdd(1)">+ Ajouter</button>
           </div>
         </div>
-        <div class="setting-card">
-          <div class="setting-card-label">⚠️ Zone dangereuse</div>
-          <p style="font-size:.78rem;color:var(--mid);margin-bottom:1rem">Actions irréversibles.</p>
-          <button class="btn btn-danger" onclick="confirmDeleteAll()">🗑 Vider la bibliothèque</button>
+      </div>
+      <div class="sec-card">
+        <div class="sec-hd open" onclick="toggleSec(this)">
+          <div class="sec-title"><span class="sec-ico">↔</span>Marquee 2 — Clients</div><span class="sec-arrow">▶</span>
+        </div>
+        <div class="sec-body open">
+          <div class="mq-items" id="mq2-items"></div>
+          <div style="display:flex;gap:.6rem">
+            <input type="text" id="mq2-in" placeholder="Ajouter…" style="flex:1;border:none;border-bottom:1px solid var(--line);background:transparent;padding:.5rem 0;font-family:'DM Sans',sans-serif;font-size:.82rem;outline:none;color:var(--ink)">
+            <button class="btn btn-ink btn-sm" onclick="mqAdd(2)">+ Ajouter</button>
+          </div>
+        </div>
+      </div>
+      <div class="save-bar">
+        <span class="save-msg" id="sm-marquee">Gérez les éléments puis sauvegardez.</span>
+        <button class="btn btn-gold" onclick="saveSection('marquee')">💾 Sauvegarder</button>
+      </div>
+    </div>
+
+    <!-- ══ DESIGN ══ -->
+    <div class="panel" id="panel-design">
+      <div class="ph"><div><h1>Design <em>&amp; Couleurs</em></h1><p>Personnalisez l'apparence du site.</p></div></div>
+      <div class="sec-card">
+        <div class="sec-hd open" onclick="toggleSec(this)">
+          <div class="sec-title"><span class="sec-ico">◐</span>Palette de couleurs</div><span class="sec-arrow">▶</span>
+        </div>
+        <div class="sec-body open">
+          <div class="color-grid">
+            <div class="color-item"><label>Fond principal</label><div class="color-preview" id="pv-bg"></div><input type="color" id="cl-bg" oninput="pvColor('bg',this.value)"></div>
+            <div class="color-item"><label>Texte principal</label><div class="color-preview" id="pv-ink"></div><input type="color" id="cl-ink" oninput="pvColor('ink',this.value)"></div>
+            <div class="color-item"><label>Texte secondaire</label><div class="color-preview" id="pv-mid"></div><input type="color" id="cl-mid" oninput="pvColor('mid',this.value)"></div>
+            <div class="color-item"><label>Accent doré</label><div class="color-preview" id="pv-gold"></div><input type="color" id="cl-gold" oninput="pvColor('gold',this.value)"></div>
+            <div class="color-item"><label>Fond secondaire</label><div class="color-preview" id="pv-bg2"></div><input type="color" id="cl-bg2" oninput="pvColor('bg2',this.value)"></div>
+            <div class="color-item"><label>Bordures</label><div class="color-preview" id="pv-line"></div><input type="color" id="cl-line" oninput="pvColor('line',this.value)"></div>
+          </div>
+          <div style="display:flex;gap:.6rem;margin-top:1.1rem;flex-wrap:wrap">
+            <button class="btn btn-out btn-sm" onclick="presetLight()">↺ Clair (défaut)</button>
+            <button class="btn btn-out btn-sm" onclick="presetDark()">◉ Sombre</button>
+          </div>
+        </div>
+      </div>
+      <div class="sec-card">
+        <div class="sec-hd open" onclick="toggleSec(this)">
+          <div class="sec-title"><span class="sec-ico">T</span>Typographie</div><span class="sec-arrow">▶</span>
+        </div>
+        <div class="sec-body open">
+          <div class="field-row">
+            <div class="field"><label>Police corps de texte</label>
+              <select id="ft-body">
+                <option value="DM Sans">DM Sans (défaut)</option>
+                <option value="Inter">Inter</option>
+                <option value="Raleway">Raleway</option>
+                <option value="Helvetica Neue">Helvetica Neue</option>
+              </select>
+            </div>
+            <div class="field"><label>Police titres (serif)</label>
+              <select id="ft-title">
+                <option value="DM Serif Display">DM Serif Display (défaut)</option>
+                <option value="Playfair Display">Playfair Display</option>
+                <option value="Cormorant Garamond">Cormorant Garamond</option>
+                <option value="Libre Baskerville">Libre Baskerville</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="save-bar">
+        <span class="save-msg" id="sm-design">Modifiez puis sauvegardez.</span>
+        <button class="btn btn-gold" onclick="saveSection('design')">💾 Sauvegarder</button>
+      </div>
+    </div>
+
+    <!-- ══ LIBRARY ══ -->
+    <div class="panel" id="panel-library">
+      <div class="ph">
+        <div><h1>Bibliothèque <em>d'images</em></h1><p id="libCount">—</p></div>
+        <div style="display:flex;gap:.5rem">
+          <button class="btn btn-out btn-sm" onclick="loadLib()">↺ Actualiser</button>
+          <button class="btn btn-ink" onclick="document.getElementById('fileInp').click()">+ Uploader</button>
+        </div>
+      </div>
+      <input type="file" id="fileInp" multiple accept="image/*" style="display:none" onchange="handleFiles(this.files)">
+      <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInp').click()">
+        <span class="dz-ico">☁</span>
+        <div class="dz-t">Glissez vos images ici</div>
+        <div class="dz-s">JPG · PNG · WebP — ou cliquez pour sélectionner</div>
+      </div>
+      <div id="upList"></div>
+      <div style="display:flex;gap:.65rem;margin-bottom:1rem;flex-wrap:wrap">
+        <input type="text" id="libQ" placeholder="Rechercher…" oninput="filterLib()" style="flex:1;min-width:160px;background:var(--bg2);border:1px solid var(--line);padding:.46rem .85rem;font-family:'DM Sans',sans-serif;font-size:.78rem;outline:none;color:var(--ink)">
+        <select id="libCat" onchange="filterLib()" style="background:var(--bg2);border:1px solid var(--line);padding:.46rem .85rem;font-family:'DM Sans',sans-serif;font-size:.78rem;outline:none;color:var(--ink)">
+          <option value="">Toutes catégories</option>
+          <option>voyages</option><option>steam</option><option>saveurs</option><option>dark</option>
+          <option>aristocrate</option><option>millenaire</option><option>formation</option><option>Non classé</option>
+        </select>
+      </div>
+      <div id="imgGrid"></div>
+    </div>
+
+    <!-- ══ MESSAGES ══ -->
+    <div class="panel" id="panel-messages">
+      <div class="ph">
+        <div><h1>Messages</h1><p id="msgCount">—</p></div>
+        <button class="btn btn-out btn-sm" onclick="markAllRead()">✓ Tout lire</button>
+      </div>
+      <div id="msgList"></div>
+    </div>
+
+    <!-- ══ SETTINGS ══ -->
+    <div class="panel" id="panel-settings">
+      <div class="ph"><div><h1>Paramètres</h1><p>Configuration système.</p></div></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+        <div class="card">
+          <div class="card-label">🔌 Connexion Supabase</div>
+          <div class="field"><label>URL du projet</label><input type="text" id="cfg-url"></div>
+          <div class="field"><label>Clé anonyme (anon key)</label><input type="text" id="cfg-key"></div>
+          <button class="btn btn-ink" onclick="saveConfig()" style="margin-top:.5rem">💾 Sauvegarder</button>
+        </div>
+        <div class="card">
+          <div class="card-label">🔒 Mot de passe</div>
+          <div class="field"><label>Nouveau mot de passe</label><input type="password" id="np"></div>
+          <div class="field"><label>Confirmer</label><input type="password" id="cp"></div>
+          <button class="btn btn-ink" onclick="changePwd()" style="margin-top:.5rem">Changer</button>
         </div>
       </div>
     </div>
@@ -555,111 +683,75 @@ tr:hover td { background: rgba(17,16,16,.02); }
   </div><!-- /content -->
 </div><!-- /main -->
 
-<!-- MODALS -->
-
-<!-- Edit Image -->
-<div class="modal-bd" id="m-edit-img">
-  <div class="modal">
-    <div class="modal-hd"><div class="modal-title">Éditer l'image</div><button class="modal-close" onclick="closeModal('m-edit-img')">✕</button></div>
+<!-- ═══ MODAL PROJET ═══ -->
+<div class="modal-bd" id="m-proj">
+  <div class="modal" style="max-width:700px">
+    <div class="modal-hd">
+      <div class="modal-title" id="mpTitle">Nouveau projet</div>
+      <button class="modal-x" onclick="closeM('m-proj')">✕</button>
+    </div>
     <div class="modal-body">
-      <img id="editImgPreview" class="img-preview" src="" alt="">
+      <input type="hidden" id="mp-idx">
       <div class="field-row">
-        <div class="field"><label>Titre</label><input type="text" id="editImgTitle"></div>
-        <div class="field"><label>Catégorie</label>
-          <select id="editImgCat"><option>Branding</option><option>Web</option><option>Painting</option><option>Illustration</option><option>Photos</option><option>Non classé</option></select>
-        </div>
+        <div class="field"><label>Numéro (ordre)</label><input type="number" id="mp-num" min="1"></div>
+        <div class="field"><label>Année</label><input type="number" id="mp-year" value="2024"></div>
       </div>
-      <div class="field"><label>Description</label><textarea id="editImgDesc"></textarea></div>
+      <div class="field"><label>Titre du projet</label><input type="text" id="mp-name"></div>
+      <div class="field"><label>Catégorie / disciplines</label><input type="text" id="mp-cat" placeholder="Digital Painting · Packaging"></div>
       <div class="field">
         <label>Tags (Entrée pour ajouter)</label>
-        <div class="tags-wrap" id="tagsWrap" onclick="document.getElementById('tagInput').focus()"></div>
+        <div class="tags-wrap" id="mpTagsWrap"></div>
       </div>
-      <div class="field"><label>Visible sur le site</label><select id="editImgVisible"><option value="true">Oui</option><option value="false">Non</option></select></div>
       <div class="field">
-        <label>URL publique</label>
-        <div style="display:flex;align-items:center;gap:.65rem">
-          <input type="text" id="editImgUrl" readonly style="font-size:.72rem;color:var(--mid)">
-          <button class="btn btn-outline btn-xs" onclick="copyUrl()">Copier</button>
-        </div>
+        <label>Identifiant du projet (dossier)</label>
+        <input type="text" id="mp-key" placeholder="voyages">
+        <div class="field-hint">Correspond au sous-dossier dans assets/ — ex: assets/voyages/</div>
+      </div>
+      <div class="field">
+        <label>Image de survol (aperçu hover)</label>
+        <input type="text" id="mp-thumb" placeholder="assets/voyages/cappadoce.jpg">
+      </div>
+      <div class="field">
+        <label>Images du carousel (une par ligne)</label>
+        <textarea id="mp-imgs" style="min-height:110px" placeholder="assets/voyages/cartes.jpg&#10;assets/voyages/cappadoce.jpg"></textarea>
       </div>
     </div>
     <div class="modal-ft">
-      <button class="btn btn-danger btn-sm" onclick="deleteCurrentImage()">🗑 Supprimer</button>
-      <button class="btn btn-outline" onclick="closeModal('m-edit-img')">Annuler</button>
-      <button class="btn btn-ink" onclick="saveImageEdit()">💾 Sauvegarder</button>
+      <button class="btn btn-out" onclick="closeM('m-proj')">Annuler</button>
+      <button class="btn btn-gold" onclick="saveProj()">💾 Sauvegarder</button>
     </div>
   </div>
 </div>
 
-<!-- View Image -->
-<div class="modal-bd" id="m-view-img">
-  <div class="modal" style="max-width:860px">
-    <div class="modal-hd"><div class="modal-title" id="viewImgTitle">Image</div><button class="modal-close" onclick="closeModal('m-view-img')">✕</button></div>
-    <div class="modal-body" style="padding:1rem">
-      <img id="viewImgFull" src="" alt="" style="width:100%;max-height:66vh;object-fit:contain;display:block;background:var(--bg2)">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:1rem;flex-wrap:wrap;gap:.75rem">
-        <div id="viewImgMeta" style="font-size:.75rem;color:var(--mid)"></div>
-        <div style="display:flex;gap:.65rem">
-          <button class="btn btn-outline btn-sm" onclick="editFromView()">✎ Éditer</button>
-          <button class="btn btn-ink btn-sm" onclick="copyUrl()">Copier l'URL</button>
-        </div>
-      </div>
+<!-- ═══ MODAL MESSAGE ═══ -->
+<div class="modal-bd" id="m-msg">
+  <div class="modal" style="max-width:540px">
+    <div class="modal-hd">
+      <div class="modal-title" id="mmTitle">Message</div>
+      <button class="modal-x" onclick="closeM('m-msg')">✕</button>
     </div>
-  </div>
-</div>
-
-<!-- New Project -->
-<div class="modal-bd" id="m-new-project">
-  <div class="modal">
-    <div class="modal-hd"><div class="modal-title">Nouveau projet</div><button class="modal-close" onclick="closeModal('m-new-project')">✕</button></div>
     <div class="modal-body">
-      <div class="field"><label>Titre</label><input type="text" id="np-title" placeholder="Titre du projet"></div>
-      <div class="field-row">
-        <div class="field"><label>Catégorie</label><select id="np-cat"><option>Branding</option><option>Web</option><option>Painting</option><option>Illustration</option></select></div>
-        <div class="field"><label>Année</label><input type="number" id="np-year" value="2025"></div>
-      </div>
-      <div class="field"><label>Client</label><input type="text" id="np-client"></div>
-      <div class="field"><label>Description</label><textarea id="np-desc"></textarea></div>
-      <div class="field-row">
-        <div class="field"><label>Publié</label><select id="np-pub"><option value="false">Non</option><option value="true">Oui</option></select></div>
-        <div class="field"><label>En vedette</label><select id="np-feat"><option value="false">Non</option><option value="true">Oui</option></select></div>
-      </div>
+      <div id="mmMeta" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1.2rem"></div>
+      <div id="mmBody" style="background:var(--bg2);border:1px solid var(--line);padding:1.1rem;font-size:.82rem;line-height:1.9;color:var(--mid);white-space:pre-line;max-height:260px;overflow-y:auto"></div>
     </div>
     <div class="modal-ft">
-      <button class="btn btn-outline" onclick="closeModal('m-new-project')">Annuler</button>
-      <button class="btn btn-ink" onclick="createProject()">Créer le projet</button>
+      <button class="btn btn-danger btn-sm" id="mmDel">🗑 Supprimer</button>
+      <button class="btn btn-out" onclick="closeM('m-msg')">Fermer</button>
     </div>
   </div>
 </div>
 
-<!-- Message -->
-<div class="modal-bd" id="m-message">
-  <div class="modal" style="max-width:560px">
-    <div class="modal-hd"><div class="modal-title" id="msgModalTitle">Message</div><button class="modal-close" onclick="closeModal('m-message')">✕</button></div>
-    <div class="modal-body">
-      <div id="msgMeta" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1.25rem"></div>
-      <div id="msgBody" style="background:var(--bg2);border:1px solid var(--line);padding:1.25rem;font-size:.85rem;line-height:1.85;color:var(--mid);white-space:pre-line"></div>
-      <div class="field" style="margin-top:1.25rem"><label>Répondre</label><textarea id="replyTa" placeholder="Votre réponse…"></textarea></div>
-    </div>
-    <div class="modal-ft">
-      <button class="btn btn-danger btn-sm" onclick="deleteCurrentMessage()">🗑</button>
-      <button class="btn btn-outline" onclick="closeModal('m-message')">Fermer</button>
-      <button class="btn btn-ink" onclick="replyMessage()">↩ Répondre</button>
-    </div>
-  </div>
-</div>
-
-<!-- Confirm -->
+<!-- ═══ MODAL CONFIRM ═══ -->
 <div class="modal-bd" id="m-confirm">
-  <div class="modal" style="max-width:400px">
-    <div class="modal-hd"><div class="modal-title">Confirmation</div><button class="modal-close" onclick="closeModal('m-confirm')">✕</button></div>
-    <div class="modal-body" style="text-align:center;padding:2rem">
-      <span class="confirm-ico" id="confirmIco">⚠️</span>
-      <div class="confirm-msg" id="confirmMsg">Êtes-vous sûr ?</div>
+  <div class="modal" style="max-width:380px">
+    <div class="modal-hd"><div class="modal-title">Confirmation</div><button class="modal-x" onclick="closeM('m-confirm')">✕</button></div>
+    <div class="modal-body" style="text-align:center;padding:2rem 1.5rem">
+      <div style="font-size:2.2rem;margin-bottom:.65rem" id="cfIco">⚠️</div>
+      <div style="font-size:.82rem;color:var(--mid);line-height:1.75" id="cfMsg"></div>
     </div>
     <div class="modal-ft">
-      <button class="btn btn-outline" onclick="closeModal('m-confirm')">Annuler</button>
-      <button class="btn btn-danger" id="confirmBtn">Confirmer</button>
+      <button class="btn btn-out" onclick="closeM('m-confirm')">Annuler</button>
+      <button class="btn btn-danger" id="cfBtn">Confirmer</button>
     </div>
   </div>
 </div>
@@ -667,370 +759,535 @@ tr:hover td { background: rgba(17,16,16,.02); }
 <div class="toast" id="toast"></div>
 
 <script>
-let SUPA_URL = localStorage.getItem('supa_url') || 'https://XXXXXXXXXXXXXXXX.supabase.co'
-let SUPA_KEY = localStorage.getItem('supa_key') || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+// ═══════════════════════════════
+//  CONFIG & INIT
+// ═══════════════════════════════
+const SUPA_URL_DEFAULT = 'https://jknabfgvaoonscjnpgvy.supabase.co'
+const SUPA_KEY_DEFAULT = 'sb_publishable_gtJzXyp5VKKxEZNvS_mryg_S9konQR0'
+let SURL = localStorage.getItem('surl') || SUPA_URL_DEFAULT
+let SKEY = localStorage.getItem('skey') || SUPA_KEY_DEFAULT
 const { createClient } = supabase
-let sb = createClient(SUPA_URL, SUPA_KEY)
+let sb = createClient(SURL, SKEY)
 
-let allImages = [], currentView = 'grid', currentImageId = null, currentMessageId = null, editTags = []
-
-async function checkAuth() {
-  // AUTH BYPASS TEMPORAIRE — remettre l'auth quand le mot de passe est réglé
-  document.getElementById('sbUserEmail').textContent = 'aardesign14@gmail.com'
-  return true
+// Default content
+const DEF = {
+  hero:{intro:'Anthony Armand Rodrigues — Digital Painting & Direction Artistique',t1:'Designer,',t2:'illustrateur &',t3:'peintre numérique',desc:'Je construis des univers visuels qui racontent des histoires — du packaging steampunk aux illustrations saisonnières, du character design à la dark fantasy.',scroll:'Défiler'},
+  about:{fn:'Anthony',ln:'Rodrigues',p1:'Designer pluridisciplinaire basé en France. Je travaille à l\'intersection du digital painting, de l\'illustration narrative et de la direction artistique.',p2:'Du packaging premium aux peintures personnelles, chaque projet est une occasion de construire un univers visuel unique, cohérent et mémorable.',cta:'Travaillons ensemble →',stats:[{n:'5+',l:'Années d\'expérience'},{n:'35+',l:'Œuvres réalisées'},{n:'8',l:'Disciplines créatives'},{n:'FR',l:'France · Remote · Int\'l'}]},
+  contact:{t1:'Parlons de',t2:'votre projet',email:'aardesign14@gmail.com',phone:'06 79 46 62 19',ig:'https://instagram.com',be:'https://behance.net',copy:'© 2025 AAR Design — Anthony Armand Rodrigues'},
+  nav:{l1:'Travaux',a1:'#work',l2:'À propos',a2:'#about',l3:'Contact',a3:'#contact',cta:'Démarrer un projet'},
+  marquee:{mq1:['Digital Painting','Direction Artistique','Illustration','Packaging','Character Design','Steampunk','Dark Fantasy','Aquarelle Digitale'],mq2:['Arsène Valentin','Clopinette','Millénaire Caen','Projets personnels']},
+  design:{bg:'#f0ede8',ink:'#111010',mid:'#888580',gold:'#b8945a',bg2:'#e8e4de',line:'#d4d0cb',fontBody:'DM Sans',fontTitle:'DM Serif Display'},
+  projects:[
+    {id:'voyages',num:1,name:'Les Voyages d\'Arsène',cat:'Digital Painting · Packaging · Direction Artistique',tags:['Paysage','Steampunk','Packaging'],year:2024,thumb:'assets/voyages/cappadoce.jpg',images:['assets/voyages/cartes.jpg','assets/voyages/cappadoce.jpg','assets/voyages/pacifique.jpg','assets/voyages/laponie.jpg','assets/voyages/fuji.jpg','assets/voyages/amazonie.jpg','assets/voyages/canada.jpg']},
+    {id:'steam',num:2,name:'Arsène Valentin — Steampunk',cat:'Digital Painting · Packaging · Illustration',tags:['Steampunk','Packaging'],year:2024,thumb:'assets/steam/mockup.jpg',images:['assets/steam/mockup.jpg','assets/steam/main.jpg','assets/steam/sablier.jpg','assets/steam/hibou.jpg','assets/steam/coeur.jpg','assets/steam/gueule.jpg','assets/steam/pomme.jpg']},
+    {id:'dark',num:3,name:'Série Dark',cat:'Digital Painting · Illustration',tags:['Dark Fantasy'],year:2024,thumb:'assets/dark/red.jpg',images:['assets/dark/red.jpg','assets/dark/salem.jpg','assets/dark/blood.jpg','assets/dark/cult.jpg']},
+    {id:'saveurs',num:4,name:'Les Saveurs de Clopinette',cat:'Digital Painting · Illustration · Packaging',tags:['Saisons','Packaging'],year:2024,thumb:'assets/saveurs/hiver.jpg',images:['assets/saveurs/hiver.jpg','assets/saveurs/automne.jpg','assets/saveurs/ete.jpg','assets/saveurs/printemps.jpg','assets/saveurs/renard.png']},
+    {id:'millenaire',num:5,name:'Millénaire Caen',cat:'Digital Painting · Illustration',tags:['Illustration','Historique'],year:2024,thumb:'assets/millenaire/pomme2.jpg',images:['assets/millenaire/pomme2.jpg','assets/millenaire/pomme3.jpg','assets/millenaire/cadomum.jpg']},
+    {id:'aristocrate',num:6,name:'Série Aristocrate',cat:'Illustration · Character Design',tags:['Character Design','Steampunk'],year:2024,thumb:'assets/aristocrate/nanti.jpg',images:['assets/aristocrate/nanti.jpg','assets/aristocrate/veste.jpg','assets/aristocrate/casque.jpg','assets/aristocrate/explorateur.jpg']},
+    {id:'pulse',num:7,name:'Pulse',cat:'Digital Painting · Concept Art',tags:['Abstrait','Énergie'],year:2024,thumb:'assets/pulse.jpg',images:['assets/pulse.jpg']},
+    {id:'formation',num:8,name:'Études & Explorations',cat:'Digital Painting · Formation',tags:['Environnement','Fantasy'],year:2025,thumb:'assets/formation/environnement.jpg',images:['assets/formation/paysage.jpg','assets/formation/environnement.jpg','assets/formation/character.jpg','assets/formation/halloween.jpg','assets/formation/foret.jpg','assets/formation/cathedrale.jpg','assets/formation/sf.jpg','assets/formation/hoth.jpg','assets/formation/mobydick.jpg']}
+  ]
 }
+
+let SD = {} // site data
+let allImgs = [], mpTags = [], mq1 = [], mq2 = []
 
 window.addEventListener('load', async () => {
-  const ok = await checkAuth(); if (!ok) return
-  loadDashboard(); setupDropZone(); setupTagInput(); loadUnreadCount()
+  document.getElementById('cfg-url').value = SURL
+  document.getElementById('cfg-key').value = SKEY
+  await loadSiteData()
+  loadDashboard()
+  setupDrop()
+  setupMpTags()
 })
 
-const panelTitles = {
-  dashboard: ['Dashboard','Vue d\'ensemble'],
-  library:   ['Bibliothèque','Gestion des images'],
-  projects:  ['Projets','Gestion du portfolio'],
-  messages:  ['Messages','Boîte de réception'],
-  settings:  ['Paramètres','Configuration']
+// ═══════════════════════════════
+//  SUPABASE DATA
+// ═══════════════════════════════
+async function loadSiteData() {
+  try {
+    const { data } = await sb.from('site_content').select('*')
+    if (data) data.forEach(r => { SD[r.section] = r.content })
+  } catch(e){}
+  Object.keys(DEF).forEach(k => { if (!SD[k]) SD[k] = JSON.parse(JSON.stringify(DEF[k])) })
+  loadHero(); loadAbout(); loadContact(); loadNav(); loadMarquee(); loadDesign(); renderProjList()
 }
 
-function show(name, el) {
+async function saveSec(section) {
+  const content = SD[section]
+  try {
+    const { error } = await sb.from('site_content').upsert({ section, content, updated_at: new Date().toISOString() }, { onConflict: 'section' })
+    if (error) throw error
+    return true
+  } catch(e) {
+    localStorage.setItem('sd_' + section, JSON.stringify(content))
+    return false
+  }
+}
+
+async function publishSite() {
+  const lbl = document.getElementById('pubLabel')
+  lbl.innerHTML = '<span class="dots"><span></span><span></span><span></span></span>'
+  let ok = true
+  for (const s of Object.keys(SD)) { if (!await saveSec(s)) ok = false }
+  lbl.textContent = '↑ Publier'
+  document.getElementById('publishBtn').style.display = 'none'
+  toast(ok ? '✓ Site mis à jour !' : '⚠ Sauvegardé en local (Supabase indispo)')
+}
+
+function markDirty(sec) {
+  const el = document.getElementById('sm-'+sec)
+  if (el) { el.textContent = '⚠ Modifications non sauvegardées'; el.classList.add('dirty') }
+  document.getElementById('publishBtn').style.display = ''
+}
+function markClean(sec) {
+  const el = document.getElementById('sm-'+sec)
+  if (el) { el.textContent = '✓ Sauvegardé'; el.classList.remove('dirty') }
+}
+
+// ═══════════════════════════════
+//  NAVIGATION
+// ═══════════════════════════════
+const TITLES = {
+  dashboard:['Dashboard','Vue d\'ensemble'],hero:['Hero','Éditeur — Section Hero'],
+  projects:['Projets','Gestion des projets'],about:['À propos','Section À propos'],
+  contact:['Contact','Section Contact'],nav:['Navigation','Barre de navigation'],
+  marquee:['Marquee','Bandeaux défilants'],design:['Design','Couleurs & Typographie'],
+  library:['Bibliothèque','Gestion des images'],messages:['Messages','Boîte de réception'],
+  settings:['Paramètres','Configuration système']
+}
+function nav(name, el) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'))
   document.querySelectorAll('.ni').forEach(n => n.classList.remove('active'))
-  document.getElementById('panel-' + name).classList.add('active')
+  const p = document.getElementById('panel-' + name); if (p) p.classList.add('active')
   if (el) el.classList.add('active')
-  const t = panelTitles[name]
-  if (t) { document.getElementById('pageTitle').textContent = t[0]; document.getElementById('pageBc').textContent = 'AAR Design — ' + t[1] }
-  if (name === 'library')   loadLibrary()
-  if (name === 'projects')  loadProjects()
-  if (name === 'messages')  loadMessages()
+  const t = TITLES[name] || [name, '']
+  document.getElementById('pageTitle').textContent = t[0]
+  document.getElementById('pageSub').textContent = t[1]
+  if (name === 'library')  loadLib()
+  if (name === 'messages') loadMsgs()
   if (name === 'dashboard') loadDashboard()
-  if (name === 'settings')  { document.getElementById('cfg-url').value = SUPA_URL; document.getElementById('cfg-key').value = SUPA_KEY }
+  if (name === 'settings') { document.getElementById('cfg-url').value = SURL; document.getElementById('cfg-key').value = SKEY }
 }
+function qni(i) { return document.querySelectorAll('.ni')[i] }
 
+// ═══════════════════════════════
+//  DASHBOARD
+// ═══════════════════════════════
 async function loadDashboard() {
-  const [imgs, projs, msgs] = await Promise.all([
-    sb.from('images').select('*', { count: 'exact', head: false }),
-    sb.from('projects').select('*', { count: 'exact', head: false }),
-    sb.from('messages').select('*', { count: 'exact', head: false })
-  ])
-  document.getElementById('stat-images').textContent   = imgs.count ?? '—'
-  document.getElementById('stat-projects').textContent = projs.count ?? '—'
-  const unread = msgs.data ? msgs.data.filter(m => !m.read).length : 0
-  document.getElementById('stat-messages').textContent = unread
-  let totalBytes = imgs.data ? imgs.data.reduce((a, i) => a + (i.size || 0), 0) : 0
-  document.getElementById('stat-storage').textContent = formatBytes(totalBytes)
-  const recent = imgs.data ? imgs.data.slice(-5).reverse() : []
-  const rc = document.getElementById('recentImages')
-  rc.innerHTML = recent.length
-    ? recent.map(img => `<div style="aspect-ratio:1;overflow:hidden;background:var(--bg2);border:1px solid var(--line)"><img src="${img.url}" style="width:100%;height:100%;object-fit:cover"></div>`).join('')
-    : '<div style="color:var(--mid);font-size:.75rem;grid-column:1/-1">Aucune image uploadée</div>'
+  const projs = SD.projects || DEF.projects
+  document.getElementById('st-proj').textContent = projs.length
+  try {
+    const [imgs, msgs] = await Promise.all([
+      sb.from('images').select('id', { count:'exact', head:true }),
+      sb.from('messages').select('id').eq('read', false)
+    ])
+    document.getElementById('st-img').textContent = imgs.count ?? '—'
+    const uc = (msgs.data || []).length
+    document.getElementById('st-msg').textContent = uc
+    const b = document.getElementById('msgBadge'); b.textContent = uc; b.style.display = uc ? '' : 'none'
+    const { data: rec } = await sb.from('images').select('url').order('created_at',{ascending:false}).limit(6)
+    const rc = document.getElementById('recentImgs')
+    rc.innerHTML = (rec || []).map(i => `<div style="aspect-ratio:1;overflow:hidden;background:var(--bg2)"><img src="${i.url}" style="width:100%;height:100%;object-fit:cover"></div>`).join('') || '<div style="color:var(--mid);font-size:.7rem;grid-column:1/-1;padding:.5rem 0">Aucune image</div>'
+  } catch(e) { document.getElementById('st-img').textContent = '—'; document.getElementById('st-msg').textContent = '—' }
 }
 
-async function loadUnreadCount() {
-  const { data } = await sb.from('messages').select('id').eq('read', false)
-  const n = data ? data.length : 0
-  const b = document.getElementById('msgBadge')
-  b.textContent = n; b.style.display = n ? '' : 'none'
+// ═══════════════════════════════
+//  HERO
+// ═══════════════════════════════
+function loadHero() {
+  const d = SD.hero || DEF.hero
+  const ids = ['h-intro','h-t1','h-t2','h-t3','h-desc','h-scroll']
+  const keys = ['intro','t1','t2','t3','desc','scroll']
+  ids.forEach((id,i) => { const el = document.getElementById(id); if (el) { el.value = d[keys[i]] || ''; el.oninput = () => markDirty('hero') } })
 }
 
-async function loadLibrary() {
-  document.getElementById('imagesContainer').innerHTML =
-    '<div class="loading-grid">' + Array(8).fill(0).map(() => '<div class="skeleton" style="aspect-ratio:1"></div>').join('') + '</div>'
-  const { data, error } = await sb.from('images').select('*').order('created_at', { ascending: false })
-  if (error) { toast('Erreur chargement', 'err'); return }
-  allImages = data || []
-  document.getElementById('lib-count').textContent = allImages.length + ' image' + (allImages.length > 1 ? 's' : '') + ' dans la bibliothèque'
-  renderImages(allImages)
+// ═══════════════════════════════
+//  ABOUT
+// ═══════════════════════════════
+function loadAbout() {
+  const d = SD.about || DEF.about
+  ;['fn','ln','p1','p2','cta'].forEach(k => { const el = document.getElementById('ab-'+k); if (el) { el.value = d[k] || ''; el.oninput = () => markDirty('about') } })
+  const g = document.getElementById('statsGrid')
+  const stats = d.stats || DEF.about.stats
+  g.innerHTML = stats.map((s,i) => `
+    <div class="card" style="padding:.95rem">
+      <div class="card-label">Stat ${i+1}</div>
+      <div class="field" style="margin-bottom:.6rem"><label>Valeur</label><input type="text" id="stn-${i}" value="${s.n}" oninput="markDirty('about')"></div>
+      <div class="field" style="margin-bottom:0"><label>Label</label><input type="text" id="stl-${i}" value="${s.l}" oninput="markDirty('about')"></div>
+    </div>`).join('')
 }
 
-function renderImages(images) {
-  const c = document.getElementById('imagesContainer')
-  if (!images.length) { c.innerHTML = '<div class="empty-state"><span class="empty-ico">🖼</span><div class="empty-txt">Aucune image</div><div class="empty-sub">Uploadez vos premières images ci-dessus</div></div>'; return }
-  c.innerHTML = currentView === 'grid'
-    ? '<div class="img-grid">' + images.map(renderImgCard).join('') + '</div>'
-    : '<div class="img-list">' + images.map(renderImgListItem).join('') + '</div>'
+// ═══════════════════════════════
+//  CONTACT
+// ═══════════════════════════════
+function loadContact() {
+  const d = SD.contact || DEF.contact
+  ;['t1','t2','email','phone','ig','be','copy'].forEach(k => { const el = document.getElementById('ct-'+k); if (el) { el.value = d[k] || ''; el.oninput = () => markDirty('contact') } })
 }
 
-function renderImgCard(img) {
-  const h = img.url && img.url.length > 10
-  return `<div class="img-card" data-id="${img.id}">
-    ${h ? `<img class="img-card-thumb" src="${img.url}" loading="lazy">` : `<div class="img-card-thumb-ph">🖼</div>`}
-    <div class="img-card-overlay">
-      <div class="img-card-actions">
-        <button class="btn btn-outline btn-xs" style="color:#fff;border-color:rgba(255,255,255,.25)" onclick="event.stopPropagation();viewImage('${img.id}')">👁 Voir</button>
-        <button class="btn btn-xs btn-gold" onclick="event.stopPropagation();editImage('${img.id}')">✎</button>
-      </div>
-      <button class="btn btn-danger btn-xs" onclick="event.stopPropagation();confirmDelete('${img.id}','${(img.title||'').replace(/'/g,"\\'")}')">🗑</button>
-    </div>
-    <div class="img-card-meta">
-      <div class="img-card-title">${img.title || img.filename || 'Sans titre'}</div>
-      <div class="img-card-cat">${img.category || 'Non classé'}</div>
-      <div class="img-card-size">${formatBytes(img.size)}</div>
-    </div>
-  </div>`
+// ═══════════════════════════════
+//  NAV
+// ═══════════════════════════════
+function loadNav() {
+  const d = SD.nav || DEF.nav
+  ;['l1','a1','l2','a2','l3','a3','cta'].forEach(k => { const el = document.getElementById('nv-'+k); if (el) { el.value = d[k] || ''; el.oninput = () => markDirty('nav') } })
 }
 
-function renderImgListItem(img) {
-  const h = img.url && img.url.length > 10
-  return `<div class="img-list-item"><div>${h ? `<img class="ili-thumb" src="${img.url}" loading="lazy">` : `<div class="ili-thumb-ph">🖼</div>`}</div>
-    <div class="ili-info"><div class="ili-title">${img.title || img.filename || 'Sans titre'}</div><div class="ili-meta"><span>${img.category || 'Non classé'}</span><span>${formatBytes(img.size)}</span><span>${new Date(img.created_at).toLocaleDateString('fr')}</span></div></div>
-    <div class="ili-actions"><button class="btn btn-outline btn-xs" onclick="viewImage('${img.id}')">👁</button><button class="btn btn-outline btn-xs" onclick="editImage('${img.id}')">✎</button><button class="btn btn-danger btn-xs" onclick="confirmDelete('${img.id}','${(img.title||'').replace(/'/g,"\\'")}')">🗑</button></div>
-  </div>`
+// ═══════════════════════════════
+//  MARQUEE
+// ═══════════════════════════════
+function loadMarquee() {
+  const d = SD.marquee || DEF.marquee
+  mq1 = [...(d.mq1 || DEF.marquee.mq1)]
+  mq2 = [...(d.mq2 || DEF.marquee.mq2)]
+  renderMq(1); renderMq(2)
+  document.getElementById('mq1-in').onkeydown = e => { if (e.key==='Enter') mqAdd(1) }
+  document.getElementById('mq2-in').onkeydown = e => { if (e.key==='Enter') mqAdd(2) }
+}
+function renderMq(n) {
+  const items = n===1 ? mq1 : mq2
+  document.getElementById('mq'+n+'-items').innerHTML = items.map((t,i) => `
+    <div class="mq-pill">${t}<button onclick="mqRm(${n},${i})" title="Supprimer">×</button></div>`).join('')
+}
+function mqAdd(n) {
+  const inp = document.getElementById('mq'+n+'-in'), v = inp.value.trim(); if (!v) return
+  if (n===1) mq1.push(v); else mq2.push(v)
+  renderMq(n); inp.value = ''; markDirty('marquee')
+}
+function mqRm(n,i) { if (n===1) mq1.splice(i,1); else mq2.splice(i,1); renderMq(n); markDirty('marquee') }
+
+// ═══════════════════════════════
+//  DESIGN
+// ═══════════════════════════════
+function loadDesign() {
+  const d = SD.design || DEF.design
+  const map = {bg:'#f0ede8',ink:'#111010',mid:'#888580',gold:'#b8945a',bg2:'#e8e4de',line:'#d4d0cb'}
+  Object.entries(map).forEach(([k,def]) => { const v = d[k]||def; const el = document.getElementById('cl-'+k); if (el) { el.value = v; pvColor(k,v) } })
+  const fb = document.getElementById('ft-body'), ft = document.getElementById('ft-title')
+  if (fb) fb.value = d.fontBody || 'DM Sans'
+  if (ft) ft.value = d.fontTitle || 'DM Serif Display'
+}
+function pvColor(k, v) { const el = document.getElementById('pv-'+k); if (el) { el.style.background = v; el.textContent = v } }
+function presetLight() {
+  const lc = {bg:'#f0ede8',ink:'#111010',mid:'#888580',gold:'#b8945a',bg2:'#e8e4de',line:'#d4d0cb'}
+  Object.entries(lc).forEach(([k,v]) => { const el = document.getElementById('cl-'+k); if (el) { el.value = v; pvColor(k,v) } })
+  markDirty('design')
+}
+function presetDark() {
+  const dc = {bg:'#0f0e0c',ink:'#f0ede8',mid:'#666260',gold:'#b8945a',bg2:'#1a1917',line:'#2a2826'}
+  Object.entries(dc).forEach(([k,v]) => { const el = document.getElementById('cl-'+k); if (el) { el.value = v; pvColor(k,v) } })
+  markDirty('design')
 }
 
-function filterImages() {
-  const q = document.getElementById('libSearch').value.toLowerCase()
-  const cat = document.getElementById('catFilter').value
-  const sort = document.getElementById('sortFilter').value
-  let imgs = allImages.filter(img => {
-    const mq = !q || (img.title||img.filename||'').toLowerCase().includes(q) || (img.tags||[]).some(t => t.toLowerCase().includes(q))
-    return mq && (!cat || img.category === cat)
-  })
-  if (sort === 'newest') imgs.sort((a,b) => new Date(b.created_at) - new Date(a.created_at))
-  if (sort === 'oldest') imgs.sort((a,b) => new Date(a.created_at) - new Date(b.created_at))
-  if (sort === 'name')   imgs.sort((a,b) => (a.title||a.filename||'').localeCompare(b.title||b.filename||''))
-  if (sort === 'size')   imgs.sort((a,b) => (b.size||0) - (a.size||0))
-  renderImages(imgs)
-}
-
-function setView(v) { currentView = v; document.getElementById('gridBtn').classList.toggle('active', v==='grid'); document.getElementById('listBtn').classList.toggle('active', v==='list'); filterImages() }
-function triggerUpload() { document.getElementById('fileInput').click() }
-
-function setupDropZone() {
-  const dz = document.getElementById('dropZone')
-  dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('dragover') })
-  dz.addEventListener('dragleave', () => dz.classList.remove('dragover'))
-  dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('dragover'); handleFiles(e.dataTransfer.files) })
-}
-
-async function handleFiles(files) {
-  if (!files.length) return
-  const prog = document.getElementById('uploadProgress')
-  prog.classList.add('show'); prog.innerHTML = ''
-  for (const file of Array.from(files)) {
-    if (!file.type.startsWith('image/')) { toast(file.name + ' — pas une image', 'err'); continue }
-    const id = 'up_' + Date.now() + Math.random().toString(36).slice(2)
-    prog.insertAdjacentHTML('beforeend', `<div class="up-item" id="${id}"><img class="up-thumb" src="${URL.createObjectURL(file)}"><div class="up-info"><div class="up-name">${file.name}</div><div class="up-bar-w"><div class="up-bar" id="bar_${id}"></div></div></div><div class="up-status" id="st_${id}">Upload…</div></div>`)
-    await uploadFile(file, id)
+// ═══════════════════════════════
+//  SAVE SECTIONS
+// ═══════════════════════════════
+async function saveSection(sec) {
+  if (sec==='hero') SD.hero = {intro:v('h-intro'),t1:v('h-t1'),t2:v('h-t2'),t3:v('h-t3'),desc:v('h-desc'),scroll:v('h-scroll')}
+  else if (sec==='about') {
+    const stats = []
+    for (let i=0;i<4;i++) stats.push({n:v('stn-'+i),l:v('stl-'+i)})
+    SD.about = {fn:v('ab-fn'),ln:v('ab-ln'),p1:v('ab-p1'),p2:v('ab-p2'),cta:v('ab-cta'),stats}
   }
-  setTimeout(() => { prog.classList.remove('show'); prog.innerHTML = '' }, 3000)
-  loadLibrary(); loadDashboard()
+  else if (sec==='contact') SD.contact = {t1:v('ct-t1'),t2:v('ct-t2'),email:v('ct-email'),phone:v('ct-phone'),ig:v('ct-ig'),be:v('ct-be'),copy:v('ct-copy')}
+  else if (sec==='nav') SD.nav = {l1:v('nv-l1'),a1:v('nv-a1'),l2:v('nv-l2'),a2:v('nv-a2'),l3:v('nv-l3'),a3:v('nv-a3'),cta:v('nv-cta')}
+  else if (sec==='marquee') SD.marquee = {mq1:[...mq1],mq2:[...mq2]}
+  else if (sec==='design') SD.design = {bg:v('cl-bg'),ink:v('cl-ink'),mid:v('cl-mid'),gold:v('cl-gold'),bg2:v('cl-bg2'),line:v('cl-line'),fontBody:v('ft-body'),fontTitle:v('ft-title')}
+  await saveSec(sec)
+  markClean(sec)
+  document.getElementById('publishBtn').style.display = ''
+  toast('✓ ' + sec.charAt(0).toUpperCase()+sec.slice(1) + ' sauvegardé !')
 }
+function v(id) { const el = document.getElementById(id); return el ? el.value : '' }
 
-async function uploadFile(file, itemId) {
-  const bar = document.getElementById('bar_' + itemId), stat = document.getElementById('st_' + itemId)
-  const ext = file.name.split('.').pop()
-  const path = Date.now() + '_' + Math.random().toString(36).slice(2) + '.' + ext
-  let p = 0
-  const iv = setInterval(() => { p = Math.min(p + Math.random() * 25, 85); bar.style.width = p + '%' }, 200)
-  const { error: upErr } = await sb.storage.from('images').upload(path, file, { cacheControl: '3600', upsert: false })
-  clearInterval(iv)
-  if (upErr) { bar.style.width = '100%'; bar.style.background = 'var(--red)'; stat.textContent = 'Erreur'; stat.className = 'up-status err'; return }
-  const { data: { publicUrl } } = sb.storage.from('images').getPublicUrl(path)
-  bar.style.width = '100%'
-  let w = null, h = null
-  try { const bmp = await createImageBitmap(file); w = bmp.width; h = bmp.height } catch(e) {}
-  const { error: dbErr } = await sb.from('images').insert({ title: file.name.replace(/\.[^.]+$/, ''), filename: file.name, url: publicUrl, size: file.size, category: 'Non classé', width: w, height: h, visible: true })
-  stat.textContent = dbErr ? 'Erreur DB' : '✓ OK'; stat.className = 'up-status ' + (dbErr ? 'err' : 'done')
-}
-
-function viewImage(id) {
-  const img = allImages.find(i => i.id === id); if (!img) return
-  currentImageId = id
-  document.getElementById('viewImgTitle').textContent = img.title || img.filename || 'Image'
-  document.getElementById('viewImgFull').src = img.url
-  document.getElementById('viewImgMeta').innerHTML = `<span class="tag tag-gold" style="margin-right:.5rem">${img.category||'Non classé'}</span>${img.width ? img.width+'×'+img.height+'px · ':''} ${formatBytes(img.size)} · ${new Date(img.created_at).toLocaleDateString('fr')}`
-  openModal('m-view-img')
-}
-
-function editImage(id) {
-  closeModal('m-view-img')
-  const img = allImages.find(i => i.id === id); if (!img) return
-  currentImageId = id
-  document.getElementById('editImgPreview').src   = img.url
-  document.getElementById('editImgTitle').value   = img.title || ''
-  document.getElementById('editImgDesc').value    = img.description || ''
-  document.getElementById('editImgCat').value     = img.category || 'Non classé'
-  document.getElementById('editImgVisible').value = img.visible ? 'true' : 'false'
-  document.getElementById('editImgUrl').value     = img.url || ''
-  editTags = img.tags || []; renderTagPills(); openModal('m-edit-img')
-}
-
-function editFromView() { editImage(currentImageId) }
-
-async function saveImageEdit() {
-  const { error } = await sb.from('images').update({ title: document.getElementById('editImgTitle').value, description: document.getElementById('editImgDesc').value, category: document.getElementById('editImgCat').value, visible: document.getElementById('editImgVisible').value === 'true', tags: editTags }).eq('id', currentImageId)
-  if (error) { toast('Erreur sauvegarde', 'err'); return }
-  toast('✓ Image mise à jour'); closeModal('m-edit-img'); loadLibrary()
-}
-
-function copyUrl() {
-  const url = document.getElementById('editImgUrl').value || document.getElementById('viewImgFull').src
-  navigator.clipboard.writeText(url).then(() => toast('✓ URL copiée !'))
-}
-
-function confirmDelete(id, name) {
-  currentImageId = id
-  document.getElementById('confirmIco').textContent = '🗑'
-  document.getElementById('confirmMsg').innerHTML = `Supprimer <strong>${name}</strong> ?<br><small style="color:var(--red)">Irréversible.</small>`
-  document.getElementById('confirmBtn').onclick = () => { closeModal('m-confirm'); deleteImage(id) }
-  openModal('m-confirm')
-}
-
-function deleteCurrentImage() { confirmDelete(currentImageId, 'cette image') }
-
-async function deleteImage(id) {
-  const img = allImages.find(i => i.id === id)
-  if (img) { const parts = img.url.split('/images/'); if (parts[1]) await sb.storage.from('images').remove([parts[1]]) }
-  const { error } = await sb.from('images').delete().eq('id', id)
-  if (error) { toast('Erreur', 'err'); return }
-  toast('✓ Image supprimée'); closeModal('m-edit-img'); loadLibrary()
-}
-
-function confirmDeleteAll() {
-  document.getElementById('confirmIco').textContent = '☢️'
-  document.getElementById('confirmMsg').innerHTML = '<strong>Vider toute la bibliothèque ?</strong><br><small style="color:var(--red)">Irréversible.</small>'
-  document.getElementById('confirmBtn').onclick = async () => {
-    closeModal('m-confirm')
-    await sb.from('images').delete().neq('id', '00000000-0000-0000-0000-000000000000')
-    toast('✓ Bibliothèque vidée'); loadLibrary()
-  }
-  openModal('m-confirm')
-}
-
-function setupTagInput() {
-  const wrap = document.getElementById('tagsWrap')
-  const input = document.createElement('input')
-  input.id = 'tagInput'; input.className = 'tag-input'; input.placeholder = 'Ajouter un tag…'
-  input.addEventListener('keydown', e => {
-    if ((e.key === 'Enter' || e.key === ',') && input.value.trim()) {
-      e.preventDefault(); const tag = input.value.trim().replace(',', '')
-      if (!editTags.includes(tag)) { editTags.push(tag); renderTagPills() }
-      input.value = ''
-    }
-    if (e.key === 'Backspace' && !input.value && editTags.length) { editTags.pop(); renderTagPills() }
-  })
-  wrap.appendChild(input)
-}
-
-function renderTagPills() {
-  const wrap = document.getElementById('tagsWrap'), input = document.getElementById('tagInput')
-  wrap.innerHTML = ''
-  editTags.forEach((tag, i) => {
-    const pill = document.createElement('span'); pill.className = 'tag-pill'
-    pill.innerHTML = `${tag}<button onclick="removeTag(${i})">×</button>`; wrap.appendChild(pill)
-  })
-  wrap.appendChild(input)
-}
-function removeTag(i) { editTags.splice(i, 1); renderTagPills() }
-
-async function loadProjects() {
-  const { data, error } = await sb.from('projects').select('*').order('created_at', { ascending: false })
-  if (error) { toast('Erreur projets', 'err'); return }
-  document.getElementById('proj-count').textContent = data.length + ' projet' + (data.length > 1 ? 's' : '')
-  const tbody = document.getElementById('projectsBody')
-  if (!data.length) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--mid);padding:3rem">Aucun projet</td></tr>'; return }
-  tbody.innerHTML = data.map(p => `<tr>
-    <td><div style="font-weight:400">${p.title}</div><div style="font-size:.68rem;color:var(--mid)">${p.slug}</div></td>
-    <td><span class="tag tag-gold">${p.category||'—'}</span></td>
-    <td>${p.published ? '<span class="tag tag-green">Publié</span>' : '<span class="tag tag-dim">Brouillon</span>'}</td>
-    <td style="color:var(--mid)">${p.year||'—'}</td>
-    <td><button class="btn btn-danger btn-xs" onclick="deleteProject('${p.id}')">🗑</button></td>
-  </tr>`).join('')
-}
-
-async function createProject() {
-  const { error } = await sb.from('projects').insert({ title: document.getElementById('np-title').value, slug: document.getElementById('np-title').value.toLowerCase().replace(/[^a-z0-9]+/g,'-'), category: document.getElementById('np-cat').value, year: parseInt(document.getElementById('np-year').value), client: document.getElementById('np-client').value, description: document.getElementById('np-desc').value, published: document.getElementById('np-pub').value === 'true', featured: document.getElementById('np-feat').value === 'true' })
-  if (error) { toast('Erreur création', 'err'); return }
-  toast('✓ Projet créé !'); closeModal('m-new-project'); loadProjects()
-}
-
-async function deleteProject(id) {
-  const { error } = await sb.from('projects').delete().eq('id', id)
-  if (error) { toast('Erreur', 'err'); return }
-  toast('✓ Projet supprimé'); loadProjects()
-}
-
-async function loadMessages() {
-  const { data, error } = await sb.from('messages').select('*').order('created_at', { ascending: false })
-  if (error) { toast('Erreur messages', 'err'); return }
-  const unread = data.filter(m => !m.read).length
-  document.getElementById('msg-count').textContent = data.length + ' message' + (data.length > 1 ? 's' : '') + ' · ' + unread + ' non lu' + (unread > 1 ? 's' : '')
-  const b = document.getElementById('msgBadge'); b.textContent = unread || ''; b.style.display = unread ? '' : 'none'
-  const list = document.getElementById('msgList')
-  if (!data.length) { list.innerHTML = '<div class="empty-state"><span class="empty-ico">✉</span><div class="empty-txt">Aucun message</div></div>'; return }
-  list.innerHTML = data.map(m => `
-    <div style="background:var(--bg);border:1px solid ${m.read ? 'var(--line)' : 'var(--gold)'};border-left:${m.read ? '1px' : '2px'} solid ${m.read ? 'var(--line)' : 'var(--gold)'};padding:1rem 1.25rem;cursor:pointer;transition:all .2s;display:grid;grid-template-columns:1fr auto;gap:.5rem;align-items:start" onclick="openMessage('${m.id}')">
-      <div>
-        <div style="font-weight:400;font-size:.85rem">${m.firstname||''} ${m.lastname||''}</div>
-        <div style="font-size:.75rem;color:var(--mid);margin-top:.15rem">${m.project_type||'Message'}</div>
-        <div style="font-size:.7rem;color:rgba(136,133,128,.5);margin-top:.35rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:480px">${(m.message||'').slice(0,100)}…</div>
+// ═══════════════════════════════
+//  PROJECTS
+// ═══════════════════════════════
+function renderProjList() {
+  const projs = SD.projects || DEF.projects
+  const list = document.getElementById('projList')
+  list.innerHTML = projs.map((p,i) => `
+    <div class="proj-item" draggable="true" data-i="${i}" ondragstart="dStart(event,${i})" ondragover="dOver(event)" ondrop="dDrop(event,${i})" ondragend="dEnd()">
+      <span class="proj-num">${String(p.num||i+1).padStart(2,'0')}</span>
+      <img class="proj-thumb-sm" src="${p.thumb}" onerror="this.style.background='var(--bg3)'">
+      <div class="proj-info">
+        <div class="proj-name">${p.name}</div>
+        <div class="proj-cat">${p.cat}</div>
       </div>
-      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:.35rem">
-        <div style="font-size:.62rem;color:var(--mid)">${new Date(m.created_at).toLocaleDateString('fr')}</div>
-        ${!m.read ? '<div style="width:5px;height:5px;background:var(--gold);border-radius:50%"></div>' : ''}
+      <div class="proj-acts">
+        <button class="btn btn-out btn-xs" onclick="openProj(${i})">✎ Éditer</button>
+        <button class="btn btn-danger btn-xs" onclick="delProj(${i})">🗑</button>
       </div>
     </div>`).join('')
 }
 
-async function openMessage(id) {
-  const { data } = await sb.from('messages').select('*').eq('id', id).single()
-  if (!data) return
-  currentMessageId = id
-  await sb.from('messages').update({ read: true }).eq('id', id)
-  loadMessages()
-  document.getElementById('msgModalTitle').textContent = `${data.firstname||''} ${data.lastname||''}`
-  document.getElementById('msgMeta').innerHTML = `
-    <div><div style="font-size:.52rem;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);margin-bottom:.28rem">Email</div><div style="font-size:.8rem">${data.email}</div></div>
-    <div><div style="font-size:.52rem;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);margin-bottom:.28rem">Projet</div><div style="font-size:.8rem">${data.project_type||'—'}</div></div>
-    <div><div style="font-size:.52rem;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);margin-bottom:.28rem">Date</div><div style="font-size:.8rem">${new Date(data.created_at).toLocaleDateString('fr')}</div></div>`
-  document.getElementById('msgBody').textContent = data.message || ''
-  openModal('m-message')
+function openProj(i) {
+  const projs = SD.projects || DEF.projects
+  const p = i === -1 ? null : projs[i]
+  document.getElementById('mpTitle').textContent = p ? 'Modifier — ' + p.name : 'Nouveau projet'
+  document.getElementById('mp-idx').value = i
+  document.getElementById('mp-num').value = p ? p.num : projs.length + 1
+  document.getElementById('mp-year').value = p ? p.year : 2024
+  document.getElementById('mp-name').value = p ? p.name : ''
+  document.getElementById('mp-cat').value = p ? p.cat : ''
+  document.getElementById('mp-key').value = p ? p.id : ''
+  document.getElementById('mp-thumb').value = p ? p.thumb : ''
+  document.getElementById('mp-imgs').value = p ? (p.images||[]).join('\n') : ''
+  mpTags = p ? [...(p.tags||[])] : []
+  renderMpTags()
+  openM('m-proj')
 }
 
-async function deleteCurrentMessage() {
-  const { error } = await sb.from('messages').delete().eq('id', currentMessageId)
-  if (error) { toast('Erreur', 'err'); return }
-  toast('✓ Message supprimé'); closeModal('m-message'); loadMessages()
+function saveProj() {
+  const i = parseInt(document.getElementById('mp-idx').value)
+  const projs = [...(SD.projects || DEF.projects)]
+  const proj = {
+    id: v('mp-key'), num: parseInt(v('mp-num')) || 1,
+    name: v('mp-name'), cat: v('mp-cat'), tags: [...mpTags],
+    year: parseInt(v('mp-year')) || 2024,
+    thumb: v('mp-thumb'),
+    images: v('mp-imgs').split('\n').map(s=>s.trim()).filter(Boolean)
+  }
+  if (i === -1) projs.push(proj)
+  else projs[i] = proj
+  projs.sort((a,b) => (a.num||99) - (b.num||99))
+  SD.projects = projs; renderProjList()
+  saveSec('projects'); toast('✓ Projet sauvegardé !')
+  document.getElementById('publishBtn').style.display = ''
+  closeM('m-proj')
 }
-function replyMessage() { toast('Configure un service email pour l\'envoi réel'); closeModal('m-message') }
-async function markAllRead() { await sb.from('messages').update({ read: true }).eq('read', false); toast('✓ Tous lus'); loadMessages() }
 
+function delProj(i) {
+  const projs = SD.projects || DEF.projects
+  document.getElementById('cfIco').textContent = '🗑'
+  document.getElementById('cfMsg').innerHTML = `Supprimer <strong>${projs[i].name}</strong> ?`
+  document.getElementById('cfBtn').onclick = () => {
+    projs.splice(i,1); projs.forEach((p,j) => p.num=j+1)
+    SD.projects = [...projs]; renderProjList(); saveSec('projects'); toast('✓ Projet supprimé'); closeM('m-confirm')
+  }
+  openM('m-confirm')
+}
+
+async function saveProjOrder() { await saveSec('projects'); markClean('projects'); toast('✓ Ordre sauvegardé !') }
+
+// Drag
+let dIdx = null
+function dStart(e,i) { dIdx=i; e.currentTarget.classList.add('dragging') }
+function dEnd() { document.querySelectorAll('.proj-item').forEach(el=>el.classList.remove('dragging')) }
+function dOver(e) { e.preventDefault() }
+function dDrop(e,to) {
+  e.preventDefault(); if (dIdx===null||dIdx===to) return
+  const p = [...(SD.projects||DEF.projects)]
+  const moved = p.splice(dIdx,1)[0]; p.splice(to,0,moved)
+  p.forEach((x,j)=>x.num=j+1); SD.projects=p; renderProjList(); markDirty('projects'); dIdx=null
+}
+
+// Project tags
+function setupMpTags() {
+  const wrap = document.getElementById('mpTagsWrap')
+  const inp = document.createElement('input')
+  inp.id='mpTagInp'; inp.className='tag-inp'; inp.placeholder='Ajouter un tag…'
+  inp.addEventListener('keydown', e => {
+    if ((e.key==='Enter'||e.key===',') && inp.value.trim()) {
+      e.preventDefault(); const t=inp.value.trim().replace(',','')
+      if (!mpTags.includes(t)) { mpTags.push(t); renderMpTags() }
+      inp.value = ''
+    }
+    if (e.key==='Backspace' && !inp.value && mpTags.length) { mpTags.pop(); renderMpTags() }
+  })
+  wrap.appendChild(inp)
+}
+function renderMpTags() {
+  const wrap=document.getElementById('mpTagsWrap'), inp=document.getElementById('mpTagInp')
+  wrap.innerHTML = ''
+  mpTags.forEach((t,i) => {
+    const pill=document.createElement('span'); pill.className='pill'
+    pill.innerHTML=`${t}<button type="button" onclick="mpTags.splice(${i},1);renderMpTags()">×</button>`
+    wrap.appendChild(pill)
+  })
+  wrap.appendChild(inp)
+}
+
+// ═══════════════════════════════
+//  LIBRARY
+// ═══════════════════════════════
+async function loadLib() {
+  document.getElementById('imgGrid').innerHTML = '<div class="empty"><span class="empty-ico">⊞</span><div class="empty-t">Chargement…</div></div>'
+  try {
+    const { data } = await sb.from('images').select('*').order('created_at',{ascending:false})
+    allImgs = data || []
+    document.getElementById('libCount').textContent = allImgs.length + ' image' + (allImgs.length>1?'s':'')
+    renderLib(allImgs)
+  } catch(e) {
+    document.getElementById('imgGrid').innerHTML = '<div class="empty"><span class="empty-ico">⊠</span><div class="empty-t">Bibliothèque indisponible</div><div class="empty-s">Configurez la connexion Supabase dans Paramètres.</div></div>'
+  }
+}
+
+function renderLib(imgs) {
+  const g = document.getElementById('imgGrid')
+  if (!imgs.length) { g.innerHTML = '<div class="empty"><span class="empty-ico">⊞</span><div class="empty-t">Aucune image</div></div>'; return }
+  g.innerHTML = '<div class="img-grid">' + imgs.map(img => `
+    <div class="img-th">
+      <img src="${img.url}" loading="lazy" alt="">
+      <div class="img-th-ov">
+        <button class="btn btn-out btn-xs" style="color:#fff;border-color:rgba(255,255,255,.3)" onclick="cpURL('${img.url}')">Copier URL</button>
+        <button class="btn btn-danger btn-xs" onclick="rmImg('${img.id}','${img.url}')">🗑</button>
+      </div>
+      <div class="img-th-name">${img.title||img.filename||'—'}</div>
+    </div>`).join('') + '</div>'
+}
+
+function filterLib() {
+  const q = document.getElementById('libQ').value.toLowerCase()
+  const cat = document.getElementById('libCat').value
+  renderLib(allImgs.filter(i => (!q||(i.title||i.filename||'').toLowerCase().includes(q)) && (!cat||i.category===cat)))
+}
+
+function cpURL(url) { navigator.clipboard.writeText(url).then(() => toast('✓ URL copiée !')) }
+
+async function rmImg(id, url) {
+  try {
+    const parts = url.split('/images/'); if (parts[1]) await sb.storage.from('images').remove([parts[1]])
+    await sb.from('images').delete().eq('id', id)
+    toast('✓ Image supprimée'); loadLib()
+  } catch(e) { toast('Erreur', 'err') }
+}
+
+function setupDrop() {
+  const dz = document.getElementById('dropZone'); if (!dz) return
+  dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('over') })
+  dz.addEventListener('dragleave', () => dz.classList.remove('over'))
+  dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('over'); handleFiles(e.dataTransfer.files) })
+}
+
+async function handleFiles(files) {
+  if (!files.length) return
+  const ul = document.getElementById('upList'); ul.innerHTML = ''
+  for (const file of Array.from(files)) {
+    if (!file.type.startsWith('image/')) continue
+    const rid = 'r'+Date.now()+Math.random().toString(36).slice(2)
+    ul.insertAdjacentHTML('beforeend', `
+      <div class="uprow" id="${rid}">
+        <img class="uprow-thumb" src="${URL.createObjectURL(file)}">
+        <div style="flex:1">
+          <div class="uprow-name">${file.name}</div>
+          <div class="uprow-bar"><div class="uprow-fill" id="f${rid}" style="width:0"></div></div>
+        </div>
+        <div class="uprow-st" id="s${rid}">↑ Upload</div>
+      </div>`)
+    await uploadOne(file, rid)
+  }
+  setTimeout(() => { ul.innerHTML = '' }, 2800)
+  loadLib()
+}
+
+async function uploadOne(file, rid) {
+  const bar = document.getElementById('f'+rid), st = document.getElementById('s'+rid)
+  const ext = file.name.split('.').pop()
+  const path = Date.now()+'_'+Math.random().toString(36).slice(2)+'.'+ext
+  let p = 0; const iv = setInterval(() => { p = Math.min(p+Math.random()*22, 82); bar.style.width = p+'%' }, 180)
+  try {
+    const { error: ue } = await sb.storage.from('images').upload(path, file, { cacheControl:'3600', upsert:false })
+    clearInterval(iv); if (ue) throw ue
+    const { data: { publicUrl } } = sb.storage.from('images').getPublicUrl(path)
+    bar.style.width = '100%'
+    let w=null,h=null; try { const b=await createImageBitmap(file); w=b.width; h=b.height } catch(e2){}
+    await sb.from('images').insert({ title:file.name.replace(/\.[^.]+$/,''), filename:file.name, url:publicUrl, size:file.size, category:'Non classé', width:w, height:h, visible:true })
+    st.textContent = '✓'; st.style.color = 'var(--green)'
+  } catch(e) { clearInterval(iv); bar.style.background='var(--red)'; st.textContent='Erreur'; st.style.color='var(--red)' }
+}
+
+// ═══════════════════════════════
+//  MESSAGES
+// ═══════════════════════════════
+let curMsg = null
+async function loadMsgs() {
+  try {
+    const { data } = await sb.from('messages').select('*').order('created_at',{ascending:false})
+    const unread = (data||[]).filter(m=>!m.read).length
+    document.getElementById('msgCount').textContent = (data||[]).length + ' messages · ' + unread + ' non lus'
+    const b = document.getElementById('msgBadge'); b.textContent = unread; b.style.display = unread ? '' : 'none'
+    const list = document.getElementById('msgList')
+    if (!data||!data.length) { list.innerHTML = '<div class="empty"><span class="empty-ico">⊠</span><div class="empty-t">Aucun message</div></div>'; return }
+    list.innerHTML = data.map(m => `
+      <div class="msg-item ${m.read?'read':'unread'}" onclick="openMsg('${m.id}')">
+        <div>
+          <div class="msg-from">${m.firstname||''} ${m.lastname||''} <span style="font-size:.68rem;color:var(--mid)">— ${m.email||''}</span></div>
+          <div class="msg-preview">${(m.message||'').slice(0,120)}</div>
+        </div>
+        <div style="text-align:right">
+          <div class="msg-date">${new Date(m.created_at).toLocaleDateString('fr')}</div>
+          ${!m.read ? '<div class="msg-dot"></div>' : ''}
+        </div>
+      </div>`).join('')
+  } catch(e) { document.getElementById('msgList').innerHTML = '<div class="empty"><span class="empty-ico">⊠</span><div class="empty-t">Indisponible</div><div class="empty-s">Configurez la connexion Supabase.</div></div>' }
+}
+
+async function openMsg(id) {
+  try {
+    const { data } = await sb.from('messages').select('*').eq('id', id).single(); if (!data) return
+    curMsg = id
+    await sb.from('messages').update({ read:true }).eq('id', id)
+    loadMsgs()
+    document.getElementById('mmTitle').textContent = `${data.firstname||''} ${data.lastname||''}`
+    document.getElementById('mmMeta').innerHTML = `
+      <div><div style="font-size:.5rem;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:.22rem">Email</div><div style="font-size:.78rem">${data.email||'—'}</div></div>
+      <div><div style="font-size:.5rem;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:.22rem">Projet</div><div style="font-size:.78rem">${data.project_type||'—'}</div></div>
+      <div><div style="font-size:.5rem;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:.22rem">Date</div><div style="font-size:.78rem">${new Date(data.created_at).toLocaleDateString('fr')}</div></div>`
+    document.getElementById('mmBody').textContent = data.message || ''
+    document.getElementById('mmDel').onclick = async () => {
+      await sb.from('messages').delete().eq('id', curMsg)
+      toast('✓ Message supprimé'); closeM('m-msg'); loadMsgs()
+    }
+    openM('m-msg')
+  } catch(e) {}
+}
+
+async function markAllRead() {
+  try { await sb.from('messages').update({ read:true }).eq('read',false); toast('✓ Tous lus'); loadMsgs() } catch(e) {}
+}
+
+// ═══════════════════════════════
+//  SETTINGS
+// ═══════════════════════════════
 function saveConfig() {
-  const url = document.getElementById('cfg-url').value.trim(), key = document.getElementById('cfg-key').value.trim()
-  if (!url || !key) { toast('Remplis les deux champs', 'err'); return }
-  localStorage.setItem('supa_url', url); localStorage.setItem('supa_key', key)
-  SUPA_URL = url; SUPA_KEY = key; sb = createClient(SUPA_URL, SUPA_KEY)
-  toast('✓ Config sauvegardée !')
+  const url = document.getElementById('cfg-url').value.trim()
+  const key = document.getElementById('cfg-key').value.trim()
+  if (!url||!key) { toast('Remplis les deux champs','err'); return }
+  localStorage.setItem('surl',url); localStorage.setItem('skey',key)
+  SURL=url; SKEY=key; sb=createClient(SURL,SKEY); toast('✓ Connexion mise à jour !')
 }
 
 async function changePwd() {
-  const pwd = document.getElementById('new-pwd').value, cfm = document.getElementById('confirm-pwd').value
-  if (pwd !== cfm) { toast('Mots de passe différents', 'err'); return }
-  if (pwd.length < 8) { toast('Minimum 8 caractères', 'err'); return }
-  const { error } = await sb.auth.updateUser({ password: pwd })
-  if (error) { toast('Erreur : ' + error.message, 'err'); return }
+  const np=v('np'),cp=v('cp')
+  if (np!==cp) { toast('Mots de passe différents','err'); return }
+  if (np.length<8) { toast('Minimum 8 caractères','err'); return }
+  const { error } = await sb.auth.updateUser({ password: np })
+  if (error) { toast('Erreur : '+error.message,'err'); return }
   toast('✓ Mot de passe modifié !')
 }
 
-async function doLogout() { await sb.auth.signOut(); window.location.href = '/login' }
+async function doLogout() { try { await sb.auth.signOut() } catch(e){} window.location.href = '/login' }
 
-function openModal(id)  { document.getElementById(id).classList.add('active') }
-function closeModal(id) { document.getElementById(id).classList.remove('active') }
-document.querySelectorAll('.modal-bd').forEach(bd => bd.addEventListener('click', e => { if (e.target === bd) bd.classList.remove('active') }))
-document.addEventListener('keydown', e => { if (e.key === 'Escape') document.querySelectorAll('.modal-bd.active').forEach(m => m.classList.remove('active')) })
-
-function toast(msg, type = 'ok') {
-  const t = document.getElementById('toast')
-  t.textContent = msg; t.className = 'toast show' + (type === 'err' ? ' err' : '')
-  clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), 3000)
+// ═══════════════════════════════
+//  UI HELPERS
+// ═══════════════════════════════
+function toggleSec(hd) {
+  const body = hd.nextElementSibling
+  const open = body.classList.toggle('open')
+  hd.classList.toggle('open', open)
 }
 
-function formatBytes(b) {
-  if (!b) return '—'
-  if (b < 1024) return b + ' o'
-  if (b < 1024*1024) return (b/1024).toFixed(1) + ' Ko'
-  return (b/1024/1024).toFixed(1) + ' Mo'
+function openM(id) { document.getElementById(id).classList.add('open') }
+function closeM(id) { document.getElementById(id).classList.remove('open') }
+document.querySelectorAll('.modal-bd').forEach(bd => bd.addEventListener('click', e => { if (e.target===bd) bd.classList.remove('open') }))
+document.addEventListener('keydown', e => { if (e.key==='Escape') document.querySelectorAll('.modal-bd.open').forEach(m => m.classList.remove('open')) })
+
+function toast(msg, type='ok') {
+  const t = document.getElementById('toast')
+  t.textContent = msg; t.className = 'toast show' + (type==='err'?' err':'')
+  clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), 3000)
 }
 </script>
 </body>
