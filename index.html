@@ -3,605 +3,635 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AAR Design — Anthony Armand</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Syne:wght@400;700;800&family=DM+Sans:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<title>AAR Design — Galerie</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet">
 <style>
-*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-:root {
-  --navy:  #1a2755;
-  --navy2: #0f1a40;
-  --cyan:  #00b4d8;
-  --cyan2: #48cae4;
-  --cyan3: #90e0ef;
-  --ink:   #080e1c;
-  --ink2:  #0d1525;
-  --paper: #e8f4f8;
-  --dim:   rgba(144,224,239,.5);
-  --E:     cubic-bezier(.16,1,.3,1);
-}
-html { font-size:16px; }
-body { background:var(--ink); color:var(--paper); font-family:'DM Sans',sans-serif; overflow-x:hidden; cursor:none; -webkit-font-smoothing:antialiased; }
-::-webkit-scrollbar { width:2px; } ::-webkit-scrollbar-thumb { background:var(--cyan); }
-a { text-decoration:none; color:inherit; cursor:none; }
-button { cursor:none; font-family:inherit; background:none; border:none; }
-
-body::after {
-  content:''; position:fixed; inset:0; pointer-events:none; z-index:9000; opacity:.3;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");
-}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:100%;height:100%;overflow:hidden;background:#06050a;}
+body{font-family:'DM Sans',sans-serif;cursor:none;-webkit-font-smoothing:antialiased;}
 
 /* CURSOR */
-#cDot { position:fixed; width:8px; height:8px; background:var(--cyan); border-radius:50%; pointer-events:none; z-index:9999; transform:translate(-50%,-50%); transition:width .2s,height .2s; }
-#cRing { position:fixed; width:36px; height:36px; border:1.5px solid rgba(0,180,216,.4); border-radius:50%; pointer-events:none; z-index:9998; transform:translate(-50%,-50%); transition:width .35s var(--E),height .35s var(--E),border-color .25s; }
-body.hov #cDot { width:14px; height:14px; }
-body.hov #cRing { width:64px; height:64px; border-color:var(--cyan); }
+#cd{position:fixed;z-index:9000;pointer-events:none;width:7px;height:7px;border-radius:50%;background:#fff;transform:translate(-50%,-50%);}
+#cr{position:fixed;z-index:8999;pointer-events:none;width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,.25);transform:translate(-50%,-50%);transition:width .45s cubic-bezier(.16,1,.3,1),height .45s cubic-bezier(.16,1,.3,1),border-color .3s;}
+body.on-card #cd{background:#c8a050;width:10px;height:10px;}
+body.on-card #cr{width:60px;height:60px;border-color:rgba(200,160,80,.5);}
 
-/* PROGRESS */
-#bar { position:fixed; top:0; left:0; height:2px; background:linear-gradient(90deg,var(--navy),var(--cyan),var(--cyan2)); z-index:9990; width:0%; }
+/* STARS */
+#stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
 
-/* LOADER */
-#ldr { position:fixed; inset:0; z-index:10000; background:var(--ink); display:flex; align-items:center; justify-content:center; flex-direction:column; gap:1rem; transition:transform 1.1s cubic-bezier(.77,0,.175,1); }
-#ldr.gone { transform:translateY(-100%); }
-.ldr-logo { width:clamp(200px,30vw,340px); animation:ldrScale .9s var(--E) .2s both; }
-@keyframes ldrScale { from{opacity:0;transform:scale(.85)} to{opacity:1;transform:scale(1)} }
-.ldr-bar-w { width:220px; height:1px; background:rgba(0,180,216,.15); margin-top:2rem; overflow:hidden; }
-.ldr-bar { height:100%; background:linear-gradient(90deg,var(--navy),var(--cyan)); width:0; animation:ldrFill 1.8s var(--E) .5s forwards; }
-@keyframes ldrFill { to{width:100%} }
-.ldr-pct { font-family:'Syne',sans-serif; font-size:.6rem; letter-spacing:.42em; text-transform:uppercase; color:var(--cyan); }
+/* GRAIN */
+#grain{position:fixed;inset:0;z-index:8900;pointer-events:none;opacity:.22;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='250' height='250' filter='url(%23n)' opacity='.06'/%3E%3C/svg%3E");}
+
+/* SPACE */
+#space{position:fixed;inset:0;z-index:1;}
+#world{position:absolute;width:5000px;height:3800px;left:50%;top:50%;transform:translate(-50%,-50%);will-change:transform;}
 
 /* NAV */
-#nav { position:fixed; top:0; left:0; right:0; z-index:500; padding:2rem 5vw; display:flex; align-items:center; justify-content:space-between; transition:padding .5s var(--E),background .4s,backdrop-filter .4s; }
-#nav.stuck { padding:.9rem 5vw; background:rgba(8,14,28,.92); backdrop-filter:blur(24px); border-bottom:1px solid rgba(0,180,216,.08); }
-.nLogo img { height:36px; display:block; }
-.nLinks { display:flex; gap:2.5rem; list-style:none; }
-.nLinks a { font-size:.7rem; letter-spacing:.22em; text-transform:uppercase; color:var(--dim); transition:color .3s; position:relative; }
-.nLinks a::after { content:''; position:absolute; bottom:-3px; left:0; width:0; height:1px; background:var(--cyan); transition:width .35s var(--E); }
-.nLinks a:hover { color:var(--cyan); }
-.nLinks a:hover::after { width:100%; }
-.nBtn { padding:.65rem 1.6rem; border:1px solid rgba(0,180,216,.35); font-family:'Syne',sans-serif; font-weight:700; font-size:.68rem; letter-spacing:.18em; text-transform:uppercase; color:var(--paper); transition:all .3s; }
-.nBtn:hover { background:var(--cyan); color:var(--ink); border-color:var(--cyan); }
-.burger { display:none; flex-direction:column; gap:5px; }
-.burger span { width:24px; height:1px; background:var(--paper); display:block; transition:all .3s var(--E); }
-.burger.open span:nth-child(1) { transform:translateY(6px) rotate(45deg); }
-.burger.open span:nth-child(2) { opacity:0; }
-.burger.open span:nth-child(3) { transform:translateY(-6px) rotate(-45deg); }
-.mobNav { position:fixed; inset:0; background:var(--ink); z-index:490; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1.8rem; opacity:0; pointer-events:none; transition:opacity .4s; }
-.mobNav.open { opacity:1; pointer-events:all; }
-.mobNav a { font-family:'Playfair Display',serif; font-style:italic; font-size:clamp(2.8rem,8vw,4.5rem); color:var(--paper); transition:color .3s; }
-.mobNav a:hover { color:var(--cyan); }
+#nav{position:fixed;top:0;left:0;right:0;z-index:500;padding:1.75rem 2.5rem;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(to bottom,rgba(6,5,10,.75) 0%,transparent 100%);pointer-events:none;}
+.nl{font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:.4em;text-transform:uppercase;color:rgba(255,255,255,.18);display:flex;align-items:center;gap:.6rem;}
+.nl-dot{width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,.2);animation:blink 2.5s ease-in-out infinite;}
+@keyframes blink{0%,100%{opacity:.15}50%{opacity:.7}}
+#nav-contact{pointer-events:all;font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:.35em;text-transform:uppercase;color:rgba(255,255,255,.25);text-decoration:none;border:1px solid rgba(255,255,255,.1);padding:.5rem 1.1rem;transition:all .3s;}
+#nav-contact:hover{color:#fff;border-color:rgba(255,255,255,.4);}
 
-/* ANIM ENGINE */
-[data-anim="up"]    { opacity:0; transform:translateY(70px);  transition:opacity .85s var(--E),transform .85s var(--E); }
-[data-anim="left"]  { opacity:0; transform:translateX(-80px); transition:opacity .85s var(--E),transform .85s var(--E); }
-[data-anim="right"] { opacity:0; transform:translateX(80px);  transition:opacity .85s var(--E),transform .85s var(--E); }
-[data-anim="scale"] { opacity:0; transform:scale(.85);        transition:opacity .9s var(--E),transform .9s var(--E); }
-[data-anim="clip"]  { clip-path:inset(0 0 100% 0);            transition:clip-path .9s var(--E); }
-[data-anim].anim-in { opacity:1!important; transform:none!important; clip-path:inset(0 0 0% 0)!important; }
-[data-delay="1"]  { transition-delay:.1s!important; } [data-delay="2"]  { transition-delay:.2s!important; }
-[data-delay="3"]  { transition-delay:.3s!important; } [data-delay="4"]  { transition-delay:.4s!important; }
-[data-delay="5"]  { transition-delay:.5s!important; } [data-delay="6"]  { transition-delay:.6s!important; }
-[data-delay="7"]  { transition-delay:.7s!important; } [data-delay="8"]  { transition-delay:.8s!important; }
+/* BOTTOM */
+#bot{position:fixed;bottom:0;left:0;right:0;z-index:500;padding:1.5rem 2.5rem;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(to top,rgba(6,5,10,.7) 0%,transparent 100%);}
+#bot a{font-family:'Cinzel',serif;font-size:.48rem;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.18);text-decoration:none;transition:color .3s;}
+#bot a:hover{color:rgba(255,255,255,.6);}
+#wcount{font-family:'Cinzel',serif;font-size:.48rem;letter-spacing:.3em;color:rgba(255,255,255,.1);}
 
-/* HERO */
-#s1 { height:100vh; min-height:650px; display:flex; flex-direction:column; justify-content:flex-end; padding-bottom:8vh; position:relative; overflow:hidden; background:var(--ink); }
+/* MINIMAP */
+#mm{position:fixed;bottom:2.5rem;right:2.5rem;z-index:500;width:110px;height:84px;border:1px solid rgba(255,255,255,.07);background:rgba(6,5,10,.5);backdrop-filter:blur(8px);overflow:hidden;}
+#mm-dots{position:absolute;inset:0;}
+.mmd{position:absolute;width:4px;height:4px;border-radius:1px;background:rgba(255,255,255,.15);transform:translate(-50%,-50%);}
+.mmd.feat{background:rgba(200,160,80,.6);width:6px;height:6px;}
+#mm-vp{position:absolute;border:1px solid rgba(200,160,80,.25);pointer-events:none;}
 
-/* Animated gradient mesh */
-.h-mesh { position:absolute; inset:0;
-  background:
-    radial-gradient(ellipse 80% 60% at 65% 15%, rgba(0,180,216,.1) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 70% at 10% 85%, rgba(26,39,85,.2) 0%, transparent 55%),
-    radial-gradient(ellipse 40% 50% at 85% 75%, rgba(0,180,216,.06) 0%, transparent 50%);
-  animation:meshF 20s ease-in-out infinite alternate;
-}
-@keyframes meshF { 0%{transform:scale(1)} 100%{transform:scale(1.08) rotate(.8deg)} }
+/* CARDS */
+.card{position:absolute;transform:translate(-50%,-50%);cursor:pointer;will-change:transform;}
+.card-in{position:relative;overflow:hidden;box-shadow:0 16px 60px rgba(0,0,0,.7);transition:transform .5s cubic-bezier(.16,1,.3,1),box-shadow .5s;}
+.card:hover .card-in{transform:scale(1.05) translateY(-6px);box-shadow:0 30px 100px rgba(0,0,0,.85);}
+.card img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .7s cubic-bezier(.16,1,.3,1);}
+.card:hover img{transform:scale(1.07);}
+.card-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(6,5,10,.92) 0%,rgba(6,5,10,.3) 50%,transparent 100%);opacity:0;transition:opacity .4s;display:flex;flex-direction:column;justify-content:flex-end;padding:1rem 1.1rem;}
+.card:hover .card-ov{opacity:1;}
+.card-cat{font-family:'Cinzel',serif;font-size:.42rem;letter-spacing:.3em;text-transform:uppercase;color:rgba(200,160,80,.8);margin-bottom:.3rem;}
+.card-name{font-family:'Cormorant Garamond',serif;font-size:.95rem;color:#f0ece4;line-height:1.3;}
+.card-ico{position:absolute;top:.8rem;right:.8rem;width:28px;height:28px;border-radius:50%;background:rgba(200,160,80,.85);display:flex;align-items:center;justify-content:center;font-size:.6rem;color:#06050a;opacity:0;transform:scale(.5);transition:opacity .3s,transform .3s cubic-bezier(.16,1,.3,1);}
+.card:hover .card-ico{opacity:1;transform:scale(1);}
 
-/* Subtle grid */
-.h-grid { position:absolute; inset:0;
-  background-image: linear-gradient(rgba(0,180,216,.028) 1px,transparent 1px), linear-gradient(90deg,rgba(0,180,216,.028) 1px,transparent 1px);
-  background-size:80px 80px;
-  mask-image:radial-gradient(ellipse 80% 90% at 65% 35%, black 0%, transparent 70%);
-}
+/* SECTION LABELS */
+.slabel{position:absolute;transform:translate(-50%,-50%);pointer-events:none;font-family:'Cinzel',serif;font-size:5.5rem;font-weight:900;letter-spacing:.08em;color:rgba(255,255,255,.018);text-transform:uppercase;white-space:nowrap;user-select:none;}
 
-/* Diagonal accent bar */
-.h-diag { position:absolute; top:0; right:0; width:38vw; height:100%;
-  background:linear-gradient(135deg,transparent 0%,rgba(26,39,85,.15) 60%,rgba(0,180,216,.04) 100%);
-  pointer-events:none;
-}
+/* GLOW */
+.glow{position:absolute;transform:translate(-50%,-50%);border-radius:50%;filter:blur(100px);mix-blend-mode:screen;pointer-events:none;}
 
-.h-echo { position:absolute; bottom:-8vh; left:-2vw;
-  font-family:'Playfair Display',serif; font-style:italic;
-  font-size:clamp(12rem,26vw,34rem); font-weight:900;
-  color:rgba(0,180,216,.022); line-height:1; white-space:nowrap; pointer-events:none; user-select:none; letter-spacing:-.04em;
-  animation:echoF 7s ease-in-out infinite alternate;
-}
-@keyframes echoF { 0%{transform:translateX(0)} 100%{transform:translateX(2vw)} }
+/* MODAL */
+#modal{position:fixed;inset:0;z-index:2000;display:flex;align-items:center;justify-content:center;padding:2rem;opacity:0;visibility:hidden;transition:opacity .5s,visibility .5s;}
+#modal.open{opacity:1;visibility:visible;}
+#mbg{position:absolute;inset:0;background:rgba(3,2,5,.93);backdrop-filter:blur(24px);cursor:pointer;}
+#mc{position:relative;z-index:1;display:grid;grid-template-columns:1.1fr 1fr;max-width:1080px;width:100%;background:rgba(12,10,16,.85);border:1px solid rgba(255,255,255,.06);overflow:hidden;transform:translateY(24px) scale(.97);transition:transform .5s cubic-bezier(.16,1,.3,1);max-height:88vh;}
+#modal.open #mc{transform:translateY(0) scale(1);}
+#m-imgw{position:relative;min-height:380px;overflow:hidden;}
+#m-img{width:100%;height:100%;object-fit:cover;display:block;min-height:380px;}
+#m-body{padding:3rem 2.75rem;overflow-y:auto;max-height:88vh;display:flex;flex-direction:column;}
+#mclose{position:absolute;top:1.2rem;right:1.2rem;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;cursor:pointer;color:rgba(255,255,255,.4);font-size:.8rem;transition:all .2s;z-index:5;}
+#mclose:hover{background:rgba(255,255,255,.12);color:#fff;}
+#m-cat{font-family:'Cinzel',serif;font-size:.48rem;letter-spacing:.42em;text-transform:uppercase;color:rgba(200,160,80,.65);margin-bottom:.9rem;display:flex;align-items:center;gap:.5rem;}
+#m-cat::before{content:'';width:18px;height:1px;background:rgba(200,160,80,.35);}
+#m-title{font-family:'Cinzel',serif;font-size:clamp(1.5rem,2.8vw,2.5rem);font-weight:900;color:#f0ece4;line-height:1.05;margin-bottom:.6rem;}
+#m-sub{font-family:'Cormorant Garamond',serif;font-size:1rem;font-style:italic;color:rgba(200,160,80,.55);margin-bottom:1.5rem;}
+#m-desc{font-family:'Cormorant Garamond',serif;font-size:1rem;color:rgba(240,236,228,.4);line-height:1.95;font-weight:300;margin-bottom:1.75rem;}
+#m-tags{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1.75rem;}
+.mtag{font-family:'Cinzel',serif;font-size:.42rem;letter-spacing:.22em;text-transform:uppercase;padding:.3rem .65rem;border:1px solid rgba(255,255,255,.07);color:rgba(255,255,255,.25);}
+#m-year{font-family:'Cinzel',serif;font-size:.45rem;letter-spacing:.3em;color:rgba(255,255,255,.12);margin-top:auto;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.04);}
+/* Modal prev/next */
+.m-nav{position:absolute;top:50%;transform:translateY(-50%);z-index:10;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);cursor:pointer;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.4);font-size:.75rem;transition:all .2s;}
+.m-nav:hover{background:rgba(255,255,255,.12);color:#fff;}
+#mprev{left:1rem;}
+#mnext{right:1rem;}
 
-.h-vline { position:absolute; top:0; right:22vw; width:1px; height:0;
-  background:linear-gradient(to bottom,transparent,rgba(0,180,216,.18),transparent);
-  animation:vG 1.6s var(--E) .8s forwards;
-}
-@keyframes vG { to{height:100%} }
+/* LOADER */
+#loader{position:fixed;inset:0;z-index:9999;background:#06050a;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.75rem;transition:opacity 1s,visibility 1s;}
+#loader.out{opacity:0;visibility:hidden;}
+.llo img{height:36px;filter:brightness(0) invert(1);opacity:.65;}
+.lbw{width:150px;height:1px;background:rgba(255,255,255,.07);}
+.lbb{height:100%;background:rgba(255,255,255,.45);width:0%;}
+.ltx{font-family:'Cinzel',serif;font-size:.45rem;letter-spacing:.5em;color:rgba(255,255,255,.18);text-transform:uppercase;}
 
-.h-inner { position:relative; z-index:2; padding:0 6vw; display:grid; grid-template-columns:1fr 440px; align-items:flex-end; gap:6vw; }
-
-.hEyebrow { display:flex; align-items:center; gap:1rem; font-family:'Syne',sans-serif; font-size:.6rem; letter-spacing:.46em; text-transform:uppercase; color:var(--cyan); margin-bottom:2.5rem; overflow:hidden; }
-.hEyebrow::before { content:''; width:28px; height:1px; background:var(--cyan); flex-shrink:0; }
-.hEyebrow span { display:block; animation:eyeUp .85s var(--E) 1s both; }
-@keyframes eyeUp { from{transform:translateY(110%)} to{transform:translateY(0)} }
-
-.hTitle { font-family:'Playfair Display',serif; font-weight:900; font-size:clamp(3.8rem,8vw,10.5rem); line-height:.88; letter-spacing:-.025em; }
-.hRow { display:block; overflow:hidden; line-height:.96; }
-.hRow span { display:inline-block; animation:wSlam 1s var(--E) both; }
-.hRow:nth-child(1) span { animation-delay:.6s; }
-.hRow:nth-child(2) span { animation-delay:.78s;
-  background:linear-gradient(120deg,var(--cyan) 0%,var(--cyan2) 60%,var(--cyan3) 100%);
-  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
-  font-style:italic;
-}
-.hRow:nth-child(3) span { animation-delay:.96s; }
-@keyframes wSlam { from{transform:translateY(110%) skewY(4deg)} to{transform:translateY(0) skewY(0)} }
-
-.hRight { padding-bottom:.5rem; animation:hRIn .9s var(--E) 1.2s both; }
-@keyframes hRIn { from{opacity:0;transform:translateX(60px)} to{opacity:1;transform:translateX(0)} }
-.hDesc { font-size:clamp(.88rem,1vw,1.05rem); line-height:1.9; color:var(--dim); font-style:italic; margin-bottom:2.5rem; }
-.hBtns { display:flex; flex-direction:column; gap:.85rem; }
-
-.btnA { display:inline-flex; align-items:center; gap:.85rem; padding:1.1rem 2.4rem; background:var(--cyan); color:var(--ink); font-family:'Syne',sans-serif; font-weight:800; font-size:.7rem; letter-spacing:.22em; text-transform:uppercase; position:relative; overflow:hidden; transition:box-shadow .4s,transform .3s var(--E); }
-.btnA::before { content:''; position:absolute; inset:0; background:var(--cyan2); transform:translateX(-101%); transition:transform .5s var(--E); }
-.btnA:hover::before { transform:translateX(0); }
-.btnA:hover { box-shadow:0 12px 40px rgba(0,180,216,.45); transform:translateY(-2px); }
-.btnA span,.btnA em { position:relative; z-index:1; font-style:normal; }
-.btnA em { transition:transform .35s var(--E); }
-.btnA:hover em { transform:translateX(6px); }
-.btnB { display:inline-flex; align-items:center; gap:.75rem; padding:1.1rem 2.4rem; border:1px solid rgba(0,180,216,.32); color:var(--dim); font-family:'Syne',sans-serif; font-weight:700; font-size:.7rem; letter-spacing:.22em; text-transform:uppercase; transition:all .3s; }
-.btnB:hover { border-color:var(--cyan); color:var(--cyan); background:rgba(0,180,216,.06); }
-
-.hScroll { position:absolute; left:6vw; bottom:8vh; display:flex; flex-direction:column; align-items:center; gap:.75rem; animation:hRIn .8s var(--E) 1.6s both; }
-.hScrollTxt { font-size:.56rem; letter-spacing:.4em; text-transform:uppercase; color:rgba(0,180,216,.55); writing-mode:vertical-rl; }
-.hScrollTrack { width:1px; height:58px; background:rgba(0,180,216,.12); overflow:hidden; position:relative; }
-.hScrollBar { position:absolute; top:-100%; left:0; width:100%; height:100%; background:var(--cyan); animation:sD 2.2s ease-in-out 2s infinite; }
-@keyframes sD { 0%{top:-100%;opacity:0} 30%{opacity:1} 100%{top:100%;opacity:0} }
-.hCtr { position:absolute; right:5vw; bottom:8vh; font-family:'Playfair Display',serif; font-style:italic; font-size:.78rem; color:var(--cyan); letter-spacing:.1em; animation:hRIn .8s var(--E) 1.8s both; }
-
-/* MARQUEE */
-.mq { background:linear-gradient(90deg,var(--navy2) 0%,var(--navy) 50%,var(--navy2) 100%); padding:.65rem 0; overflow:hidden; position:relative; z-index:2; border-top:1px solid rgba(0,180,216,.1); border-bottom:1px solid rgba(0,180,216,.1); }
-.mqTrack { display:flex; white-space:nowrap; animation:mqR 28s linear infinite; }
-.mqTrack:hover { animation-play-state:paused; }
-@keyframes mqR { from{transform:translateX(0)} to{transform:translateX(-50%)} }
-.mqItem { display:inline-flex; align-items:center; gap:2.5rem; padding:0 2rem; flex-shrink:0; font-family:'Syne',sans-serif; font-weight:700; font-size:.68rem; letter-spacing:.32em; text-transform:uppercase; color:var(--cyan); }
-.mqItem::after { content:'✦'; font-size:.38rem; opacity:.45; color:var(--cyan2); }
-
-/* SECTIONS */
-.sec { padding:14vh 6vw; overflow:hidden; }
-.secInner { max-width:1400px; margin:0 auto; }
-.secNum { font-family:'Playfair Display',serif; font-style:italic; font-size:clamp(7rem,13vw,17rem); font-weight:900; color:rgba(0,180,216,.045); line-height:1; user-select:none; margin-bottom:-2.5rem; }
-.secLabel { font-family:'Syne',sans-serif; font-size:.6rem; letter-spacing:.42em; text-transform:uppercase; color:var(--cyan); display:flex; align-items:center; gap:.8rem; margin-bottom:1.5rem; }
-.secLabel::before { content:attr(data-n); font-family:'Playfair Display',serif; font-style:italic; color:rgba(0,180,216,.38); border-right:1px solid rgba(0,180,216,.18); padding-right:.8rem; }
-.secH { font-family:'Playfair Display',serif; font-size:clamp(2.8rem,4.5vw,6rem); font-weight:700; line-height:.95; letter-spacing:-.025em; margin-bottom:2.5rem; }
-.secH em { font-style:italic; background:linear-gradient(120deg,var(--cyan),var(--cyan2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-.secP { font-size:1rem; line-height:1.92; color:var(--dim); }
-.secP+.secP { margin-top:1.2rem; }
-.secP strong { color:var(--paper); font-weight:400; }
-
-/* S2 */
-#s2 { background:var(--ink2); }
-.s2Grid { display:grid; grid-template-columns:1fr 1fr; gap:8vw; align-items:center; margin-top:1rem; }
-.s2Frame { aspect-ratio:3/4; max-height:640px; background:linear-gradient(145deg,#0a1020,#1a2755,#080e18); border:1px solid rgba(0,180,216,.1); position:relative; overflow:hidden; display:flex; align-items:center; justify-content:center; }
-.s2Init { font-family:'Playfair Display',serif; font-style:italic; font-size:clamp(8rem,15vw,18rem); font-weight:900; background:linear-gradient(135deg,rgba(0,180,216,.06),rgba(72,202,228,.1)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; line-height:1; user-select:none; transition:opacity .8s; }
-.s2Frame:hover .s2Init { opacity:.8; }
-.s2Ov { position:absolute; inset:0; background:linear-gradient(to top,rgba(8,14,28,.92) 0%,transparent 55%); }
-.s2Cap { position:absolute; bottom:0; left:0; right:0; padding:2rem; font-family:'Syne',sans-serif; font-size:.56rem; letter-spacing:.3em; text-transform:uppercase; color:var(--cyan); }
-.s2Dtl { position:absolute; top:0; left:0; width:48px; height:48px; border-top:1px solid rgba(0,180,216,.32); border-left:1px solid rgba(0,180,216,.32); }
-.s2Dbr { position:absolute; bottom:0; right:0; width:48px; height:48px; border-bottom:1px solid rgba(0,180,216,.32); border-right:1px solid rgba(0,180,216,.32); }
-/* Horizontal glowing bar on frame */
-.s2Frame::after { content:''; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,var(--cyan),transparent); opacity:.4; }
-.s2Stats { position:absolute; right:-3rem; top:2.5rem; background:rgba(8,14,28,.96); border:1px solid rgba(0,180,216,.16); padding:1.6rem 1.8rem; display:flex; flex-direction:column; gap:1.6rem; backdrop-filter:blur(12px); }
-.snNum { font-family:'Playfair Display',serif; font-size:2.8rem; font-weight:700; background:linear-gradient(120deg,var(--cyan),var(--cyan2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; line-height:1; }
-.snLbl { font-size:.56rem; letter-spacing:.24em; text-transform:uppercase; color:var(--dim); margin-top:.2rem; }
-
-/* S3 */
-#s3 { background:var(--ink); }
-.discList { margin-top:5rem; }
-.discRow { display:grid; grid-template-columns:3.5rem 1fr auto auto; align-items:center; gap:2.5rem; padding:1.8rem 0; border-top:1px solid rgba(0,180,216,.07); position:relative; overflow:hidden; transition:padding .4s var(--E); }
-.discRow:last-child { border-bottom:1px solid rgba(0,180,216,.07); }
-.discRow::before { content:''; position:absolute; inset:0; background:linear-gradient(90deg,rgba(26,39,85,.2),rgba(0,180,216,.06),transparent); transform:translateX(-101%); transition:transform .6s var(--E); }
-.discRow:hover::before { transform:translateX(0); }
-.discRow:hover { padding-left:1.2rem; }
-.drN { font-family:'Playfair Display',serif; font-style:italic; font-size:.88rem; color:rgba(0,180,216,.33); }
-.drName { font-family:'Playfair Display',serif; font-size:clamp(2rem,4vw,5.5rem); font-weight:700; letter-spacing:-.02em; transition:color .3s; }
-.discRow:hover .drName { color:var(--cyan); }
-.drTag { font-size:.58rem; letter-spacing:.2em; text-transform:uppercase; color:var(--dim); padding:.3rem .8rem; border:1px solid rgba(0,180,216,.13); transition:all .3s; white-space:nowrap; }
-.discRow:hover .drTag { border-color:var(--cyan); color:var(--cyan); }
-.drArr { font-size:1.4rem; color:var(--dim); transition:transform .4s var(--E),color .3s; }
-.discRow:hover .drArr { transform:translate(7px,-7px); color:var(--cyan); }
-
-/* S4 STATEMENT — light */
-#s4 { min-height:100vh; background:var(--paper); display:flex; align-items:center; justify-content:center; padding:10vh 8vw; position:relative; overflow:hidden; }
-#s4::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse 60% 60% at 50% 50%,rgba(0,180,216,.07) 0%,transparent 70%),radial-gradient(ellipse 80% 40% at 0% 100%,rgba(26,39,85,.08) 0%,transparent 60%); }
-.s4Circle { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:min(88vw,88vh); height:min(88vw,88vh); border:1px solid rgba(26,39,85,.07); border-radius:50%; pointer-events:none; animation:cP 4s ease-in-out infinite alternate; }
-@keyframes cP { 0%{transform:translate(-50%,-50%) scale(1)} 100%{transform:translate(-50%,-50%) scale(1.05)} }
-.s4Ghost { position:absolute; font-family:'Playfair Display',serif; font-style:italic; font-weight:700; color:rgba(26,39,85,.05); pointer-events:none; user-select:none; }
-.s4Ghost:nth-child(1) { font-size:5rem; top:8%; left:4%; animation:gd1 7s ease-in-out infinite alternate; }
-.s4Ghost:nth-child(2) { font-size:3rem; top:12%; right:6%; animation:gd2 9s ease-in-out infinite alternate; }
-.s4Ghost:nth-child(3) { font-size:6rem; bottom:12%; left:8%; animation:gd3 8s ease-in-out infinite alternate; }
-.s4Ghost:nth-child(4) { font-size:4rem; bottom:16%; right:4%; animation:gd1 10s ease-in-out infinite alternate; }
-@keyframes gd1 { 0%{transform:translate(0,0)} 100%{transform:translate(20px,-15px) rotate(3deg)} }
-@keyframes gd2 { 0%{transform:translate(0,0)} 100%{transform:translate(-15px,20px) rotate(-4deg)} }
-@keyframes gd3 { 0%{transform:translate(0,0)} 100%{transform:translate(25px,10px) rotate(5deg)} }
-.s4Content { position:relative; z-index:2; text-align:center; max-width:980px; }
-.s4Eye { font-family:'Syne',sans-serif; font-size:.6rem; letter-spacing:.42em; text-transform:uppercase; color:rgba(26,39,85,.4); margin-bottom:3rem; display:flex; align-items:center; justify-content:center; gap:1rem; }
-.s4Eye::before,.s4Eye::after { content:''; width:28px; height:1px; background:rgba(26,39,85,.22); }
-.s4Quote { font-family:'Playfair Display',serif; font-style:italic; font-size:clamp(2.2rem,4.8vw,6.5rem); font-weight:400; line-height:1.15; color:var(--navy); letter-spacing:-.02em; }
-.s4Quote .ghl { background:linear-gradient(120deg,var(--navy),var(--cyan)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; font-weight:700; }
-.s4Quote .rhl { color:var(--navy2); }
-.s4Auth { margin-top:2.5rem; font-family:'Syne',sans-serif; font-size:.66rem; letter-spacing:.36em; text-transform:uppercase; color:rgba(26,39,85,.38); }
-
-/* S5 PORTFOLIO */
-#s5 { background:var(--ink); padding-bottom:0; padding-left:0; padding-right:0; }
-.s5Head { padding:14vh 6vw 5rem; }
-.dragTip { padding:0 6vw; margin-bottom:1.5rem; font-size:.58rem; letter-spacing:.3em; text-transform:uppercase; color:var(--dim); display:flex; align-items:center; gap:.75rem; }
-.dragTip::before { content:''; width:30px; height:1px; background:linear-gradient(to right,var(--cyan),transparent); }
-.portWrap { overflow:hidden; }
-.portTrack { display:flex; gap:3px; width:max-content; padding:0 6vw 8vh; }
-.pj { flex-shrink:0; width:clamp(280px,26vw,460px); position:relative; overflow:hidden; transition:transform .6s var(--E); }
-.pj:hover { transform:translateY(-10px); }
-.pj.tall .pjVis  { aspect-ratio:2/3; }
-.pj.wide .pjVis  { aspect-ratio:16/10; }
-.pjVis { width:100%; position:relative; overflow:hidden; display:flex; align-items:center; justify-content:center; }
-.pj:nth-child(1) .pjVis { background:linear-gradient(145deg,#0a1530,#1a2755,#080e20); }
-.pj:nth-child(2) .pjVis { background:linear-gradient(145deg,#071520,#0d2535,#080e1a); }
-.pj:nth-child(3) .pjVis { background:linear-gradient(145deg,#0a1525,#102240,#0b1020); }
-.pj:nth-child(4) .pjVis { background:linear-gradient(145deg,#061018,#0a1e30,#080e18); }
-.pj:nth-child(5) .pjVis { background:linear-gradient(145deg,#0d1a35,#1a2060,#080a18); }
-.pj:nth-child(6) .pjVis { background:linear-gradient(145deg,#0a1520,#152540,#0b0f1e); }
-.pj:nth-child(7) .pjVis { background:linear-gradient(145deg,#071018,#0d1d30,#080e1c); }
-.pjArt { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; opacity:.65; transition:opacity .5s,transform .7s var(--E); }
-.pj:hover .pjArt { opacity:1; transform:scale(1.07); }
-.pjOv { position:absolute; inset:0; background:rgba(8,14,28,.92); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.75rem; opacity:0; transition:opacity .4s; }
-.pj:hover .pjOv { opacity:1; }
-.pjCirc { width:52px; height:52px; border:1px solid var(--cyan); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.1rem; color:var(--cyan); transform:scale(.4); transition:transform .45s var(--E); }
-.pj:hover .pjCirc { transform:scale(1); }
-.pjOvLbl { font-size:.58rem; letter-spacing:.28em; text-transform:uppercase; color:var(--dim); }
-.pjMeta { padding:1.4rem; background:var(--ink2); }
-.pjCat { font-size:.56rem; letter-spacing:.32em; text-transform:uppercase; color:var(--cyan); margin-bottom:.4rem; font-family:'Syne',sans-serif; }
-.pjTitle { font-family:'Playfair Display',serif; font-size:1.05rem; font-weight:700; line-height:1.2; color:var(--paper); }
-.pjYr { font-size:.7rem; color:var(--dim); margin-top:.3rem; font-style:italic; }
-
-/* S6 PROCESS */
-#s6 { background:var(--ink2); }
-.procGrid { display:grid; grid-template-columns:repeat(4,1fr); gap:2px; background:rgba(0,180,216,.06); margin-top:6rem; }
-.procCard { background:var(--ink2); padding:3.5rem 2.5rem; position:relative; overflow:hidden; transition:background .4s; }
-.procCard::before { content:''; position:absolute; top:0; left:0; width:2px; height:0; background:linear-gradient(to bottom,var(--cyan),var(--cyan2)); transition:height .55s var(--E); }
-.procCard:hover::before { height:100%; }
-.procCard::after { content:''; position:absolute; bottom:0; left:0; width:100%; height:2px; background:linear-gradient(90deg,var(--navy),var(--cyan)); transform:scaleX(0); transform-origin:left; transition:transform .5s var(--E); }
-.procCard:hover::after { transform:scaleX(1); }
-.procCard:hover { background:rgba(0,180,216,.04); }
-.pcNum { font-family:'Playfair Display',serif; font-style:italic; font-size:5rem; font-weight:900; color:rgba(0,180,216,.07); line-height:1; margin-bottom:1.5rem; transition:color .5s; }
-.procCard:hover .pcNum { color:rgba(0,180,216,.22); }
-.pcName { font-family:'Syne',sans-serif; font-size:.88rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; margin-bottom:.85rem; }
-.pcDesc { font-size:.85rem; line-height:1.8; color:var(--dim); }
-
-/* S7 MANIFESTO — NAVY */
-#s7 { min-height:100vh; background:linear-gradient(135deg,var(--navy2) 0%,var(--navy) 60%,#203575 100%); display:flex; align-items:center; padding:12vh 6vw; position:relative; overflow:hidden; }
-.s7Grid { position:absolute; inset:0; background-image:linear-gradient(rgba(0,180,216,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,180,216,.04) 1px,transparent 1px); background-size:65px 65px; }
-.s7Glow { position:absolute; top:15%; right:-8%; width:650px; height:650px; background:radial-gradient(circle,rgba(0,180,216,.14) 0%,transparent 70%); pointer-events:none; animation:gP 7s ease-in-out infinite alternate; }
-@keyframes gP { 0%{transform:translate(0,0)} 100%{transform:translate(-35px,25px)} }
-.s7Ghost { position:absolute; right:-5vw; bottom:-6vh; font-family:'Playfair Display',serif; font-style:italic; font-size:clamp(18rem,35vw,48rem); font-weight:900; color:rgba(0,180,216,.04); line-height:.9; pointer-events:none; user-select:none; letter-spacing:-.04em; animation:gS 9s ease-in-out infinite alternate; }
-@keyframes gS { 0%{transform:translateY(0)} 100%{transform:translateY(-45px)} }
-.s7Inner { position:relative; z-index:2; max-width:1100px; }
-.s7Tag { font-family:'Syne',sans-serif; font-size:.6rem; letter-spacing:.42em; text-transform:uppercase; color:rgba(0,180,216,.65); margin-bottom:3rem; display:flex; align-items:center; gap:.85rem; }
-.s7Tag::before { content:''; width:22px; height:1px; background:rgba(0,180,216,.5); }
-.s7H { font-family:'Playfair Display',serif; font-size:clamp(3.5rem,7.5vw,10rem); font-weight:900; line-height:.88; letter-spacing:-.03em; color:var(--paper); }
-.s7Row { display:block; overflow:hidden; }
-.s7Row span { display:inline-block; }
-.s7Row:nth-child(2) span { background:linear-gradient(120deg,var(--cyan),var(--cyan2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; font-style:italic; }
-.s7Cols { display:grid; grid-template-columns:1fr 1fr; gap:4rem; margin-top:5rem; }
-.s7P { font-size:1.05rem; line-height:1.88; color:rgba(144,224,239,.7); }
-.s7Cta { display:inline-flex; align-items:center; gap:.9rem; margin-top:3rem; padding:1.15rem 2.75rem; background:var(--cyan); color:var(--ink); font-family:'Syne',sans-serif; font-weight:800; font-size:.72rem; letter-spacing:.2em; text-transform:uppercase; transition:all .3s; position:relative; overflow:hidden; }
-.s7Cta::before { content:''; position:absolute; inset:0; background:var(--cyan2); transform:translateX(-101%); transition:transform .5s var(--E); }
-.s7Cta:hover::before { transform:translateX(0); }
-.s7Cta:hover { box-shadow:0 14px 44px rgba(0,180,216,.45); transform:translateY(-2px); }
-.s7Cta span,.s7Cta em { position:relative; z-index:1; font-style:normal; }
-.s7Cta em { transition:transform .35s var(--E); }
-.s7Cta:hover em { transform:translateX(7px); }
-
-/* S8 CONTACT */
-#s8 { min-height:100vh; background:var(--ink); display:grid; grid-template-columns:1fr 1fr; }
-.s8L { background:var(--ink2); padding:10vh 6vw; display:flex; flex-direction:column; justify-content:space-between; position:relative; overflow:hidden; }
-/* Glowing bottom-right watermark */
-.s8L::after { content:''; position:absolute; right:-8vw; bottom:-8vh; width:500px; height:500px; background:radial-gradient(circle,rgba(0,180,216,.07) 0%,transparent 70%); pointer-events:none; }
-.s8Wm { position:absolute; right:-4vw; bottom:-4vh; font-family:'Playfair Display',serif; font-style:italic; font-size:clamp(14rem,24vw,30rem); font-weight:900; color:rgba(0,180,216,.03); line-height:1; pointer-events:none; }
-.s8H { font-family:'Playfair Display',serif; font-size:clamp(3rem,5vw,7rem); font-weight:700; line-height:.9; letter-spacing:-.03em; flex:1; display:flex; align-items:center; }
-.s8H em { font-style:italic; background:linear-gradient(120deg,var(--cyan),var(--cyan2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-.s8Dets { display:flex; flex-direction:column; gap:1rem; position:relative; z-index:1; }
-.s8Item { display:flex; align-items:center; gap:1.25rem; padding:1rem 1.25rem; border:1px solid rgba(0,180,216,.07); transition:all .3s; }
-.s8Item:hover { border-color:rgba(0,180,216,.28); background:rgba(0,180,216,.05); }
-.s8Ico { width:36px; height:36px; border:1px solid rgba(0,180,216,.2); display:flex; align-items:center; justify-content:center; font-size:.85rem; flex-shrink:0; transition:all .3s; color:var(--cyan); }
-.s8Item:hover .s8Ico { background:rgba(0,180,216,.12); border-color:var(--cyan); }
-.s8Lbl { font-size:.56rem; letter-spacing:.24em; text-transform:uppercase; color:var(--cyan); }
-.s8Val { font-size:.875rem; color:var(--dim); margin-top:.15rem; }
-.s8R { padding:10vh 6vw; display:flex; flex-direction:column; justify-content:center; }
-.fLabel { font-size:.58rem; letter-spacing:.26em; text-transform:uppercase; color:var(--cyan); margin-bottom:.5rem; display:block; font-family:'Syne',sans-serif; font-weight:700; }
-.fIn,.fSel,.fTa { width:100%; background:rgba(255,255,255,.022); border:none; border-bottom:1px solid rgba(0,180,216,.14); color:var(--paper); padding:.85rem .1rem; font-family:'DM Sans',sans-serif; font-size:.9rem; outline:none; transition:border-color .3s,background .3s; cursor:none; }
-.fIn:focus,.fSel:focus,.fTa:focus { border-bottom-color:var(--cyan); background:rgba(0,180,216,.04); }
-.fSel option { background:var(--ink); }
-.fTa { min-height:110px; resize:none; border:1px solid rgba(0,180,216,.1); padding:.85rem 1rem; }
-.fTa:focus { border-color:var(--cyan); }
-.fRow2 { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; }
-.fGroup { margin-bottom:1.5rem; }
-.fFoot { display:flex; align-items:center; gap:1.5rem; margin-top:.5rem; }
-.fOk { font-size:.8rem; color:var(--cyan); opacity:0; transition:opacity .3s; }
-.fOk.on { opacity:1; }
-
-/* FOOTER */
-footer { background:var(--navy2); border-top:1px solid rgba(0,180,216,.1); padding:5rem 6vw 2.5rem; }
-.ftGrid { display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:5rem; padding-bottom:4rem; border-bottom:1px solid rgba(0,180,216,.07); margin-bottom:2rem; }
-.ftLogo img { height:34px; margin-bottom:1.25rem; display:block; }
-.ftDesc { font-size:.82rem; line-height:1.78; color:rgba(144,224,239,.55); margin-bottom:1.75rem; max-width:280px; }
-.ftSocs { display:flex; gap:.5rem; }
-.ftSoc { width:34px; height:34px; border:1px solid rgba(0,180,216,.2); display:flex; align-items:center; justify-content:center; font-size:.68rem; color:var(--dim); font-family:'Syne',sans-serif; font-weight:700; transition:all .25s; }
-.ftSoc:hover { background:var(--cyan); color:var(--ink); border-color:var(--cyan); }
-.ftColT { font-family:'Syne',sans-serif; font-size:.6rem; font-weight:700; letter-spacing:.3em; text-transform:uppercase; color:var(--cyan); margin-bottom:1.25rem; }
-.ftLinks { list-style:none; display:flex; flex-direction:column; gap:.6rem; }
-.ftLinks a { font-size:.82rem; color:rgba(144,224,239,.5); transition:color .25s; display:flex; align-items:center; gap:.5rem; }
-.ftLinks a::before { content:'—'; font-size:.5rem; color:rgba(0,180,216,.28); }
-.ftLinks a:hover { color:var(--cyan); }
-.ftBtm { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem; }
-.ftCopy { font-size:.7rem; color:rgba(144,224,239,.2); letter-spacing:.08em; }
-.ftLeg { display:flex; gap:1.75rem; }
-.ftLeg a { font-size:.68rem; color:rgba(144,224,239,.2); transition:color .25s; }
-.ftLeg a:hover { color:var(--cyan); }
-
-@media(max-width:1100px){
-  .s2Grid{grid-template-columns:1fr;}
-  .s2Stats{right:0;position:relative;top:auto;flex-direction:row;margin-top:1.5rem;}
-  .procGrid{grid-template-columns:1fr 1fr;}
-  .s7Cols{grid-template-columns:1fr;gap:2rem;}
-  .ftGrid{grid-template-columns:1fr 1fr;gap:3rem;}
-  .drTag{display:none;}
-}
 @media(max-width:768px){
-  .nLinks,.nBtn{display:none;}
-  .burger{display:flex;}
-  .h-inner{grid-template-columns:1fr;}
-  .hRight{max-width:100%;}
-  .hCtr{display:none;}
-  #s8{grid-template-columns:1fr;}
-  .s8L{min-height:auto;}
-  .fRow2{grid-template-columns:1fr;}
-  .ftGrid{grid-template-columns:1fr;gap:2rem;}
-  .procGrid{grid-template-columns:1fr;}
-  .s7H{font-size:clamp(3rem,10vw,7rem);}
-  .drArr{display:none;}
+  #mc{grid-template-columns:1fr;}
+  #m-imgw{min-height:220px;max-height:32vh;}
 }
 </style>
 </head>
 <body>
-<div id="bar"></div>
-<div id="ldr">
-  <img class="ldr-logo" src="assets/Logo-Aardesign-Court.png" alt="AAR Design">
-  <div class="ldr-bar-w"><div class="ldr-bar"></div></div>
-  <div class="ldr-pct" id="ldrPct">0%</div>
-</div>
-<div id="cDot"></div><div id="cRing"></div>
 
-<nav id="nav">
-  <a href="#s1" class="nLogo"><img src="assets/Logo-Aardesign-Court.png" alt="AAR Design"></a>
-  <ul class="nLinks">
-    <li><a href="#s2">Histoire</a></li><li><a href="#s3">Disciplines</a></li>
-    <li><a href="#s5">Portfolio</a></li><li><a href="#s6">Process</a></li>
-    <li><a href="#s8">Contact</a></li>
-  </ul>
-  <button class="nBtn" onclick="document.querySelector('#s8').scrollIntoView({behavior:'smooth'})">Démarrer →</button>
-  <div class="burger" id="brg"><span></span><span></span><span></span></div>
-</nav>
-<div class="mobNav" id="mobNav">
-  <a href="#s2">Histoire</a><a href="#s3">Disciplines</a>
-  <a href="#s5">Portfolio</a><a href="#s6">Process</a><a href="#s8">Contact</a>
+<div id="loader"><div class="llo"><img src="assets/Logo-Aardesign-Long.png" alt="AAR Design"></div><div class="lbw"><div class="lbb" id="lbb"></div></div><p class="ltx">Chargement de la galerie</p></div>
+
+<div id="cd"></div><div id="cr"></div>
+<canvas id="stars"></canvas>
+<div id="grain"></div>
+
+<div id="nav">
+  <a href="#"><img src="assets/Logo-Aardesign-Long.png" alt="AAR Design" style="height:22px;filter:brightness(0) invert(1);opacity:.6;display:block;pointer-events:all;"></a>
+  <div class="nl"><div class="nl-dot"></div>Déplacer la souris pour voyager</div>
+  <a href="#contact" id="nav-contact">Contact</a>
 </div>
 
-<section id="s1">
-  <div class="h-mesh"></div><div class="h-grid"></div>
-  <div class="h-echo">DESIGN</div><div class="h-vline"></div><div class="h-diag"></div>
-  <div class="h-inner">
-    <div>
-      <div class="hEyebrow"><span>Anthony Armand — Graphiste &amp; Designer</span></div>
-      <h1 class="hTitle">
-        <span class="hRow"><span>Le design</span></span>
-        <span class="hRow"><span>qui raconte</span></span>
-        <span class="hRow"><span>l'essentiel</span></span>
-      </h1>
-    </div>
-    <div class="hRight">
-      <p class="hDesc">Chaque marque a une histoire à raconter. Je la révèle — à travers l'identité visuelle, le web, l'architecture, le motion et l'illustration. Cinq disciplines, une seule obsession : le sens.</p>
-      <div class="hBtns">
-        <a href="#s5" class="btnA"><span>Voir mes projets</span><em>→</em></a>
-        <a href="#s8" class="btnB">Démarrer un projet →</a>
-      </div>
-    </div>
-  </div>
-  <div class="hScroll"><div class="hScrollTxt">Scroll</div><div class="hScrollTrack"><div class="hScrollBar"></div></div></div>
-  <div class="hCtr" id="hCtr">01 / 08</div>
-</section>
+<div id="space"><div id="world"></div></div>
 
-<div class="mq" data-anim="up">
-  <div class="mqTrack">
-    <span class="mqItem">Identité visuelle</span><span class="mqItem">Branding</span>
-    <span class="mqItem">Web &amp; UI/UX</span><span class="mqItem">Architecture</span>
-    <span class="mqItem">Motion Design</span><span class="mqItem">Digital Painting</span><span class="mqItem">aardesign.fr</span>
-    <span class="mqItem">Identité visuelle</span><span class="mqItem">Branding</span>
-    <span class="mqItem">Web &amp; UI/UX</span><span class="mqItem">Architecture</span>
-    <span class="mqItem">Motion Design</span><span class="mqItem">Digital Painting</span><span class="mqItem">aardesign.fr</span>
-  </div>
+<div id="mm"><div id="mm-dots"></div><div id="mm-vp"></div></div>
+
+<div id="bot">
+  <a href="admin.html">Admin ↗</a>
+  <span id="wcount"></span>
+  <a href="#" id="btn-project">Démarrer un projet →</a>
 </div>
 
-<section class="sec" id="s2">
-  <div class="secInner">
-    <div class="s2Grid">
-      <div>
-        <div class="secNum" data-anim="left">01</div>
-        <p class="secLabel" data-n="01 /" data-anim="up" data-delay="1">Mon histoire</p>
-        <h2 class="secH" data-anim="up" data-delay="2">Pas juste<br>un designer —<br>un <em>narrateur</em></h2>
-        <p class="secP" data-anim="up" data-delay="3">Je suis Anthony Armand. Depuis l'enfance, j'ai regardé le monde comme une série de formes et de récits à raconter autrement. Le design n'est pas mon métier — c'est ma <strong>façon de penser</strong>.</p>
-        <p class="secP" data-anim="up" data-delay="4">Depuis plus de 5 ans, j'accompagne entreprises et particuliers dans la création de leur univers visuel. Mon approche va bien au-delà de l'esthétique : je conçois des systèmes visuels qui <strong>portent du sens</strong>.</p>
-        <p class="secP" data-anim="up" data-delay="5">Branding, web, architecture, motion, illustration — cinq disciplines, un seul fil conducteur : <strong>la cohérence et l'intention</strong>.</p>
-        <div style="margin-top:2.5rem" data-anim="up" data-delay="6"><a href="#s8" class="btnA"><span>Me contacter</span><em>→</em></a></div>
-      </div>
-      <div style="position:relative" data-anim="right" data-delay="2">
-        <div class="s2Frame">
-          <div class="s2Init">AA</div><div class="s2Ov"></div>
-          <div class="s2Cap">Anthony Armand · Graphiste & Designer</div>
-          <div class="s2Dtl"></div><div class="s2Dbr"></div>
-        </div>
-        <div class="s2Stats" data-anim="scale" data-delay="4">
-          <div><div class="snNum" id="sn1">0+</div><div class="snLbl">Années exp.</div></div>
-          <div><div class="snNum" id="sn2">0+</div><div class="snLbl">Projets</div></div>
-          <div><div class="snNum" id="sn3">0</div><div class="snLbl">Disciplines</div></div>
-        </div>
-      </div>
+<!-- MODAL -->
+<div id="modal">
+  <div id="mbg"></div>
+  <div id="mc">
+    <div id="m-imgw">
+      <img id="m-img" src="" alt="">
+      <div class="m-nav" id="mprev">‹</div>
+      <div class="m-nav" id="mnext">›</div>
     </div>
-  </div>
-</section>
-
-<section class="sec" id="s3">
-  <div class="secInner">
-    <p class="secLabel" data-n="02 /" data-anim="up">Ce que je fais</p>
-    <h2 class="secH" data-anim="up" data-delay="1">Cinq disciplines,<br>une seule <em>vision</em></h2>
-    <div class="discList">
-      <div class="discRow" data-anim="left"><span class="drN">01</span><span class="drName">Identité visuelle</span><span class="drTag">Branding · Logos · Chartes</span><span class="drArr">↗</span></div>
-      <div class="discRow" data-anim="right" data-delay="1"><span class="drN">02</span><span class="drName">Web &amp; UI/UX</span><span class="drTag">Interfaces · Expériences</span><span class="drArr">↗</span></div>
-      <div class="discRow" data-anim="left" data-delay="2"><span class="drN">03</span><span class="drName">Architecture</span><span class="drTag">Intérieur · Espaces · 3D</span><span class="drArr">↗</span></div>
-      <div class="discRow" data-anim="right" data-delay="3"><span class="drN">04</span><span class="drName">Motion Design</span><span class="drTag">Animation · Vidéo</span><span class="drArr">↗</span></div>
-      <div class="discRow" data-anim="left" data-delay="4"><span class="drN">05</span><span class="drName">Digital Painting</span><span class="drTag">Illustration · Portrait</span><span class="drArr">↗</span></div>
+    <div id="m-body">
+      <div id="m-cat"></div>
+      <h2 id="m-title"></h2>
+      <p id="m-sub"></p>
+      <p id="m-desc"></p>
+      <div id="m-tags"></div>
+      <p id="m-year"></p>
     </div>
+    <div id="mclose">✕</div>
   </div>
-</section>
-
-<section id="s4">
-  <div class="s4Circle"></div>
-  <div class="s4Ghost">sens</div><div class="s4Ghost">forme</div>
-  <div class="s4Ghost">vision</div><div class="s4Ghost">art</div>
-  <div class="s4Content">
-    <p class="s4Eye" data-anim="up">Ma philosophie</p>
-    <p class="s4Quote" data-anim="scale" data-delay="2">Le bon design<br>ne se remarque pas.<br>Il se <span class="ghl">ressent</span> —<br>et il <span class="rhl">reste.</span></p>
-    <p class="s4Auth" data-anim="up" data-delay="4">— Anthony Armand, AAR Design</p>
-  </div>
-</section>
-
-<section id="s5">
-  <div class="s5Head">
-    <p class="secLabel" data-n="03 /" data-anim="up">Portfolio</p>
-    <h2 class="secH" data-anim="up" data-delay="1">Ce que j'ai <em>créé</em></h2>
-  </div>
-  <p class="dragTip" data-anim="up" data-delay="2">← Glisser pour explorer →</p>
-  <div class="portWrap" id="portWrap">
-    <div class="portTrack" id="portTrack">
-      <div class="pj tall" data-anim="up"><div class="pjVis"><div class="pjArt"><svg width="200" height="270" viewBox="0 0 200 270" fill="none"><circle cx="100" cy="135" r="80" stroke="rgba(0,180,216,.22)" stroke-width=".8"/><circle cx="100" cy="135" r="50" stroke="rgba(0,180,216,.14)" stroke-width=".8"/><circle cx="100" cy="135" r="22" fill="rgba(0,180,216,.06)" stroke="rgba(0,180,216,.35)" stroke-width=".8"/><line x1="20" y1="135" x2="180" y2="135" stroke="rgba(0,180,216,.1)" stroke-width=".5"/><line x1="100" y1="55" x2="100" y2="215" stroke="rgba(0,180,216,.1)" stroke-width=".5"/><text x="83" y="141" font-family="serif" font-size="20" fill="rgba(0,180,216,.65)" font-style="italic">AA</text></svg></div><div class="pjOv"><div class="pjCirc">→</div><span class="pjOvLbl">Voir le projet</span></div></div><div class="pjMeta"><p class="pjCat">Identité visuelle</p><h3 class="pjTitle">Studio Noir — Refonte de marque</h3><p class="pjYr">2024</p></div></div>
-      <div class="pj wide" data-anim="up" data-delay="1"><div class="pjVis"><div class="pjArt"><svg width="360" height="210" viewBox="0 0 360 210" fill="none"><rect x="18" y="14" width="324" height="182" rx="10" stroke="rgba(0,180,216,.18)" stroke-width=".8"/><rect x="18" y="14" width="324" height="34" rx="10" fill="rgba(26,39,85,.3)"/><circle cx="40" cy="31" r="5" fill="rgba(0,180,216,.4)"/><circle cx="56" cy="31" r="5" fill="rgba(72,202,228,.25)"/><circle cx="72" cy="31" r="5" fill="rgba(144,224,239,.2)"/><rect x="38" y="62" width="130" height="95" rx="5" fill="rgba(26,39,85,.2)" stroke="rgba(0,180,216,.15)" stroke-width=".7"/><rect x="185" y="62" width="135" height="42" rx="4" fill="rgba(0,180,216,.06)" stroke="rgba(0,180,216,.15)" stroke-width=".7"/><rect x="185" y="115" width="90" height="12" rx="2" fill="rgba(255,255,255,.05)"/><rect x="185" y="136" width="115" height="12" rx="2" fill="rgba(255,255,255,.04)"/></svg></div><div class="pjOv"><div class="pjCirc">→</div><span class="pjOvLbl">Voir le projet</span></div></div><div class="pjMeta"><p class="pjCat">Web Design · UI/UX</p><h3 class="pjTitle">Vitrine e-commerce — Rebranding digital</h3><p class="pjYr">2024</p></div></div>
-      <div class="pj tall" data-anim="up" data-delay="2"><div class="pjVis"><div class="pjArt"><svg width="200" height="270" viewBox="0 0 200 270" fill="none"><rect x="15" y="95" width="170" height="165" stroke="rgba(0,180,216,.2)" stroke-width=".8" fill="rgba(26,39,85,.12)"/><polygon points="100,15 15,95 185,95" stroke="rgba(0,180,216,.3)" stroke-width=".8" fill="rgba(0,180,216,.04)"/><rect x="72" y="170" width="56" height="90" stroke="rgba(0,180,216,.18)" stroke-width=".7"/><rect x="24" y="115" width="42" height="38" stroke="rgba(0,180,216,.15)" stroke-width=".6"/><rect x="134" y="115" width="42" height="38" stroke="rgba(0,180,216,.15)" stroke-width=".6"/></svg></div><div class="pjOv"><div class="pjCirc">→</div><span class="pjOvLbl">Voir le projet</span></div></div><div class="pjMeta"><p class="pjCat">Architecture d'intérieur</p><h3 class="pjTitle">Appartement Haussmannien — Paris</h3><p class="pjYr">2023</p></div></div>
-      <div class="pj wide" data-anim="up" data-delay="3"><div class="pjVis"><div class="pjArt"><svg width="360" height="210" viewBox="0 0 360 210" fill="none"><circle cx="180" cy="105" r="80" stroke="rgba(0,180,216,.12)" stroke-width=".8" stroke-dasharray="5 4"/><circle cx="180" cy="105" r="50" stroke="rgba(0,180,216,.2)" stroke-width=".8"/><polygon points="162,76 218,105 162,134" fill="rgba(0,180,216,.15)" stroke="rgba(0,180,216,.5)" stroke-width=".8"/><circle cx="180" cy="105" r="4" fill="rgba(0,180,216,.8)"/></svg></div><div class="pjOv"><div class="pjCirc">→</div><span class="pjOvLbl">Voir le projet</span></div></div><div class="pjMeta"><p class="pjCat">Motion Design</p><h3 class="pjTitle">TechCo — Intro de marque animée</h3><p class="pjYr">2024</p></div></div>
-      <div class="pj tall" data-anim="up" data-delay="2"><div class="pjVis"><div class="pjArt"><svg width="200" height="270" viewBox="0 0 200 270" fill="none"><ellipse cx="100" cy="95" rx="50" ry="60" stroke="rgba(0,180,216,.2)" stroke-width=".8" fill="rgba(26,39,85,.1)"/><path d="M50,155 Q100,128 150,155" stroke="rgba(0,180,216,.22)" stroke-width=".8" fill="none"/><circle cx="82" cy="84" r="5.5" fill="rgba(0,180,216,.4)"/><circle cx="118" cy="84" r="5.5" fill="rgba(0,180,216,.4)"/><path d="M84,110 Q100,122 116,110" stroke="rgba(0,180,216,.32)" stroke-width=".8" fill="none"/></svg></div><div class="pjOv"><div class="pjCirc">→</div><span class="pjOvLbl">Voir le projet</span></div></div><div class="pjMeta"><p class="pjCat">Digital Painting</p><h3 class="pjTitle">Portrait série — Commande privée</h3><p class="pjYr">2023</p></div></div>
-      <div class="pj wide" data-anim="up" data-delay="3"><div class="pjVis"><div class="pjArt"><svg width="360" height="210" viewBox="0 0 360 210" fill="none"><rect x="48" y="38" width="264" height="134" stroke="rgba(0,180,216,.15)" stroke-width=".8" fill="none"/><rect x="70" y="62" width="90" height="86" fill="rgba(26,39,85,.25)" stroke="rgba(0,180,216,.22)" stroke-width=".7"/><text x="95" y="115" font-family="serif" font-size="26" fill="rgba(0,180,216,.5)" font-style="italic" font-weight="bold">SN</text><line x1="185" y1="72" x2="296" y2="72" stroke="rgba(0,180,216,.18)" stroke-width=".6"/><line x1="185" y1="96" x2="276" y2="96" stroke="rgba(0,180,216,.1)" stroke-width=".6"/><line x1="185" y1="120" x2="285" y2="120" stroke="rgba(0,180,216,.1)" stroke-width=".6"/></svg></div><div class="pjOv"><div class="pjCirc">→</div><span class="pjOvLbl">Voir le projet</span></div></div><div class="pjMeta"><p class="pjCat">Branding · Print</p><h3 class="pjTitle">Startup Noma — Identité &amp; communication</h3><p class="pjYr">2024</p></div></div>
-      <div class="pj tall" data-anim="up" data-delay="4"><div class="pjVis"><div class="pjArt"><svg width="200" height="270" viewBox="0 0 200 270" fill="none"><rect x="14" y="18" width="172" height="234" rx="14" stroke="rgba(0,180,216,.2)" stroke-width=".8"/><rect x="14" y="18" width="172" height="50" rx="14" fill="rgba(26,39,85,.3)"/><circle cx="100" cy="43" r="10" fill="rgba(0,180,216,.15)" stroke="rgba(0,180,216,.3)" stroke-width=".7"/><rect x="32" y="90" width="136" height="64" rx="5" fill="rgba(0,180,216,.05)" stroke="rgba(0,180,216,.15)" stroke-width=".7"/><rect x="32" y="170" width="64" height="32" rx="4" fill="rgba(0,180,216,.1)" stroke="rgba(0,180,216,.28)" stroke-width=".7"/><rect x="104" y="170" width="64" height="32" rx="4" stroke="rgba(0,180,216,.12)" stroke-width=".7"/></svg></div><div class="pjOv"><div class="pjCirc">→</div><span class="pjOvLbl">Voir le projet</span></div></div><div class="pjMeta"><p class="pjCat">UI/UX · Mobile</p><h3 class="pjTitle">App Dashboard — Analytics B2B</h3><p class="pjYr">2025</p></div></div>
-    </div>
-  </div>
-</section>
-
-<section class="sec" id="s6">
-  <div class="secInner">
-    <p class="secLabel" data-n="04 /" data-anim="up">Ma méthode</p>
-    <h2 class="secH" data-anim="up" data-delay="1">Comment je <em>travaille</em></h2>
-    <div class="procGrid">
-      <div class="procCard" data-anim="up" data-delay="1"><div class="pcNum">01</div><h3 class="pcName">Découverte</h3><p class="pcDesc">On échange en profondeur sur votre projet. Je pose les bonnes questions pour comprendre ce que vous ne savez pas encore dire.</p></div>
-      <div class="procCard" data-anim="up" data-delay="2"><div class="pcNum">02</div><h3 class="pcName">Stratégie</h3><p class="pcDesc">Direction créative, moodboard, positionnement. Je construis le cap avant de dessiner la première ligne.</p></div>
-      <div class="procCard" data-anim="up" data-delay="3"><div class="pcNum">03</div><h3 class="pcName">Création</h3><p class="pcDesc">Je conçois par itérations. Votre regard guide chaque étape — jusqu'à ce que le design soit juste.</p></div>
-      <div class="procCard" data-anim="up" data-delay="4"><div class="pcNum">04</div><h3 class="pcName">Livraison</h3><p class="pcDesc">Fichiers finaux, formats complets, guide d'utilisation. Prêt à déployer — et je reste disponible après.</p></div>
-    </div>
-  </div>
-</section>
-
-<section id="s7">
-  <div class="s7Grid"></div><div class="s7Glow"></div><div class="s7Ghost">D.</div>
-  <div class="s7Inner">
-    <p class="s7Tag" data-anim="left">Ma philosophie</p>
-    <h2 class="s7H">
-      <span class="s7Row" data-anim="clip"><span>Le design</span></span>
-      <span class="s7Row" data-anim="clip" data-delay="2"><span>utile</span></span>
-      <span class="s7Row" data-anim="clip" data-delay="4"><span>avant tout.</span></span>
-    </h2>
-    <div class="s7Cols">
-      <p class="s7P" data-anim="up" data-delay="3">Je crois que le design a une responsabilité. Pas seulement être beau — être <strong>juste</strong>. Servir un propos, porter une intention, créer une connexion réelle.</p>
-      <p class="s7P" data-anim="up" data-delay="5">Chaque décision visuelle est motivée par une question : <em>est-ce que ça sert votre histoire ?</em> Si la réponse n'est pas oui, on recommence.</p>
-    </div>
-    <a href="#s8" class="s7Cta" data-anim="scale" data-delay="6"><span>Commençons quelque chose</span><em>→</em></a>
-  </div>
-</section>
-
-<section id="s8">
-  <div class="s8L">
-    <div class="s8Wm">AA</div>
-    <div><p class="secLabel" data-n="05 /" data-anim="up">Travaillons ensemble</p></div>
-    <h2 class="s8H" data-anim="left" data-delay="2">Votre projet<br>mérite<br><em>mieux</em></h2>
-    <div class="s8Dets">
-      <div class="s8Item" data-anim="left" data-delay="3"><div class="s8Ico">✉</div><div><div class="s8Lbl">Email</div><div class="s8Val">aardesign14@gmail.com</div></div></div>
-      <div class="s8Item" data-anim="left" data-delay="4"><div class="s8Ico">☎</div><div><div class="s8Lbl">Téléphone</div><div class="s8Val">06 79 46 62 19</div></div></div>
-      <div class="s8Item" data-anim="left" data-delay="5"><div class="s8Ico">◌</div><div><div class="s8Lbl">Disponibilité</div><div class="s8Val">France · Remote · International</div></div></div>
-    </div>
-  </div>
-  <div class="s8R" data-anim="right" data-delay="2">
-    <p class="secLabel" data-n="" style="margin-bottom:2rem;">Parlez-moi de votre projet</p>
-    <div class="fRow2 fGroup"><div><label class="fLabel">Prénom</label><input class="fIn" type="text" placeholder="Jean"></div><div><label class="fLabel">Nom</label><input class="fIn" type="text" placeholder="Dupont"></div></div>
-    <div class="fGroup"><label class="fLabel">Email</label><input class="fIn" type="email" placeholder="jean@dupont.fr"></div>
-    <div class="fGroup"><label class="fLabel">Type de projet</label><select class="fSel"><option value="">Choisir…</option><option>Identité visuelle / Branding</option><option>Web Design / UI-UX</option><option>Architecture d'intérieur</option><option>Motion Design / Vidéo</option><option>Digital Painting</option><option>Projet multi-discipline</option></select></div>
-    <div class="fGroup"><label class="fLabel">Votre message</label><textarea class="fTa" placeholder="Décrivez votre projet…"></textarea></div>
-    <div class="fFoot"><button class="btnA" onclick="sendForm()"><span>Envoyer</span><em>→</em></button><span class="fOk" id="fOk">✓ Message envoyé !</span></div>
-  </div>
-</section>
-
-<footer>
-  <div class="ftGrid">
-    <div data-anim="up"><div class="ftLogo"><img src="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAGOAYgDASIAAhEBAxEB/8QAHAABAAICAwEAAAAAAAAAAAAAAAYHBQgCAwQB/8QAUhAAAQMDAQMHBggHDwMFAQAAAQACAwQFEQYHEiETMUFRYXGBCBQiMpHRFRcjQlaksdIWN3KCkqHBMzQ1UlNUVWJzdZOjs+HwNpSyJEN0osKV/8QAGwEBAAIDAQEAAAAAAAAAAAAAAAQFAgMGAQf/xAA5EQACAQMBBQQIBgIBBQAAAAAAAQIDBBExBRITIUEGFFFxFSJhgZGx0fAWMlKhweFC0pIjJFNicv/aAAwDAQACEQMRAD8A0yREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREARF67TRurrhFTNzhxy49TRzlexi5NJHjaSyzKWHTzq2FtTVSOjhd6rW+s4dfYFl5NMW1zCGmZh6HB+Vmo2NjY1jGhrWgAAdAXJdBTs6UY4ayVU7icnlMr692ma2TAOPKRP9R4HP2HqKxysW9UQr7dLT8N/G8w9Thze7xVduaWuLXAgg4IPQqq8t1Rny0ZOt6vEjz1PiIs9oDTs2qdWUNmi3gyV+9O8fMiHFzvZwHaQosYuclFas2VasaUHUm8JLLJtsr2RVGqKBl4vNVLQW6T9xZEBysw6XAng0dRIOerHE2FW7C9Hy0pjpqm6U8oHCTlmu49oLePhhWfSU8NJSxUtNG2KGFjY42N5mtAwAO4LtXT0tn0IQw45Z8suu0V9WrOcJuK6JffM1A2kaFumibmyCsc2opJ8mmqmDDZAOcEfNcMjh28CVFFuHtP0yzVmjay1hrfOQOVpXH5srfV7s8WnscVp9LG+KR0UjHMewlrmuGCCOcFUl/aq3qerozuez+1ntG3fE/PHk/wCGcURFBL4IiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAKZaLoOQo3VkjfTm4N7Gj3n7AovaqR1dXxUzc4cfSPUOkqxomNjjbGxoaxoAaB0AKy2dR3pOo+hDu6mFuo5IiK5K4KFayoPN68VTG4jn4nsd0+3n9qmq8d4o219vlpzjeIyw9ThzKPdUeLTa6m6hU4c8lcrY7yatLi3acl1JUx4qbl6EORxbC0//AKcM9zWqjtD6dqdS6to7HGHMMsuJ3Y/c428XnwAPjgLceipoKKjho6WNsUEEbY42N5mtaMAewKHsq33puo+nzKTtdtDh0Y2sHzlzfl/b+R3IiK/PngWsvlFaV+BdWi80se7R3XMhwODZh648eDu8nqWz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+53d8rac0j4gY2bx3iWkcPArdKtB3MHnOMZfiQ6VlXjsyvBQa3m3GOrSei/oxus6p9FtQvVZGMvgvU8rRnHFs7iPsVo+Uba/huw2bWlrBnpBCGSuaM7sb8OY49mSQe0hU7q6uguerLxcqUuNPV1088RcMHddI5wyOjgVNdlu1CbS9E6x3ijNysj8gR8C+IO9YAHg5pyfROOfn586aVWDc6c3yl18GTLu1rqNC5oLM6a5x0ymsNefgVspJs009U6l1jQW+CNzoWytlqXjmjiaQXEno4cB2kKxqp2wS4OdWOkq6F7uJp445wM9gALR3AgLFal2hWO32SbTWzizut0FUNyorHj5WQHhhuSXcc4yTkZOAOdeK3hTe9Oaa9nNszntGvcxdOjRlGT6yWEvb7cewzPlW/whYP7Kf7WJ5On/AEfrH+yb/pyJ5Vv8IWD+yn+1ijux/Wdk0xp7UNFdZJ2zV8YbAI4i4Ehjxx6uLgpc5xhftyeF/RU0KNStsCEKay+Wn/2VmiIqc7Iu7bv+LDRn9lH/AKDVTtnoH3GubTtO631nu/itVgbUtZ2TUOiNOWm2yTuqbfGxs4fEWgERBpweniFGdB7nLVefX3W47snP7FY1FCvdJZ5cvkUeyYVLexxNYeZa+1szUUFvtroKWGl3pJjgENBcQOdxJ6Bld1fbKKtjLJoG5xwe0YcPFeevgikvtC5zSSWSH1iObdx9qWiLfqayd8kji2pe1jS47rRw6FYrGXBxWP6NvPG9nmQu60UlBXSU0hzu8Wu/jDoK8qkWutzz+DGN/kuPdk4/ao6qO4gqdRxRZ0pOUE2ERFpNgREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAFdVg0hp3XuyiI6fpKSk1JQhrZyDh0j2gjDuPM8cQebe7iqVWR0/e7rYLi24Weulo6hoxvMPBw6iDwI7Ct9vVjCT31lP75EDaFrVrwToz3ZxeV4P2P2M4Xmz3WzVTqa62+po5WnBbNGW57jzEdoU32Q7PLvqDUNJX1tDNTWimlbLLLKwtEu6chjQfWyRgkcAM9OAsrQ7edUxQhlVbbVUuAxv7j2E9pw7HsAWE1btb1fqGkfRGeC3Usgw9lG0tLx1FxJd7CMrfFWsHvbzfsx/JAqT2rXg6Spxg3yct7PwWM+WTu8oDU1NqHW5hoZGy0lui83bI05a9+SXkHqzgfm56VXSIotWo6s3N9S1tLaFrQjRhpFYCIi1kkL12mukt1a2ojG8Bwc3+MOpeRF7GTi8o8aTWGWFR3G21u5OyaISNBwHkBzc8/2LjV3O22+N7uVjLnEuLIyC5xPTw+0qv0Vh6Rnj8qyRO5xzryPTc6ySvrZKmXgXHgP4o6AvMiKvlJyeWS0klhBEReHoREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAf//Z" alt="AAR Design"></div><p class="ftDesc">Le design utile — Graphiste & Designer pluridisciplinaire. Identité visuelle, Web, Architecture, Motion, Illustration.</p><div class="ftSocs"><a href="#" class="ftSoc">Li</a><a href="#" class="ftSoc">Be</a><a href="#" class="ftSoc">Ig</a><a href="#" class="ftSoc">Dr</a></div></div>
-    <div data-anim="up" data-delay="1"><p class="ftColT">Navigation</p><ul class="ftLinks"><li><a href="#s2">Mon histoire</a></li><li><a href="#s3">Disciplines</a></li><li><a href="#s5">Portfolio</a></li><li><a href="#s6">Process</a></li><li><a href="#s8">Contact</a></li></ul></div>
-    <div data-anim="up" data-delay="2"><p class="ftColT">Disciplines</p><ul class="ftLinks"><li><a href="#">Identité visuelle</a></li><li><a href="#">Web & UI/UX</a></li><li><a href="#">Architecture</a></li><li><a href="#">Motion Design</a></li><li><a href="#">Digital Painting</a></li></ul></div>
-    <div data-anim="up" data-delay="3"><p class="ftColT">Contact</p><ul class="ftLinks"><li><a href="mailto:aardesign14@gmail.com">aardesign14@gmail.com</a></li><li><a href="tel:0679466219">06 79 46 62 19</a></li></ul></div>
-  </div>
-  <div class="ftBtm"><p class="ftCopy">© 2025 AAR Design — Anthony Armand. Tous droits réservés.</p><div class="ftLeg"><a href="#">Mentions légales</a><a href="#">Confidentialité</a></div></div>
-</footer>
+</div>
 
 <script>
-const cDot=document.getElementById('cDot'),cRing=document.getElementById('cRing');
-let mx=0,my=0,rx=0,ry=0;
-document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cDot.style.left=mx+'px';cDot.style.top=my+'px';});
-(function raf(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;cRing.style.left=rx+'px';cRing.style.top=ry+'px';requestAnimationFrame(raf);})();
-document.querySelectorAll('a,button,.discRow,.pj,.ftSoc').forEach(el=>{el.addEventListener('mouseenter',()=>document.body.classList.add('hov'));el.addEventListener('mouseleave',()=>document.body.classList.remove('hov'));});
-window.addEventListener('scroll',()=>{const h=document.documentElement.scrollHeight-innerHeight;document.getElementById('bar').style.width=(scrollY/h*100)+'%';},{passive:true});
-window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('stuck',scrollY>60),{passive:true});
-const brg=document.getElementById('brg'),mn=document.getElementById('mobNav');
-brg.addEventListener('click',()=>{brg.classList.toggle('open');mn.classList.toggle('open');});
-mn.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{brg.classList.remove('open');mn.classList.remove('open');}));
-let lp=0;const lE=document.getElementById('ldr'),lpE=document.getElementById('ldrPct');
-const lI=setInterval(()=>{lp=Math.min(lp+Math.random()*15,100);lpE.textContent=Math.round(lp)+'%';if(lp>=100){clearInterval(lI);lpE.textContent='100%';setTimeout(()=>lE.classList.add('gone'),500);setTimeout(()=>lE.style.display='none',1600);}},80);
-const aO=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('anim-in');});},{threshold:.12,rootMargin:'0px 0px -60px 0px'});
-document.querySelectorAll('[data-anim]').forEach(el=>aO.observe(el));
-function animCount(el,target,suffix,dur){let s=null;function step(ts){if(!s)s=ts;const p=Math.min((ts-s)/dur,1),e2=1-Math.pow(1-p,3);el.textContent=Math.round(e2*target)+suffix;if(p<1)requestAnimationFrame(step);}requestAnimationFrame(step);}
-const sO=new IntersectionObserver(entries=>{if(entries[0].isIntersecting){animCount(document.getElementById('sn1'),5,'+',1800);animCount(document.getElementById('sn2'),80,'+',2000);animCount(document.getElementById('sn3'),5,'',1500);sO.disconnect();}},{threshold:.5});
-const sEl=document.querySelector('.s2Stats');if(sEl)sO.observe(sEl);
-document.querySelectorAll("a[href^='#']").forEach(a=>{a.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(a.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});});
-const sIds=['s1','s2','s3','s4','s5','s6','s7','s8'],cE=document.getElementById('hCtr');
-const cO=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting&&cE){const i=sIds.indexOf(e.target.id);if(i>=0)cE.textContent=String(i+1).padStart(2,'0')+' / '+String(sIds.length).padStart(2,'0');}});},{threshold:.5});
-sIds.forEach(id=>{const el=document.getElementById(id);if(el)cO.observe(el);});
-const pW=document.getElementById('portWrap'),pT=document.getElementById('portTrack');
-let isDrag=false,startX=0,curX=0,baseX=0,vx=0,lx=0,lt=0,rafD=null;
-function clamp(v){return Math.min(0,Math.max(-(pT.scrollWidth-pW.clientWidth+192),v));}
-function setX(v){curX=clamp(v);pT.style.transform='translateX('+curX+'px)';}
-function glide(){vx*=.91;if(Math.abs(vx)<.4)return;setX(curX+vx);rafD=requestAnimationFrame(glide);}
-pW.addEventListener('mousedown',e=>{isDrag=true;startX=e.pageX;baseX=curX;lx=e.pageX;lt=Date.now();vx=0;if(rafD)cancelAnimationFrame(rafD);});
-document.addEventListener('mouseup',()=>{if(!isDrag)return;isDrag=false;if(rafD)cancelAnimationFrame(rafD);glide();});
-document.addEventListener('mousemove',e=>{if(!isDrag)return;e.preventDefault();const now=Date.now(),dt=now-lt||1;vx=(e.pageX-lx)/dt*16;lx=e.pageX;lt=now;setX(baseX+(e.pageX-startX)*1.25);});
-pW.addEventListener('touchstart',e=>{isDrag=true;startX=e.touches[0].pageX;baseX=curX;lx=e.touches[0].pageX;lt=Date.now();vx=0;if(rafD)cancelAnimationFrame(rafD);},{passive:true});
-pW.addEventListener('touchmove',e=>{if(!isDrag)return;const now=Date.now(),dt=now-lt||1;vx=(e.touches[0].pageX-lx)/dt*16;lx=e.touches[0].pageX;lt=now;setX(baseX+(e.touches[0].pageX-startX));},{passive:true});
-pW.addEventListener('touchend',()=>{isDrag=false;glide();});
-function sendForm(){const ok=document.getElementById('fOk');ok.classList.add('on');setTimeout(()=>ok.classList.remove('on'),3500);}
+// ══════════════════════════
+//  ALL PROJECTS
+// ══════════════════════════
+const projects = [
+
+  // ── VOYAGES D'ARSÈNE ──────────────────
+  { id:'v1', cat:'Digital Painting · Packaging',
+    title:'Ciel de Cappadoce', sub:'Baklava Pistache — Les Voyages d\'Arsène',
+    desc:'Peinture numérique plein format pour flacon 50ml. Paysage de Cappadoce au coucher du soleil avec cheminées de fées et dirigeable steampunk flottant dans la brume dorée.',
+    tags:['Digital Painting','Packaging','Steampunk','Paysage'],
+    year:'Arsène Valentin · 2024',
+    img:'assets/voyages/cappadoce.jpg', bg:'rgba(100,60,20,.6)',
+    x:-1200, y:-600, w:300, h:200, r:-2, feat:true },
+
+  { id:'v2', cat:'Digital Painting · Packaging',
+    title:'Soleil du Pacifique', sub:'Tahiti Banane & Coco — Les Voyages d\'Arsène',
+    desc:'Baie tropicale turquoise, palmiers, lagon et le dirigeable d\'Arsène ancré au large. Palette chaude et saturée, ambiance carte postale coloniale.',
+    tags:['Digital Painting','Packaging','Tropical'],
+    year:'Arsène Valentin · 2024',
+    img:'assets/voyages/pacifique.jpg', bg:'rgba(20,80,100,.5)',
+    x:-800, y:-800, w:260, h:180, r:1.5 },
+
+  { id:'v3', cat:'Digital Painting · Packaging',
+    title:'Aurore de Laponie', sub:'Chocolat & Pain d\'Épice — Les Voyages d\'Arsène',
+    desc:'Village enneigé sous aurore boréale, dirigeable traversant les lumières vertes et violettes du ciel nocturne arctique.',
+    tags:['Digital Painting','Packaging','Hiver','Aurore'],
+    year:'Arsène Valentin · 2024',
+    img:'assets/voyages/laponie.jpg', bg:'rgba(20,40,100,.5)',
+    x:-480, y:-900, w:260, h:180, r:-1 },
+
+  { id:'v4', cat:'Digital Painting · Packaging',
+    title:'Éclat du Fuji', sub:'Litchi Mangoustan & Gingembre — Les Voyages d\'Arsène',
+    desc:'Temple japonais sous les cerisiers en fleur, mont Fuji en arrière-plan, dirigeable survolant la cime des sakura.',
+    tags:['Digital Painting','Packaging','Japon','Cerisiers'],
+    year:'Arsène Valentin · 2024',
+    img:'assets/voyages/fuji.jpg', bg:'rgba(120,30,50,.5)',
+    x:-120, y:-1000, w:260, h:180, r:2 },
+
+  { id:'v5', cat:'Digital Painting · Packaging',
+    title:'Brume d\'Amazonie', sub:'Goyave Corossol & Pitaya — Les Voyages d\'Arsène',
+    desc:'Forêt tropicale dense avec rivière serpentant entre les lianes, jaguar tapi dans l\'ombre, dirigeable émergeant de la canopée.',
+    tags:['Digital Painting','Packaging','Jungle'],
+    year:'Arsène Valentin · 2024',
+    img:'assets/voyages/amazonie.jpg', bg:'rgba(20,80,20,.5)',
+    x:260, y:-880, w:260, h:180, r:-1.5 },
+
+  { id:'v6', cat:'Digital Painting · Packaging',
+    title:'Rivage Canadien', sub:'Donuts & Sirop d\'Érable — Les Voyages d\'Arsène',
+    desc:'Forêt canadienne à l\'automne, feuilles d\'érable rouge et or, orignal au bord du lac, dirigeable entre les épinettes.',
+    tags:['Digital Painting','Packaging','Automne','Canada'],
+    year:'Arsène Valentin · 2024',
+    img:'assets/voyages/canada.jpg', bg:'rgba(120,50,10,.5)',
+    x:620, y:-700, w:260, h:180, r:1 },
+
+  { id:'v0', cat:'Direction artistique · Packaging',
+    title:'Les Voyages d\'Arsène — Vue d\'ensemble',
+    sub:'6 destinations, 6 peintures plein format',
+    desc:'Vue d\'ensemble des 6 étiquettes cartographiques avec tampons de douane, coordonnées GPS et armoiries d\'Arsène Valentin. Direction artistique complète, cohérence de gamme.',
+    tags:['Direction artistique','Gamme complète','Brand system'],
+    year:'Arsène Valentin · 2023–2024',
+    img:'assets/voyages/cartes.jpg', bg:'rgba(80,50,20,.5)',
+    x:-900, y:-400, w:340, h:220, r:0, feat:true },
+
+  // ── STEAM COLLECTION ──────────────────
+  { id:'s0', cat:'Illustration · Packaging',
+    title:'Steam Collection — Mockup', sub:'Arsène Valentin',
+    desc:'Présentation de la gamme Steam complète en situation. 6 flacons aux illustrations style gravure XIXe sur fond parchemin texturé, bandeaux colorés latéraux.',
+    tags:['Mockup','Packaging','Présentation gamme'],
+    year:'Arsène Valentin · 2023',
+    img:'assets/steam/mockup.jpg', bg:'rgba(100,70,20,.5)',
+    x:-1300, y:200, w:340, h:220, r:-1.5, feat:true },
+
+  { id:'s1', cat:'Illustration · Gravure digitale',
+    title:'La Main d\'Alchimiste', sub:'Steam — White Choco Pistache',
+    desc:'Main articulée en métal forgé tenant un cristal magique. Rendu encre de Chine sur papier ancien, ombres hachurées, détails mécaniques précis.',
+    tags:['Gravure digitale','Steampunk','Illustration'],
+    year:'Arsène Valentin · 2023',
+    img:'assets/steam/main.jpg', bg:'rgba(80,60,15,.5)',
+    x:-950, y:150, w:220, h:280, r:2 },
+
+  { id:'s2', cat:'Illustration · Gravure digitale',
+    title:'Les Arcanes du Temps', sub:'Steam — Popcorn Caramel',
+    desc:'Sablier mécanique avec engrenages dorés, clepsydre steampunk ornée de rouages et de vapeur. Symbolique du temps suspendu.',
+    tags:['Gravure digitale','Symbolique','Steampunk'],
+    year:'Arsène Valentin · 2023',
+    img:'assets/steam/sablier.jpg', bg:'rgba(90,55,10,.5)',
+    x:-650, y:60, w:220, h:280, r:-2 },
+
+  { id:'s3', cat:'Illustration · Gravure digitale',
+    title:'Le Sage de Fer', sub:'Steam — Biscuit Caramel',
+    desc:'Hibou mécanique aux plumes d\'acier, yeux de verre lumineux, posé sur une branche d\'engrenages. Majesté et précision horlogère.',
+    tags:['Gravure digitale','Animal mécanique'],
+    year:'Arsène Valentin · 2023',
+    img:'assets/steam/hibou.jpg', bg:'rgba(70,50,10,.5)',
+    x:-380, y:160, w:220, h:280, r:1.5 },
+
+  { id:'s4', cat:'Illustration · Gravure digitale',
+    title:'Le Cœur Mécanique', sub:'Steam — Dulce de Leche',
+    desc:'Cœur anatomique steampunk avec valves, pistons et aiguilles de manomètre. Fusion du biologique et du mécanique.',
+    tags:['Gravure digitale','Anatomie','Steampunk'],
+    year:'Arsène Valentin · 2023',
+    img:'assets/steam/coeur.jpg', bg:'rgba(80,20,20,.5)',
+    x:-100, y:100, w:220, h:280, r:-1 },
+
+  { id:'s5', cat:'Illustration · Gravure digitale',
+    title:'La Gueule d\'Ange', sub:'Steam — Pâte à tartiner Noisette',
+    desc:'Masque de médecin de la peste revisité en version steampunk — lunettes à verres rouges, bec de métal soudé, cuir couturé. Tension et mystère.',
+    tags:['Gravure digitale','Masque','Gothic'],
+    year:'Arsène Valentin · 2023',
+    img:'assets/steam/gueule.jpg', bg:'rgba(60,40,10,.5)',
+    x:170, y:200, w:220, h:280, r:2 },
+
+  { id:'s6', cat:'Illustration · Gravure digitale',
+    title:'Le Fruit Défendu', sub:'Steam — Pomme Caramélisée',
+    desc:'Théière steampunk stylisée en forme de pomme mécanisée avec cheminée, robinets et voyants de pression. Objet de désir et de transgression.',
+    tags:['Gravure digitale','Objet','Steampunk'],
+    year:'Arsène Valentin · 2023',
+    img:'assets/steam/pomme.jpg', bg:'rgba(80,30,10,.5)',
+    x:440, y:120, w:220, h:280, r:-2 },
+
+  // ── CARNET SAVEURS ──────────────────
+  { id:'cs1', cat:'Illustration · Édition',
+    title:'Saveurs d\'Hiver', sub:'Clopinette · Carnet de saveurs & tarifs 2025',
+    desc:'Couverture illustrée pour catalogue saisonnier. Renard endormi dans la neige, cerf gracieux, patins à glace suspendus, stalactites de glace et flocons. Aquarelle digitale, palette froide pastel.',
+    tags:['Illustration','Aquarelle digitale','Édition','Hiver'],
+    year:'Clopinette · 2025',
+    img:'assets/saveurs/hiver.jpg', bg:'rgba(20,60,120,.4)',
+    x:900, y:-400, w:240, h:320, r:-1.5, feat:true },
+
+  { id:'cs2', cat:'Illustration · Édition',
+    title:'Saveurs d\'Automne', sub:'Clopinette · Carnet de saveurs & tarifs 2025',
+    desc:'Illustration automnale avec écureuil sur branche de chêne, feuilles d\'érable dorées, citrouilles, glands et champignons. Palette chaude et enveloppante.',
+    tags:['Illustration','Aquarelle digitale','Automne','Botanique'],
+    year:'Clopinette · 2025',
+    img:'assets/saveurs/automne.jpg', bg:'rgba(140,60,15,.4)',
+    x:1180, y:-550, w:240, h:320, r:2 },
+
+  { id:'cs3', cat:'Illustration · Édition',
+    title:'Saveurs d\'Été', sub:'Clopinette · Carnet de saveurs & tarifs 2025',
+    desc:'Composition estivale lumineuse avec fleurs sauvages, fruits gorgés de soleil et papillons. Couleurs vives et saturées pour célébrer l\'été.',
+    tags:['Illustration','Aquarelle digitale','Été'],
+    year:'Clopinette · 2025',
+    img:'assets/saveurs/ete.jpg', bg:'rgba(180,120,20,.35)',
+    x:1440, y:-350, w:240, h:320, r:-1 },
+
+  { id:'cs4', cat:'Illustration · Édition',
+    title:'Saveurs de Printemps', sub:'Clopinette · Carnet de saveurs & tarifs 2025',
+    desc:'Éclosion printanière — branches en fleur, petits animaux qui s\'éveillent, premières tulipes et jonquilles. Fraîcheur et légèreté.',
+    tags:['Illustration','Aquarelle digitale','Printemps'],
+    year:'Clopinette · 2025',
+    img:'assets/saveurs/printemps.jpg', bg:'rgba(80,140,60,.35)',
+    x:1680, y:-500, w:240, h:320, r:1.5 },
+
+  // ── HALLOWEEN / DARK FANTASY ──────────
+  { id:'h1', cat:'Digital Painting · Dark Fantasy',
+    title:'L\'Alchimiste Maudit', sub:'Illustration originale — Dark Fantasy',
+    desc:'Nécromancien steampunk en plein rituel nocturne — flammes rouges, chaudron bouillonnant, arbres morts, lune décroissante. Huile digitale sur fond sépia brûlé. Mon œuvre la plus personnelle.',
+    tags:['Digital Painting','Dark Fantasy','Steampunk','Illustration originale'],
+    year:'Personnel · 2024',
+    img:'assets/dark/red.jpg', bg:'rgba(120,20,10,.6)',
+    x:-400, y:600, w:260, h:340, r:2.5, feat:true },
+
+  { id:'h2', cat:'Digital Painting · Dark Fantasy',
+    title:'Salem', sub:'Série Halloween 2024',
+    desc:'Sorcière en vol sur fond de pleine lune — citrouilles sculptées, corbeaux et brume maléfique. Style painterly sombre à l\'encre et aux lavis.',
+    tags:['Digital Painting','Halloween','Sorcière'],
+    year:'Personnel · 2024',
+    img:'assets/dark/salem.jpg', bg:'rgba(80,20,60,.5)',
+    x:-100, y:700, w:240, h:300, r:-2 },
+
+  { id:'h3', cat:'Digital Painting · Dark Fantasy',
+    title:'Blood Moon', sub:'Série Halloween 2024',
+    desc:'Paysage lunaire rouge sang avec silhouettes fantomatiques surgissant de la brume. Atmosphère oppressante, palette monochrome cramoisie.',
+    tags:['Digital Painting','Halloween','Atmosphère'],
+    year:'Personnel · 2024',
+    img:'assets/dark/blood.jpg', bg:'rgba(100,10,10,.6)',
+    x:220, y:620, w:240, h:300, r:1.5 },
+
+  { id:'h4', cat:'Digital Painting · Dark Fantasy',
+    title:'The Cult', sub:'Série Halloween 2024',
+    desc:'Cérémonie occulte à la lueur des torches — silhouettes encapuchonnées, pentagramme incandescent, fumée d\'encens. Mystère et danger.',
+    tags:['Digital Painting','Halloween','Occulte'],
+    year:'Personnel · 2024',
+    img:'assets/dark/cult.jpg', bg:'rgba(60,30,10,.5)',
+    x:500, y:700, w:240, h:300, r:-1.5 },
+
+  // ── ARISTOCRATE ──────────────────────
+  { id:'a1', cat:'Illustration · Character design',
+    title:'Le Nanti', sub:'Série Aristocrate — Character design',
+    desc:'Personnage de gentleman dandy steampunk — habit impeccable, montre à gousset, regard hautain. Illustration couleur, style ligne claire raffinée.',
+    tags:['Character design','Steampunk','Illustration'],
+    year:'Personnel · 2024',
+    img:'assets/aristocrate/nanti.jpg', bg:'rgba(60,40,80,.5)',
+    x:-1400, y:600, w:220, h:300, r:-2 },
+
+  { id:'a2', cat:'Illustration · Character design',
+    title:'La Veste', sub:'Étude de costume — Aristocrate',
+    desc:'Étude de détail sur un manteau militaire orné — broderies, épaulettes, boutons en cuivre. Mise en valeur des matières et des textures.',
+    tags:['Étude','Costume','Textile'],
+    year:'Personnel · 2024',
+    img:'assets/aristocrate/veste.jpg', bg:'rgba(40,30,60,.5)',
+    x:-1150, y:500, w:200, h:260, r:2 },
+
+  { id:'a3', cat:'Illustration · Character design',
+    title:'Le Casque', sub:'Étude d\'équipement — Aristocrate',
+    desc:'Heaume mécanique orné de filigrane doré et de lentilles de verre fumé. Fusion entre armure médiévale et équipement steampunk.',
+    tags:['Étude','Armure','Steampunk'],
+    year:'Personnel · 2024',
+    img:'assets/aristocrate/casque.jpg', bg:'rgba(60,50,20,.5)',
+    x:-880, y:600, w:200, h:260, r:-1 },
+
+  { id:'a4', cat:'Illustration · Character design',
+    title:'L\'Explorateur', sub:'Série Aristocrate',
+    desc:'Aventurier steampunk avec boussole mécanique et carte des territoires inconnus. Le pendant du nanti — l\'homme d\'action.',
+    tags:['Character design','Explorateur','Aventure'],
+    year:'Personnel · 2024',
+    img:'assets/aristocrate/explorateur.jpg', bg:'rgba(60,40,20,.5)',
+    x:-620, y:520, w:200, h:260, r:2 },
+
+  // ── MILLÉNAIRE CAEN ──────────────────
+  { id:'m1', cat:'Illustration · Packaging',
+    title:'La Pomme Conquérante', sub:'Millénaire Caen — Identité packaging',
+    desc:'Illustration pour packaging local normand — pomme stylisée en armure de chevalier, référence à l\'histoire de Caen et de Guillaume le Conquérant.',
+    tags:['Illustration','Packaging','Identité locale','Normandie'],
+    year:'Millénaire Caen · 2024',
+    img:'assets/millenaire/pomme2.jpg', bg:'rgba(60,80,20,.5)',
+    x:900, y:400, w:260, h:200, r:-1.5, feat:true },
+
+  { id:'m2', cat:'Illustration · Packaging',
+    title:'La Pomme Conquérante II', sub:'Millénaire Caen — Variante',
+    desc:'Variante chromie chaude de l\'illustration pomme-chevalier pour déclinaison de gamme.',
+    tags:['Illustration','Packaging','Variante'],
+    year:'Millénaire Caen · 2024',
+    img:'assets/millenaire/pomme3.jpg', bg:'rgba(80,60,10,.5)',
+    x:1200, y:350, w:240, h:190, r:1.5 },
+
+  { id:'m3', cat:'Illustration · Identité',
+    title:'Cadomum', sub:'Millénaire Caen — Mascotte',
+    desc:'Mascotte illustrée de la ville de Caen — personnage historique stylisé pour événement commémoratif. Ligne claire, palette héraldique.',
+    tags:['Mascotte','Identité','Événementiel'],
+    year:'Millénaire Caen · 2024',
+    img:'assets/millenaire/cadomum.jpg', bg:'rgba(40,50,80,.5)',
+    x:1480, y:460, w:240, h:190, r:-2 },
+
+  // ── PULSE ─────────────────────────────
+  { id:'p1', cat:'Digital Painting · Concept art',
+    title:'Pulse', sub:'Illustration originale',
+    desc:'Composition abstraite-organique représentant une énergie vitale — ondes, particules, flux lumineux. Exploration de la frontière entre biologie et technologie.',
+    tags:['Concept art','Abstrait','Énergie'],
+    year:'Personnel · 2024',
+    img:'assets/pulse.jpg', bg:'rgba(20,80,120,.5)',
+    x:1800, y:-100, w:300, h:300, r:0, feat:true },
+
+  // ── FORMATION ─────────────────────────
+  { id:'f1', cat:'Digital Painting · Formation',
+    title:'Environnement Final', sub:'Exercice de formation — Paysage',
+    desc:'Paysage de fantasy finale de module de formation en digital painting. Maîtrise de l\'atmosphère, de la lumière et de la perspective aérienne.',
+    tags:['Formation','Digital Painting','Paysage','Fantasy'],
+    year:'Formation · 2025',
+    img:'assets/formation/environnement.jpg', bg:'rgba(20,50,80,.5)',
+    x:-1500, y:-300, w:280, h:200, r:1.5 },
+
+  { id:'f2', cat:'Character Design · Formation',
+    title:'Character Final — Arsène', sub:'Exercice de formation',
+    desc:'Personnage final de module character design — guerrier fantasy en armure. Proportions, costume, expression, éclairage.',
+    tags:['Formation','Character design','Fantasy'],
+    year:'Formation · 2025',
+    img:'assets/formation/character.jpg', bg:'rgba(60,30,20,.5)',
+    x:-1250, y:-450, w:220, h:280, r:-2 },
+
+  { id:'f3', cat:'Digital Painting · Formation',
+    title:'Forêt Enchantée', sub:'Module Environnement',
+    desc:'Scène de forêt mystérieuse avec rayons de lumière filtrant à travers la canopée. Travail sur la végétation, les mousses et les champignons lumineux.',
+    tags:['Formation','Forêt','Ambiance'],
+    year:'Formation · 2025',
+    img:'assets/formation/foret.jpg', bg:'rgba(20,60,20,.5)',
+    x:750, y:600, w:260, h:190, r:2 },
+
+  { id:'f4', cat:'Digital Painting · Formation',
+    title:'Halloween Challenge', sub:'Module Environnement',
+    desc:'Challenge mensuel Halloween — scène nocturne avec manoir hanté, cimetière et citrouilles. Maîtrise de l\'éclairage nocturne et des ambiances d\'horreur.',
+    tags:['Formation','Halloween','Nocturne'],
+    year:'Formation · 2024',
+    img:'assets/formation/halloween.jpg', bg:'rgba(80,30,5,.5)',
+    x:1050, y:600, w:260, h:190, r:-1.5 },
+
+  { id:'f5', cat:'Concept Art · Formation',
+    title:'Décors Science-Fiction', sub:'Module Environnement',
+    desc:'Station spatiale abandonnée, couloirs métalliques sous lumière d\'urgence rouge. Exploration de l\'ambiance SF industrielle et de la perspective.',
+    tags:['Formation','Science-fiction','Concept art'],
+    year:'Formation · 2025',
+    img:'assets/formation/sf.jpg', bg:'rgba(20,20,80,.5)',
+    x:1350, y:550, w:260, h:190, r:1 },
+];
+
+// ══════════════════════════
+//  STARS
+// ══════════════════════════
+function initStars() {
+  const c = document.getElementById('stars');
+  const ctx = c.getContext('2d');
+  c.width = window.innerWidth; c.height = window.innerHeight;
+  const stars = Array.from({length:200}, () => ({
+    x:Math.random()*c.width, y:Math.random()*c.height,
+    r:Math.random()*1.3, a:Math.random()*.5+.05,
+    s:Math.random()*.4+.05, ph:Math.random()*Math.PI*2
+  }));
+  let t=0;
+  (function draw(){
+    ctx.clearRect(0,0,c.width,c.height); t+=.006;
+    stars.forEach(s=>{
+      const op = s.a*(.6+.4*Math.sin(t*s.s+s.ph));
+      ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(255,255,255,${op})`; ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  })();
+  window.addEventListener('resize',()=>{ c.width=window.innerWidth; c.height=window.innerHeight; });
+}
+
+// ══════════════════════════
+//  BUILD WORLD
+// ══════════════════════════
+function buildWorld() {
+  const world = document.getElementById('world');
+  const mmdots = document.getElementById('mm-dots');
+  const WW=5000, WH=3800;
+
+  // Glows
+  [
+    {x:2200, y:1400, w:900, h:700, c:'rgba(100,50,15,1)'},
+    {x:3300, y:1000, w:700, h:500, c:'rgba(15,50,100,1)'},
+    {x:1400, y:2200, w:600, h:500, c:'rgba(80,10,10,1)'},
+    {x:3500, y:2200, w:500, h:400, c:'rgba(20,80,40,1)'},
+    {x:1000, y:1200, w:500, h:400, c:'rgba(40,20,80,1)'},
+  ].forEach(g=>{
+    const el=document.createElement('div'); el.className='glow';
+    el.style.cssText=`left:${g.x}px;top:${g.y}px;width:${g.w}px;height:${g.h}px;background:${g.c};opacity:.1;`;
+    world.appendChild(el);
+  });
+
+  // Section labels
+  [
+    {x:1500, y:700, t:'VOYAGES'},
+    {x:1000, y:1700, t:'STEAM'},
+    {x:3200, y:700, t:'ILLUSTRATIONS'},
+    {x:1700, y:2400, t:'FANTASY'},
+    {x:3200, y:1900, t:'FORMATION'},
+  ].forEach(z=>{
+    const el=document.createElement('div'); el.className='slabel';
+    el.style.cssText=`left:${z.x}px;top:${z.y}px;`; el.textContent=z.t;
+    world.appendChild(el);
+  });
+
+  // Cards
+  projects.forEach(p=>{
+    const wx = WW/2 + p.x;
+    const wy = WH/2 + p.y;
+    const card = document.createElement('div');
+    card.className='card'; card.dataset.id=p.id;
+    card.style.cssText=`left:${wx}px;top:${wy}px;transform:translate(-50%,-50%) rotate(${p.r}deg);`;
+    card.innerHTML=`
+      <div class="card-in" style="width:${p.w}px;height:${p.h}px;background:${p.bg};">
+        <img src="${p.img}" alt="${p.title}" loading="lazy">
+        <div class="card-ov">
+          <div class="card-cat">${p.cat}</div>
+          <div class="card-name">${p.title}</div>
+        </div>
+        <div class="card-ico">↗</div>
+      </div>`;
+    card.addEventListener('click', ()=>openModal(p.id));
+    world.appendChild(card);
+
+    // Minimap dot
+    const dot=document.createElement('div'); dot.className='mmd'+(p.feat?' feat':'');
+    dot.style.cssText=`left:${(wx/WW)*100}%;top:${(wy/WH)*100}%;`;
+    mmdots.appendChild(dot);
+  });
+
+  document.getElementById('wcount').textContent = projects.length+' œuvres';
+}
+
+// ══════════════════════════
+//  CANVAS MOTION
+// ══════════════════════════
+let wx=0,wy=0,tx=0,ty=0,mx=0,my=0;
+let isDragging=false, ldx=0, ldy=0;
+const MAX=600;
+
+function initCanvas(){
+  document.addEventListener('mousemove', e=>{
+    mx=e.clientX; my=e.clientY;
+    if(!isDragging){
+      const cx=window.innerWidth/2, cy=window.innerHeight/2;
+      tx = -(mx-cx)/cx * MAX;
+      ty = -(my-cy)/cy * (MAX*.7);
+    }
+  });
+  const sp=document.getElementById('space');
+  sp.addEventListener('mousedown',e=>{ if(e.target.closest('.card'))return; isDragging=true; ldx=e.clientX; ldy=e.clientY; });
+  document.addEventListener('mousemove',e=>{ if(!isDragging)return; tx+=(e.clientX-ldx)*2; ty+=(e.clientY-ldy)*2; ldx=e.clientX; ldy=e.clientY; });
+  document.addEventListener('mouseup',()=>{ isDragging=false; });
+
+  const MX=1200, MY=900;
+  (function tick(){
+    wx+=(tx-wx)*.055; wy+=(ty-wy)*.055;
+    wx=Math.max(-MX,Math.min(MX,wx));
+    wy=Math.max(-MY,Math.min(MY,wy));
+    document.getElementById('world').style.transform=`translate(calc(-50% + ${wx}px),calc(-50% + ${wy}px))`;
+    // minimap viewport
+    const WW=5000,WH=3800,mmW=110,mmH=84;
+    const vw=(window.innerWidth/WW)*mmW;
+    const vh=(window.innerHeight/WH)*mmH;
+    const vx=((-wx+WW/2-window.innerWidth/2)/WW)*mmW;
+    const vy=((-wy+WH/2-window.innerHeight/2)/WH)*mmH;
+    const v=document.getElementById('mm-vp');
+    v.style.cssText=`width:${vw}px;height:${vh}px;left:${vx}px;top:${vy}px;`;
+    requestAnimationFrame(tick);
+  })();
+}
+
+// ══════════════════════════
+//  CURSOR
+// ══════════════════════════
+let cdx=0,cdy=0,crx=0,cry=0;
+const cdd=document.getElementById('cd'), crr=document.getElementById('cr');
+(function animC(){
+  cdx+=(mx-cdx)*.2; cdy+=(my-cdy)*.2;
+  crx+=(mx-crx)*.09; cry+=(my-cry)*.09;
+  cdd.style.left=cdx+'px'; cdd.style.top=cdy+'px';
+  crr.style.left=crx+'px'; crr.style.top=cry+'px';
+  requestAnimationFrame(animC);
+})();
+document.addEventListener('mouseover',e=>{ if(e.target.closest('.card')) document.body.classList.add('on-card'); else document.body.classList.remove('on-card'); });
+
+// ══════════════════════════
+//  MODAL
+// ══════════════════════════
+let currentIdx=0;
+
+function openModal(id){
+  const idx=projects.findIndex(p=>p.id===id);
+  currentIdx=idx;
+  renderModal(idx);
+  document.getElementById('modal').classList.add('open');
+}
+
+function renderModal(idx){
+  const p=projects[idx];
+  document.getElementById('m-img').src=p.img;
+  document.getElementById('m-img').style.background=p.bg;
+  document.getElementById('m-cat').textContent=p.cat;
+  document.getElementById('m-title').textContent=p.title;
+  document.getElementById('m-sub').textContent=p.sub;
+  document.getElementById('m-desc').textContent=p.desc;
+  document.getElementById('m-tags').innerHTML=p.tags.map(t=>`<span class="mtag">${t}</span>`).join('');
+  document.getElementById('m-year').textContent=p.year;
+}
+
+function closeModal(){ document.getElementById('modal').classList.remove('open'); }
+document.getElementById('mbg').addEventListener('click',closeModal);
+document.getElementById('mclose').addEventListener('click',closeModal);
+document.getElementById('mprev').addEventListener('click',()=>{ currentIdx=(currentIdx-1+projects.length)%projects.length; renderModal(currentIdx); });
+document.getElementById('mnext').addEventListener('click',()=>{ currentIdx=(currentIdx+1)%projects.length; renderModal(currentIdx); });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape')closeModal(); if(e.key==='ArrowLeft')document.getElementById('mprev').click(); if(e.key==='ArrowRight')document.getElementById('mnext').click(); });
+
+// ══════════════════════════
+//  LOADER
+// ══════════════════════════
+let lp=0;
+const lb=document.getElementById('lbb');
+const li=setInterval(()=>{
+  lp+=Math.random()*18; lb.style.width=Math.min(lp,95)+'%';
+  if(lp>=100){ clearInterval(li); lb.style.width='100%'; setTimeout(()=>document.getElementById('loader').classList.add('out'),400); }
+},65);
+
+// INIT
+initStars();
+buildWorld();
+initCanvas();
 </script>
 </body>
 </html>
