@@ -195,8 +195,8 @@ body::after {
 </div>
 
 <script>
-const SUPABASE_URL      = 'https://jknabfgvaoonscjnpgvy.supabase.co'
-const SUPABASE_ANON_KEY = 'sb_publishable_gtJzXyp5VKKxEZNvS_mryg_S9konQR0'
+const SUPABASE_URL      = 'https://XXXXXXXXXXXXXXXX.supabase.co'
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
 const { createClient } = supabase
 const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
@@ -258,6 +258,7 @@ function showResetStatus(msg, type) {
   const st = document.getElementById('resetStatus')
   st.textContent = msg; st.className = 'status show ' + type
 }
+function togglePwd() {
   const inp = document.getElementById('password'), btn = document.getElementById('eyeBtn')
   inp.type = inp.type === 'password' ? 'text' : 'password'
   btn.textContent = inp.type === 'password' ? '👁' : '🙈'
