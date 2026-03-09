@@ -4,23 +4,21 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AAR Design — Portfolio</title>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,200;0,300;0,400;0,500;1,200;1,300&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
 <style>
-/* ─────────────────────────────────────
-   BASE
-───────────────────────────────────── */
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 :root {
-  --ink: #0a0809;
-  --white: #f2ede8;
-  --dim: rgba(242,237,232,.35);
-  --gold: #c8a050;
-  --E: cubic-bezier(.16,1,.3,1);
+  --bg:   #f0ede8;
+  --ink:  #111010;
+  --mid:  #888580;
+  --line: rgba(17,16,16,.1);
+  --gold: #b8945a;
+  --E:    cubic-bezier(.16,1,.3,1);
 }
 html { scroll-behavior: smooth; }
 body {
-  background: var(--ink);
-  color: var(--white);
+  background: var(--bg);
+  color: var(--ink);
   font-family: 'DM Sans', sans-serif;
   font-weight: 300;
   overflow-x: hidden;
@@ -28,482 +26,455 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* ─────────────────────────────────────
-   CURSOR
-───────────────────────────────────── */
+/* ── CURSOR ── */
 #cd {
   position: fixed; z-index: 9999; pointer-events: none;
-  width: 7px; height: 7px; border-radius: 50%; background: var(--white);
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--ink);
   transform: translate(-50%,-50%);
-  transition: width .2s, height .2s, background .3s;
+  transition: width .25s var(--E), height .25s var(--E), opacity .2s;
 }
 #cr {
   position: fixed; z-index: 9998; pointer-events: none;
-  width: 36px; height: 36px; border-radius: 50%;
-  border: 1px solid rgba(242,237,232,.25);
+  width: 32px; height: 32px; border-radius: 50%;
+  border: 1px solid rgba(17,16,16,.2);
   transform: translate(-50%,-50%);
   transition: width .5s var(--E), height .5s var(--E), border-color .3s;
 }
-body.hov #cd { width: 12px; height: 12px; background: var(--gold); }
-body.hov #cr { width: 60px; height: 60px; border-color: rgba(200,160,80,.45); }
-body.view #cd { width: 48px; height: 48px; background: transparent; border: 1px solid var(--white); }
-body.view #cr { width: 48px; height: 48px; border-color: transparent; }
+body.hov #cd   { width: 10px; height: 10px; background: var(--gold); }
+body.hov #cr   { width: 52px; height: 52px; border-color: rgba(184,148,90,.4); }
+body.drag #cd  { opacity: 0; }
+body.drag #cr  { width: 14px; height: 14px; background: var(--ink); border: none; }
 
-/* ─────────────────────────────────────
-   NAV
-───────────────────────────────────── */
+/* ── PROGRESS ── */
+#prog {
+  position: fixed; top: 0; left: 0; height: 1px;
+  background: var(--ink); z-index: 200; width: 0%;
+}
+
+/* ── NAV ── */
 nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-  padding: 2rem 3rem;
+  padding: 1.75rem 3rem;
   display: flex; align-items: center; justify-content: space-between;
-  transition: padding .4s var(--E), background .4s;
+  transition: padding .4s var(--E);
 }
-nav.scrolled {
-  padding: 1.2rem 3rem;
-  background: rgba(10,8,9,.85);
-  backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(242,237,232,.04);
-}
-.nav-logo {
-  font-family: 'Cinzel', serif; font-size: .55rem; letter-spacing: .4em;
-  text-transform: uppercase; color: rgba(242,237,232,.7); text-decoration: none;
-}
-.nav-logo img { height: 24px; filter: brightness(0) invert(1); opacity: .75; display: block; }
+nav.scrolled { padding: 1.1rem 3rem; background: rgba(240,237,232,.9); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+.nav-logo img { height: 22px; display: block; }
 .nav-links { display: flex; gap: 2.5rem; list-style: none; }
 .nav-links a {
-  font-family: 'Cinzel', serif; font-size: .5rem; letter-spacing: .35em;
-  text-transform: uppercase; color: rgba(242,237,232,.35); text-decoration: none;
-  transition: color .25s;
+  font-size: .7rem; letter-spacing: .12em; color: var(--mid);
+  text-decoration: none; transition: color .2s;
 }
-.nav-links a:hover { color: var(--white); }
+.nav-links a:hover { color: var(--ink); }
 .nav-cta {
-  font-family: 'Cinzel', serif; font-size: .5rem; letter-spacing: .3em;
-  text-transform: uppercase; color: rgba(242,237,232,.5); text-decoration: none;
-  border: 1px solid rgba(242,237,232,.15); padding: .55rem 1.2rem;
-  transition: all .3s;
+  font-size: .68rem; letter-spacing: .1em; color: var(--ink);
+  text-decoration: none; border-bottom: 1px solid var(--ink);
+  padding-bottom: 1px; transition: color .2s, border-color .2s;
 }
-.nav-cta:hover { color: var(--white); border-color: rgba(242,237,232,.5); }
+.nav-cta:hover { color: var(--gold); border-color: var(--gold); }
 
-/* ─────────────────────────────────────
-   PROGRESS
-───────────────────────────────────── */
-#progress {
-  position: fixed; top: 0; left: 0; height: 1px; z-index: 200;
-  background: var(--gold); width: 0%; transition: width .05s;
-}
-
-/* ─────────────────────────────────────
-   REVEAL
-───────────────────────────────────── */
-.reveal { opacity: 0; transform: translateY(50px); transition: opacity .9s var(--E), transform .9s var(--E); }
-.reveal.in { opacity: 1; transform: translateY(0); }
-.reveal-l { opacity: 0; transform: translateX(-40px); transition: opacity .9s var(--E), transform .9s var(--E); }
-.reveal-l.in { opacity: 1; transform: translateX(0); }
-.reveal-r { opacity: 0; transform: translateX(40px); transition: opacity .9s var(--E), transform .9s var(--E); }
-.reveal-r.in { opacity: 1; transform: translateX(0); }
-[data-d="1"] { transition-delay: .1s; }
-[data-d="2"] { transition-delay: .2s; }
-[data-d="3"] { transition-delay: .3s; }
-[data-d="4"] { transition-delay: .4s; }
-[data-d="5"] { transition-delay: .5s; }
-[data-d="6"] { transition-delay: .6s; }
-[data-d="7"] { transition-delay: .7s; }
-
-/* ─────────────────────────────────────
-   HERO
-───────────────────────────────────── */
+/* ── HERO ── */
 .hero {
   min-height: 100vh;
-  display: flex; flex-direction: column; justify-content: flex-end;
-  padding: 0 3rem 6rem;
-  position: relative; overflow: hidden;
+  padding: 0 3rem;
+  display: flex; flex-direction: column;
+  justify-content: flex-end;
+  padding-bottom: 5rem;
+  position: relative;
+  border-bottom: 1px solid var(--line);
 }
-.hero-bg {
-  position: absolute; inset: 0;
-  background: radial-gradient(ellipse 80% 80% at 70% 50%, rgba(100,50,15,.25) 0%, transparent 65%),
-              radial-gradient(ellipse 40% 60% at 20% 80%, rgba(30,20,60,.3) 0%, transparent 60%);
+.hero-intro {
+  font-size: .68rem; letter-spacing: .15em; color: var(--mid);
+  margin-bottom: 1.5rem;
 }
-/* Floating image in hero */
-.hero-img-wrap {
-  position: absolute; inset: 0; overflow: hidden;
-}
-.hero-img {
-  position: absolute; right: 0; top: 0; bottom: 0;
-  width: 55%; height: 100%;
-  object-fit: cover; object-position: center;
-  opacity: .35;
-  filter: grayscale(30%);
-  transform: scale(1.05);
-  transition: transform 8s ease;
-}
-.hero-img-wrap::after {
-  content: '';
-  position: absolute; inset: 0;
-  background: linear-gradient(to right, var(--ink) 30%, transparent 70%),
-              linear-gradient(to top, var(--ink) 0%, transparent 40%);
-}
-.hero-eyebrow {
-  position: relative; z-index: 2;
-  font-family: 'Cinzel', serif; font-size: .52rem; letter-spacing: .5em;
-  text-transform: uppercase; color: var(--gold);
-  display: flex; align-items: center; gap: .75rem; margin-bottom: 1.5rem;
-}
-.hero-eyebrow::before { content: ''; width: 28px; height: 1px; background: var(--gold); }
 .hero-title {
-  position: relative; z-index: 2;
-  font-family: 'Cinzel', serif;
-  font-size: clamp(4rem, 9vw, 11rem);
-  font-weight: 900; line-height: .9;
-  letter-spacing: -.02em; color: var(--white);
-  margin-bottom: 2.5rem;
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(3.5rem, 8vw, 9rem);
+  font-weight: 400; line-height: .92;
+  letter-spacing: -.02em; color: var(--ink);
+  max-width: 900px; margin-bottom: 3rem;
 }
-.hero-title em {
-  font-family: 'Cormorant Garamond', serif;
-  font-style: italic; font-weight: 300;
-  color: rgba(242,237,232,.5); display: block;
-  font-size: .85em; line-height: 1;
-}
+.hero-title em { font-style: italic; color: var(--mid); }
 .hero-bottom {
-  position: relative; z-index: 2;
-  display: flex; align-items: flex-end; justify-content: space-between;
-  gap: 3rem;
+  display: flex; align-items: flex-end;
+  justify-content: space-between; gap: 2rem;
 }
 .hero-desc {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.15rem; font-style: italic;
-  color: rgba(242,237,232,.4); line-height: 1.8;
-  max-width: 420px;
+  font-size: .88rem; color: var(--mid); line-height: 1.75;
+  max-width: 380px;
 }
 .hero-scroll {
-  font-family: 'Cinzel', serif; font-size: .47rem; letter-spacing: .4em;
-  text-transform: uppercase; color: rgba(242,237,232,.2);
+  font-size: .62rem; letter-spacing: .12em; color: var(--mid);
   display: flex; align-items: center; gap: .75rem; white-space: nowrap;
 }
-.hero-scroll::after {
-  content: ''; width: 1px; height: 50px;
-  background: linear-gradient(to bottom, rgba(242,237,232,.2), transparent);
-  animation: scr 1.8s ease-in-out infinite;
+.hero-scroll-line {
+  width: 1px; height: 48px;
+  background: linear-gradient(to bottom, var(--mid), transparent);
+  animation: sl 2s ease-in-out infinite;
 }
-@keyframes scr { 0%,100%{opacity:.2;transform:scaleY(.5)} 50%{opacity:.8;transform:scaleY(1)} }
+@keyframes sl { 0%,100%{opacity:.25;transform:scaleY(.4)} 50%{opacity:.7;transform:scaleY(1)} }
 
-/* ─────────────────────────────────────
-   WORK — LIST FORMAT
-───────────────────────────────────── */
-.work { padding: 8rem 0; }
+/* ── HOVER IMAGE ── */
+#hover-img {
+  position: fixed; z-index: 50; pointer-events: none;
+  width: 360px; height: 240px; overflow: hidden;
+  opacity: 0;
+  transition: opacity .35s var(--E), transform .35s var(--E);
+  transform: translateY(12px) scale(.97);
+  box-shadow: 0 24px 60px rgba(0,0,0,.15);
+}
+#hover-img img {
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
+  transition: transform .5s var(--E);
+}
+#hover-img.visible { opacity: 1; transform: translateY(0) scale(1); }
+#hover-img.visible img { transform: scale(1.03); }
+
+/* ── WORK LIST ── */
+.work { padding: 0; }
 .work-header {
-  padding: 0 3rem;
-  display: flex; align-items: flex-end; justify-content: space-between;
-  margin-bottom: 5rem;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 2.5rem 3rem;
+  border-bottom: 1px solid var(--line);
 }
-.section-label {
-  font-family: 'Cinzel', serif; font-size: .5rem; letter-spacing: .45em;
-  text-transform: uppercase; color: var(--gold);
-  display: flex; align-items: center; gap: .6rem;
-}
-.section-label::before { content: ''; width: 24px; height: 1px; background: var(--gold); }
-.work-count {
-  font-family: 'Cormorant Garamond', serif; font-size: 1rem; font-style: italic;
-  color: rgba(242,237,232,.2);
-}
+.wh-label { font-size: .62rem; letter-spacing: .18em; color: var(--mid); }
+.wh-count { font-size: .62rem; letter-spacing: .1em; color: var(--mid); }
 
-/* Each project row */
-.project {
+/* Project row */
+.proj {
   display: grid;
-  grid-template-columns: 80px 1fr 1fr 100px;
-  align-items: center;
-  padding: 2.25rem 3rem;
-  border-top: 1px solid rgba(242,237,232,.05);
-  cursor: pointer;
+  grid-template-columns: 3.5rem 1fr auto 3.5rem;
+  align-items: center; gap: 2rem;
+  padding: 1.6rem 3rem;
+  border-bottom: 1px solid var(--line);
+  text-decoration: none; color: inherit;
   position: relative;
-  transition: background .3s;
-  gap: 2rem;
-  text-decoration: none;
-  color: inherit;
+  transition: background .2s;
 }
-.project:last-child { border-bottom: 1px solid rgba(242,237,232,.05); }
-.project::before {
-  content: ''; position: absolute; inset: 0;
-  background: rgba(242,237,232,.02);
-  transform: scaleY(0); transform-origin: bottom;
-  transition: transform .4s var(--E);
+.proj::after {
+  content: ''; position: absolute; left: 0; bottom: 0;
+  height: 1px; width: 0; background: var(--ink);
+  transition: width .5s var(--E);
 }
-.project:hover::before { transform: scaleY(1); }
-.project:hover .p-num { color: var(--gold); }
-.project:hover .p-img-wrap { opacity: 1; transform: translateX(0) scale(1); }
-.project:hover .p-arrow { transform: translateX(6px); color: var(--white); }
+.proj:hover::after { width: 100%; }
+.proj:hover { background: rgba(17,16,16,.02); }
+.proj:hover .p-num   { color: var(--ink); }
+.proj:hover .p-title { letter-spacing: .01em; }
+.proj:hover .p-arrow { transform: translate(4px, -4px); opacity: 1; }
+.proj:hover .p-year  { opacity: 1; }
 
 .p-num {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1rem; font-style: italic; color: rgba(242,237,232,.2);
-  transition: color .3s; white-space: nowrap;
+  font-family: 'DM Serif Display', serif;
+  font-style: italic; font-size: .8rem;
+  color: var(--mid); transition: color .2s;
 }
-.p-info {}
-.p-cat {
-  font-family: 'Cinzel', serif; font-size: .44rem; letter-spacing: .3em;
-  text-transform: uppercase; color: rgba(242,237,232,.25); margin-bottom: .4rem;
-}
+.p-info { min-width: 0; }
+.p-cat  { font-size: .6rem; letter-spacing: .14em; color: var(--mid); margin-bottom: .3rem; }
 .p-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(1.4rem, 2.5vw, 2.2rem);
-  font-weight: 400; color: var(--white); line-height: 1.1;
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(1.3rem, 2.2vw, 2rem);
+  font-weight: 400; color: var(--ink); line-height: 1.1;
+  transition: letter-spacing .3s var(--E);
 }
-.p-tags {
-  display: flex; gap: .5rem; flex-wrap: wrap;
-}
+.p-tags { display: flex; gap: .5rem; flex-wrap: wrap; justify-content: flex-end; }
 .p-tag {
-  font-family: 'Cinzel', serif; font-size: .4rem; letter-spacing: .2em;
-  text-transform: uppercase; color: rgba(242,237,232,.2);
-  border: 1px solid rgba(242,237,232,.08); padding: .28rem .65rem;
+  font-size: .55rem; letter-spacing: .1em;
+  color: var(--mid); border: 1px solid var(--line);
+  padding: .25rem .6rem; border-radius: 2px;
 }
 .p-arrow {
-  font-size: 1rem; color: rgba(242,237,232,.2);
-  transition: transform .3s var(--E), color .3s;
-  justify-self: end;
+  font-size: .85rem; color: var(--mid);
+  opacity: .4; transform: translate(0,0);
+  transition: transform .3s var(--E), opacity .2s;
+  text-align: right;
+}
+.p-year {
+  position: absolute; right: 3rem; top: 50%;
+  transform: translateY(-50%);
+  font-size: .58rem; letter-spacing: .1em; color: var(--mid);
+  opacity: 0; transition: opacity .2s;
+  pointer-events: none;
 }
 
-/* Hover image preview */
-.p-img-wrap {
-  position: fixed; pointer-events: none; z-index: 50;
-  width: 280px; height: 190px; overflow: hidden;
-  opacity: 0; transform: translateX(20px) scale(.96);
-  transition: opacity .35s var(--E), transform .35s var(--E);
-  box-shadow: 0 30px 80px rgba(0,0,0,.7);
-}
-.p-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
-
-/* ─────────────────────────────────────
-   FEATURED PROJECTS (big image blocks)
-───────────────────────────────────── */
-.featured { padding: 0; }
-.feat-item {
-  display: grid; min-height: 90vh;
-  position: relative; overflow: hidden;
-  cursor: pointer;
-}
-.feat-item.layout-left { grid-template-columns: 1fr 1fr; }
-.feat-item.layout-right { grid-template-columns: 1fr 1fr; }
-.feat-item.layout-full { grid-template-columns: 1fr; }
-
-.feat-img {
-  position: relative; overflow: hidden;
-}
-.feat-img img {
-  width: 100%; height: 100%; min-height: 60vh;
-  object-fit: cover; display: block;
-  transition: transform 1s var(--E), filter .5s;
-  filter: brightness(.85);
-}
-.feat-item:hover .feat-img img { transform: scale(1.04); filter: brightness(.7); }
-
-.feat-text {
-  display: flex; flex-direction: column; justify-content: flex-end;
-  padding: 5rem 4rem;
-  background: var(--ink);
-  position: relative;
-}
-.feat-item.layout-right .feat-text { order: -1; }
-.feat-item.layout-full .feat-text {
-  position: absolute; bottom: 0; left: 0; right: 0;
-  background: linear-gradient(to top, rgba(10,8,9,.95) 0%, rgba(10,8,9,.5) 60%, transparent 100%);
-  padding: 5rem 3rem 4rem;
-  order: 1;
-}
-.feat-num {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 6rem; font-weight: 300; font-style: italic;
-  color: rgba(242,237,232,.04); line-height: 1;
-  margin-bottom: -1rem;
-  user-select: none;
-}
-.feat-cat {
-  font-family: 'Cinzel', serif; font-size: .48rem; letter-spacing: .4em;
-  text-transform: uppercase; color: var(--gold);
-  margin-bottom: .75rem;
-}
-.feat-title {
-  font-family: 'Cinzel', serif;
-  font-size: clamp(2rem, 4vw, 4rem);
-  font-weight: 900; color: var(--white); line-height: 1;
-  margin-bottom: .85rem; letter-spacing: -.01em;
-}
-.feat-title em {
-  font-family: 'Cormorant Garamond', serif;
-  font-style: italic; font-weight: 300;
-  color: rgba(242,237,232,.6); display: block; font-size: .9em;
-}
-.feat-desc {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.05rem; font-style: italic;
-  color: rgba(242,237,232,.4); line-height: 1.8;
-  max-width: 400px; margin-bottom: 2rem;
-}
-.feat-link {
-  font-family: 'Cinzel', serif; font-size: .5rem; letter-spacing: .3em;
-  text-transform: uppercase; color: var(--white); text-decoration: none;
-  display: inline-flex; align-items: center; gap: .5rem;
-  border-bottom: 1px solid rgba(242,237,232,.2); padding-bottom: .25rem; width: fit-content;
-  transition: border-color .25s, gap .25s;
-}
-.feat-link:hover { border-color: var(--gold); gap: .9rem; }
-.feat-link::after { content: '→'; }
-
-/* ─────────────────────────────────────
-   ABOUT
-───────────────────────────────────── */
-.about {
-  padding: 10rem 3rem;
-  display: grid; grid-template-columns: 1fr 1fr; gap: 8rem;
-  align-items: center; max-width: 1400px; margin: 0 auto;
-}
-.about-num {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 10rem; font-weight: 300; font-style: italic;
-  color: rgba(242,237,232,.03); line-height: 1;
-  margin-bottom: -2rem; user-select: none;
-}
-.about-title {
-  font-family: 'Cinzel', serif;
-  font-size: clamp(2.5rem, 4vw, 4.5rem);
-  font-weight: 900; line-height: .95; color: var(--white);
-  letter-spacing: -.02em; margin-bottom: 2rem;
-}
-.about-title em {
-  font-family: 'Cormorant Garamond', serif;
-  font-style: italic; font-weight: 300;
-  color: var(--gold); display: block; font-size: 1.1em;
-}
-.about-body {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.15rem; color: rgba(242,237,232,.45);
-  line-height: 1.95; margin-bottom: 1.5rem;
-}
-.about-skills {
-  display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 2rem;
-}
-.skill {
-  font-family: 'Cinzel', serif; font-size: .42rem; letter-spacing: .2em;
-  text-transform: uppercase; padding: .35rem .8rem;
-  border: 1px solid rgba(242,237,232,.08); color: rgba(242,237,232,.3);
-  transition: all .2s;
-}
-.skill:hover { border-color: var(--gold); color: var(--gold); }
-.about-stats {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
-  background: rgba(242,237,232,.05);
-}
-.stat {
-  padding: 2.5rem; background: var(--ink);
-  transition: background .3s;
-}
-.stat:hover { background: rgba(242,237,232,.02); }
-.stat-n {
-  font-family: 'Cinzel', serif;
-  font-size: 3.5rem; font-weight: 900; color: var(--white); line-height: 1;
-  margin-bottom: .4rem;
-}
-.stat-n sup { font-size: 1.5rem; color: var(--gold); }
-.stat-l {
-  font-family: 'Cinzel', serif; font-size: .45rem; letter-spacing: .3em;
-  text-transform: uppercase; color: rgba(242,237,232,.2);
-}
-
-/* ─────────────────────────────────────
-   MARQUEE
-───────────────────────────────────── */
+/* ── MARQUEE ── */
 .marquee {
-  overflow: hidden; padding: 1.75rem 0;
-  border-top: 1px solid rgba(242,237,232,.05);
-  border-bottom: 1px solid rgba(242,237,232,.05);
+  overflow: hidden; padding: 1.4rem 0;
+  border-bottom: 1px solid var(--line);
+  background: var(--ink);
 }
 .marquee-track {
-  display: flex; gap: 0; white-space: nowrap;
-  animation: marquee 22s linear infinite;
+  display: flex; white-space: nowrap;
+  animation: mq 20s linear infinite;
 }
 .marquee-item {
-  display: inline-flex; align-items: center; gap: 2rem;
-  padding: 0 2rem;
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1rem; font-style: italic; color: rgba(242,237,232,.15);
-  flex-shrink: 0;
+  display: inline-flex; align-items: center; gap: 1.75rem;
+  padding: 0 1.75rem;
+  font-size: .65rem; letter-spacing: .16em; text-transform: uppercase;
+  color: rgba(240,237,232,.25); flex-shrink: 0;
 }
-.marquee-dot { width: 4px; height: 4px; background: var(--gold); border-radius: 50%; flex-shrink: 0; opacity: .5; }
-@keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+.mq-sep { width: 4px; height: 4px; border-radius: 50%; background: var(--gold); opacity: .4; }
+@keyframes mq { from{transform:translateX(0)} to{transform:translateX(-50%)} }
 
-/* ─────────────────────────────────────
-   CONTACT
-───────────────────────────────────── */
-.contact {
-  padding: 10rem 3rem; min-height: 60vh;
+/* ── MODAL ── */
+#modal {
+  position: fixed; inset: 0; z-index: 500;
+  display: flex; align-items: stretch;
+  opacity: 0; visibility: hidden;
+  transition: opacity .5s var(--E), visibility .5s;
+}
+#modal.open { opacity: 1; visibility: visible; }
+
+#modal-bg {
+  position: absolute; inset: 0;
+  background: rgba(17,16,16,.6);
+  backdrop-filter: blur(6px);
+  cursor: pointer;
+}
+
+#modal-panel {
+  position: relative; z-index: 1;
+  background: var(--bg);
+  width: min(1100px, 95vw);
+  margin: auto;
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  max-height: 90vh;
+  overflow: hidden;
+  transform: translateY(32px) scale(.97);
+  transition: transform .55s var(--E);
+  box-shadow: 0 40px 100px rgba(0,0,0,.2);
+}
+#modal.open #modal-panel { transform: translateY(0) scale(1); }
+
+/* Main image */
+#modal-main {
+  position: relative; overflow: hidden;
+  background: #ddd;
+  min-height: 500px;
+}
+#modal-main-img {
+  width: 100%; height: 100%;
+  object-fit: contain; display: block;
+  background: #e8e4de;
+  transition: opacity .35s var(--E);
+}
+#modal-main-img.switching { opacity: 0; }
+
+/* Prev / Next */
+.modal-nav {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  z-index: 5; background: var(--bg); border: 1px solid var(--line);
+  width: 42px; height: 42px; display: flex; align-items: center;
+  justify-content: center; cursor: pointer;
+  font-size: .9rem; color: var(--ink);
+  transition: background .2s, color .2s;
+}
+.modal-nav:hover { background: var(--ink); color: var(--bg); }
+#modal-prev { left: 1rem; }
+#modal-next { right: 1rem; }
+
+/* Caption bar */
+#modal-caption {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: .75rem 1rem;
+  background: rgba(240,237,232,.9);
+  border-top: 1px solid var(--line);
+  font-size: .6rem; letter-spacing: .12em; color: var(--mid);
+  display: flex; justify-content: space-between; align-items: center;
+}
+#modal-img-count { font-family: 'DM Serif Display', serif; font-style: italic; }
+
+/* Sidebar */
+#modal-side {
+  border-left: 1px solid var(--line);
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+#modal-info {
+  padding: 2rem 1.75rem;
+  border-bottom: 1px solid var(--line);
+}
+#modal-cat {
+  font-size: .58rem; letter-spacing: .18em; color: var(--mid);
+  margin-bottom: .6rem;
+}
+#modal-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.75rem; font-weight: 400; line-height: 1.05;
+  color: var(--ink); margin-bottom: .5rem;
+}
+#modal-year {
+  font-size: .6rem; letter-spacing: .12em; color: var(--gold);
+}
+#modal-desc {
+  font-size: .8rem; color: var(--mid); line-height: 1.75;
+  margin-top: 1rem;
+}
+#modal-tags {
+  display: flex; flex-wrap: wrap; gap: .4rem;
+  margin-top: 1.2rem;
+}
+.modal-tag {
+  font-size: .52rem; letter-spacing: .1em; color: var(--mid);
+  border: 1px solid var(--line); padding: .2rem .55rem;
+}
+
+/* Thumbnails */
+#modal-thumbs {
+  flex: 1; overflow-y: auto; overflow-x: hidden;
+  padding: 1rem;
+  display: grid; grid-template-columns: 1fr 1fr; gap: .5rem;
+  align-content: start;
+}
+#modal-thumbs::-webkit-scrollbar { width: 3px; }
+#modal-thumbs::-webkit-scrollbar-thumb { background: var(--line); }
+
+.modal-thumb {
+  aspect-ratio: 4/3; overflow: hidden; cursor: pointer;
+  border: 2px solid transparent; transition: border-color .2s;
+}
+.modal-thumb.active { border-color: var(--ink); }
+.modal-thumb img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  transition: transform .4s var(--E), opacity .2s;
+  opacity: .65;
+}
+.modal-thumb:hover img, .modal-thumb.active img { opacity: 1; }
+.modal-thumb:hover img { transform: scale(1.07); }
+
+/* Close */
+#modal-close {
+  position: absolute; top: 1rem; right: 1rem; z-index: 10;
+  width: 38px; height: 38px; background: var(--bg);
+  border: 1px solid var(--line); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .8rem; color: var(--mid);
+  transition: background .2s, color .2s;
+}
+#modal-close:hover { background: var(--ink); color: var(--bg); }
+
+/* Keyboard hint */
+#modal-keys {
+  padding: .75rem 1.75rem;
+  border-top: 1px solid var(--line);
+  font-size: .52rem; letter-spacing: .1em; color: rgba(136,133,128,.4);
+  display: flex; gap: 1rem;
+}
+
+/* ── ABOUT ── */
+.about {
+  display: grid; grid-template-columns: 1fr 1fr;
+  border-bottom: 1px solid var(--line);
+}
+.about-left {
+  padding: 7rem 3rem;
+  border-right: 1px solid var(--line);
+  display: flex; flex-direction: column; justify-content: space-between;
+}
+.about-name {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(2rem, 4vw, 4.5rem);
+  font-weight: 400; line-height: 1; letter-spacing: -.02em;
+  color: var(--ink); margin-bottom: 2.5rem;
+}
+.about-name em { font-style: italic; color: var(--mid); }
+.about-desc {
+  font-size: .88rem; color: var(--mid); line-height: 1.8;
+  max-width: 400px; margin-bottom: 2.5rem;
+}
+.about-link {
+  font-size: .68rem; letter-spacing: .12em; color: var(--ink);
+  text-decoration: none; border-bottom: 1px solid var(--ink);
+  padding-bottom: 2px; width: fit-content;
+  transition: color .2s, border-color .2s;
+}
+.about-link:hover { color: var(--gold); border-color: var(--gold); }
+.about-right {
+  display: grid; grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  border-left: 1px solid var(--line);
+}
+.stat {
+  padding: 2.5rem; border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
   display: flex; flex-direction: column; justify-content: flex-end;
-  max-width: 900px; margin: 0 auto;
+  transition: background .2s;
 }
-.contact-label { margin-bottom: 2rem; }
+.stat:hover { background: rgba(17,16,16,.03); }
+.stat:nth-child(2), .stat:nth-child(4) { border-right: none; }
+.stat:nth-child(3), .stat:nth-child(4) { border-bottom: none; }
+.stat-n {
+  font-family: 'DM Serif Display', serif;
+  font-size: 3.2rem; font-weight: 400; line-height: 1;
+  color: var(--ink); margin-bottom: .4rem;
+}
+.stat-n sup { font-size: 1.4rem; color: var(--gold); }
+.stat-l { font-size: .6rem; letter-spacing: .12em; color: var(--mid); }
+
+/* ── CONTACT ── */
+.contact {
+  padding: 8rem 3rem 6rem;
+  border-bottom: 1px solid var(--line);
+}
+.contact-row {
+  display: flex; align-items: flex-end;
+  justify-content: space-between; gap: 3rem;
+  flex-wrap: wrap;
+}
 .contact-title {
-  font-family: 'Cinzel', serif;
-  font-size: clamp(3rem, 7vw, 8rem);
-  font-weight: 900; line-height: .9; color: var(--white);
-  letter-spacing: -.02em; margin-bottom: 3rem;
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(2.5rem, 6vw, 7rem);
+  font-weight: 400; line-height: .95;
+  letter-spacing: -.02em; color: var(--ink);
 }
-.contact-title em {
-  font-family: 'Cormorant Garamond', serif;
-  font-style: italic; font-weight: 300; color: rgba(242,237,232,.4); display: block;
-}
-.contact-links {
-  display: flex; flex-wrap: wrap; gap: 1rem;
-}
+.contact-title em { font-style: italic; color: var(--mid); }
+.contact-links { display: flex; flex-direction: column; gap: .85rem; align-items: flex-end; }
 .contact-link {
-  font-family: 'Cinzel', serif; font-size: .5rem; letter-spacing: .3em;
-  text-transform: uppercase; color: rgba(242,237,232,.4); text-decoration: none;
-  border: 1px solid rgba(242,237,232,.1); padding: .75rem 1.5rem;
-  transition: all .3s; display: flex; align-items: center; gap: .5rem;
+  font-size: .72rem; letter-spacing: .1em; color: var(--mid);
+  text-decoration: none; transition: color .2s;
+  display: flex; align-items: center; gap: .5rem;
 }
-.contact-link:hover { color: var(--white); border-color: rgba(242,237,232,.4); }
+.contact-link:hover { color: var(--ink); }
+.contact-link::after { content: '↗'; font-size: .6rem; opacity: .4; }
 
-/* ─────────────────────────────────────
-   FOOTER
-───────────────────────────────────── */
+/* ── FOOTER ── */
 footer {
-  border-top: 1px solid rgba(242,237,232,.05);
-  padding: 2.5rem 3rem;
+  padding: 1.75rem 3rem;
   display: flex; align-items: center; justify-content: space-between;
-  flex-wrap: wrap; gap: 1.5rem;
+  flex-wrap: wrap; gap: 1rem;
 }
-.footer-copy {
-  font-family: 'Cinzel', serif; font-size: .45rem; letter-spacing: .3em;
-  text-transform: uppercase; color: rgba(242,237,232,.15);
+.f-copy { font-size: .62rem; letter-spacing: .1em; color: var(--mid); }
+.f-links { display: flex; gap: 2rem; }
+.f-links a {
+  font-size: .62rem; letter-spacing: .1em; color: var(--mid);
+  text-decoration: none; transition: color .2s;
 }
-.footer-links { display: flex; gap: 2rem; }
-.footer-links a {
-  font-family: 'Cinzel', serif; font-size: .45rem; letter-spacing: .25em;
-  text-transform: uppercase; color: rgba(242,237,232,.15); text-decoration: none;
-  transition: color .25s;
-}
-.footer-links a:hover { color: rgba(242,237,232,.5); }
+.f-links a:hover { color: var(--ink); }
 
-/* ─────────────────────────────────────
-   GRAIN
-───────────────────────────────────── */
-#grain {
-  position: fixed; inset: 0; z-index: 8000; pointer-events: none; opacity: .2;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='250' height='250' filter='url(%23n)' opacity='.06'/%3E%3C/svg%3E");
-}
+/* ── REVEAL ── */
+.rev { opacity: 0; transform: translateY(28px); transition: opacity .8s var(--E), transform .8s var(--E); }
+.rev.in { opacity: 1; transform: translateY(0); }
+[data-d="1"] { transition-delay: .08s; }
+[data-d="2"] { transition-delay: .16s; }
+[data-d="3"] { transition-delay: .24s; }
+[data-d="4"] { transition-delay: .32s; }
+[data-d="5"] { transition-delay: .4s; }
 
-/* ─────────────────────────────────────
-   MOBILE
-───────────────────────────────────── */
-@media (max-width: 900px) {
-  nav { padding: 1.25rem 1.5rem; }
-  nav.scrolled { padding: 1rem 1.5rem; }
+/* ── MOBILE ── */
+@media (max-width: 860px) {
+  nav { padding: 1.25rem 1.5rem; } nav.scrolled { padding: 1rem 1.5rem; }
   .nav-links { display: none; }
-  .hero { padding: 0 1.5rem 5rem; }
-  .project { grid-template-columns: 50px 1fr 80px; gap: 1rem; padding: 1.75rem 1.5rem; }
+  .hero { padding: 0 1.5rem 4rem; }
+  .proj { grid-template-columns: 2.5rem 1fr 2.5rem; gap: 1rem; padding: 1.4rem 1.5rem; }
   .p-tags { display: none; }
-  .feat-item.layout-left, .feat-item.layout-right { grid-template-columns: 1fr; }
-  .feat-text { padding: 3rem 1.5rem; }
-  .about { grid-template-columns: 1fr; gap: 4rem; padding: 6rem 1.5rem; }
-  .contact { padding: 6rem 1.5rem; }
-  footer { padding: 2rem 1.5rem; }
-  .work-header { padding: 0 1.5rem; }
+  .p-year { display: none; }
+  .about { grid-template-columns: 1fr; }
+  .about-left { border-right: none; padding: 4rem 1.5rem; }
+  .contact { padding: 5rem 1.5rem 4rem; }
+  footer { padding: 1.5rem; }
+  .work-header { padding: 2rem 1.5rem; }
 }
 </style>
 </head>
@@ -511,14 +482,12 @@ footer {
 
 <div id="cd"></div>
 <div id="cr"></div>
-<div id="grain"></div>
-<div id="progress"></div>
+<div id="prog"></div>
+<div id="hover-img"><img src="" alt="" id="hover-img-el"></div>
 
 <!-- NAV -->
 <nav id="nav">
-  <a href="#" class="nav-logo">
-    <img src="assets/Logo-Aardesign-Long.png" alt="AAR Design">
-  </a>
+  <a href="#"><img src="assets/Logo-Aardesign-Long.png" alt="AAR Design"></a>
   <ul class="nav-links">
     <li><a href="#work">Travaux</a></li>
     <li><a href="#about">À propos</a></li>
@@ -527,402 +496,756 @@ footer {
   <a href="#contact" class="nav-cta">Démarrer un projet</a>
 </nav>
 
-<!-- ══ HERO ══ -->
-<section class="hero" id="home">
-  <div class="hero-bg"></div>
-  <div class="hero-img-wrap">
-    <img class="hero-img" src="assets/dark/red.jpg" alt="" id="hero-img">
-  </div>
-  <p class="hero-eyebrow reveal">Digital Painting · Illustration · Direction Artistique</p>
-  <h1 class="hero-title reveal" data-d="1">
-    AAR<br>
-    <em>Design</em>
+<!-- ── HERO ── -->
+<section class="hero">
+  <p class="hero-intro rev">Anthony Armand Rodrigues — Digital Painting & Direction Artistique</p>
+  <h1 class="hero-title rev" data-d="1">
+    Designer,<br>
+    illustrateur &<br>
+    <em>peintre numérique</em>
   </h1>
-  <div class="hero-bottom reveal" data-d="2">
+  <div class="hero-bottom rev" data-d="2">
     <p class="hero-desc">
-      Des univers visuels qui racontent des histoires — du steampunk au conte de fées, de l'illustration au packaging.
+      Je construis des univers visuels qui racontent des histoires — du packaging steampunk aux illustrations saisonnières, du character design à la dark fantasy.
     </p>
-    <p class="hero-scroll">Défiler</p>
+    <div class="hero-scroll">
+      <div class="hero-scroll-line"></div>
+      Défiler
+    </div>
   </div>
 </section>
 
-<!-- MARQUEE -->
+<!-- ── MARQUEE ── -->
 <div class="marquee">
-  <div class="marquee-track">
-    <span class="marquee-item">Digital Painting <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Direction Artistique <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Illustration <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Packaging <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Character Design <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Branding <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Dark Fantasy <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Steampunk <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Digital Painting <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Direction Artistique <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Illustration <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Packaging <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Character Design <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Branding <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Dark Fantasy <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Steampunk <span class="marquee-dot"></span></span>
+  <div class="marquee-track" aria-hidden="true">
+    <span class="marquee-item">Digital Painting <span class="mq-sep"></span></span>
+    <span class="marquee-item">Direction Artistique <span class="mq-sep"></span></span>
+    <span class="marquee-item">Illustration <span class="mq-sep"></span></span>
+    <span class="marquee-item">Packaging <span class="mq-sep"></span></span>
+    <span class="marquee-item">Character Design <span class="mq-sep"></span></span>
+    <span class="marquee-item">Steampunk <span class="mq-sep"></span></span>
+    <span class="marquee-item">Dark Fantasy <span class="mq-sep"></span></span>
+    <span class="marquee-item">Aquarelle Digitale <span class="mq-sep"></span></span>
+    <span class="marquee-item">Digital Painting <span class="mq-sep"></span></span>
+    <span class="marquee-item">Direction Artistique <span class="mq-sep"></span></span>
+    <span class="marquee-item">Illustration <span class="mq-sep"></span></span>
+    <span class="marquee-item">Packaging <span class="mq-sep"></span></span>
+    <span class="marquee-item">Character Design <span class="mq-sep"></span></span>
+    <span class="marquee-item">Steampunk <span class="mq-sep"></span></span>
+    <span class="marquee-item">Dark Fantasy <span class="mq-sep"></span></span>
+    <span class="marquee-item">Aquarelle Digitale <span class="mq-sep"></span></span>
   </div>
 </div>
 
-<!-- ══ FEATURED PROJECTS ══ -->
-<section class="featured" id="work">
-
-  <!-- 01 — Voyages d'Arsène FULL -->
-  <div class="feat-item layout-full reveal">
-    <div class="feat-img">
-      <img src="assets/voyages/cappadoce.jpg" alt="Les Voyages d'Arsène">
-    </div>
-    <div class="feat-text">
-      <p class="feat-num">01</p>
-      <p class="feat-cat">Digital Painting · Packaging · Direction Artistique</p>
-      <h2 class="feat-title">Les Voyages<br><em>d'Arsène</em></h2>
-      <p class="feat-desc">6 destinations, 6 peintures plein format. Du désert de Cappadoce aux aurores de Laponie — chaque flacon est un voyage.</p>
-      <a href="#" class="feat-link">Voir le projet</a>
-    </div>
+<!-- ── WORK ── -->
+<section id="work">
+  <div class="work-header rev">
+    <span class="wh-label">Travaux sélectionnés</span>
+    <span class="wh-count">15 projets</span>
   </div>
 
-  <!-- 02 — Steam Collection LEFT -->
-  <div class="feat-item layout-left reveal">
-    <div class="feat-img">
-      <img src="assets/steam/mockup.jpg" alt="Steam Collection">
-    </div>
-    <div class="feat-text">
-      <p class="feat-num">02</p>
-      <p class="feat-cat">Illustration · Gravure Digitale</p>
-      <h2 class="feat-title">Steam<br><em>Collection</em></h2>
-      <p class="feat-desc">6 illustrations style gravure XIXe siècle. Sablier, hibou mécanique, masque de plague doctor, cœur mécanique — un univers de cuivre et d'encre.</p>
-      <a href="#" class="feat-link">Voir le projet</a>
-    </div>
-  </div>
-
-  <!-- 03 — Dark Fantasy RIGHT -->
-  <div class="feat-item layout-right reveal">
-    <div class="feat-img">
-      <img src="assets/dark/red.jpg" alt="Dark Fantasy">
-    </div>
-    <div class="feat-text">
-      <p class="feat-num">03</p>
-      <p class="feat-cat">Digital Painting · Illustration Originale</p>
-      <h2 class="feat-title">Dark<br><em>Fantasy</em></h2>
-      <p class="feat-desc">Nécromancien, sorcières, lune de sang — une série de peintures numériques sombres où l'alchimie rencontre la magie noire.</p>
-      <a href="#" class="feat-link">Voir le projet</a>
-    </div>
-  </div>
-
-  <!-- 04 — Clopinette FULL -->
-  <div class="feat-item layout-full reveal">
-    <div class="feat-img">
-      <img src="assets/saveurs/hiver.jpg" alt="Clopinette Saveurs">
-    </div>
-    <div class="feat-text">
-      <p class="feat-num">04</p>
-      <p class="feat-cat">Illustration · Aquarelle Digitale · Édition</p>
-      <h2 class="feat-title">Saveurs<br><em>Clopinette</em></h2>
-      <p class="feat-desc">Quatre saisons, quatre univers illustrés. Des carnets de saveurs où chaque couverture raconte une saison avec des animaux, des plantes et des lumières uniques.</p>
-      <a href="#" class="feat-link">Voir le projet</a>
-    </div>
-  </div>
-
-</section>
-
-<!-- ══ WORK LIST ══ -->
-<section class="work">
-  <div class="work-header reveal">
-    <p class="section-label">Tous les projets</p>
-    <p class="work-count">35 œuvres</p>
-  </div>
-
-  <!-- Hover preview images (fixed, positioned by JS) -->
-  <div class="p-img-wrap" id="prev-img"><img src="" alt="" id="prev-img-el"></div>
-
-  <a href="#" class="project reveal" data-d="1" data-img="assets/voyages/laponie.jpg">
-    <span class="p-num">05</span>
+  <a class="proj rev" data-d="1" data-img="assets/voyages/cappadoce.jpg" href="#" data-project="voyages">
+    <span class="p-num">01</span>
     <div class="p-info">
-      <p class="p-cat">Digital Painting · Packaging</p>
-      <h3 class="p-title">Aurore de Laponie</h3>
+      <p class="p-cat">Digital Painting · Packaging · Direction Artistique</p>
+      <h2 class="p-title">Les Voyages d'Arsène</h2>
     </div>
     <div class="p-tags">
       <span class="p-tag">Paysage</span>
       <span class="p-tag">Steampunk</span>
       <span class="p-tag">Packaging</span>
     </div>
-    <span class="p-arrow">→</span>
+    <span class="p-arrow">↗</span>
+    <span class="p-year">2024</span>
   </a>
 
-  <a href="#" class="project reveal" data-d="2" data-img="assets/voyages/fuji.jpg">
-    <span class="p-num">06</span>
+  <a class="proj rev" data-d="2" data-img="assets/steam/mockup.jpg" href="#" data-project="steam">
+    <span class="p-num">02</span>
     <div class="p-info">
-      <p class="p-cat">Digital Painting · Packaging</p>
-      <h3 class="p-title">Éclat du Fuji</h3>
+      <p class="p-cat">Illustration · Gravure Digitale · Packaging</p>
+      <h2 class="p-title">Steam Collection — Arsène Valentin</h2>
     </div>
     <div class="p-tags">
-      <span class="p-tag">Japon</span>
-      <span class="p-tag">Cerisiers</span>
+      <span class="p-tag">Gravure XIXe</span>
       <span class="p-tag">Steampunk</span>
     </div>
-    <span class="p-arrow">→</span>
+    <span class="p-arrow">↗</span>
+    <span class="p-year">2023</span>
   </a>
 
-  <a href="#" class="project reveal" data-d="3" data-img="assets/voyages/amazonie.jpg">
-    <span class="p-num">07</span>
+  <a class="proj rev" data-d="3" data-img="assets/dark/red.jpg" href="#" data-project="dark">
+    <span class="p-num">03</span>
     <div class="p-info">
-      <p class="p-cat">Digital Painting · Packaging</p>
-      <h3 class="p-title">Brume d'Amazonie</h3>
+      <p class="p-cat">Digital Painting · Illustration Originale</p>
+      <h2 class="p-title">L'Alchimiste Maudit</h2>
     </div>
     <div class="p-tags">
-      <span class="p-tag">Jungle</span>
-      <span class="p-tag">Tropical</span>
+      <span class="p-tag">Dark Fantasy</span>
+      <span class="p-tag">Peinture numérique</span>
     </div>
-    <span class="p-arrow">→</span>
+    <span class="p-arrow">↗</span>
+    <span class="p-year">2024</span>
   </a>
 
-  <a href="#" class="project reveal" data-d="4" data-img="assets/steam/hibou.jpg">
-    <span class="p-num">08</span>
+  <a class="proj rev" data-d="4" data-img="assets/saveurs/hiver.jpg" href="#" data-project="hiver">
+    <span class="p-num">04</span>
     <div class="p-info">
-      <p class="p-cat">Illustration · Gravure Digitale</p>
-      <h3 class="p-title">Le Sage de Fer</h3>
-    </div>
-    <div class="p-tags">
-      <span class="p-tag">Gravure</span>
-      <span class="p-tag">XIXe siècle</span>
-    </div>
-    <span class="p-arrow">→</span>
-  </a>
-
-  <a href="#" class="project reveal" data-d="5" data-img="assets/steam/main.jpg">
-    <span class="p-num">09</span>
-    <div class="p-info">
-      <p class="p-cat">Illustration · Gravure Digitale</p>
-      <h3 class="p-title">La Main d'Alchimiste</h3>
-    </div>
-    <div class="p-tags">
-      <span class="p-tag">Gravure</span>
-      <span class="p-tag">Alchimie</span>
-    </div>
-    <span class="p-arrow">→</span>
-  </a>
-
-  <a href="#" class="project reveal" data-d="6" data-img="assets/saveurs/automne.jpg">
-    <span class="p-num">10</span>
-    <div class="p-info">
-      <p class="p-cat">Illustration · Aquarelle Digitale</p>
-      <h3 class="p-title">Saveurs d'Automne</h3>
+      <p class="p-cat">Illustration · Aquarelle Digitale · Édition</p>
+      <h2 class="p-title">Saveurs d'Hiver — Clopinette</h2>
     </div>
     <div class="p-tags">
       <span class="p-tag">Botanique</span>
       <span class="p-tag">Saisonnier</span>
     </div>
-    <span class="p-arrow">→</span>
+    <span class="p-arrow">↗</span>
+    <span class="p-year">2025</span>
   </a>
 
-  <a href="#" class="project reveal" data-d="7" data-img="assets/dark/salem.jpg">
-    <span class="p-num">11</span>
+  <a class="proj rev" data-d="5" data-img="assets/saveurs/automne.jpg" href="#" data-project="automne">
+    <span class="p-num">05</span>
+    <div class="p-info">
+      <p class="p-cat">Illustration · Aquarelle Digitale · Édition</p>
+      <h2 class="p-title">Saveurs d'Automne — Clopinette</h2>
+    </div>
+    <div class="p-tags">
+      <span class="p-tag">Botanique</span>
+      <span class="p-tag">Saisonnier</span>
+    </div>
+    <span class="p-arrow">↗</span>
+    <span class="p-year">2025</span>
+  </a>
+
+  <a class="proj rev" data-d="1" data-img="assets/voyages/laponie.jpg" href="#" data-project="laponie">
+    <span class="p-num">06</span>
+    <div class="p-info">
+      <p class="p-cat">Digital Painting · Packaging</p>
+      <h2 class="p-title">Aurore de Laponie</h2>
+    </div>
+    <div class="p-tags">
+      <span class="p-tag">Paysage</span>
+      <span class="p-tag">Hiver</span>
+    </div>
+    <span class="p-arrow">↗</span>
+    <span class="p-year">2024</span>
+  </a>
+
+  <a class="proj rev" data-d="2" data-img="assets/voyages/fuji.jpg" href="#" data-project="fuji">
+    <span class="p-num">07</span>
+    <div class="p-info">
+      <p class="p-cat">Digital Painting · Packaging</p>
+      <h2 class="p-title">Éclat du Fuji</h2>
+    </div>
+    <div class="p-tags">
+      <span class="p-tag">Japon</span>
+      <span class="p-tag">Paysage</span>
+    </div>
+    <span class="p-arrow">↗</span>
+    <span class="p-year">2024</span>
+  </a>
+
+  <a class="proj rev" data-d="3" data-img="assets/steam/hibou.jpg" href="#" data-project="sage">
+    <span class="p-num">08</span>
+    <div class="p-info">
+      <p class="p-cat">Illustration · Gravure Digitale</p>
+      <h2 class="p-title">Le Sage de Fer</h2>
+    </div>
+    <div class="p-tags">
+      <span class="p-tag">Hibou</span>
+      <span class="p-tag">Gravure</span>
+    </div>
+    <span class="p-arrow">↗</span>
+    <span class="p-year">2023</span>
+  </a>
+
+  <a class="proj rev" data-d="4" data-img="assets/steam/main.jpg" href="#" data-project="main">
+    <span class="p-num">09</span>
+    <div class="p-info">
+      <p class="p-cat">Illustration · Gravure Digitale</p>
+      <h2 class="p-title">La Main d'Alchimiste</h2>
+    </div>
+    <div class="p-tags">
+      <span class="p-tag">Alchimie</span>
+      <span class="p-tag">Gravure</span>
+    </div>
+    <span class="p-arrow">↗</span>
+    <span class="p-year">2023</span>
+  </a>
+
+  <a class="proj rev" data-d="5" data-img="assets/dark/salem.jpg" href="#" data-project="salem">
+    <span class="p-num">10</span>
     <div class="p-info">
       <p class="p-cat">Digital Painting · Dark Fantasy</p>
-      <h3 class="p-title">Salem</h3>
+      <h2 class="p-title">Salem</h2>
     </div>
     <div class="p-tags">
       <span class="p-tag">Halloween</span>
       <span class="p-tag">Sorcière</span>
     </div>
-    <span class="p-arrow">→</span>
+    <span class="p-arrow">↗</span>
+    <span class="p-year">2024</span>
   </a>
 
-  <a href="#" class="project reveal" data-d="1" data-img="assets/millenaire/pomme2.jpg">
+  <a class="proj rev" data-d="1" data-img="assets/dark/blood.jpg" href="#" data-project="blood">
+    <span class="p-num">11</span>
+    <div class="p-info">
+      <p class="p-cat">Digital Painting · Dark Fantasy</p>
+      <h2 class="p-title">Blood Moon</h2>
+    </div>
+    <div class="p-tags">
+      <span class="p-tag">Halloween</span>
+      <span class="p-tag">Atmosphère</span>
+    </div>
+    <span class="p-arrow">↗</span>
+    <span class="p-year">2024</span>
+  </a>
+
+  <a class="proj rev" data-d="2" data-img="assets/millenaire/pomme2.jpg" href="#" data-project="millenaire">
     <span class="p-num">12</span>
     <div class="p-info">
-      <p class="p-cat">Illustration · Packaging · Identité locale</p>
-      <h3 class="p-title">La Pomme Conquérante — Millénaire Caen</h3>
+      <p class="p-cat">Illustration · Packaging · Identité Locale</p>
+      <h2 class="p-title">La Pomme Conquérante — Millénaire Caen</h2>
     </div>
     <div class="p-tags">
       <span class="p-tag">Normandie</span>
       <span class="p-tag">Packaging</span>
     </div>
-    <span class="p-arrow">→</span>
+    <span class="p-arrow">↗</span>
+    <span class="p-year">2024</span>
   </a>
 
-  <a href="#" class="project reveal" data-d="2" data-img="assets/aristocrate/nanti.jpg">
+  <a class="proj rev" data-d="3" data-img="assets/aristocrate/nanti.jpg" href="#" data-project="aristocrate">
     <span class="p-num">13</span>
     <div class="p-info">
       <p class="p-cat">Illustration · Character Design</p>
-      <h3 class="p-title">Série Aristocrate</h3>
+      <h2 class="p-title">Série Aristocrate</h2>
     </div>
     <div class="p-tags">
       <span class="p-tag">Character design</span>
       <span class="p-tag">Steampunk</span>
     </div>
-    <span class="p-arrow">→</span>
+    <span class="p-arrow">↗</span>
+    <span class="p-year">2024</span>
   </a>
 
-  <a href="#" class="project reveal" data-d="3" data-img="assets/pulse.jpg">
+  <a class="proj rev" data-d="4" data-img="assets/pulse.jpg" href="#" data-project="pulse">
     <span class="p-num">14</span>
     <div class="p-info">
       <p class="p-cat">Digital Painting · Concept Art</p>
-      <h3 class="p-title">Pulse</h3>
+      <h2 class="p-title">Pulse</h2>
     </div>
     <div class="p-tags">
       <span class="p-tag">Abstrait</span>
       <span class="p-tag">Énergie</span>
     </div>
-    <span class="p-arrow">→</span>
+    <span class="p-arrow">↗</span>
+    <span class="p-year">2024</span>
   </a>
 
-  <a href="#" class="project reveal" data-d="4" data-img="assets/formation/environnement.jpg">
+  <a class="proj rev" data-d="5" data-img="assets/formation/environnement.jpg" href="#" data-project="formation">
     <span class="p-num">15</span>
     <div class="p-info">
       <p class="p-cat">Digital Painting · Formation</p>
-      <h3 class="p-title">Études & Formation</h3>
+      <h2 class="p-title">Études & Explorations</h2>
     </div>
     <div class="p-tags">
       <span class="p-tag">Environnement</span>
       <span class="p-tag">Fantasy</span>
     </div>
-    <span class="p-arrow">→</span>
+    <span class="p-arrow">↗</span>
+    <span class="p-year">2025</span>
   </a>
 
 </section>
 
-<!-- ══ ABOUT ══ -->
+<!-- ── MARQUEE 2 ── -->
+<div class="marquee" style="border-top:1px solid rgba(240,237,232,.08)">
+  <div class="marquee-track" style="animation-direction:reverse" aria-hidden="true">
+    <span class="marquee-item">Arsène Valentin <span class="mq-sep"></span></span>
+    <span class="marquee-item">Clopinette <span class="mq-sep"></span></span>
+    <span class="marquee-item">Millénaire Caen <span class="mq-sep"></span></span>
+    <span class="marquee-item">Projets personnels <span class="mq-sep"></span></span>
+    <span class="marquee-item">Arsène Valentin <span class="mq-sep"></span></span>
+    <span class="marquee-item">Clopinette <span class="mq-sep"></span></span>
+    <span class="marquee-item">Millénaire Caen <span class="mq-sep"></span></span>
+    <span class="marquee-item">Projets personnels <span class="mq-sep"></span></span>
+    <span class="marquee-item">Arsène Valentin <span class="mq-sep"></span></span>
+    <span class="marquee-item">Clopinette <span class="mq-sep"></span></span>
+    <span class="marquee-item">Millénaire Caen <span class="mq-sep"></span></span>
+    <span class="marquee-item">Projets personnels <span class="mq-sep"></span></span>
+  </div>
+</div>
+
+<!-- ── ABOUT ── -->
 <section class="about" id="about">
-  <div>
-    <p class="about-num reveal">AA</p>
-    <h2 class="about-title reveal" data-d="1">
-      Anthony<br>Armand<br><em>Rodrigues</em>
-    </h2>
-    <div class="about-skills reveal" data-d="2">
-      <span class="skill">Digital Painting</span>
-      <span class="skill">Illustration</span>
-      <span class="skill">Character Design</span>
-      <span class="skill">Direction Artistique</span>
-      <span class="skill">Packaging</span>
-      <span class="skill">Branding</span>
-      <span class="skill">Architecture d'intérieur</span>
-      <span class="skill">Motion Design</span>
+  <div class="about-left rev">
+    <div>
+      <h2 class="about-name">Anthony<br>Armand<br><em>Rodrigues</em></h2>
+      <p class="about-desc">
+        Designer pluridisciplinaire basé en France. Je travaille à l'intersection du digital painting, de l'illustration narrative et de la direction artistique.
+      </p>
+      <p class="about-desc">
+        Du packaging premium aux peintures personnelles, chaque projet est une occasion de construire un univers visuel unique, cohérent et mémorable.
+      </p>
     </div>
+    <a href="#contact" class="about-link">Travaillons ensemble →</a>
   </div>
-  <div>
-    <div class="section-label reveal" style="margin-bottom:2rem">À propos</div>
-    <p class="about-body reveal" data-d="1">
-      Designer pluridisciplinaire basé en France, je travaille à l'intersection du digital painting, de l'illustration narrative et de la direction artistique. Mon travail est ancré dans la narration — chaque image raconte quelque chose.
-    </p>
-    <p class="about-body reveal" data-d="2">
-      Des personnages manga en univers steampunk aux paysages fantastiques, du packaging premium aux illustrations botaniques — je construis des univers visuels cohérents, distinctifs et durables.
-    </p>
-    <div class="about-stats reveal" data-d="3">
-      <div class="stat"><div class="stat-n">5<sup>+</sup></div><div class="stat-l">Années d'expérience</div></div>
-      <div class="stat"><div class="stat-n">35<sup>+</sup></div><div class="stat-l">Œuvres réalisées</div></div>
-      <div class="stat"><div class="stat-n">8</div><div class="stat-l">Disciplines créatives</div></div>
-      <div class="stat"><div class="stat-n">FR</div><div class="stat-l">France · Remote · Int'l</div></div>
+  <div class="about-right rev" data-d="1">
+    <div class="stat">
+      <div class="stat-n">5<sup>+</sup></div>
+      <div class="stat-l">Années d'expérience</div>
+    </div>
+    <div class="stat">
+      <div class="stat-n">35<sup>+</sup></div>
+      <div class="stat-l">Œuvres réalisées</div>
+    </div>
+    <div class="stat">
+      <div class="stat-n">8</div>
+      <div class="stat-l">Disciplines créatives</div>
+    </div>
+    <div class="stat">
+      <div class="stat-n">FR</div>
+      <div class="stat-l">France · Remote · Int'l</div>
     </div>
   </div>
 </section>
 
-<!-- ══ CONTACT ══ -->
+<!-- ── CONTACT ── -->
 <section class="contact" id="contact">
-  <div class="section-label contact-label reveal">Parlons-nous</div>
-  <h2 class="contact-title reveal" data-d="1">
-    Un projet<br>
-    <em>en tête ?</em>
-  </h2>
-  <div class="contact-links reveal" data-d="2">
-    <a href="mailto:aardesign14@gmail.com" class="contact-link">✉ aardesign14@gmail.com</a>
-    <a href="tel:0679466219" class="contact-link">☎ 06 79 46 62 19</a>
-    <a href="https://instagram.com" target="_blank" class="contact-link">◈ Instagram</a>
-    <a href="https://behance.net" target="_blank" class="contact-link">◈ Behance</a>
+  <div class="contact-row">
+    <h2 class="contact-title rev">
+      Parlons de<br>votre <em>projet</em>
+    </h2>
+    <div class="contact-links rev" data-d="1">
+      <a href="mailto:aardesign14@gmail.com" class="contact-link">aardesign14@gmail.com</a>
+      <a href="tel:0679466219" class="contact-link">06 79 46 62 19</a>
+      <a href="https://instagram.com" target="_blank" class="contact-link">Instagram</a>
+      <a href="https://behance.net" target="_blank" class="contact-link">Behance</a>
+    </div>
   </div>
 </section>
 
-<!-- FOOTER -->
-<footer class="reveal">
-  <span class="footer-copy">© 2025 AAR Design — Anthony Armand Rodrigues</span>
-  <div class="footer-links">
+<!-- ── FOOTER ── -->
+<footer class="rev">
+  <span class="f-copy">© 2025 AAR Design — Anthony Armand Rodrigues</span>
+  <div class="f-links">
     <a href="#">Mentions légales</a>
     <a href="admin.html">Admin</a>
   </div>
 </footer>
 
+<!-- ── MODAL ── -->
+<div id="modal">
+  <div id="modal-bg"></div>
+  <div id="modal-panel">
+    <!-- Main image -->
+    <div id="modal-main">
+      <img id="modal-main-img" src="" alt="">
+      <button class="modal-nav" id="modal-prev">&#8592;</button>
+      <button class="modal-nav" id="modal-next">&#8594;</button>
+      <div id="modal-caption">
+        <span id="modal-img-label"></span>
+        <span id="modal-img-count"></span>
+      </div>
+    </div>
+    <!-- Sidebar -->
+    <div id="modal-side">
+      <div id="modal-info">
+        <p id="modal-cat"></p>
+        <h2 id="modal-title"></h2>
+        <p id="modal-year"></p>
+        <p id="modal-desc"></p>
+        <div id="modal-tags"></div>
+      </div>
+      <div id="modal-thumbs"></div>
+      <div id="modal-keys">
+        <span>← → naviguer</span>
+        <span>Esc fermer</span>
+      </div>
+    </div>
+    <button id="modal-close">✕</button>
+  </div>
+</div>
+
 <script>
-// ── CURSOR ──
-let mx=0, my=0, cdx=0, cdy=0, crx=0, cry=0;
+// ═══════════════════════════════
+//  PROJECTS DATA
+// ═══════════════════════════════
+const PROJECTS = {
+  'voyages': {
+    cat: 'Digital Painting · Packaging · Direction Artistique',
+    title: "Les Voyages d'Arsène",
+    year: 'Arsène Valentin · 2024',
+    desc: "6 destinations, 6 peintures plein format. Du ciel de Cappadoce aux aurores de Laponie, chaque flacon est un voyage. Direction artistique complète, cohérence de gamme.",
+    tags: ['Digital Painting','Packaging','Steampunk','Paysage','Direction Artistique'],
+    images: [
+      { src:'assets/voyages/cartes.jpg',    label:"Vue d'ensemble — 6 étiquettes" },
+      { src:'assets/voyages/cappadoce.jpg', label:'Ciel de Cappadoce — Baklava Pistache' },
+      { src:'assets/voyages/laponie.jpg',   label:'Aurore de Laponie — Chocolat Pain d\'Épice' },
+      { src:'assets/voyages/fuji.jpg',      label:'Éclat du Fuji — Litchi Mangoustan' },
+      { src:'assets/voyages/pacifique.jpg', label:'Soleil du Pacifique — Banane Coco' },
+      { src:'assets/voyages/amazonie.jpg',  label:'Brume d\'Amazonie — Goyave Pitaya' },
+      { src:'assets/voyages/canada.jpg',    label:'Rivage Canadien — Sirop d\'Érable' },
+    ]
+  },
+  'steam': {
+    cat: 'Illustration · Gravure Digitale · Packaging',
+    title: 'Steam Collection',
+    year: 'Arsène Valentin · 2023',
+    desc: "6 illustrations style gravure XIXe siècle — sablier, hibou mécanique, masque de plague doctor, cœur mécanique, main d'alchimiste, théière. Encre sur parchemin texturé.",
+    tags: ['Illustration','Gravure Digitale','Steampunk','XIXe siècle','Packaging'],
+    images: [
+      { src:'assets/steam/mockup.jpg',  label:'Steam Collection — Vue d\'ensemble' },
+      { src:'assets/steam/main.jpg',    label:'La Main d\'Alchimiste — White Choco Pistache' },
+      { src:'assets/steam/sablier.jpg', label:'Les Arcanes du Temps — Popcorn Caramel' },
+      { src:'assets/steam/hibou.jpg',   label:'Le Sage de Fer — Biscuit Caramel' },
+      { src:'assets/steam/coeur.jpg',   label:'Le Cœur Mécanique — Dulce de Leche' },
+      { src:'assets/steam/gueule.jpg',  label:'La Gueule d\'Ange — Noisette' },
+      { src:'assets/steam/pomme.jpg',   label:'Le Fruit Défendu — Pomme Caramélisée' },
+    ]
+  },
+  'dark': {
+    cat: 'Digital Painting · Illustration Originale',
+    title: 'Dark Fantasy',
+    year: 'Série personnelle · 2024',
+    desc: "Nécromancien, sorcières, lune de sang — peintures numériques sombres où l'alchimie rencontre la magie noire. Huile digitale, palette dramatique.",
+    tags: ['Digital Painting','Dark Fantasy','Halloween','Illustration','Atmosphère'],
+    images: [
+      { src:'assets/dark/red.jpg',   label:"L'Alchimiste Maudit" },
+      { src:'assets/dark/salem.jpg', label:'Salem — Sorcière en vol' },
+      { src:'assets/dark/blood.jpg', label:'Blood Moon' },
+      { src:'assets/dark/cult.jpg',  label:'The Cult' },
+    ]
+  },
+  'hiver': {
+    cat: 'Illustration · Aquarelle Digitale · Édition',
+    title: "Saveurs d'Hiver",
+    year: 'Clopinette · 2025',
+    desc: "Couverture illustrée pour catalogue saisonnier. Renard endormi dans la neige, cerf gracieux, stalactites de glace. Aquarelle digitale, palette froide pastel.",
+    tags: ['Illustration','Aquarelle Digitale','Édition','Hiver','Botanique'],
+    images: [
+      { src:'assets/saveurs/hiver.jpg',    label:"Saveurs d'Hiver — Couverture" },
+      { src:'assets/saveurs/renard.png',   label:'Le renard — illustration détail' },
+    ]
+  },
+  'automne': {
+    cat: 'Illustration · Aquarelle Digitale · Édition',
+    title: "Saveurs d'Automne",
+    year: 'Clopinette · 2025',
+    desc: "Écureuil sur branche de chêne, feuilles d'érable dorées, citrouilles et champignons. Palette chaude et enveloppante pour une édition automnale.",
+    tags: ['Illustration','Aquarelle Digitale','Automne','Botanique'],
+    images: [
+      { src:'assets/saveurs/automne.jpg',  label:"Saveurs d'Automne — Couverture" },
+      { src:'assets/saveurs/ete.jpg',      label:"Saveurs d'Été — Couverture" },
+      { src:'assets/saveurs/printemps.jpg',label:"Saveurs de Printemps — Couverture" },
+    ]
+  },
+  'laponie': {
+    cat: 'Digital Painting · Packaging',
+    title: 'Aurore de Laponie',
+    year: 'Arsène Valentin · 2024',
+    desc: "Village enneigé sous aurore boréale, dirigeable traversant les lumières vertes et violettes du ciel nocturne arctique.",
+    tags: ['Digital Painting','Hiver','Aurore Boréale','Packaging'],
+    images: [
+      { src:'assets/voyages/laponie.jpg', label:'Aurore de Laponie — Flacon 50ml' },
+      { src:'assets/voyages/cartes.jpg',  label:"Contexte gamme — Les Voyages d'Arsène" },
+    ]
+  },
+  'fuji': {
+    cat: 'Digital Painting · Packaging',
+    title: 'Éclat du Fuji',
+    year: 'Arsène Valentin · 2024',
+    desc: "Temple japonais sous les cerisiers en fleur, mont Fuji en arrière-plan, dirigeable survolant les sakura.",
+    tags: ['Digital Painting','Japon','Cerisiers','Packaging'],
+    images: [
+      { src:'assets/voyages/fuji.jpg',      label:'Éclat du Fuji — Flacon 50ml' },
+      { src:'assets/voyages/pacifique.jpg', label:'Soleil du Pacifique — comparaison' },
+    ]
+  },
+  'sage': {
+    cat: 'Illustration · Gravure Digitale',
+    title: 'Le Sage de Fer',
+    year: 'Arsène Valentin · 2023',
+    desc: "Hibou mécanique aux plumes d'acier, yeux de verre lumineux, posé sur une branche d'engrenages. Majesté et précision horlogère.",
+    tags: ['Gravure Digitale','Animal Mécanique','Steampunk'],
+    images: [
+      { src:'assets/steam/hibou.jpg',   label:'Le Sage de Fer — Steam Collection' },
+      { src:'assets/steam/mockup.jpg',  label:'Contexte gamme — Steam Collection' },
+    ]
+  },
+  'main': {
+    cat: 'Illustration · Gravure Digitale',
+    title: "La Main d'Alchimiste",
+    year: 'Arsène Valentin · 2023',
+    desc: "Main articulée en métal forgé tenant un cristal magique. Rendu encre de Chine sur papier ancien, ombres hachurées, détails mécaniques précis.",
+    tags: ['Gravure Digitale','Alchimie','Steampunk'],
+    images: [
+      { src:'assets/steam/main.jpg',    label:"La Main d'Alchimiste" },
+      { src:'assets/steam/sablier.jpg', label:'Les Arcanes du Temps — même gamme' },
+      { src:'assets/steam/coeur.jpg',   label:'Le Cœur Mécanique — même gamme' },
+    ]
+  },
+  'salem': {
+    cat: 'Digital Painting · Dark Fantasy',
+    title: 'Salem',
+    year: 'Série personnelle · 2024',
+    desc: "Sorcière en vol sur fond de pleine lune — citrouilles sculptées, corbeaux et brume. Style painterly sombre à l'encre et aux lavis.",
+    tags: ['Digital Painting','Halloween','Sorcière','Dark Fantasy'],
+    images: [
+      { src:'assets/dark/salem.jpg', label:'Salem' },
+      { src:'assets/dark/red.jpg',   label:"L'Alchimiste Maudit — même série" },
+    ]
+  },
+  'blood': {
+    cat: 'Digital Painting · Dark Fantasy',
+    title: 'Blood Moon',
+    year: 'Série personnelle · 2024',
+    desc: "Paysage lunaire rouge sang avec silhouettes fantomatiques surgissant de la brume. Atmosphère oppressante, palette monochrome cramoisie.",
+    tags: ['Digital Painting','Halloween','Atmosphère'],
+    images: [
+      { src:'assets/dark/blood.jpg', label:'Blood Moon' },
+      { src:'assets/dark/cult.jpg',  label:'The Cult — même série' },
+    ]
+  },
+  'millenaire': {
+    cat: 'Illustration · Packaging · Identité Locale',
+    title: 'La Pomme Conquérante — Millénaire Caen',
+    year: 'Millénaire Caen · 2024',
+    desc: "Pomme stylisée en armure de chevalier, référence à l'histoire de Caen et de Guillaume le Conquérant. Direction artistique packaging local normand.",
+    tags: ['Illustration','Packaging','Normandie','Identité Locale'],
+    images: [
+      { src:'assets/millenaire/pomme2.jpg', label:'La Pomme Conquérante — variante dorée' },
+      { src:'assets/millenaire/pomme3.jpg', label:'La Pomme Conquérante — variante chaude' },
+      { src:'assets/millenaire/cadomum.jpg',label:'Cadomum — mascotte Millénaire Caen' },
+    ]
+  },
+  'aristocrate': {
+    cat: 'Illustration · Character Design',
+    title: 'Série Aristocrate',
+    year: 'Série personnelle · 2024',
+    desc: "Personnages de gentlemen dandy steampunk — Le Nanti, La Veste, Le Casque, L'Explorateur. Illustration couleur, style ligne claire raffinée.",
+    tags: ['Character Design','Steampunk','Illustration','Ligne Claire'],
+    images: [
+      { src:'assets/aristocrate/nanti.jpg',       label:'Le Nanti' },
+      { src:'assets/aristocrate/veste.jpg',        label:'La Veste — étude de costume' },
+      { src:'assets/aristocrate/casque.jpg',       label:'Le Casque — étude d\'équipement' },
+      { src:'assets/aristocrate/explorateur.jpg',  label:"L'Explorateur" },
+    ]
+  },
+  'pulse': {
+    cat: 'Digital Painting · Concept Art',
+    title: 'Pulse',
+    year: 'Personnel · 2024',
+    desc: "Composition abstraite-organique représentant une énergie vitale — ondes, particules, flux lumineux. Exploration de la frontière entre biologie et technologie.",
+    tags: ['Concept Art','Abstrait','Énergie','Digital Painting'],
+    images: [
+      { src:'assets/pulse.jpg', label:'Pulse — Illustration originale' },
+    ]
+  },
+  'formation': {
+    cat: 'Digital Painting · Formation',
+    title: 'Études & Explorations',
+    year: 'Formation · 2024–2025',
+    desc: "Exercices de formation en digital painting — environnements de fantasy, character design, paysages SF, études de matières. Progression visible, maîtrise croissante.",
+    tags: ['Formation','Digital Painting','Environnement','Character Design','Fantasy'],
+    images: [
+      { src:'assets/formation/environnement.jpg', label:'Environnement Final — Module 4' },
+      { src:'assets/formation/character.jpg',     label:'Character Final — Arsène' },
+      { src:'assets/formation/foret.jpg',          label:'Forêt Enchantée' },
+      { src:'assets/formation/halloween.jpg',      label:'Halloween Challenge' },
+      { src:'assets/formation/sf.jpg',             label:'Décors Science-Fiction' },
+      { src:'assets/formation/hoth.jpg',           label:'Hoth — étude planète glace' },
+      { src:'assets/formation/mobydick.jpg',       label:'Moby Dick — illustration littéraire' },
+      { src:'assets/formation/paysage.jpg',        label:'Paysage — étude atmosphère' },
+    ]
+  },
+};
+
+// ═══════════════════════════════
+//  CURSOR
+// ═══════════════════════════════
+let mx=0, my=0, cx=0, cy=0, rx=0, ry=0;
 const cd=document.getElementById('cd'), cr=document.getElementById('cr');
 document.addEventListener('mousemove', e=>{ mx=e.clientX; my=e.clientY; });
 (function anim(){
-  cdx+=(mx-cdx)*.22; cdy+=(my-cdy)*.22;
-  crx+=(mx-crx)*.1; cry+=(my-cry)*.1;
-  cd.style.left=cdx+'px'; cd.style.top=cdy+'px';
-  cr.style.left=crx+'px'; cr.style.top=cry+'px';
+  cx+=(mx-cx)*.22; cy+=(my-cy)*.22;
+  rx+=(mx-rx)*.1;  ry+=(my-ry)*.1;
+  cd.style.left=cx+'px'; cd.style.top=cy+'px';
+  cr.style.left=rx+'px'; cr.style.top=ry+'px';
   requestAnimationFrame(anim);
 })();
-document.querySelectorAll('a,button,.feat-item,.project,.stat').forEach(el=>{
+document.querySelectorAll('a,button,.stat').forEach(el=>{
   el.addEventListener('mouseenter',()=>document.body.classList.add('hov'));
   el.addEventListener('mouseleave',()=>document.body.classList.remove('hov'));
 });
 
-// ── PROGRESS & NAV ──
+// ═══════════════════════════════
+//  PROGRESS + NAV
+// ═══════════════════════════════
 window.addEventListener('scroll',()=>{
   const s=document.documentElement.scrollTop;
   const h=document.documentElement.scrollHeight-window.innerHeight;
-  document.getElementById('progress').style.width=(s/h*100)+'%';
-  document.getElementById('nav').classList.toggle('scrolled',s>60);
+  document.getElementById('prog').style.width=(s/h*100)+'%';
+  document.getElementById('nav').classList.toggle('scrolled',s>40);
 });
 
-// ── REVEAL ──
+// ═══════════════════════════════
+//  REVEAL
+// ═══════════════════════════════
 const obs=new IntersectionObserver(entries=>{
   entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in'); });
-},{threshold:.1, rootMargin:'0px 0px -60px 0px'});
-document.querySelectorAll('.reveal,.reveal-l,.reveal-r').forEach(el=>obs.observe(el));
+},{threshold:.08,rootMargin:'0px 0px -50px 0px'});
+document.querySelectorAll('.rev').forEach(el=>obs.observe(el));
 
-// ── HERO IMAGE PARALLAX ──
-const heroImg=document.getElementById('hero-img');
-window.addEventListener('scroll',()=>{
-  const y=window.scrollY;
-  if(heroImg) heroImg.style.transform=`scale(1.05) translateY(${y*.15}px)`;
-});
+// ═══════════════════════════════
+//  HOVER IMAGE FOLLOWS CURSOR
+// ═══════════════════════════════
+const himg=document.getElementById('hover-img');
+const himgEl=document.getElementById('hover-img-el');
+let hx=0, hy=0, htx=0, hty=0;
 
-// ── PROJECT LIST HOVER PREVIEW ──
-const prevWrap=document.getElementById('prev-img');
-const prevImgEl=document.getElementById('prev-img-el');
-document.querySelectorAll('.project').forEach(row=>{
-  const imgSrc=row.dataset.img;
+document.querySelectorAll('.proj').forEach(row=>{
+  const src=row.dataset.img;
   row.addEventListener('mouseenter',()=>{
-    if(imgSrc){ prevImgEl.src=imgSrc; prevWrap.style.opacity='1'; prevWrap.style.transform='translateX(0) scale(1)'; }
-  });
-  row.addEventListener('mousemove',e=>{
-    const x=e.clientX+30, y=e.clientY-95;
-    prevWrap.style.left=x+'px'; prevWrap.style.top=y+'px';
+    if(!src) return;
+    himgEl.src=src;
+    himg.classList.add('visible');
   });
   row.addEventListener('mouseleave',()=>{
-    prevWrap.style.opacity='0'; prevWrap.style.transform='translateX(20px) scale(.96)';
+    himg.classList.remove('visible');
+  });
+});
+document.addEventListener('mousemove',e=>{
+  htx=e.clientX+28; hty=e.clientY-130;
+  if(htx+360>window.innerWidth) htx=e.clientX-390;
+  if(hty<10) hty=10;
+  if(hty+240>window.innerHeight) hty=window.innerHeight-250;
+});
+(function animH(){
+  hx+=(htx-hx)*.14; hy+=(hty-hy)*.14;
+  himg.style.left=hx+'px'; himg.style.top=hy+'px';
+  requestAnimationFrame(animH);
+})();
+
+// ═══════════════════════════════
+//  MODAL
+// ═══════════════════════════════
+const modal      = document.getElementById('modal');
+const mMainImg   = document.getElementById('modal-main-img');
+const mCat       = document.getElementById('modal-cat');
+const mTitle     = document.getElementById('modal-title');
+const mYear      = document.getElementById('modal-year');
+const mDesc      = document.getElementById('modal-desc');
+const mTags      = document.getElementById('modal-tags');
+const mThumbs    = document.getElementById('modal-thumbs');
+const mLabel     = document.getElementById('modal-img-label');
+const mCount     = document.getElementById('modal-img-count');
+
+let currentProject = null;
+let currentIdx = 0;
+
+function openProject(id) {
+  const p = PROJECTS[id];
+  if (!p) return;
+  currentProject = p;
+  currentIdx = 0;
+
+  // Fill info
+  mCat.textContent   = p.cat;
+  mTitle.textContent = p.title;
+  mYear.textContent  = p.year;
+  mDesc.textContent  = p.desc;
+  mTags.innerHTML    = p.tags.map(t=>`<span class="modal-tag">${t}</span>`).join('');
+
+  // Thumbnails
+  mThumbs.innerHTML = p.images.map((img,i)=>`
+    <div class="modal-thumb${i===0?' active':''}" data-i="${i}">
+      <img src="${img.src}" alt="${img.label}" loading="lazy">
+    </div>`).join('');
+
+  mThumbs.querySelectorAll('.modal-thumb').forEach(th=>{
+    th.addEventListener('click',()=>goTo(+th.dataset.i));
+  });
+
+  showImage(0);
+  modal.classList.add('open');
+  document.body.style.overflow='hidden';
+  himg.classList.remove('visible');
+}
+
+function showImage(i) {
+  const p = currentProject;
+  currentIdx = (i + p.images.length) % p.images.length;
+  const img = p.images[currentIdx];
+
+  mMainImg.classList.add('switching');
+  setTimeout(()=>{
+    mMainImg.src = img.src;
+    mMainImg.onload = ()=> mMainImg.classList.remove('switching');
+  },200);
+
+  mLabel.textContent = img.label;
+  mCount.textContent = `${currentIdx+1} / ${p.images.length}`;
+
+  // Update thumbs
+  mThumbs.querySelectorAll('.modal-thumb').forEach((th,j)=>{
+    th.classList.toggle('active', j===currentIdx);
+  });
+  // Scroll active thumb into view
+  const active = mThumbs.querySelector('.modal-thumb.active');
+  if(active) active.scrollIntoView({block:'nearest',behavior:'smooth'});
+}
+
+function goTo(i) { showImage(i); }
+
+function closeModal() {
+  modal.classList.remove('open');
+  document.body.style.overflow='';
+  setTimeout(()=>{ mMainImg.src=''; },500);
+}
+
+document.getElementById('modal-bg').addEventListener('click', closeModal);
+document.getElementById('modal-close').addEventListener('click', closeModal);
+document.getElementById('modal-prev').addEventListener('click',()=>showImage(currentIdx-1));
+document.getElementById('modal-next').addEventListener('click',()=>showImage(currentIdx+1));
+
+document.addEventListener('keydown',e=>{
+  if(!modal.classList.contains('open')) return;
+  if(e.key==='Escape') closeModal();
+  if(e.key==='ArrowLeft')  showImage(currentIdx-1);
+  if(e.key==='ArrowRight') showImage(currentIdx+1);
+});
+
+// Wire project rows to modal
+document.querySelectorAll('.proj[data-project]').forEach(row=>{
+  row.addEventListener('click',e=>{
+    e.preventDefault();
+    openProject(row.dataset.project);
   });
 });
 
-// ── FEAT ITEM cursor text ──
-document.querySelectorAll('.feat-item').forEach(el=>{
-  el.addEventListener('mouseenter',()=>document.body.classList.add('view'));
-  el.addEventListener('mouseleave',()=>document.body.classList.remove('view'));
-});
-
-// ── COUNTER ANIM ──
-function animCount(el,target,dur=1600){
-  let start=null;
-  const suf=el.querySelector('sup')?el.querySelector('sup').outerHTML:'';
-  const step=ts=>{ if(!start)start=ts; const p=Math.min((ts-start)/dur,1); const e=1-Math.pow(1-p,3); el.innerHTML=Math.floor(e*target)+suf; if(p<1)requestAnimationFrame(step); };
-  requestAnimationFrame(step);
+// ═══════════════════════════════
+//  COUNTER
+// ═══════════════════════════════
+function animCount(el, target, dur=1400){
+  const sup=el.querySelector('sup')?.outerHTML||'';
+  let s=null;
+  (function step(ts){
+    if(!s) s=ts;
+    const p=Math.min((ts-s)/dur,1);
+    const e=1-Math.pow(1-p,3);
+    el.innerHTML=Math.floor(e*target)+sup;
+    if(p<1) requestAnimationFrame(step);
+  })(performance.now());
 }
 const statsObs=new IntersectionObserver(entries=>{
   if(entries[0].isIntersecting){
-    animCount(document.querySelector('.about-stats .stat:nth-child(1) .stat-n'),5);
-    animCount(document.querySelector('.about-stats .stat:nth-child(2) .stat-n'),35);
-    animCount(document.querySelector('.about-stats .stat:nth-child(3) .stat-n'),8);
+    const stats=document.querySelectorAll('.stat-n');
+    animCount(stats[0],5); animCount(stats[1],35); animCount(stats[2],8);
     statsObs.disconnect();
   }
-},{threshold:.4});
-const statsEl=document.querySelector('.about-stats');
-if(statsEl) statsObs.observe(statsEl);
+},{threshold:.5});
+const sa=document.querySelector('.about-right');
+if(sa) statsObs.observe(sa);
 </script>
 </body>
 </html>
