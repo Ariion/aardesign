@@ -46,6 +46,30 @@ body.hov #cr   { width: 52px; height: 52px; border-color: rgba(184,148,90,.4); }
 body.drag #cd  { opacity: 0; }
 body.drag #cr  { width: 14px; height: 14px; background: var(--ink); border: none; }
 
+/* ── INTRO ── */
+#intro {
+  position: fixed; inset: 0; z-index: 8000;
+  background: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none;
+  transition: opacity .7s var(--E), visibility .7s;
+}
+#intro.out { opacity: 0; visibility: hidden; }
+#intro-logo {
+  display: flex; flex-direction: column; align-items: center; gap: 2rem;
+  animation: introIn .8s var(--E) both;
+}
+#intro-logo img { height: 52px; }
+#intro-bar-w { width: 120px; height: 1px; background: var(--line); overflow: hidden; }
+#intro-bar {
+  height: 100%; width: 0; background: var(--ink);
+  transition: width .9s cubic-bezier(.4,0,.2,1);
+}
+@keyframes introIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 /* ── PROGRESS ── */
 #prog {
   position: fixed; top: 0; left: 0; height: 1px;
@@ -83,6 +107,14 @@ nav.scrolled { padding: 1.1rem 3rem; background: rgba(240,237,232,.9); backdrop-
   padding-bottom: 5rem;
   position: relative;
   border-bottom: 1px solid var(--line);
+}
+/* Page-entry animations (triggered after intro) */
+.page-in { opacity: 0; transform: translateY(20px); }
+.page-in.entered {
+  animation: pageIn .9s var(--E) both;
+}
+@keyframes pageIn {
+  to { opacity: 1; transform: translateY(0); }
 }
 .hero-intro {
   font-size: .68rem; letter-spacing: .15em; color: var(--mid);
@@ -480,6 +512,13 @@ footer {
 </head>
 <body>
 
+<div id="intro">
+  <div id="intro-logo">
+    <img src="assets/Logo-Aardesign-Court.png" alt="AAR Design">
+    <div id="intro-bar-w"><div id="intro-bar"></div></div>
+  </div>
+</div>
+
 <div id="cd"></div>
 <div id="cr"></div>
 <div id="prog"></div>
@@ -487,7 +526,7 @@ footer {
 
 <!-- NAV -->
 <nav id="nav">
-  <a href="#"><img src="assets/Logo-Aardesign-Long.png" alt="AAR Design"></a>
+  <a href="#" class="nav-logo"><img src="assets/Logo-Aardesign-Court.png" alt="AAR Design"></a>
   <ul class="nav-links">
     <li><a href="#work">Travaux</a></li>
     <li><a href="#about">À propos</a></li>
@@ -498,13 +537,13 @@ footer {
 
 <!-- ── HERO ── -->
 <section class="hero">
-  <p class="hero-intro rev">Anthony Armand Rodrigues — Digital Painting & Direction Artistique</p>
-  <h1 class="hero-title rev" data-d="1">
+  <p class="hero-intro rev page-in">Anthony Armand Rodrigues — Digital Painting & Direction Artistique</p>
+  <h1 class="hero-title rev page-in" data-d="1">
     Designer,<br>
     illustrateur &<br>
     <em>peintre numérique</em>
   </h1>
-  <div class="hero-bottom rev" data-d="2">
+  <div class="hero-bottom rev page-in" data-d="2">
     <p class="hero-desc">
       Je construis des univers visuels qui racontent des histoires — du packaging steampunk aux illustrations saisonnières, du character design à la dark fantasy.
     </p>
@@ -1059,6 +1098,27 @@ const PROJECTS = {
     ]
   },
 };
+
+// ═══════════════════════════════
+//  INTRO ANIMATION
+// ═══════════════════════════════
+const introEl  = document.getElementById('intro');
+const introBar = document.getElementById('intro-bar');
+
+// Start bar fill immediately
+requestAnimationFrame(()=> introBar.style.width = '100%');
+
+// After bar fills → slide out intro, animate page in
+setTimeout(()=>{
+  introEl.classList.add('out');
+  // Stagger hero elements in
+  document.querySelectorAll('.page-in').forEach((el, i) => {
+    setTimeout(()=>{
+      el.classList.add('entered');
+      el.style.animationDelay = (i * 0.12) + 's';
+    }, i * 120);
+  });
+}, 1100);
 
 // ═══════════════════════════════
 //  CURSOR
