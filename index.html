@@ -278,24 +278,308 @@ body{
   #clock{ display:none; }
 }
 
-/* ───────── INTRO ───────── */
-#intro{
-  position:fixed; inset:0; z-index:9000; background:var(--navy);
-  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2rem;
+/* ───────── BOOT SCREEN ───────── */
+#boot{
+  position:fixed; inset:0; z-index:9999;
+  background:#040810;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3rem;
   text-align:center; padding:2rem;
-  transition:opacity .7s var(--ease), visibility .7s;
+  transition:opacity .8s var(--ease), visibility .8s;
 }
-#intro.out{ opacity:0; visibility:hidden; }
-.intro-logo{ height:122px; filter:brightness(10); animation:floaty 3.4s ease-in-out infinite; }
-@keyframes floaty{ 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
-#enter{
-  font-family:inherit; font-size:.68rem; font-weight:700; letter-spacing:.16em; text-transform:uppercase;
-  color:var(--navy); background:var(--cyan); border:0; cursor:pointer;
-  padding:1.05rem 2.7rem; border-radius:12px; transition:transform .2s, background .2s, box-shadow .2s;
-  box-shadow:0 14px 32px rgba(41,184,217,.32);
+#boot.out{ opacity:0; visibility:hidden; pointer-events:none; }
+/* étoiles */
+#boot::before{
+  content:''; position:absolute; inset:0; pointer-events:none;
+  background-image:
+    radial-gradient(1px 1px at 15% 22%, rgba(255,255,255,.6) 0%, transparent 100%),
+    radial-gradient(1px 1px at 42% 58%, rgba(255,255,255,.4) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 67% 18%, rgba(255,255,255,.5) 0%, transparent 100%),
+    radial-gradient(1px 1px at 80% 75%, rgba(255,255,255,.35) 0%, transparent 100%),
+    radial-gradient(1px 1px at 28% 88%, rgba(255,255,255,.4) 0%, transparent 100%),
+    radial-gradient(1px 1px at 55% 40%, rgba(255,255,255,.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 90% 33%, rgba(255,255,255,.45) 0%, transparent 100%);
 }
-#enter:hover{ background:#fff; transform:translateY(-2px); box-shadow:0 18px 42px rgba(41,184,217,.42); }
-#intro .credit{ position:absolute; bottom:1.6rem; font-size:.5rem; letter-spacing:.2em; text-transform:uppercase; color:rgba(255,255,255,.3); padding:0 1.5rem; text-align:center; }
+.boot-logo{
+  height:110px; filter:brightness(10) drop-shadow(0 0 28px rgba(41,184,217,.7));
+  animation:bootpulse 2.8s ease-in-out infinite;
+}
+@keyframes bootpulse{
+  0%,100%{ filter:brightness(10) drop-shadow(0 0 18px rgba(41,184,217,.5)); transform:scale(1); }
+  50%{ filter:brightness(12) drop-shadow(0 0 42px rgba(41,184,217,.9)); transform:scale(1.04); }
+}
+.boot-tag{
+  font-size:.52rem; font-weight:700; letter-spacing:.28em; text-transform:uppercase;
+  color:rgba(41,184,217,.7); margin-top:-.8rem;
+}
+.boot-question{
+  font-size:.7rem; font-weight:600; letter-spacing:.15em; text-transform:uppercase;
+  color:rgba(255,255,255,.4);
+}
+.os-tiles{ display:flex; gap:1.6rem; align-items:stretch; }
+.os-tile{
+  width:200px; padding:2rem 1.6rem 1.8rem;
+  border-radius:22px; cursor:pointer; border:1px solid rgba(255,255,255,.1);
+  display:flex; flex-direction:column; align-items:center; gap:1.2rem;
+  transition:transform .3s var(--ease), box-shadow .3s var(--ease), border-color .3s;
+  position:relative; overflow:hidden; user-select:none;
+}
+.os-tile::before{
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(135deg, rgba(255,255,255,.07) 0%, transparent 60%);
+  pointer-events:none;
+}
+#tile-w11{
+  background:rgba(12,20,35,.8);
+  box-shadow:0 20px 50px rgba(0,120,215,.15);
+}
+#tile-w11:hover{
+  transform:translateY(-8px) scale(1.02);
+  border-color:rgba(0,120,215,.5);
+  box-shadow:0 30px 70px rgba(0,120,215,.3);
+}
+#tile-ios{
+  background:rgba(18,12,35,.8);
+  box-shadow:0 20px 50px rgba(130,80,255,.15);
+}
+#tile-ios:hover{
+  transform:translateY(-8px) scale(1.02);
+  border-color:rgba(130,80,255,.5);
+  box-shadow:0 30px 70px rgba(130,80,255,.3);
+}
+.os-tile-label{
+  font-size:.72rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#fff;
+}
+.os-tile-sub{
+  font-size:.48rem; font-weight:600; letter-spacing:.14em; text-transform:uppercase;
+  color:rgba(255,255,255,.35);
+}
+/* Logo Windows 11 */
+.w11-logo{ width:54px; height:54px; flex-shrink:0; }
+/* Logo Apple */
+.apple-logo{ width:46px; height:56px; flex-shrink:0; fill:white; }
+
+/* ───────── W11 LOGIN OVERLAY ───────── */
+#w11-login{
+  position:fixed; inset:0; z-index:8000;
+  background:rgba(4,8,16,.85); backdrop-filter:blur(24px);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1.4rem;
+  opacity:0; visibility:hidden; transition:opacity .4s var(--ease), visibility .4s;
+}
+#w11-login.open{ opacity:1; visibility:visible; }
+.wl-clock{ font-size:4rem; font-weight:800; color:#fff; letter-spacing:-.04em; font-variant-numeric:tabular-nums; }
+.wl-date{ font-size:.8rem; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:rgba(255,255,255,.5); margin-top:-.6rem; }
+.wl-avatar{
+  width:72px; height:72px; border-radius:50%;
+  background:linear-gradient(135deg, var(--navy), var(--cyan));
+  display:flex; align-items:center; justify-content:center; margin-top:.6rem;
+}
+.wl-avatar img{ height:38px; filter:brightness(10); }
+.wl-name{ font-size:1.1rem; font-weight:700; color:#fff; }
+.wl-field{
+  display:flex; align-items:center; gap:.6rem;
+  background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.15);
+  border-radius:10px; padding:.65rem .9rem; width:280px;
+}
+.wl-field input{
+  flex:1; background:none; border:none; outline:none;
+  font:inherit; font-size:.82rem; color:#fff;
+}
+.wl-field input::placeholder{ color:rgba(255,255,255,.35); }
+.wl-field button{ background:none; border:none; cursor:pointer; color:rgba(255,255,255,.5); font-size:.9rem; padding:0 2px; }
+.wl-submit{
+  width:280px; padding:.8rem; border:0; border-radius:10px;
+  background:rgba(0,120,215,.85); color:#fff; cursor:pointer;
+  font:inherit; font-size:.65rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
+  transition:background .2s, transform .1s;
+}
+.wl-submit:hover{ background:#0078D4; } .wl-submit:active{ transform:scale(.99); }
+.wl-error{
+  font-size:.7rem; color:#ff6b6b; font-weight:600;
+  opacity:0; transition:opacity .3s; text-align:center; max-width:280px;
+}
+.wl-error.show{ opacity:1; }
+.wl-back{
+  font:inherit; font-size:.58rem; font-weight:600; letter-spacing:.08em; text-transform:uppercase;
+  background:none; border:1px solid rgba(255,255,255,.2); color:rgba(255,255,255,.6);
+  padding:.55rem 1.4rem; border-radius:8px; cursor:pointer; transition:all .2s;
+}
+.wl-back:hover{ background:rgba(255,255,255,.08); color:#fff; }
+@keyframes wlshake{ 0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)} }
+.wl-field.shake{ animation:wlshake .35s var(--ease); }
+
+/* ───────── iOS HUD ───────── */
+#ios-hud{
+  position:fixed; inset:0; z-index:200;
+  display:none; flex-direction:column;
+  font-family:-apple-system,'SF Pro Display','Helvetica Neue',sans-serif;
+}
+#ios-hud.active{ display:flex; }
+/* Status bar */
+.ios-status{
+  position:absolute; top:0; left:0; right:0; height:44px; z-index:20;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:12px 18px 0; color:#fff; font-size:.7rem; font-weight:600;
+}
+.ios-status-left{ display:flex; gap:.5rem; align-items:center; }
+.ios-status-right{ display:flex; gap:.4rem; align-items:center; font-size:.75rem; }
+
+/* Lock screen */
+#ios-lock{
+  position:absolute; inset:0; z-index:10;
+  background:linear-gradient(160deg, #0a0e2e 0%, #1a0a3e 40%, #0e1a3e 100%);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:.5rem; cursor:pointer; transition:opacity .5s, transform .5s;
+}
+#ios-lock.unlocking{ opacity:0; transform:scale(1.06); pointer-events:none; }
+.lock-time{ font-size:5.5rem; font-weight:200; color:#fff; letter-spacing:-.04em; line-height:1; font-variant-numeric:tabular-nums; }
+.lock-date{ font-size:1rem; font-weight:400; color:rgba(255,255,255,.8); letter-spacing:.01em; }
+.lock-hint{
+  position:absolute; bottom:2.5rem; left:0; right:0; text-align:center;
+  font-size:.6rem; font-weight:500; letter-spacing:.15em; text-transform:uppercase;
+  color:rgba(255,255,255,.4);
+  animation:hinpulse 2s ease-in-out infinite;
+}
+@keyframes hinpulse{ 0%,100%{opacity:.4} 50%{opacity:.85} }
+
+/* Home screen */
+#ios-home{
+  position:absolute; inset:0; z-index:9;
+  display:flex; flex-direction:column;
+  background:linear-gradient(160deg, #0a1428 0%, #121836 100%);
+  overflow:hidden;
+}
+.ios-wallpaper{
+  position:absolute; inset:0;
+  background:linear-gradient(160deg, #0d1535 0%, #1a1040 50%, #0a1528 100%);
+  filter:blur(0);
+}
+/* App grid */
+.ios-grid{
+  position:relative; z-index:2;
+  display:grid; grid-template-columns:repeat(4,1fr);
+  gap:1.2rem 0.6rem; padding:70px 20px 0;
+  flex:1;
+}
+.ios-app-icon{
+  display:flex; flex-direction:column; align-items:center; gap:.35rem;
+  cursor:pointer; -webkit-tap-highlight-color:transparent;
+  transition:transform .15s;
+}
+.ios-app-icon:active{ transform:scale(.9); }
+.ios-icon-img{
+  width:60px; height:60px; border-radius:15px;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 4px 12px rgba(0,0,0,.4);
+}
+.ios-icon-img svg{ width:30px; height:30px; }
+.ios-icon-label{
+  font-size:.55rem; font-weight:500; color:#fff; text-align:center;
+  text-shadow:0 1px 3px rgba(0,0,0,.7); letter-spacing:.01em;
+}
+/* Dock */
+.ios-dock{
+  position:relative; z-index:2;
+  display:flex; justify-content:center; align-items:center; gap:1rem;
+  padding:.7rem 1.6rem; margin:0 1rem 1rem;
+  background:rgba(255,255,255,.12); backdrop-filter:blur(20px);
+  border-radius:26px; border:1px solid rgba(255,255,255,.15);
+}
+.ios-dock .ios-app-icon{ flex-shrink:0; }
+/* iOS fullscreen apps */
+#ios-app-layer{
+  position:absolute; inset:0; z-index:15;
+  display:none; flex-direction:column; background:#000;
+}
+#ios-app-layer.open{ display:flex; }
+.ios-app-nav{
+  height:44px; display:flex; align-items:center; padding:0 16px;
+  background:rgba(0,0,0,.85); backdrop-filter:blur(10px); flex-shrink:0;
+}
+.ios-app-back{
+  background:none; border:none; color:var(--cyan); cursor:pointer;
+  font-family:inherit; font-size:.78rem; font-weight:600;
+  display:flex; align-items:center; gap:.3rem; padding:.4rem 0;
+}
+.ios-app-back svg{ width:14px; height:14px; }
+.ios-app-title{
+  flex:1; text-align:center; font-size:.78rem; font-weight:600; color:#fff;
+  margin-right:40px;
+}
+.ios-app-content{ flex:1; overflow-y:auto; background:#f2f2f7; }
+/* iOS login */
+#ios-login{
+  position:absolute; inset:0; z-index:18;
+  background:linear-gradient(160deg, #0a0e2e 0%, #1a0a3e 100%);
+  display:none; flex-direction:column; align-items:center; justify-content:center; gap:1.2rem;
+}
+#ios-login.open{ display:flex; }
+.il-lock{ font-size:3rem; margin-bottom:.5rem; }
+.il-app-name{ font-size:1.2rem; font-weight:600; color:#fff; letter-spacing:-.01em; }
+.il-sub{ font-size:.65rem; color:rgba(255,255,255,.5); font-weight:400; }
+.il-field{
+  background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.2);
+  border-radius:14px; padding:.9rem 1.1rem; width:260px; display:flex; align-items:center; gap:.6rem;
+}
+.il-field input{
+  flex:1; background:none; border:none; outline:none;
+  font:inherit; font-size:.85rem; color:#fff; text-align:center; letter-spacing:.1em;
+}
+.il-field input::placeholder{ color:rgba(255,255,255,.35); letter-spacing:.05em; }
+.il-submit{
+  width:260px; padding:.9rem; border:0; border-radius:14px;
+  background:var(--cyan); color:#fff; cursor:pointer;
+  font:inherit; font-size:.7rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
+  transition:background .2s, transform .1s;
+}
+.il-submit:hover{ background:var(--cyan2); } .il-submit:active{ transform:scale(.98); }
+.il-error{
+  font-size:.72rem; color:#ff6b6b; font-weight:500;
+  opacity:0; transition:opacity .3s; text-align:center;
+}
+.il-error.show{ opacity:1; }
+.il-back{
+  font:inherit; font-size:.6rem; font-weight:500; color:rgba(255,255,255,.5);
+  background:none; border:none; cursor:pointer; text-decoration:underline; margin-top:.4rem;
+}
+@keyframes ilshake{ 0%,100%{transform:translateX(0)} 25%{transform:translateX(-10px)} 75%{transform:translateX(10px)} }
+.il-field.shake{ animation:ilshake .35s; }
+
+/* ───────── CV WINDOW STYLES ───────── */
+.cv-scroll{ max-height:72vh; overflow-y:auto; padding-right:4px; }
+.cv-scroll::-webkit-scrollbar{ width:3px; } .cv-scroll::-webkit-scrollbar-thumb{ background:rgba(27,53,96,.2); }
+.cv-header{ display:flex; align-items:center; gap:1rem; margin-bottom:1.3rem; }
+.cv-avatar{ width:64px; height:64px; border-radius:50%; background:linear-gradient(135deg,var(--navy),var(--cyan)); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.cv-avatar img{ height:34px; filter:brightness(10); }
+.cv-name{ font-size:1.2rem; font-weight:800; color:var(--ink); letter-spacing:-.02em; }
+.cv-title{ font-size:.52rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--cyan); margin-top:2px; }
+.cv-contacts{ display:flex; flex-wrap:wrap; gap:.35rem; margin-bottom:1.2rem; }
+.cv-chip{ font-size:.5rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; padding:.28rem .65rem; border-radius:20px; background:rgba(27,53,96,.07); color:var(--sub); border:1px solid rgba(27,53,96,.1); white-space:nowrap; }
+.cv-section{ margin-bottom:1.4rem; }
+.cv-section-title{ font-size:.48rem; font-weight:700; letter-spacing:.22em; text-transform:uppercase; color:var(--cyan); margin-bottom:.7rem; padding-bottom:.4rem; border-bottom:1px solid rgba(27,53,96,.08); }
+.cv-skill{ display:flex; align-items:center; gap:.6rem; margin-bottom:.55rem; }
+.cv-skill-name{ font-size:.7rem; font-weight:600; color:var(--ink); min-width:130px; }
+.cv-skill-bar{ flex:1; height:5px; background:rgba(27,53,96,.1); border-radius:3px; overflow:hidden; }
+.cv-skill-fill{ height:100%; border-radius:3px; background:linear-gradient(90deg,var(--navy),var(--cyan)); transition:width 1s var(--ease); }
+.cv-skill-pct{ font-size:.48rem; font-weight:700; color:var(--sub); min-width:32px; text-align:right; }
+.cv-timeline{ display:flex; flex-direction:column; gap:.7rem; }
+.cv-item{ display:flex; gap:.75rem; }
+.cv-item-dot{ display:flex; flex-direction:column; align-items:center; flex-shrink:0; padding-top:3px; }
+.cv-item-dot::before{ content:''; width:9px; height:9px; border-radius:50%; background:var(--cyan); flex-shrink:0; }
+.cv-item-dot::after{ content:''; flex:1; width:1px; background:rgba(27,53,96,.15); margin-top:4px; }
+.cv-item:last-child .cv-item-dot::after{ display:none; }
+.cv-item-body{ padding-bottom:.55rem; }
+.cv-item-title{ font-size:.78rem; font-weight:700; color:var(--ink); }
+.cv-item-sub{ font-size:.6rem; font-weight:600; color:var(--cyan2); margin-top:1px; }
+.cv-item-desc{ font-size:.65rem; font-weight:400; color:var(--sub); margin-top:2px; line-height:1.5; }
+.cv-langs{ display:flex; flex-wrap:wrap; gap:.5rem; }
+.cv-lang{ background:rgba(27,53,96,.07); border:1px solid rgba(27,53,96,.12); padding:.3rem .75rem; border-radius:20px; }
+.cv-lang span:first-child{ font-size:.7rem; font-weight:700; color:var(--ink); }
+.cv-lang span:last-child{ font-size:.52rem; font-weight:600; color:var(--sub); margin-left:.3rem; }
+.cv-interests{ display:flex; flex-wrap:wrap; gap:.4rem; }
+.cv-interest{ font-size:.58rem; font-weight:600; color:var(--sub); background:rgba(41,184,217,.08); border:1px solid rgba(41,184,217,.2); padding:.28rem .7rem; border-radius:20px; }
+
+/* ───────── INTRO (gardé pour compatibilité mais caché) ───────── */
+#intro{ display:none; }
 
 /* ───────── MODAL ───────── */
 #modal{ position:fixed; inset:0; z-index:8000; opacity:0; visibility:hidden;
@@ -348,12 +632,182 @@ body{
 </head>
 <body>
 
-<!-- INTRO -->
-<div id="intro">
-  <img src="assets/Logo-Aardesign-Court.png" alt="AAR Design" class="intro-logo">
-  <button id="enter">Entrer dans mon univers</button>
-  <span class="credit">AAR Design · Anthony Armand — Digital Painting & Direction Artistique</span>
+<!-- BOOT SCREEN -->
+<div id="boot">
+  <img src="assets/Logo-Aardesign-Court.png" alt="AAR Design" class="boot-logo">
+  <div class="boot-tag">AAR Design · Anthony Armand</div>
+  <div class="boot-question">Choisissez votre environnement</div>
+  <div class="os-tiles">
+    <!-- Windows 11 -->
+    <div class="os-tile" id="tile-w11">
+      <svg class="w11-logo" viewBox="0 0 88 88" xmlns="http://www.w3.org/2000/svg">
+        <rect x="2" y="2" width="40" height="40" rx="3" fill="#F35325"/>
+        <rect x="46" y="2" width="40" height="40" rx="3" fill="#81BC06"/>
+        <rect x="2" y="46" width="40" height="40" rx="3" fill="#05A6F0"/>
+        <rect x="46" y="46" width="40" height="40" rx="3" fill="#FFBA08"/>
+      </svg>
+      <div>
+        <div class="os-tile-label">Windows 11</div>
+        <div class="os-tile-sub">Bureau · Atelier</div>
+      </div>
+    </div>
+    <!-- iOS -->
+    <div class="os-tile" id="tile-ios">
+      <svg class="apple-logo" viewBox="0 0 170 200" xmlns="http://www.w3.org/2000/svg">
+        <path fill="white" d="M150.4 106.9c-.3-30.7 25.2-45.6 26.3-46.3-14.3-20.9-36.6-23.8-44.6-24.1-19-1.9-37.1 11.2-46.8 11.2-9.6 0-24.5-10.9-40.3-10.6C25.3 37.4 7 48.9-2.6 66.5c-20.1 34.8-5.2 86.6 14.5 115 9.6 13.9 21.1 29.5 36.1 29 14.5-.6 20-9.3 37.6-9.3 17.5 0 22.5 9.3 37.9 9 15.6-.3 25.5-14.1 35-28.1 11.1-16.1 15.6-31.7 15.9-32.5-.4-.2-30.4-11.7-30.9-46.7zM121.1 24.4C129 15 134.5 2.7 133 -10c-10.2.4-22.6 6.8-29.9 15.4-6.6 7.6-12.4 19.8-10.9 31.5 11.5.9 23.1-5.8 28.9-12.5z"/>
+      </svg>
+      <div>
+        <div class="os-tile-label">iOS 18</div>
+        <div class="os-tile-sub">Mobile · App</div>
+      </div>
+    </div>
+  </div>
 </div>
+
+<!-- W11 LOGIN OVERLAY (sur le desktop W11) -->
+<div id="w11-login">
+  <div class="wl-clock" id="wl-clock">--:--</div>
+  <div class="wl-date" id="wl-date"></div>
+  <div class="wl-avatar"><img src="assets/Logo-Aardesign-Court.png" alt=""></div>
+  <div class="wl-name">Anthony Armand</div>
+  <div class="wl-field" id="wl-field">
+    <input type="password" id="wl-pwd" placeholder="Mot de passe" autocomplete="current-password">
+    <button id="wl-show" title="Afficher">👁</button>
+  </div>
+  <button class="wl-submit" id="wl-submit">Se connecter →</button>
+  <div class="wl-error" id="wl-error">❌ T'es pas Anthony 😅 Le bureau te manque ?</div>
+  <button class="wl-back" id="wl-back">↩ Retour au bureau</button>
+</div>
+
+<!-- iOS HUD -->
+<div id="ios-hud">
+  <!-- Status bar -->
+  <div class="ios-status">
+    <div class="ios-status-left" id="ios-time-l">00:00</div>
+    <div class="ios-status-right">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="white"><path d="M1 6.5 12 2l11 4.5v1L12 12 1 7.5V6.5z"/><path d="M1 11l11 4.5L23 11M1 15.5 12 20l11-4.5" stroke="white" stroke-width="1.5" fill="none"/></svg>
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="white"><path d="M5 12.5 1 8.8C3.9 5.8 7.7 4 12 4s8.1 1.8 11 4.8L19 12.5c-1.9-2-4.4-3.2-7-3.2s-5.1 1.2-7 3.2z"/><path d="M8.5 16 12 12l3.5 4c-.9.9-2.2 1.4-3.5 1.4s-2.6-.5-3.5-1.4z" fill="white"/></svg>
+      🔋
+    </div>
+  </div>
+
+  <!-- Lock Screen -->
+  <div id="ios-lock">
+    <div class="lock-time" id="ios-lock-time">00:00</div>
+    <div class="lock-date" id="ios-lock-date">Dimanche 1 juin</div>
+    <div class="lock-hint">Appuyer pour déverrouiller</div>
+  </div>
+
+  <!-- Home Screen -->
+  <div id="ios-home">
+    <div class="ios-wallpaper"></div>
+    <div class="ios-grid">
+      <div class="ios-app-icon" data-ios-app="atelier">
+        <div class="ios-icon-img" style="background:linear-gradient(135deg,#1B3560,#29B8D9)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        </div>
+        <span class="ios-icon-label">Atelier</span>
+      </div>
+      <div class="ios-app-icon" data-ios-app="cv">
+        <div class="ios-icon-img" style="background:linear-gradient(135deg,#2D6A4F,#40C9A2)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M9 7h6M9 11h6M9 15h4"/></svg>
+        </div>
+        <span class="ios-icon-label">CV</span>
+      </div>
+      <div class="ios-app-icon" data-ios-app="mail">
+        <div class="ios-icon-img" style="background:linear-gradient(135deg,#1a6dcc,#2196F3)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 7 8.5 6 8.5-6"/></svg>
+        </div>
+        <span class="ios-icon-label">Mail</span>
+      </div>
+      <div class="ios-app-icon" data-ios-app="tel">
+        <div class="ios-icon-img" style="background:linear-gradient(135deg,#2e7d32,#4CAF50)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.8.6 2.6a2 2 0 0 1-.5 2.1L10 9.6a16 16 0 0 0 6 6l1.2-1.2a2 2 0 0 1 2.1-.5c.8.3 1.7.5 2.6.6a2 2 0 0 1 1.7 2z"/></svg>
+        </div>
+        <span class="ios-icon-label">Téléphone</span>
+      </div>
+      <div class="ios-app-icon" onclick="window.open('https://instagram.com','_blank')">
+        <div class="ios-icon-img" style="background:linear-gradient(135deg,#833AB4,#FD1D1D,#F77737)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5.5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1.1" fill="white" stroke="none"/></svg>
+        </div>
+        <span class="ios-icon-label">Instagram</span>
+      </div>
+      <div class="ios-app-icon" onclick="window.open('https://behance.net','_blank')">
+        <div class="ios-icon-img" style="background:linear-gradient(135deg,#053eff,#1769ff)">
+          <span style="color:white;font-size:1.4rem;font-weight:800;font-family:Georgia,serif">Bē</span>
+        </div>
+        <span class="ios-icon-label">Behance</span>
+      </div>
+      <div class="ios-app-icon" data-ios-app="about">
+        <div class="ios-icon-img" style="background:linear-gradient(135deg,#1B3560,#2980b9)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6"><circle cx="12" cy="12" r="9.2"/><path d="M12 11v5"/><circle cx="12" cy="7.6" r="1.1" fill="white" stroke="none"/></svg>
+        </div>
+        <span class="ios-icon-label">À propos</span>
+      </div>
+      <div class="ios-app-icon" data-ios-app="ios-admin">
+        <div class="ios-icon-img" style="background:linear-gradient(135deg,#333,#555)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+        </div>
+        <span class="ios-icon-label">Admin</span>
+      </div>
+    </div>
+    <!-- Dock -->
+    <div class="ios-dock">
+      <div class="ios-app-icon" data-ios-app="atelier">
+        <div class="ios-icon-img" style="background:linear-gradient(135deg,#1B3560,#29B8D9)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        </div>
+        <span class="ios-icon-label">Atelier</span>
+      </div>
+      <div class="ios-app-icon" data-ios-app="cv">
+        <div class="ios-icon-img" style="background:linear-gradient(135deg,#2D6A4F,#40C9A2)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M9 7h6M9 11h6M9 15h4"/></svg>
+        </div>
+        <span class="ios-icon-label">CV</span>
+      </div>
+      <div class="ios-app-icon" data-ios-app="mail">
+        <div class="ios-icon-img" style="background:linear-gradient(135deg,#1a6dcc,#2196F3)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 7 8.5 6 8.5-6"/></svg>
+        </div>
+        <span class="ios-icon-label">Mail</span>
+      </div>
+      <div class="ios-app-icon" data-ios-app="ios-admin">
+        <div class="ios-icon-img" style="background:linear-gradient(135deg,#333,#555)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+        </div>
+        <span class="ios-icon-label">Admin</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- App fullscreen layer -->
+  <div id="ios-app-layer">
+    <div class="ios-app-nav">
+      <button class="ios-app-back" id="ios-back">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+        Accueil
+      </button>
+      <div class="ios-app-title" id="ios-app-title-bar"></div>
+    </div>
+    <div class="ios-app-content" id="ios-app-content"></div>
+  </div>
+
+  <!-- iOS Admin Login -->
+  <div id="ios-login">
+    <div class="il-lock">🔒</div>
+    <div class="il-app-name">AAR Design Admin</div>
+    <div class="il-sub">Accès réservé · Entrez le mot de passe</div>
+    <div class="il-field" id="il-field">
+      <input type="password" id="il-pwd" placeholder="Mot de passe" autocomplete="current-password">
+    </div>
+    <button class="il-submit" id="il-submit">Déverrouiller</button>
+    <div class="il-error" id="il-error">❌ Accès refusé ! T'es pas Anthony 😅</div>
+    <button class="il-back" id="il-back">↩ Retour à l'accueil</button>
+  </div>
+</div>
+
+<!-- INTRO (hidden) -->
+<div id="intro"></div>
 
 <!-- STAGE + BOARD -->
 <div id="stage">
@@ -386,7 +840,9 @@ body{
       <button class="tb-app" data-app="tel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.8.6 2.6a2 2 0 0 1-.5 2.1L10 9.6a16 16 0 0 0 6 6l1.2-1.2a2 2 0 0 1 2.1-.5c.8.3 1.7.5 2.6.6a2 2 0 0 1 1.7 2z"/></svg><span>Téléphone</span></button>
       <a class="tb-app" href="https://instagram.com" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5.5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1.1" fill="currentColor" stroke="none"/></svg><span>Instagram</span></a>
       <a class="tb-app" href="https://behance.net" target="_blank" rel="noopener"><span class="be">Bē</span><span>Behance</span></a>
+      <button class="tb-app" data-app="cv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M9 7h6M9 11h6M9 15h4"/></svg><span>CV</span></button>
       <button class="tb-app" data-app="about"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9.2"/><path d="M12 11v5"/><circle cx="12" cy="7.6" r="1.1" fill="currentColor" stroke="none"/></svg><span>À propos</span></button>
+      <button class="tb-app" id="admin-btn" title="Admin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span>Admin</span></button>
     </div>
     <div class="tb-tray">
       <button class="tray-btn" id="zoom-out" title="Dézoomer">−</button>
@@ -660,14 +1116,226 @@ const savedT=localStorage.getItem('aar-theme'); if(savedT) root.setAttribute('da
 themeBtn.onclick=()=>{ const d=root.getAttribute('data-theme')==='dark'; const n=d?'light':'dark';
   root.setAttribute('data-theme',n); localStorage.setItem('aar-theme',n); };
 
-/* ════════ INTRO ════════ */
-const intro=document.getElementById('intro');
-document.getElementById('enter').onclick=()=>{
-  intro.classList.add('out');
+/* ════════ BOOT SCREEN ════════ */
+const boot=document.getElementById('boot');
+const ADMIN_PWD='aardesign2026';
+let currentOS=null;
+
+function launchOS(os){
+  currentOS=os;
+  boot.classList.add('out');
   board.classList.add('ready');
-  setTimeout(()=>tweenTo(900,1000,.82),250);   // petit voyage d'accueil
-  setTimeout(showHint,1100);
+  if(os==='w11'){
+    // Show W11 HUD (taskbar etc already visible by default)
+    document.querySelector('.hud').style.display='';
+    document.getElementById('ios-hud').classList.remove('active');
+    setTimeout(()=>tweenTo(900,1000,.82),300);
+    setTimeout(showHint,1100);
+  } else {
+    // Hide W11 HUD, show iOS
+    document.querySelector('.hud').style.display='none';
+    const iosHud=document.getElementById('ios-hud');
+    iosHud.classList.add('active');
+    updateIosTime();
+  }
+}
+
+document.getElementById('tile-w11').addEventListener('click',()=>launchOS('w11'));
+document.getElementById('tile-ios').addEventListener('click',()=>launchOS('ios'));
+
+/* ════════ W11 ADMIN LOGIN ════════ */
+const w11Login=document.getElementById('w11-login');
+const adminBtn=document.getElementById('admin-btn');
+if(adminBtn) adminBtn.addEventListener('click',()=>openW11Login());
+
+function openW11Login(){
+  w11Login.classList.add('open');
+  document.getElementById('wl-pwd').value='';
+  document.getElementById('wl-error').classList.remove('show');
+  updateWlClock();
+  document.getElementById('wl-pwd').focus();
+}
+function closeW11Login(){ w11Login.classList.remove('open'); }
+
+function updateWlClock(){
+  const d=new Date();
+  const t=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+  const el=document.getElementById('wl-clock'); if(el) el.textContent=t;
+  const el2=document.getElementById('wl-date'); if(el2) el2.textContent=d.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
+}
+setInterval(updateWlClock,10000); updateWlClock();
+
+document.getElementById('wl-show').addEventListener('click',()=>{
+  const inp=document.getElementById('wl-pwd');
+  inp.type=inp.type==='password'?'text':'password';
+});
+document.getElementById('wl-submit').addEventListener('click',()=>checkW11Login());
+document.getElementById('wl-pwd').addEventListener('keydown',e=>{ if(e.key==='Enter') checkW11Login(); });
+document.getElementById('wl-back').addEventListener('click',closeW11Login);
+
+function checkW11Login(){
+  const pwd=document.getElementById('wl-pwd').value;
+  if(pwd===ADMIN_PWD){
+    sessionStorage.setItem('aar-auth','1');
+    window.location.href='admin.html';
+  } else {
+    const f=document.getElementById('wl-field');
+    document.getElementById('wl-error').classList.add('show');
+    f.classList.remove('shake');
+    void f.offsetWidth;
+    f.classList.add('shake');
+    document.getElementById('wl-pwd').value='';
+  }
+}
+
+/* ════════ iOS ════════ */
+function updateIosTime(){
+  const d=new Date();
+  const t=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+  const el=document.getElementById('ios-lock-time'); if(el) el.textContent=t;
+  const el2=document.getElementById('ios-time-l'); if(el2) el2.textContent=t;
+  const el3=document.getElementById('ios-lock-date'); if(el3) el3.textContent=d.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
+}
+setInterval(updateIosTime,10000);
+
+const iosLock=document.getElementById('ios-lock');
+iosLock.addEventListener('click',()=>{
+  iosLock.classList.add('unlocking');
+  setTimeout(()=>{ iosLock.style.display='none'; },500);
+});
+
+// iOS app open
+const iosAppLayer=document.getElementById('ios-app-layer');
+const iosAppContent=document.getElementById('ios-app-content');
+const iosAppTitleBar=document.getElementById('ios-app-title-bar');
+const iosLogin=document.getElementById('ios-login');
+
+const IOS_APPS={
+  atelier:{title:'L\'Atelier',content:`<div style="padding:1.5rem;font-family:Montserrat,sans-serif;color:#333">
+    <h2 style="font-size:1.4rem;font-weight:800;color:#1B3560;margin-bottom:.8rem">L'Atelier</h2>
+    <p style="font-size:.85rem;line-height:1.7;color:#666;margin-bottom:1.2rem">L'Atelier est un espace infini explorable. Sur la version web complète, glissez le fond d'écran pour naviguer entre les œuvres.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem">
+      ${Object.values({v:'assets/voyages/cappadoce.jpg',s:'assets/steam/mockup.jpg',d:'assets/dark/red.jpg',h:'assets/saveurs/hiver.jpg',a:'assets/aristocrate/nanti.jpg',p:'assets/pulse.jpg'}).map(s=>`<img src="${s}" style="width:100%;border-radius:10px;aspect-ratio:4/3;object-fit:cover" loading="lazy">`).join('')}
+    </div>
+  </div>`},
+  cv:{title:'Mon CV',content:buildIosCV()},
+  mail:{title:'Mail',content:`<div style="padding:1.5rem;font-family:Montserrat,sans-serif">
+    <h3 style="color:#1B3560;margin-bottom:1.2rem;font-size:1rem;font-weight:700">Nouveau message</h3>
+    <div style="margin-bottom:.8rem"><label style="font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#999;display:block;margin-bottom:.3rem">À</label>
+    <input value="aardesign14@gmail.com" readonly style="width:100%;border:1px solid #ddd;border-radius:10px;padding:.7rem .9rem;font-family:inherit;font-size:.82rem;background:#f9f9f9"></div>
+    <div style="margin-bottom:.8rem"><label style="font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#999;display:block;margin-bottom:.3rem">Objet</label>
+    <input id="ios-mail-subj" placeholder="Un projet…" style="width:100%;border:1px solid #ddd;border-radius:10px;padding:.7rem .9rem;font-family:inherit;font-size:.82rem"></div>
+    <div style="margin-bottom:1.2rem"><label style="font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#999;display:block;margin-bottom:.3rem">Message</label>
+    <textarea id="ios-mail-msg" placeholder="Bonjour Anthony…" rows="5" style="width:100%;border:1px solid #ddd;border-radius:10px;padding:.7rem .9rem;font-family:inherit;font-size:.82rem;resize:vertical"></textarea></div>
+    <button onclick="const s=document.getElementById('ios-mail-subj').value||'Contact AAR';const m=document.getElementById('ios-mail-msg').value||'';window.location='mailto:aardesign14@gmail.com?subject='+encodeURIComponent(s)+'&body='+encodeURIComponent(m)" style="width:100%;padding:.9rem;background:#29B8D9;color:#fff;border:0;border-radius:14px;font-family:inherit;font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer">Envoyer ✦</button>
+  </div>`},
+  tel:{title:'Téléphone',content:`<div style="padding:2rem 1.5rem;font-family:Montserrat,sans-serif;text-align:center">
+    <div style="font-size:2.4rem;margin-bottom:.5rem">📞</div>
+    <div style="font-size:1.6rem;font-weight:800;color:#1B3560;margin-bottom:1.5rem;letter-spacing:.04em">06 79 46 62 19</div>
+    <div style="display:flex;gap:.8rem;justify-content:center">
+      <a href="tel:0679466219" style="flex:1;padding:.9rem;background:#4CAF50;color:#fff;border-radius:14px;text-decoration:none;font-family:inherit;font-size:.75rem;font-weight:700;text-align:center;text-transform:uppercase;letter-spacing:.08em">Appeler</a>
+      <button onclick="navigator.clipboard.writeText('0679466219').catch(()=>{})" style="flex:1;padding:.9rem;background:#1B3560;color:#fff;border:0;border-radius:14px;font-family:inherit;font-size:.75rem;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:.08em">Copier</button>
+    </div>
+  </div>`},
+  about:{title:'À propos',content:`<div style="padding:1.5rem;font-family:Montserrat,sans-serif">
+    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.2rem">
+      <div style="width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#1B3560,#29B8D9);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        <img src="assets/Logo-Aardesign-Court.png" style="height:30px;filter:brightness(10)">
+      </div>
+      <div><div style="font-size:1.1rem;font-weight:800;color:#1B3560">Anthony Armand</div>
+      <div style="font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#29B8D9;margin-top:2px">AAR Design</div></div>
+    </div>
+    <p style="font-size:.82rem;line-height:1.7;color:#666;margin-bottom:1rem">Designer pluridisciplinaire à l'intersection du <strong style="color:#1B3560">digital painting</strong>, de l'illustration narrative et de la <strong style="color:#1B3560">direction artistique</strong>.</p>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-top:1rem">
+      ${[['5+','ans'],['35+','œuvres'],['8','disciplines']].map(([v,l])=>`<div style="text-align:center;background:#f5f5f7;border-radius:12px;padding:.8rem .5rem"><div style="font-size:1.4rem;font-weight:800;color:#1B3560">${v}</div><div style="font-size:.55rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#999">${l}</div></div>`).join('')}
+    </div>
+  </div>`},
 };
+
+function buildIosCV(){
+  return `<div style="padding:1.2rem;font-family:Montserrat,sans-serif">
+    <div style="background:linear-gradient(135deg,#1B3560,#29B8D9);border-radius:16px;padding:1.2rem;margin-bottom:1rem;color:#fff;text-align:center">
+      <div style="font-size:1.2rem;font-weight:800;letter-spacing:-.01em">Anthony Armand</div>
+      <div style="font-size:.6rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;opacity:.8;margin-top:3px">Directeur Artistique · Graphiste</div>
+      <div style="display:flex;justify-content:center;gap:.8rem;margin-top:.7rem;flex-wrap:wrap">
+        <span style="font-size:.58rem;opacity:.75">📧 aardesign14@gmail.com</span>
+        <span style="font-size:.58rem;opacity:.75">📱 06 79 46 62 19</span>
+        <span style="font-size:.58rem;opacity:.75">📍 Caen</span>
+      </div>
+    </div>
+    ${['Compétences','Expériences','Formation','Langues'].map((s,i)=>{
+      const contents=[
+        `<div>${[['Photoshop','95'],['InDesign','92'],['Illustrator','90'],['HTML/CSS','75'],['Digital Painting','65']].map(([n,p])=>`
+          <div style="margin-bottom:.7rem">
+            <div style="display:flex;justify-content:space-between;margin-bottom:.25rem">
+              <span style="font-size:.72rem;font-weight:600;color:#1B3560">${n}</span>
+              <span style="font-size:.6rem;color:#999">${p}%</span>
+            </div>
+            <div style="height:5px;background:#eee;border-radius:3px"><div style="width:${p}%;height:100%;background:linear-gradient(90deg,#1B3560,#29B8D9);border-radius:3px"></div></div>
+          </div>`).join('')}</div>`,
+        `<div>${[['AAR Design','2024–prés.','Auto-entrepreneur'],['Clopinette / Arsène Valentin','2020–prés.','CDI · DA, Packaging'],['Optimind Winter','2017–2019','Alternance · Paris'],['Euptech','2016','Stage · Grenoble']].map(([t,y,d])=>`
+          <div style="display:flex;gap:.7rem;margin-bottom:.8rem;padding-bottom:.8rem;border-bottom:1px solid #eee">
+            <div style="width:8px;height:8px;background:#29B8D9;border-radius:50%;flex-shrink:0;margin-top:4px"></div>
+            <div><div style="font-size:.75rem;font-weight:700;color:#1B3560">${t}</div>
+            <div style="font-size:.62rem;color:#29B8D9;font-weight:600">${y}</div>
+            <div style="font-size:.62rem;color:#999">${d}</div></div>
+          </div>`).join('')}</div>`,
+        `<div>${[['TOSA Photoshop Expert 879/1000','2024'],['Tuto.com Digital Painting TB','2024–2025'],["LIM'ART Paris — Bachelor & Mastère DA",'2016–2019'],['IUT1 Grenoble — DUT MMI + C2I','2014–2016']].map(([t,y])=>`
+          <div style="display:flex;gap:.7rem;margin-bottom:.8rem">
+            <div style="width:8px;height:8px;background:#29B8D9;border-radius:50%;flex-shrink:0;margin-top:4px"></div>
+            <div><div style="font-size:.75rem;font-weight:700;color:#1B3560">${t}</div>
+            <div style="font-size:.62rem;color:#29B8D9;font-weight:600">${y}</div></div>
+          </div>`).join('')}</div>`,
+        `<div style="display:flex;flex-wrap:wrap;gap:.5rem">${[['Français','Natif'],['Anglais','C1'],['Italien','A2'],['Japonais','A1']].map(([l,n])=>`
+          <div style="background:#f0f0f5;border-radius:20px;padding:.4rem .9rem;text-align:center">
+            <div style="font-size:.75rem;font-weight:700;color:#1B3560">${l}</div>
+            <div style="font-size:.55rem;color:#999">${n}</div>
+          </div>`).join('')}</div>`
+      ];
+      return `<div style="background:#fff;border-radius:16px;padding:1rem;margin-bottom:.8rem;box-shadow:0 2px 8px rgba(0,0,0,.06)">
+        <div style="font-size:.55rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#29B8D9;margin-bottom:.7rem">${s}</div>
+        ${contents[i]}
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+document.querySelectorAll('[data-ios-app]').forEach(el=>{
+  el.addEventListener('click',()=>{
+    const appId=el.dataset.iosApp;
+    if(appId==='ios-admin'){ iosLogin.classList.add('open'); return; }
+    const app=IOS_APPS[appId];
+    if(!app) return;
+    iosAppTitleBar.textContent=app.title;
+    iosAppContent.innerHTML=app.content;
+    iosAppLayer.classList.add('open');
+  });
+});
+
+document.getElementById('ios-back').addEventListener('click',()=>{
+  iosAppLayer.classList.remove('open');
+  iosAppContent.innerHTML='';
+});
+
+// iOS admin login
+document.getElementById('il-submit').addEventListener('click',()=>checkIosLogin());
+document.getElementById('il-pwd').addEventListener('keydown',e=>{ if(e.key==='Enter') checkIosLogin(); });
+document.getElementById('il-back').addEventListener('click',()=>iosLogin.classList.remove('open'));
+
+function checkIosLogin(){
+  const pwd=document.getElementById('il-pwd').value;
+  if(pwd===ADMIN_PWD){
+    sessionStorage.setItem('aar-auth','1');
+    window.location.href='admin.html';
+  } else {
+    const f=document.getElementById('il-field');
+    document.getElementById('il-error').classList.add('show');
+    f.classList.remove('shake');
+    void f.offsetWidth;
+    f.classList.add('shake');
+    document.getElementById('il-pwd').value='';
+  }
+}
 
 /* ════════ HORLOGE ════════ */
 function tickClock(){
@@ -724,6 +1392,105 @@ const APPS={
     <div style="display:flex; gap:.5rem;">
       <a class="w-send" style="text-decoration:none; text-align:center;" href="tel:0679466219">Appeler</a>
       <button class="w-send" style="background:var(--navy);" data-copy="0679466219">Copier</button>
+    </div>` },
+  cv:{ title:'CV — Anthony Armand', w:680, body:()=>`
+    <div class="cv-scroll">
+      <div class="cv-header">
+        <div class="cv-avatar"><img src="assets/Logo-Aardesign-Court.png" alt=""></div>
+        <div>
+          <div class="cv-name">Anthony Armand</div>
+          <div class="cv-title">Directeur Artistique · Graphiste · Designer</div>
+        </div>
+      </div>
+      <div class="cv-contacts">
+        <span class="cv-chip">📧 aardesign14@gmail.com</span>
+        <span class="cv-chip">📱 06 79 46 62 19</span>
+        <span class="cv-chip">📍 Caen, Normandie</span>
+        <span class="cv-chip">🌐 aardesign.fr</span>
+        <span class="cv-chip">🪪 Permis B</span>
+      </div>
+      <div class="cv-section">
+        <div class="cv-section-title">Profil</div>
+        <p class="w-text">Designer pluridisciplinaire à l'intersection du <b>digital painting</b>, de l'illustration narrative et de la <b>direction artistique</b>. 5+ ans d'expérience dans la création graphique, le packaging premium et la communication visuelle. Passionné par les univers graphiques cohérents et mémorables.</p>
+      </div>
+      <div class="cv-section">
+        <div class="cv-section-title">Compétences</div>
+        ${[
+          ['Photoshop','95','Expert'],['InDesign','92','Expert'],['Illustrator','90','Expert'],
+          ['Lightroom','88','Expert'],['HTML / CSS','75','Avancé'],['WordPress / Wix','72','Avancé'],
+          ['Photographie','70','Avancé'],['Digital Painting','65','En formation'],['Sculpting','45','Initié']
+        ].map(([n,p,l])=>`<div class="cv-skill">
+          <span class="cv-skill-name">${n}</span>
+          <div class="cv-skill-bar"><div class="cv-skill-fill" style="width:${p}%"></div></div>
+          <span class="cv-skill-pct">${l}</span>
+        </div>`).join('')}
+      </div>
+      <div class="cv-section">
+        <div class="cv-section-title">Expériences</div>
+        <div class="cv-timeline">
+          <div class="cv-item"><div class="cv-item-dot"></div><div class="cv-item-body">
+            <div class="cv-item-title">AAR Design — Auto-entrepreneur</div>
+            <div class="cv-item-sub">2024 – présent</div>
+            <div class="cv-item-desc">Création graphique, DA, Web, Illustration, Digital Painting — France & Remote</div>
+          </div></div>
+          <div class="cv-item"><div class="cv-item-dot"></div><div class="cv-item-body">
+            <div class="cv-item-title">Clopinette / Arsène Valentin — CDI</div>
+            <div class="cv-item-sub">2020 – présent · Caen</div>
+            <div class="cv-item-desc">Direction Artistique, Packaging, Digital Painting, Identité visuelle</div>
+          </div></div>
+          <div class="cv-item"><div class="cv-item-dot"></div><div class="cv-item-body">
+            <div class="cv-item-title">Creacom — CDD</div>
+            <div class="cv-item-sub">2019 · Valence</div>
+            <div class="cv-item-desc">Création graphique, communication visuelle</div>
+          </div></div>
+          <div class="cv-item"><div class="cv-item-dot"></div><div class="cv-item-body">
+            <div class="cv-item-title">Optimind Winter — Stage / Alternance</div>
+            <div class="cv-item-sub">2017 – 2019 · Paris VIII</div>
+            <div class="cv-item-desc">Direction Artistique, Web design, Communication digitale</div>
+          </div></div>
+          <div class="cv-item"><div class="cv-item-dot"></div><div class="cv-item-body">
+            <div class="cv-item-title">Euptech — Stage</div>
+            <div class="cv-item-sub">2016 · Grenoble</div>
+            <div class="cv-item-desc">Infographie, supports de communication</div>
+          </div></div>
+        </div>
+      </div>
+      <div class="cv-section">
+        <div class="cv-section-title">Formation</div>
+        <div class="cv-timeline">
+          <div class="cv-item"><div class="cv-item-dot"></div><div class="cv-item-body">
+            <div class="cv-item-title">TOSA Photoshop — Score Expert 879/1000</div>
+            <div class="cv-item-sub">2024</div>
+          </div></div>
+          <div class="cv-item"><div class="cv-item-dot"></div><div class="cv-item-body">
+            <div class="cv-item-title">Tuto.com — Digital Painting (Très Bien)</div>
+            <div class="cv-item-sub">2024 – 2025</div>
+          </div></div>
+          <div class="cv-item"><div class="cv-item-dot"></div><div class="cv-item-body">
+            <div class="cv-item-title">LIM'ART Paris — Bachelor & Mastère DA</div>
+            <div class="cv-item-sub">2016 – 2019</div>
+          </div></div>
+          <div class="cv-item"><div class="cv-item-dot"></div><div class="cv-item-body">
+            <div class="cv-item-title">IUT1 Grenoble — DUT MMI + C2I</div>
+            <div class="cv-item-sub">2014 – 2016</div>
+          </div></div>
+        </div>
+      </div>
+      <div class="cv-section">
+        <div class="cv-section-title">Langues</div>
+        <div class="cv-langs">
+          <div class="cv-lang"><span>Français</span><span>Natif</span></div>
+          <div class="cv-lang"><span>Anglais</span><span>C1</span></div>
+          <div class="cv-lang"><span>Italien</span><span>A2</span></div>
+          <div class="cv-lang"><span>Japonais</span><span>A1</span></div>
+        </div>
+      </div>
+      <div class="cv-section">
+        <div class="cv-section-title">Centres d'intérêt</div>
+        <div class="cv-interests">
+          ${['🥾 Marche','📷 Photographie','🎨 Digital Painting','✏️ Graphisme','🎮 Jeux vidéo','🎭 Roleplay','🎬 Cinéma','📚 Lecture'].map(i=>`<span class="cv-interest">${i}</span>`).join('')}
+        </div>
+      </div>
     </div>` },
   about:{ title:'À propos', w:400, body:()=>`
     <div class="w-profile"><div class="w-ava"><img src="assets/Logo-Aardesign-Court.png" alt=""></div>
