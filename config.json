@@ -1,0 +1,26 @@
+{
+  "meta": {
+    "title": "AAR Design — Anthony Armand",
+    "description": "Directeur Artistique · Graphiste · Communication · Infographiste · Designer Produit",
+    "keywords": "AAR Design, Anthony Armand, Direction Artistique, Digital Painting, Graphisme",
+    "author": "Anthony Armand",
+    "url": "https://aardesign.fr"
+  },
+  "contact": {
+    "email": "aardesign14@gmail.com",
+    "phone": "06 79 46 62 19",
+    "location": "France · Remote · International",
+    "instagram": "https://instagram.com/aardesign",
+    "behance": "https://behance.net/anthonyarmand"
+  },
+  "cv": {
+    "name": "Anthony Armand",
+    "birth": "24/05/1995",
+    "location": "Caen, Normandie",
+    "title": "Directeur Artistique · Graphiste · Designer"
+  },
+  "theme": {
+    "primary": "#1B3560",
+    "accent": "#29B8D9"
+  }
+}
