@@ -2,1629 +2,610 @@
 <html lang="fr" data-theme="light">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AAR Design — Anthony Armand · Digital Painting & Direction Artistique</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>AAR Design — L'Atelier d'Anthony Armand</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,300;0,400;0,600;0,700;0,800;0,900;1,300;1,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Montserrat:ital,wght@0,300;0,400;0,600;0,700;0,800;0,900;1,600&display=swap" rel="stylesheet">
 <style>
-/* ─────────────────────────────────────────
-   TOKENS
-───────────────────────────────────────── */
-:root {
-  --navy:   #1B3560;
-  --cyan:   #29B8D9;
-  --cyan2:  #0097BA;
-  --white:  #FFFFFF;
-
-  --bg:     #F4F6F9;
-  --surface:#FFFFFF;
-  --ink:    #1B3560;
-  --sub:    #5A7191;
-  --line:   rgba(27,53,96,.10);
-  --line2:  rgba(27,53,96,.05);
-
-  --ease:   cubic-bezier(.22,1,.36,1);
-  --ease2:  cubic-bezier(.16,1,.3,1);
+/* ───────── TOKENS ───────── */
+:root{
+  --navy:#1B3560; --cyan:#29B8D9; --cyan2:#0097BA; --white:#fff;
+  --wall:#C7D0DD;            /* mur derrière la feuille */
+  --sheet:#F2EEE4;           /* la feuille de papier    */
+  --sheet-line:rgba(27,53,96,.04);
+  --ink:#1B3560; --sub:#7C8AA0;
+  --ease:cubic-bezier(.22,1,.36,1);
 }
-[data-theme="dark"] {
-  --bg:     #0A1628;
-  --surface:#0F1F3A;
-  --ink:    #E8EEF8;
-  --sub:    #7A99BE;
-  --line:   rgba(232,238,248,.08);
-  --line2:  rgba(232,238,248,.04);
+[data-theme="dark"]{
+  --wall:#060C16; --sheet:#0E1B30; --sheet-line:rgba(255,255,255,.03);
+  --ink:#E8EEF8; --sub:#6E84A6;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden}
+body{
+  font-family:'Montserrat',sans-serif;
+  background:var(--wall);
+  color:var(--ink);
+  -webkit-font-smoothing:antialiased;
+  transition:background .5s var(--ease),color .5s var(--ease);
+  position:fixed; inset:0;
 }
 
-/* ─────────────────────────────────────────
-   RESET & BASE
-───────────────────────────────────────── */
-*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-html { scroll-behavior: smooth; font-size: 16px; }
-body {
-  font-family: 'Montserrat', sans-serif;
-  background: var(--bg);
-  color: var(--ink);
-  overflow-x: hidden;
-  cursor: none;
-  -webkit-font-smoothing: antialiased;
-  transition: background .4s var(--ease), color .4s var(--ease);
+/* ───────── VIEWPORT (la fenêtre sur le mur) ───────── */
+#stage{
+  position:absolute; inset:0; overflow:hidden;
+  cursor:grab; touch-action:none;
+}
+#stage.grabbing{cursor:grabbing}
+
+/* ───────── BOARD (la feuille géante) ───────── */
+#board{
+  position:absolute; top:0; left:0;
+  width:3400px; height:2500px;
+  transform-origin:0 0;
+  background:
+    radial-gradient(120% 120% at 30% 20%, rgba(255,255,255,.5), transparent 60%),
+    repeating-linear-gradient(0deg, var(--sheet-line) 0 1px, transparent 1px 46px),
+    repeating-linear-gradient(90deg, var(--sheet-line) 0 1px, transparent 1px 46px),
+    var(--sheet);
+  box-shadow:0 60px 120px rgba(0,0,0,.35), 0 0 0 1px rgba(0,0,0,.04);
+  will-change:transform;
+}
+/* grain papier */
+#board::before{
+  content:''; position:absolute; inset:0; pointer-events:none;
+  opacity:.5; mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+}
+[data-theme="dark"] #board::before{mix-blend-mode:screen;opacity:.4}
+
+/* ───────── SECTION LABELS (filigrane Montserrat 900) ───────── */
+.board-label{
+  position:absolute; transform:translate(-50%,-50%) rotate(-2deg);
+  font-weight:900; font-size:128px; letter-spacing:-.04em;
+  color:var(--navy); opacity:.07; white-space:nowrap;
+  pointer-events:none; user-select:none;
 }
 
-/* ─────────────────────────────────────────
-   CURSOR
-───────────────────────────────────────── */
-#cur-dot, #cur-ring {
-  position: fixed; z-index: 9999; pointer-events: none;
-  border-radius: 50%; transform: translate(-50%,-50%);
+/* ───────── PIN ITEMS (œuvres punaisées) ───────── */
+.pin-item{
+  position:absolute; width:var(--w); border:0; padding:0; background:none;
+  transform:rotate(var(--rot)); transform-origin:center top;
+  transition:transform .4s var(--ease), filter .4s;
+  cursor:pointer; -webkit-tap-highlight-color:transparent;
 }
-#cur-dot {
-  width: 7px; height: 7px;
-  background: var(--cyan);
-  transition: width .2s var(--ease2), height .2s var(--ease2),
-              background .2s, opacity .2s;
-}
-#cur-ring {
-  width: 36px; height: 36px;
-  border: 1.5px solid rgba(41,184,217,.35);
-  transition: width .45s var(--ease2), height .45s var(--ease2),
-              border-color .3s, opacity .3s;
-}
-body.hovering #cur-dot  { width: 12px; height: 12px; background: var(--navy); }
-body.hovering #cur-ring { width: 56px; height: 56px; border-color: rgba(41,184,217,.5); }
-@media (hover: none) { #cur-dot, #cur-ring { display: none; } body { cursor: auto; } }
+.pin-item:hover{ transform:rotate(0deg) scale(1.06) translateY(-8px); z-index:100; }
+.pin-inner{ position:relative; }
+#board.ready .pin-inner{ animation:pop .6s var(--ease) both; }
+@keyframes pop{ from{opacity:0; transform:translateY(26px) scale(.9)} to{opacity:1; transform:none} }
 
-/* ─────────────────────────────────────────
-   SCROLL PROGRESS
-───────────────────────────────────────── */
-#progress {
-  position: fixed; top: 0; left: 0; height: 2px; z-index: 200;
-  background: linear-gradient(90deg, var(--navy), var(--cyan));
-  width: 0%; transition: width .1s linear;
+.photo{
+  background:#fff; padding:11px 11px 0;
+  box-shadow:0 10px 26px rgba(0,0,0,.22), 0 2px 4px rgba(0,0,0,.12);
+  transition:box-shadow .4s var(--ease);
 }
+.pin-item:hover .photo{ box-shadow:0 26px 50px rgba(0,0,0,.32), 0 4px 8px rgba(0,0,0,.16); }
+.photo img{ width:100%; display:block; user-select:none; -webkit-user-drag:none; }
+.cap{ padding:9px 4px 13px; text-align:center; }
+.cap-t{ font-family:'Caveat',cursive; font-weight:700; font-size:1.55rem; line-height:.95; color:var(--navy); }
+.cap-c{ font-size:.5rem; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:#9aa6b5; margin-top:5px; }
 
-/* ─────────────────────────────────────────
-   LOADER
-───────────────────────────────────────── */
-#loader {
-  position: fixed; inset: 0; z-index: 8000;
-  background: var(--navy);
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center; gap: 2.5rem;
-  transition: opacity .6s var(--ease), visibility .6s;
+/* punaise */
+.pin{
+  position:absolute; top:-9px; left:50%; transform:translateX(-50%);
+  width:20px; height:20px; border-radius:50%;
+  background:radial-gradient(circle at 34% 30%, rgba(255,255,255,.85), var(--pc) 60%, rgba(0,0,0,.25));
+  box-shadow:0 4px 6px rgba(0,0,0,.35); z-index:3;
 }
-#loader.out { opacity: 0; visibility: hidden; }
-#loader-logo { height: 90px; filter: brightness(10); }
-#loader-bar-track {
-  width: 140px; height: 1px; background: rgba(255,255,255,.15); overflow: hidden;
-}
-#loader-bar {
-  height: 100%; width: 0; background: var(--cyan);
-  transition: width 1s cubic-bezier(.4,0,.2,1);
-}
-#loader-pct {
-  font-size: .6rem; font-weight: 600; letter-spacing: .2em;
-  color: rgba(255,255,255,.3); position: absolute; bottom: 3rem;
+.pin::after{ content:''; position:absolute; top:14px; left:50%; transform:translateX(-50%);
+  width:2px; height:7px; background:rgba(0,0,0,.25); }
+/* scotch washi */
+.tape{
+  position:absolute; top:-13px; left:50%; transform:translateX(-50%) rotate(-4deg);
+  width:96px; height:28px; z-index:3;
+  background:repeating-linear-gradient(90deg, rgba(41,184,217,.34) 0 7px, rgba(41,184,217,.22) 7px 14px);
+  border-left:1px dashed rgba(255,255,255,.5); border-right:1px dashed rgba(255,255,255,.5);
+  box-shadow:0 2px 3px rgba(0,0,0,.08);
 }
 
-/* ─────────────────────────────────────────
-   NAV
-───────────────────────────────────────── */
-nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-  padding: 1.6rem 3rem;
-  display: flex; align-items: center; justify-content: space-between; gap: 2rem;
-  transition: padding .4s var(--ease), background .3s, border-color .3s;
+/* ───────── STICKY NOTES (manuscrites) ───────── */
+.note{
+  position:absolute; width:var(--w,250px); padding:22px 24px 26px;
+  background:linear-gradient(180deg,#FFFDF5,#FBF6E6);
+  border-left:3px solid var(--cyan);
+  box-shadow:0 14px 30px rgba(0,0,0,.16);
+  transform:rotate(var(--rot)); transform-origin:center top;
+  font-family:'Caveat',cursive; font-weight:600; font-size:1.5rem; line-height:1.22;
+  color:var(--navy);
 }
-nav.compact {
-  padding: 1rem 3rem;
-  background: rgba(244,246,249,.88);
-  backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--line);
-}
-[data-theme="dark"] nav.compact {
-  background: rgba(10,22,40,.88);
-}
-.nav-logo { display: flex; align-items: center; }
-.nav-logo img { height: 52px; display: block; transition: height .3s var(--ease); }
-nav.compact .nav-logo img { height: 40px; }
+[data-theme="dark"] .note{ background:linear-gradient(180deg,#16273f,#11203a); color:#DCE6F5; }
+.note .tape{ background:repeating-linear-gradient(90deg, rgba(255,255,255,.4) 0 7px, rgba(255,255,255,.25) 7px 14px); }
+.note b{ color:var(--cyan2); font-weight:700; }
+.note .scrib{ display:block; font-size:1rem; color:var(--sub); margin-top:8px; letter-spacing:.02em; }
 
-.nav-links {
-  display: flex; list-style: none; gap: 2.5rem;
-  position: absolute; left: 50%; transform: translateX(-50%);
-}
-.nav-links a {
-  font-size: .65rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase;
-  color: var(--sub); text-decoration: none;
-  transition: color .2s; position: relative;
-}
-.nav-links a::after {
-  content: ''; position: absolute; left: 0; bottom: -3px;
-  height: 1.5px; width: 0; background: var(--cyan);
-  transition: width .3s var(--ease);
-}
-.nav-links a:hover { color: var(--ink); }
-.nav-links a:hover::after { width: 100%; }
+/* ───────── HUD (interface fixe) ───────── */
+.hud{ position:fixed; inset:0; pointer-events:none; z-index:50; }
+.hud>*{ pointer-events:auto; }
 
-.nav-right { display: flex; align-items: center; gap: 1.5rem; }
+.hud-top{
+  position:absolute; top:0; left:0; right:0;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:1.4rem 1.8rem;
+}
+.brand{ display:flex; align-items:center; gap:.85rem; text-decoration:none; }
+.brand img{ height:40px; display:block; }
+.brand-sub{ font-size:.52rem; font-weight:700; letter-spacing:.22em; text-transform:uppercase; color:var(--sub); }
+.hud-tools{ display:flex; align-items:center; gap:.6rem; }
 
-/* Dark toggle */
-#theme-btn {
-  width: 42px; height: 24px; border-radius: 12px; cursor: pointer;
-  border: 1.5px solid var(--line); background: var(--surface);
-  position: relative; transition: background .3s, border-color .3s;
-  flex-shrink: 0;
+.tool{
+  height:38px; min-width:38px; padding:0 .7rem; border-radius:8px;
+  background:rgba(255,255,255,.7); backdrop-filter:blur(10px);
+  border:1px solid rgba(27,53,96,.1);
+  display:flex; align-items:center; justify-content:center; gap:.4rem;
+  font-size:.6rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink); cursor:pointer; transition:background .2s,color .2s,border-color .2s;
 }
-#theme-btn::after {
-  content: ''; position: absolute; top: 3px; left: 3px;
-  width: 16px; height: 16px; border-radius: 50%;
-  background: var(--sub);
-  transition: transform .35s var(--ease), background .3s;
-}
-[data-theme="dark"] #theme-btn { background: var(--navy); border-color: var(--cyan); }
-[data-theme="dark"] #theme-btn::after { transform: translateX(18px); background: var(--cyan); }
+.tool:hover{ background:var(--navy); color:#fff; border-color:var(--navy); }
+[data-theme="dark"] .tool{ background:rgba(15,31,58,.7); border-color:rgba(255,255,255,.1); }
+.zoom-group{ display:flex; align-items:center; gap:.15rem; }
+#zoom-val{ font-variant-numeric:tabular-nums; min-width:42px; text-align:center;
+  font-size:.6rem; font-weight:700; color:var(--sub); }
 
-.nav-cta {
-  font-size: .62rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
-  color: var(--white); background: var(--navy);
-  padding: .6rem 1.4rem; border-radius: 3px; text-decoration: none;
-  transition: background .2s, transform .2s;
-  white-space: nowrap;
-}
-.nav-cta:hover { background: var(--cyan2); }
+/* toggle sombre */
+#theme{ width:46px; padding:0; position:relative; }
+#theme::after{ content:'☾'; font-size:.8rem; }
+[data-theme="dark"] #theme::after{ content:'☀'; }
 
-/* ─────────────────────────────────────────
-   HERO
-───────────────────────────────────────── */
-.hero {
-  min-height: 100vh;
-  display: grid; grid-template-columns: 1fr 1fr;
-  position: relative; overflow: hidden;
+/* nav clusters bas-centre */
+.hud-nav{
+  position:absolute; left:50%; bottom:1.5rem; transform:translateX(-50%);
+  display:flex; gap:.3rem; padding:.35rem;
+  background:rgba(255,255,255,.72); backdrop-filter:blur(12px);
+  border:1px solid rgba(27,53,96,.1); border-radius:999px;
 }
+[data-theme="dark"] .hud-nav{ background:rgba(15,31,58,.72); border-color:rgba(255,255,255,.1); }
+.hud-nav button{
+  border:0; background:none; cursor:pointer; color:var(--sub);
+  font-size:.6rem; font-weight:700; letter-spacing:.06em;
+  padding:.55rem .95rem; border-radius:999px; white-space:nowrap;
+  transition:background .2s,color .2s; font-family:inherit;
+}
+.hud-nav button:hover{ color:var(--ink); }
+.hud-nav button.active{ background:var(--cyan); color:#fff; }
 
-/* Left panel */
-.hero-left {
-  display: flex; flex-direction: column; justify-content: flex-end;
-  padding: 0 4rem 5rem 3rem;
-  position: relative; z-index: 2;
+.hud-hint{
+  position:absolute; left:1.8rem; bottom:1.6rem;
+  font-size:.55rem; font-weight:600; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--sub); display:flex; align-items:center; gap:.5rem; max-width:200px;
 }
-.hero-eyebrow {
-  font-size: .58rem; font-weight: 700; letter-spacing: .22em; text-transform: uppercase;
-  color: var(--cyan); margin-bottom: 1.8rem;
-  opacity: 0; animation: fadeUp .6s var(--ease) .3s both;
-}
-.hero-title {
-  font-size: clamp(3rem, 5.5vw, 6.5rem);
-  font-weight: 900; line-height: .92; letter-spacing: -.03em;
-  color: var(--ink); margin-bottom: 2rem;
-  opacity: 0; animation: fadeUp .8s var(--ease) .45s both;
-}
-.hero-title .outline {
-  -webkit-text-stroke: 2px var(--ink);
-  color: transparent;
-  transition: -webkit-text-stroke-color .3s;
-}
-[data-theme="dark"] .hero-title .outline { -webkit-text-stroke-color: var(--ink); }
-.hero-title .accent { color: var(--cyan); }
+.hud-hint svg{ width:26px; height:14px; flex-shrink:0; }
+@media(max-width:780px){ .hud-hint{ display:none; } }
 
-.hero-desc {
-  font-size: .85rem; font-weight: 300; line-height: 1.85; color: var(--sub);
-  max-width: 360px; margin-bottom: 3rem;
-  opacity: 0; animation: fadeUp .7s var(--ease) .6s both;
+/* ───────── INTRO ───────── */
+#intro{
+  position:fixed; inset:0; z-index:9000; background:var(--navy);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2rem;
+  text-align:center; padding:2rem;
+  transition:opacity .7s var(--ease), visibility .7s;
 }
-.hero-actions {
-  display: flex; align-items: center; gap: 1.75rem;
-  opacity: 0; animation: fadeUp .7s var(--ease) .75s both;
+#intro.out{ opacity:0; visibility:hidden; }
+#intro img{ height:88px; filter:brightness(10); animation:floaty 3s ease-in-out infinite; }
+@keyframes floaty{ 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+#intro h1{ font-size:clamp(1.6rem,4vw,2.6rem); font-weight:900; letter-spacing:-.03em; color:#fff; }
+#intro h1 em{ font-style:normal; color:var(--cyan); }
+.intro-steps{ display:flex; gap:2.2rem; flex-wrap:wrap; justify-content:center; margin:.5rem 0 1rem; }
+.intro-step{ display:flex; flex-direction:column; align-items:center; gap:.55rem; width:120px; }
+.intro-step .ic{ width:48px; height:48px; border-radius:12px; border:1px solid rgba(255,255,255,.18);
+  display:flex; align-items:center; justify-content:center; color:var(--cyan); font-size:1.2rem; }
+.intro-step span{ font-size:.55rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:rgba(255,255,255,.5); }
+#enter{
+  font-family:inherit; font-size:.66rem; font-weight:700; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--navy); background:var(--cyan); border:0; cursor:pointer;
+  padding:1rem 2.4rem; border-radius:10px; transition:transform .2s, background .2s;
 }
-.btn-primary {
-  font-size: .62rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
-  color: var(--white); background: var(--cyan);
-  padding: .85rem 2rem; border-radius: 3px; text-decoration: none;
-  transition: background .2s, transform .2s;
-}
-.btn-primary:hover { background: var(--cyan2); transform: translateY(-1px); }
-.btn-ghost {
-  font-size: .62rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
-  color: var(--sub); text-decoration: none;
-  display: flex; align-items: center; gap: .5rem;
-  transition: color .2s;
-}
-.btn-ghost:hover { color: var(--ink); }
-.btn-ghost svg { width: 16px; height: 16px; transition: transform .2s; }
-.btn-ghost:hover svg { transform: translateY(3px); }
+#enter:hover{ background:#fff; transform:translateY(-2px); }
+#intro .credit{ position:absolute; bottom:1.6rem; font-size:.5rem; letter-spacing:.2em; text-transform:uppercase; color:rgba(255,255,255,.25); }
 
-/* Right panel — geometric brand shape */
-.hero-right {
-  position: relative; overflow: hidden;
-  display: flex; align-items: center; justify-content: center;
-}
-.hero-shape {
-  position: absolute; inset: 0;
-  background: linear-gradient(135deg, var(--navy) 0%, #0D2548 100%);
-}
-.hero-shape-tri {
-  position: absolute; bottom: -1px; left: -1px;
-  width: 55%; height: 45%;
-  background: var(--cyan);
-  clip-path: polygon(0 100%, 100% 100%, 0 0);
-  opacity: .25;
-}
-.hero-shape-tri2 {
-  position: absolute; top: -1px; right: -1px;
-  width: 40%; height: 35%;
-  background: var(--cyan);
-  clip-path: polygon(100% 0, 100% 100%, 0 0);
-  opacity: .12;
-}
-.hero-logo-big {
-  position: relative; z-index: 2;
-  width: 70%; max-width: 340px;
-  opacity: 0; animation: fadeIn 1s var(--ease) .6s both;
-  filter: brightness(10);
-  mix-blend-mode: normal;
-}
-.hero-scroll-hint {
-  position: absolute; bottom: 3rem; left: 3rem; z-index: 2;
-  display: flex; align-items: center; gap: .75rem;
-  font-size: .55rem; font-weight: 600; letter-spacing: .18em; text-transform: uppercase;
-  color: var(--sub);
-  opacity: 0; animation: fadeUp .6s var(--ease) 1s both;
-}
-.hero-scroll-line {
-  width: 40px; height: 1px;
-  background: linear-gradient(90deg, var(--cyan), transparent);
-}
-
-/* ─────────────────────────────────────────
-   MARQUEE
-───────────────────────────────────────── */
-.marquee {
-  overflow: hidden;
-  background: var(--navy);
-  padding: 1.1rem 0;
-  border-top: 1px solid rgba(255,255,255,.05);
-}
-.marquee-inner {
-  display: flex; white-space: nowrap;
-  animation: marquee 22s linear infinite;
-}
-.marquee.rev .marquee-inner { animation-direction: reverse; }
-.marquee-item {
-  display: inline-flex; align-items: center; gap: 1.5rem;
-  padding: 0 1.5rem;
-  font-size: .58rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase;
-  color: rgba(255,255,255,.18); flex-shrink: 0;
-}
-.marquee-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--cyan); opacity: .5; }
-@keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
-
-/* ─────────────────────────────────────────
-   SECTION HEADERS
-───────────────────────────────────────── */
-.section-label {
-  display: flex; align-items: center; gap: 1rem;
-  font-size: .55rem; font-weight: 700; letter-spacing: .22em; text-transform: uppercase;
-  color: var(--cyan); margin-bottom: 3rem;
-}
-.section-label-line { flex: 1; height: 1px; background: var(--line); }
-
-/* ─────────────────────────────────────────
-   WORK
-───────────────────────────────────────── */
-#work { padding: 6rem 0; }
-.work-head {
-  display: flex; align-items: baseline; justify-content: space-between;
-  padding: 0 3rem 3rem;
-  border-bottom: 1px solid var(--line);
-}
-.work-head-left { display: flex; flex-direction: column; gap: .5rem; }
-.work-head-tag {
-  font-size: .55rem; font-weight: 700; letter-spacing: .22em; text-transform: uppercase;
-  color: var(--cyan);
-}
-.work-head-title {
-  font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 800; line-height: 1;
-  letter-spacing: -.03em; color: var(--ink);
-}
-.work-head-count {
-  font-size: .62rem; font-weight: 600; letter-spacing: .1em; color: var(--sub);
-  align-self: flex-end;
-}
-
-/* Project row */
-.proj {
-  display: grid;
-  grid-template-columns: 4rem 1fr auto 3rem;
-  align-items: center; gap: 2rem;
-  padding: 1.8rem 3rem;
-  border-bottom: 1px solid var(--line);
-  text-decoration: none; color: inherit; cursor: none;
-  position: relative; overflow: hidden;
-  transition: background .3s;
-}
-.proj-bg {
-  position: absolute; inset: 0; z-index: 0;
-  background-size: cover; background-position: center;
-  opacity: 0; transition: opacity .5s var(--ease);
-}
-.proj-bg::after {
-  content: ''; position: absolute; inset: 0;
-  background: linear-gradient(90deg,
-    var(--bg) 0%,
-    rgba(244,246,249,.92) 40%,
-    rgba(244,246,249,.75) 100%
-  );
-  transition: background .3s;
-}
-[data-theme="dark"] .proj-bg::after {
-  background: linear-gradient(90deg,
-    var(--bg) 0%,
-    rgba(10,22,40,.9) 40%,
-    rgba(10,22,40,.72) 100%
-  );
-}
-.proj:hover .proj-bg { opacity: 1; }
-.proj > * { position: relative; z-index: 1; }
-
-.proj-num {
-  font-size: .65rem; font-weight: 800; letter-spacing: .1em;
-  color: var(--line); transition: color .3s;
-  font-variant-numeric: tabular-nums;
-}
-.proj:hover .proj-num { color: var(--cyan); }
-
-.proj-info { min-width: 0; }
-.proj-cat {
-  font-size: .52rem; font-weight: 600; letter-spacing: .15em; text-transform: uppercase;
-  color: var(--sub); margin-bottom: .35rem;
-  transition: color .2s;
-}
-.proj-title {
-  font-size: clamp(1.1rem, 2vw, 1.75rem); font-weight: 700;
-  letter-spacing: -.02em; color: var(--ink); line-height: 1.1;
-  transition: letter-spacing .35s var(--ease), color .2s;
-}
-.proj:hover .proj-title { letter-spacing: -.01em; }
-
-.proj-tags {
-  display: flex; gap: .45rem; flex-wrap: wrap; justify-content: flex-end;
-}
-.proj-tag {
-  font-size: .48rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
-  color: var(--sub); border: 1px solid var(--line);
-  padding: .22rem .55rem; border-radius: 2px;
-  transition: border-color .2s, color .2s;
-}
-.proj:hover .proj-tag { border-color: rgba(41,184,217,.3); color: var(--cyan); }
-
-.proj-arrow {
-  width: 32px; height: 32px; border-radius: 50%;
-  border: 1.5px solid var(--line);
-  display: flex; align-items: center; justify-content: center;
-  font-size: .7rem; color: var(--sub);
-  transition: background .25s, border-color .25s, color .25s, transform .3s var(--ease);
-}
-.proj:hover .proj-arrow {
-  background: var(--cyan); border-color: var(--cyan); color: var(--white);
-  transform: rotate(-45deg);
-}
-
-/* ─────────────────────────────────────────
-   SERVICES STRIP
-───────────────────────────────────────── */
-#services {
-  padding: 6rem 3rem;
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
-}
-.services-grid {
-  display: grid; grid-template-columns: repeat(4, 1fr);
-  gap: 1px; background: var(--line);
-  border: 1px solid var(--line);
-}
-.service-card {
-  background: var(--surface);
-  padding: 2.5rem 2rem;
-  transition: background .25s;
-  display: flex; flex-direction: column; gap: 1rem;
-}
-.service-card:hover { background: var(--navy); }
-.service-card:hover .service-title { color: var(--white); }
-.service-card:hover .service-desc  { color: rgba(255,255,255,.5); }
-.service-card:hover .service-icon  { color: var(--cyan); }
-.service-icon { font-size: 1.4rem; color: var(--cyan); line-height: 1; }
-.service-title {
-  font-size: .88rem; font-weight: 700; letter-spacing: -.01em;
-  color: var(--ink); transition: color .25s;
-}
-.service-desc {
-  font-size: .72rem; font-weight: 300; line-height: 1.7;
-  color: var(--sub); transition: color .25s;
-}
-
-/* ─────────────────────────────────────────
-   ABOUT
-───────────────────────────────────────── */
-#about {
-  padding: 6rem 3rem;
-  display: grid; grid-template-columns: 1fr 1fr; gap: 5rem;
-  border-bottom: 1px solid var(--line);
-}
-.about-left {}
-.about-title {
-  font-size: clamp(2.2rem, 4vw, 4rem); font-weight: 900;
-  letter-spacing: -.04em; line-height: .95; color: var(--ink);
-  margin-bottom: 2rem;
-}
-.about-title span { color: var(--cyan); }
-.about-text {
-  font-size: .82rem; font-weight: 300; line-height: 1.9; color: var(--sub);
-  margin-bottom: 1.2rem;
-}
-.about-link {
-  display: inline-flex; align-items: center; gap: .5rem;
-  font-size: .62rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
-  color: var(--ink); text-decoration: none;
-  border-bottom: 2px solid var(--cyan); padding-bottom: 2px;
-  margin-top: 1rem; transition: color .2s;
-}
-.about-link:hover { color: var(--cyan); }
-
-.about-right {}
-.stats-grid {
-  display: grid; grid-template-columns: 1fr 1fr;
-  gap: 1px; background: var(--line);
-  border: 1px solid var(--line);
-  margin-bottom: 2rem;
-}
-.stat-card {
-  background: var(--surface);
-  padding: 2rem 1.75rem;
-  display: flex; flex-direction: column; justify-content: flex-end; gap: .3rem;
-  transition: background .25s;
-}
-.stat-card:hover { background: var(--navy); }
-.stat-card:hover .stat-num { color: var(--cyan); }
-.stat-card:hover .stat-lbl { color: rgba(255,255,255,.4); }
-.stat-num {
-  font-size: 2.8rem; font-weight: 900; letter-spacing: -.04em;
-  color: var(--ink); line-height: 1; transition: color .25s;
-}
-.stat-num sup { font-size: 1.1rem; color: var(--cyan); }
-.stat-lbl {
-  font-size: .55rem; font-weight: 700; letter-spacing: .18em; text-transform: uppercase;
-  color: var(--sub); transition: color .25s;
-}
-
-.skills-wrap { display: flex; flex-direction: column; gap: .75rem; }
-.skill-row { display: flex; flex-direction: column; gap: .3rem; }
-.skill-label-row {
-  display: flex; justify-content: space-between;
-  font-size: .55rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
-  color: var(--sub);
-}
-.skill-bar-track {
-  height: 2px; background: var(--line); overflow: hidden; border-radius: 1px;
-}
-.skill-bar {
-  height: 100%; width: 0; background: linear-gradient(90deg, var(--navy), var(--cyan));
-  border-radius: 1px; transition: width 1.2s var(--ease);
-}
-
-/* ─────────────────────────────────────────
-   CONTACT
-───────────────────────────────────────── */
-#contact {
-  padding: 7rem 3rem;
-  position: relative; overflow: hidden;
-  background: var(--navy);
-}
-#contact::before {
-  content: ''; position: absolute; right: -80px; top: -80px;
-  width: 400px; height: 400px; border-radius: 50%;
-  background: radial-gradient(circle, rgba(41,184,217,.12) 0%, transparent 70%);
-}
-.contact-tag {
-  font-size: .55rem; font-weight: 700; letter-spacing: .22em; text-transform: uppercase;
-  color: var(--cyan); margin-bottom: 1.5rem;
-}
-.contact-title {
-  font-size: clamp(2.5rem, 6vw, 6rem); font-weight: 900;
-  letter-spacing: -.04em; line-height: .9; color: var(--white);
-  margin-bottom: 3.5rem; max-width: 800px;
-}
-.contact-title em { font-style: italic; font-weight: 300; color: var(--cyan); }
-.contact-grid {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1px; background: rgba(255,255,255,.06);
-  border: 1px solid rgba(255,255,255,.06); max-width: 800px;
-}
-.contact-item {
-  background: rgba(255,255,255,.03);
-  padding: 1.75rem; display: flex; flex-direction: column; gap: .4rem;
-  text-decoration: none; transition: background .2s;
-}
-.contact-item:hover { background: rgba(41,184,217,.08); }
-.contact-item-label {
-  font-size: .5rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase;
-  color: rgba(255,255,255,.25);
-}
-.contact-item-value {
-  font-size: .8rem; font-weight: 600; color: var(--white);
-  transition: color .2s;
-}
-.contact-item:hover .contact-item-value { color: var(--cyan); }
-
-/* ─────────────────────────────────────────
-   FOOTER
-───────────────────────────────────────── */
-footer {
-  padding: 1.5rem 3rem;
-  display: flex; align-items: center; justify-content: space-between;
-  border-top: 1px solid var(--line);
-  flex-wrap: wrap; gap: 1rem;
-}
-.f-copy {
-  font-size: .58rem; font-weight: 600; letter-spacing: .1em; color: var(--sub);
-}
-.f-links { display: flex; gap: 2rem; list-style: none; }
-.f-links a {
-  font-size: .58rem; font-weight: 600; letter-spacing: .1em;
-  color: var(--sub); text-decoration: none; transition: color .2s;
-}
-.f-links a:hover { color: var(--ink); }
-
-/* ─────────────────────────────────────────
-   MODAL
-───────────────────────────────────────── */
-#modal {
-  position: fixed; inset: 0; z-index: 500;
-  opacity: 0; visibility: hidden;
-  transition: opacity .45s var(--ease), visibility .45s;
-}
-#modal.open { opacity: 1; visibility: visible; }
-#modal-overlay {
-  position: absolute; inset: 0;
-  background: rgba(10,22,40,.75); backdrop-filter: blur(8px);
-  cursor: pointer;
-}
-#modal-panel {
-  position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%) scale(.97);
-  width: min(1100px, 95vw); max-height: 90vh;
-  background: var(--surface);
-  display: grid; grid-template-columns: 1fr 320px;
-  border-radius: 4px; overflow: hidden;
-  box-shadow: 0 40px 100px rgba(0,0,0,.35);
-  transition: transform .5s var(--ease);
-}
-#modal.open #modal-panel { transform: translate(-50%,-50%) scale(1); }
-
-#modal-gallery { position: relative; background: var(--line2); min-height: 480px; }
-#modal-main-img {
-  width: 100%; height: 100%; object-fit: contain; display: block;
-  background: var(--line2); transition: opacity .3s;
-}
-#modal-main-img.switching { opacity: 0; }
-
-.modal-nav-btn {
-  position: absolute; top: 50%; transform: translateY(-50%);
-  width: 40px; height: 40px;
-  background: var(--surface); border: 1px solid var(--line);
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer; color: var(--ink); font-size: .8rem;
-  transition: background .2s, color .2s; border-radius: 2px;
-}
-.modal-nav-btn:hover { background: var(--navy); color: var(--white); }
-#modal-prev { left: 1rem; }
-#modal-next { right: 1rem; }
-
-#modal-caption-bar {
-  position: absolute; bottom: 0; left: 0; right: 0;
-  padding: .65rem 1rem;
-  background: rgba(244,246,249,.92); backdrop-filter: blur(4px);
-  border-top: 1px solid var(--line);
-  display: flex; justify-content: space-between; align-items: center;
-}
-[data-theme="dark"] #modal-caption-bar { background: rgba(15,31,58,.92); }
-#modal-img-label, #modal-img-count {
-  font-size: .55rem; font-weight: 600; letter-spacing: .12em; color: var(--sub);
-}
-
-#modal-side {
-  border-left: 1px solid var(--line);
-  display: flex; flex-direction: column; overflow: hidden;
-}
-#modal-info { padding: 2rem 1.75rem; border-bottom: 1px solid var(--line); }
-#modal-cat {
-  font-size: .5rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase;
-  color: var(--cyan); margin-bottom: .5rem;
-}
-#modal-title { font-size: 1.4rem; font-weight: 800; letter-spacing: -.03em; color: var(--ink); }
-#modal-year  { font-size: .55rem; font-weight: 600; letter-spacing: .12em; color: var(--sub); margin-top: .3rem; }
-#modal-desc  { font-size: .75rem; font-weight: 300; line-height: 1.75; color: var(--sub); margin-top: .9rem; }
-#modal-tags  { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: 1rem; }
-.modal-tag   {
-  font-size: .48rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
-  color: var(--sub); border: 1px solid var(--line); padding: .2rem .55rem; border-radius: 2px;
-}
-
-#modal-thumbs {
-  flex: 1; overflow-y: auto; padding: 1rem;
-  display: grid; grid-template-columns: 1fr 1fr; gap: .4rem; align-content: start;
-}
-#modal-thumbs::-webkit-scrollbar { width: 3px; }
-#modal-thumbs::-webkit-scrollbar-thumb { background: var(--line); }
-.modal-thumb {
-  aspect-ratio: 4/3; overflow: hidden; cursor: pointer;
-  border: 2px solid transparent; border-radius: 2px; transition: border-color .2s;
-}
-.modal-thumb.active { border-color: var(--cyan); }
-.modal-thumb img {
-  width: 100%; height: 100%; object-fit: cover; display: block;
-  opacity: .55; transition: opacity .3s, transform .4s var(--ease);
-}
-.modal-thumb:hover img, .modal-thumb.active img { opacity: 1; }
-.modal-thumb:hover img { transform: scale(1.08); }
-
-#modal-keys {
-  padding: .7rem 1.75rem; border-top: 1px solid var(--line);
-  font-size: .48rem; font-weight: 600; letter-spacing: .1em;
-  color: var(--line); display: flex; gap: 1rem;
-}
-
-#modal-close {
-  position: absolute; top: 1rem; right: 1rem; z-index: 10;
-  width: 36px; height: 36px; border-radius: 2px;
-  background: var(--surface); border: 1px solid var(--line);
-  cursor: pointer; display: flex; align-items: center; justify-content: center;
-  font-size: .7rem; color: var(--sub);
-  transition: background .2s, color .2s;
-}
-#modal-close:hover { background: var(--navy); color: var(--white); }
-
-/* ─────────────────────────────────────────
-   ANIMATIONS / REVEAL
-───────────────────────────────────────── */
-@keyframes fadeUp {
-  from { opacity:0; transform: translateY(24px); }
-  to   { opacity:1; transform: translateY(0); }
-}
-@keyframes fadeIn {
-  from { opacity:0; }
-  to   { opacity:1; }
-}
-
-.reveal {
-  opacity: 0; transform: translateY(30px);
-  transition: opacity .8s var(--ease), transform .8s var(--ease);
-}
-.reveal.visible { opacity: 1; transform: translateY(0); }
-.reveal[data-delay="1"] { transition-delay: .1s; }
-.reveal[data-delay="2"] { transition-delay: .2s; }
-.reveal[data-delay="3"] { transition-delay: .3s; }
-.reveal[data-delay="4"] { transition-delay: .4s; }
-
-/* ─────────────────────────────────────────
-   RESPONSIVE
-───────────────────────────────────────── */
-@media (max-width: 900px) {
-  nav { padding: 1.2rem 1.5rem; }
-  nav.compact { padding: .9rem 1.5rem; }
-  .nav-links { display: none; }
-  .nav-logo img { height: 38px; }
-
-  .hero { grid-template-columns: 1fr; }
-  .hero-left { padding: 7rem 1.5rem 4rem; }
-  .hero-right { display: none; }
-
-  .work-head, #work { padding-left: 1.5rem; padding-right: 1.5rem; }
-  .proj { grid-template-columns: 3rem 1fr 2rem; gap: 1rem; padding: 1.4rem 1.5rem; }
-  .proj-tags { display: none; }
-
-  #services { padding: 4rem 1.5rem; }
-  .services-grid { grid-template-columns: 1fr 1fr; }
-
-  #about { grid-template-columns: 1fr; gap: 3rem; padding: 4rem 1.5rem; }
-  #contact { padding: 5rem 1.5rem; }
-  footer { padding: 1.25rem 1.5rem; }
-
-  #modal-panel { grid-template-columns: 1fr; }
-  #modal-side { display: none; }
-}
-
-@media (max-width: 560px) {
-  .services-grid { grid-template-columns: 1fr; }
-  .stats-grid { grid-template-columns: 1fr 1fr; }
-}
+/* ───────── MODAL ───────── */
+#modal{ position:fixed; inset:0; z-index:8000; opacity:0; visibility:hidden;
+  transition:opacity .4s var(--ease),visibility .4s; }
+#modal.open{ opacity:1; visibility:visible; }
+#modal-ov{ position:absolute; inset:0; background:rgba(6,12,22,.8); backdrop-filter:blur(8px); cursor:pointer; }
+#modal-panel{
+  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%) scale(.96);
+  width:min(1080px,94vw); max-height:90vh;
+  background:var(--sheet); display:grid; grid-template-columns:1fr 320px;
+  border-radius:6px; overflow:hidden; box-shadow:0 40px 100px rgba(0,0,0,.45);
+  transition:transform .5s var(--ease);
+}
+#modal.open #modal-panel{ transform:translate(-50%,-50%) scale(1); }
+#m-gal{ position:relative; background:rgba(0,0,0,.05); min-height:460px; }
+#m-img{ width:100%; height:100%; object-fit:contain; display:block; transition:opacity .3s; }
+#m-img.sw{ opacity:0; }
+.m-nav{ position:absolute; top:50%; transform:translateY(-50%); width:42px; height:42px;
+  background:var(--sheet); border:1px solid rgba(27,53,96,.12); border-radius:4px; cursor:pointer;
+  color:var(--ink); font-size:.85rem; display:flex; align-items:center; justify-content:center;
+  transition:background .2s,color .2s; }
+.m-nav:hover{ background:var(--navy); color:#fff; }
+#m-prev{ left:1rem; } #m-next{ right:1rem; }
+#m-cap{ position:absolute; bottom:0; left:0; right:0; padding:.65rem 1rem;
+  background:rgba(242,238,228,.92); border-top:1px solid rgba(27,53,96,.1);
+  display:flex; justify-content:space-between; }
+[data-theme="dark"] #m-cap{ background:rgba(14,27,48,.92); }
+#m-cap span{ font-size:.55rem; font-weight:600; letter-spacing:.12em; color:var(--sub); }
+#m-side{ border-left:1px solid rgba(27,53,96,.1); display:flex; flex-direction:column; overflow:hidden; }
+#m-info{ padding:1.9rem 1.7rem; border-bottom:1px solid rgba(27,53,96,.1); }
+#m-cat{ font-size:.5rem; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--cyan); margin-bottom:.5rem; }
+#m-title{ font-size:1.35rem; font-weight:800; letter-spacing:-.02em; color:var(--ink); }
+#m-year{ font-size:.55rem; font-weight:600; letter-spacing:.12em; color:var(--sub); margin-top:.3rem; }
+#m-desc{ font-size:.74rem; font-weight:300; line-height:1.75; color:var(--sub); margin-top:.9rem; }
+#m-tags{ display:flex; flex-wrap:wrap; gap:.35rem; margin-top:1rem; }
+.m-tag{ font-size:.46rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--sub);
+  border:1px solid rgba(27,53,96,.14); padding:.2rem .5rem; border-radius:2px; }
+#m-thumbs{ flex:1; overflow-y:auto; padding:1rem; display:grid; grid-template-columns:1fr 1fr; gap:.4rem; align-content:start; }
+#m-thumbs::-webkit-scrollbar{ width:3px; } #m-thumbs::-webkit-scrollbar-thumb{ background:rgba(27,53,96,.15); }
+.m-thumb{ aspect-ratio:4/3; overflow:hidden; cursor:pointer; border:2px solid transparent; border-radius:2px; }
+.m-thumb.active{ border-color:var(--cyan); }
+.m-thumb img{ width:100%; height:100%; object-fit:cover; opacity:.55; transition:opacity .3s,transform .4s var(--ease); }
+.m-thumb:hover img,.m-thumb.active img{ opacity:1; } .m-thumb:hover img{ transform:scale(1.08); }
+#m-close{ position:absolute; top:1rem; right:1rem; z-index:10; width:38px; height:38px; border-radius:4px;
+  background:var(--sheet); border:1px solid rgba(27,53,96,.12); cursor:pointer; color:var(--sub);
+  display:flex; align-items:center; justify-content:center; font-size:.72rem; transition:background .2s,color .2s; }
+#m-close:hover{ background:var(--navy); color:#fff; }
+@media(max-width:820px){ #modal-panel{ grid-template-columns:1fr; } #m-side{ display:none; } }
 </style>
 </head>
 <body>
 
-<!-- CURSOR -->
-<div id="cur-dot"></div>
-<div id="cur-ring"></div>
-
-<!-- PROGRESS -->
-<div id="progress"></div>
-
-<!-- LOADER -->
-<div id="loader">
-  <img id="loader-logo" src="assets/Logo-Aardesign-Court.png" alt="AAR Design">
-  <div id="loader-bar-track">
-    <div id="loader-bar"></div>
+<!-- INTRO -->
+<div id="intro">
+  <img src="assets/Logo-Aardesign-Court.png" alt="AAR Design">
+  <h1>L'atelier d'<em>Anthony Armand</em></h1>
+  <div class="intro-steps">
+    <div class="intro-step"><div class="ic">✋</div><span>Glisser</span></div>
+    <div class="intro-step"><div class="ic">⊕</div><span>Zoomer</span></div>
+    <div class="intro-step"><div class="ic">◳</div><span>Cliquer</span></div>
   </div>
-  <span id="loader-pct">000%</span>
+  <button id="enter">Entrer dans l'atelier</button>
+  <span class="credit">AAR Design · Digital Painting & Direction Artistique</span>
 </div>
 
-<!-- NAV -->
-<nav id="nav">
-  <a href="#" class="nav-logo">
-    <img src="assets/Logo-Aardesign-Long.png" alt="AAR Design">
-  </a>
-  <ul class="nav-links">
-    <li><a href="#work">Travaux</a></li>
-    <li><a href="#services">Services</a></li>
-    <li><a href="#about">À propos</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ul>
-  <div class="nav-right">
-    <button id="theme-btn" aria-label="Basculer mode sombre" title="Mode sombre"></button>
-    <a href="#contact" class="nav-cta">Démarrer un projet</a>
-  </div>
-</nav>
-
-<!-- HERO -->
-<section class="hero" id="hero">
-  <div class="hero-left">
-    <p class="hero-eyebrow">Anthony Armand · AAR Design</p>
-    <h1 class="hero-title">
-      Digital<br>
-      <span class="outline">Painting</span><br>
-      &amp;&nbsp;<span class="accent">Art</span>.
-    </h1>
-    <p class="hero-desc">
-      Je construis des univers visuels qui racontent des histoires — du packaging steampunk aux illustrations saisonnières, du character design à la dark fantasy.
-    </p>
-    <div class="hero-actions">
-      <a href="#work" class="btn-primary">Voir les travaux</a>
-      <a href="#contact" class="btn-ghost">
-        Me contacter
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M8 2L14 8M14 8L8 14M14 8H2"/>
-        </svg>
-      </a>
-    </div>
-  </div>
-
-  <div class="hero-right">
-    <div class="hero-shape">
-      <div class="hero-shape-tri"></div>
-      <div class="hero-shape-tri2"></div>
-    </div>
-    <img src="assets/Logo-Aardesign-Court.png" alt="" class="hero-logo-big" aria-hidden="true">
-  </div>
-
-  <div class="hero-scroll-hint">
-    <div class="hero-scroll-line"></div>
-    Défiler pour découvrir
-  </div>
-</section>
-
-<!-- MARQUEE 1 -->
-<div class="marquee">
-  <div class="marquee-inner" aria-hidden="true">
-    <span class="marquee-item">Digital Painting <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Direction Artistique <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Illustration <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Packaging <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Character Design <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Steampunk <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Dark Fantasy <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Aquarelle Digitale <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Digital Painting <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Direction Artistique <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Illustration <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Packaging <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Character Design <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Steampunk <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Dark Fantasy <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Aquarelle Digitale <span class="marquee-dot"></span></span>
-  </div>
+<!-- STAGE + BOARD -->
+<div id="stage">
+  <div id="board"></div>
 </div>
 
-<!-- WORK -->
-<section id="work">
-  <div class="work-head reveal">
-    <div class="work-head-left">
-      <span class="work-head-tag">— Portfolio</span>
-      <h2 class="work-head-title">Travaux sélectionnés</h2>
+<!-- HUD -->
+<div class="hud">
+  <div class="hud-top">
+    <a href="#" class="brand" id="brand">
+      <img src="assets/Logo-Aardesign-Long.png" alt="AAR Design">
+    </a>
+    <div class="hud-tools">
+      <div class="zoom-group">
+        <button class="tool" id="zoom-out" title="Dézoomer">−</button>
+        <span id="zoom-val">100%</span>
+        <button class="tool" id="zoom-in" title="Zoomer">+</button>
+      </div>
+      <button class="tool" id="recenter" title="Tout voir">⤢ Vue d'ensemble</button>
+      <button class="tool" id="theme" title="Mode sombre" aria-label="Mode sombre"></button>
     </div>
-    <span class="work-head-count">15 projets</span>
   </div>
 
-  <a class="proj reveal" data-delay="1" data-img="assets/voyages/cappadoce.jpg" href="#" data-project="voyages">
-    <div class="proj-bg" style="background-image:url('assets/voyages/cappadoce.jpg')"></div>
-    <span class="proj-num">01</span>
-    <div class="proj-info">
-      <p class="proj-cat">Digital Painting · Packaging · Direction Artistique</p>
-      <h2 class="proj-title">Les Voyages d'Arsène</h2>
-    </div>
-    <div class="proj-tags">
-      <span class="proj-tag">Paysage</span>
-      <span class="proj-tag">Steampunk</span>
-      <span class="proj-tag">Packaging</span>
-    </div>
-    <span class="proj-arrow">↗</span>
-  </a>
+  <nav class="hud-nav" id="cluster-nav"></nav>
 
-  <a class="proj reveal" data-delay="2" data-img="assets/steam/mockup.jpg" href="#" data-project="steam">
-    <div class="proj-bg" style="background-image:url('assets/steam/mockup.jpg')"></div>
-    <span class="proj-num">02</span>
-    <div class="proj-info">
-      <p class="proj-cat">Illustration · Gravure Digitale · Packaging</p>
-      <h2 class="proj-title">Steam Collection — Arsène Valentin</h2>
-    </div>
-    <div class="proj-tags">
-      <span class="proj-tag">Gravure XIXe</span>
-      <span class="proj-tag">Steampunk</span>
-    </div>
-    <span class="proj-arrow">↗</span>
-  </a>
-
-  <a class="proj reveal" data-delay="1" href="#" data-project="dark">
-    <div class="proj-bg"></div>
-    <span class="proj-num">03</span>
-    <div class="proj-info">
-      <p class="proj-cat">Digital Painting · Illustration Originale</p>
-      <h2 class="proj-title">L'Alchimiste Maudit</h2>
-    </div>
-    <div class="proj-tags">
-      <span class="proj-tag">Dark Fantasy</span>
-      <span class="proj-tag">Peinture numérique</span>
-    </div>
-    <span class="proj-arrow">↗</span>
-  </a>
-
-  <a class="proj reveal" data-delay="2" data-img="assets/saveurs/hiver.jpg" href="#" data-project="hiver">
-    <div class="proj-bg" style="background-image:url('assets/saveurs/hiver.jpg')"></div>
-    <span class="proj-num">04</span>
-    <div class="proj-info">
-      <p class="proj-cat">Illustration · Aquarelle Digitale · Édition</p>
-      <h2 class="proj-title">Saveurs d'Hiver — Clopinette</h2>
-    </div>
-    <div class="proj-tags">
-      <span class="proj-tag">Botanique</span>
-      <span class="proj-tag">Saisonnier</span>
-    </div>
-    <span class="proj-arrow">↗</span>
-  </a>
-
-  <a class="proj reveal" data-delay="3" data-img="assets/saveurs/automne.jpg" href="#" data-project="automne">
-    <div class="proj-bg" style="background-image:url('assets/saveurs/automne.jpg')"></div>
-    <span class="proj-num">05</span>
-    <div class="proj-info">
-      <p class="proj-cat">Illustration · Aquarelle Digitale · Édition</p>
-      <h2 class="proj-title">Saveurs d'Automne — Clopinette</h2>
-    </div>
-    <div class="proj-tags">
-      <span class="proj-tag">Botanique</span>
-      <span class="proj-tag">Saisonnier</span>
-    </div>
-    <span class="proj-arrow">↗</span>
-  </a>
-
-  <a class="proj reveal" data-delay="1" data-img="assets/voyages/laponie.jpg" href="#" data-project="laponie">
-    <div class="proj-bg" style="background-image:url('assets/voyages/laponie.jpg')"></div>
-    <span class="proj-num">06</span>
-    <div class="proj-info">
-      <p class="proj-cat">Digital Painting · Packaging</p>
-      <h2 class="proj-title">Aurore de Laponie</h2>
-    </div>
-    <div class="proj-tags">
-      <span class="proj-tag">Paysage</span>
-      <span class="proj-tag">Hiver</span>
-    </div>
-    <span class="proj-arrow">↗</span>
-  </a>
-
-  <a class="proj reveal" data-delay="2" data-img="assets/voyages/fuji.jpg" href="#" data-project="fuji">
-    <div class="proj-bg" style="background-image:url('assets/voyages/fuji.jpg')"></div>
-    <span class="proj-num">07</span>
-    <div class="proj-info">
-      <p class="proj-cat">Digital Painting · Packaging</p>
-      <h2 class="proj-title">Éclat du Fuji</h2>
-    </div>
-    <div class="proj-tags">
-      <span class="proj-tag">Japon</span>
-      <span class="proj-tag">Paysage</span>
-    </div>
-    <span class="proj-arrow">↗</span>
-  </a>
-
-  <a class="proj reveal" data-delay="3" data-img="assets/steam/hibou.jpg" href="#" data-project="sage">
-    <div class="proj-bg" style="background-image:url('assets/steam/hibou.jpg')"></div>
-    <span class="proj-num">08</span>
-    <div class="proj-info">
-      <p class="proj-cat">Illustration · Gravure Digitale</p>
-      <h2 class="proj-title">Le Sage de Fer</h2>
-    </div>
-    <div class="proj-tags">
-      <span class="proj-tag">Hibou</span>
-      <span class="proj-tag">Gravure</span>
-    </div>
-    <span class="proj-arrow">↗</span>
-  </a>
-
-  <a class="proj reveal" data-delay="1" data-img="assets/steam/main.jpg" href="#" data-project="main">
-    <div class="proj-bg" style="background-image:url('assets/steam/main.jpg')"></div>
-    <span class="proj-num">09</span>
-    <div class="proj-info">
-      <p class="proj-cat">Illustration · Gravure Digitale</p>
-      <h2 class="proj-title">La Main d'Alchimiste</h2>
-    </div>
-    <div class="proj-tags">
-      <span class="proj-tag">Alchimie</span>
-      <span class="proj-tag">Gravure</span>
-    </div>
-    <span class="proj-arrow">↗</span>
-  </a>
-
-  <a class="proj reveal" data-delay="2" href="#" data-project="salem">
-    <div class="proj-bg"></div>
-    <span class="proj-num">10</span>
-    <div class="proj-info">
-      <p class="proj-cat">Digital Painting · Dark Fantasy</p>
-      <h2 class="proj-title">Salem</h2>
-    </div>
-    <div class="proj-tags">
-      <span class="proj-tag">Halloween</span>
-      <span class="proj-tag">Sorcière</span>
-    </div>
-    <span class="proj-arrow">↗</span>
-  </a>
-
-  <a class="proj reveal" data-delay="3" href="#" data-project="blood">
-    <div class="proj-bg"></div>
-    <span class="proj-num">11</span>
-    <div class="proj-info">
-      <p class="proj-cat">Digital Painting · Dark Fantasy</p>
-      <h2 class="proj-title">Blood Moon</h2>
-    </div>
-    <div class="proj-tags">
-      <span class="proj-tag">Halloween</span>
-      <span class="proj-tag">Atmosphère</span>
-    </div>
-    <span class="proj-arrow">↗</span>
-  </a>
-
-  <a class="proj reveal" data-delay="1" data-img="assets/millenaire/pomme2.jpg" href="#" data-project="millenaire">
-    <div class="proj-bg" style="background-image:url('assets/millenaire/pomme2.jpg')"></div>
-    <span class="proj-num">12</span>
-    <div class="proj-info">
-      <p class="proj-cat">Illustration · Packaging · Identité Locale</p>
-      <h2 class="proj-title">La Pomme Conquérante — Millénaire Caen</h2>
-    </div>
-    <div class="proj-tags">
-      <span class="proj-tag">Normandie</span>
-      <span class="proj-tag">Packaging</span>
-    </div>
-    <span class="proj-arrow">↗</span>
-  </a>
-
-  <a class="proj reveal" data-delay="2" data-img="assets/aristocrate/nanti.jpg" href="#" data-project="aristocrate">
-    <div class="proj-bg" style="background-image:url('assets/aristocrate/nanti.jpg')"></div>
-    <span class="proj-num">13</span>
-    <div class="proj-info">
-      <p class="proj-cat">Illustration · Character Design</p>
-      <h2 class="proj-title">Série Aristocrate</h2>
-    </div>
-    <div class="proj-tags">
-      <span class="proj-tag">Character design</span>
-      <span class="proj-tag">Steampunk</span>
-    </div>
-    <span class="proj-arrow">↗</span>
-  </a>
-
-  <a class="proj reveal" data-delay="3" data-img="assets/pulse.jpg" href="#" data-project="pulse">
-    <div class="proj-bg" style="background-image:url('assets/pulse.jpg')"></div>
-    <span class="proj-num">14</span>
-    <div class="proj-info">
-      <p class="proj-cat">Digital Painting · Concept Art</p>
-      <h2 class="proj-title">Pulse</h2>
-    </div>
-    <div class="proj-tags">
-      <span class="proj-tag">Abstrait</span>
-      <span class="proj-tag">Énergie</span>
-    </div>
-    <span class="proj-arrow">↗</span>
-  </a>
-
-  <a class="proj reveal" data-delay="1" data-img="assets/formation/environnement.jpg" href="#" data-project="formation">
-    <div class="proj-bg" style="background-image:url('assets/formation/environnement.jpg')"></div>
-    <span class="proj-num">15</span>
-    <div class="proj-info">
-      <p class="proj-cat">Digital Painting · Formation</p>
-      <h2 class="proj-title">Études & Explorations</h2>
-    </div>
-    <div class="proj-tags">
-      <span class="proj-tag">Environnement</span>
-      <span class="proj-tag">Fantasy</span>
-    </div>
-    <span class="proj-arrow">↗</span>
-  </a>
-</section>
-
-<!-- MARQUEE 2 -->
-<div class="marquee rev">
-  <div class="marquee-inner" aria-hidden="true">
-    <span class="marquee-item">Arsène Valentin <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Clopinette <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Millénaire Caen <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Projets personnels <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Arsène Valentin <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Clopinette <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Millénaire Caen <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Projets personnels <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Arsène Valentin <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Clopinette <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Millénaire Caen <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Projets personnels <span class="marquee-dot"></span></span>
+  <div class="hud-hint">
+    <svg viewBox="0 0 26 14" fill="none" stroke="currentColor" stroke-width="1.3">
+      <path d="M2 7h22M2 7l4-4M2 7l4 4M24 7l-4-4M24 7l-4 4"/>
+    </svg>
+    Attrape le mur & glisse
   </div>
 </div>
-
-<!-- SERVICES -->
-<section id="services">
-  <div class="section-label reveal">
-    — Ce que je fais
-    <span class="section-label-line"></span>
-  </div>
-  <div class="services-grid reveal" data-delay="1">
-    <div class="service-card">
-      <div class="service-icon">✦</div>
-      <div class="service-title">Digital Painting</div>
-      <div class="service-desc">Peintures numériques plein format — paysages, portraits, scènes narratives. Pinceaux, textures, lumière : style unique à chaque projet.</div>
-    </div>
-    <div class="service-card">
-      <div class="service-icon">◈</div>
-      <div class="service-title">Direction Artistique</div>
-      <div class="service-desc">Cohérence visuelle globale pour gammes de produits, marques et éditeurs. Du concept à la réalisation finale.</div>
-    </div>
-    <div class="service-card">
-      <div class="service-icon">⬡</div>
-      <div class="service-title">Packaging & Illustration</div>
-      <div class="service-desc">Étiquettes, boîtes, flacons — l'illustration au service du produit. Style adapté à l'univers de chaque client.</div>
-    </div>
-    <div class="service-card">
-      <div class="service-icon">◎</div>
-      <div class="service-title">Character Design</div>
-      <div class="service-desc">Personnages cohérents et expressifs pour séries, jeux, édition. Du croquis à la fiche de tournage.</div>
-    </div>
-  </div>
-</section>
-
-<!-- ABOUT -->
-<section id="about">
-  <div class="about-left reveal">
-    <h2 class="about-title">Anthony<br><span>Armand</span></h2>
-    <p class="about-text">
-      Designer pluridisciplinaire basé en France. Je travaille à l'intersection du digital painting, de l'illustration narrative et de la direction artistique.
-    </p>
-    <p class="about-text">
-      Du packaging premium aux peintures personnelles, chaque projet est une occasion de construire un univers visuel unique, cohérent et mémorable.
-    </p>
-    <a href="#contact" class="about-link">Travaillons ensemble →</a>
-  </div>
-
-  <div class="about-right reveal" data-delay="2">
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-num" data-target="5">0<sup>+</sup></div>
-        <div class="stat-lbl">Années d'expérience</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-num" data-target="35">0<sup>+</sup></div>
-        <div class="stat-lbl">Œuvres réalisées</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-num" data-target="8">0</div>
-        <div class="stat-lbl">Disciplines créatives</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-num" style="font-size:1.8rem">FR</div>
-        <div class="stat-lbl">France · Remote · Int'l</div>
-      </div>
-    </div>
-
-    <div class="skills-wrap">
-      <div class="skill-row">
-        <div class="skill-label-row"><span>Digital Painting</span><span>95%</span></div>
-        <div class="skill-bar-track"><div class="skill-bar" data-pct="95"></div></div>
-      </div>
-      <div class="skill-row">
-        <div class="skill-label-row"><span>Direction Artistique</span><span>88%</span></div>
-        <div class="skill-bar-track"><div class="skill-bar" data-pct="88"></div></div>
-      </div>
-      <div class="skill-row">
-        <div class="skill-label-row"><span>Illustration / Packaging</span><span>92%</span></div>
-        <div class="skill-bar-track"><div class="skill-bar" data-pct="92"></div></div>
-      </div>
-      <div class="skill-row">
-        <div class="skill-label-row"><span>Character Design</span><span>80%</span></div>
-        <div class="skill-bar-track"><div class="skill-bar" data-pct="80"></div></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- CONTACT -->
-<section id="contact">
-  <p class="contact-tag">— Démarrer un projet</p>
-  <h2 class="contact-title reveal">
-    Parlons de<br>votre <em>projet</em>.
-  </h2>
-  <div class="contact-grid reveal" data-delay="2">
-    <a href="mailto:aardesign14@gmail.com" class="contact-item">
-      <span class="contact-item-label">Email</span>
-      <span class="contact-item-value">aardesign14@gmail.com</span>
-    </a>
-    <a href="tel:0679466219" class="contact-item">
-      <span class="contact-item-label">Téléphone</span>
-      <span class="contact-item-value">06 79 46 62 19</span>
-    </a>
-    <a href="https://instagram.com" target="_blank" rel="noopener" class="contact-item">
-      <span class="contact-item-label">Instagram</span>
-      <span class="contact-item-value">@aardesign</span>
-    </a>
-    <a href="https://behance.net" target="_blank" rel="noopener" class="contact-item">
-      <span class="contact-item-label">Behance</span>
-      <span class="contact-item-value">behance.net/aardesign</span>
-    </a>
-  </div>
-</section>
-
-<!-- FOOTER -->
-<footer>
-  <span class="f-copy">© 2025 AAR Design — Anthony Armand</span>
-  <ul class="f-links">
-    <li><a href="#">Mentions légales</a></li>
-    <li><a href="admin.html">Admin</a></li>
-  </ul>
-</footer>
 
 <!-- MODAL -->
 <div id="modal">
-  <div id="modal-overlay"></div>
+  <div id="modal-ov"></div>
   <div id="modal-panel">
-    <div id="modal-gallery">
-      <img id="modal-main-img" src="" alt="">
-      <button class="modal-nav-btn" id="modal-prev">←</button>
-      <button class="modal-nav-btn" id="modal-next">→</button>
-      <div id="modal-caption-bar">
-        <span id="modal-img-label"></span>
-        <span id="modal-img-count"></span>
-      </div>
+    <div id="m-gal">
+      <img id="m-img" src="" alt="">
+      <button class="m-nav" id="m-prev">←</button>
+      <button class="m-nav" id="m-next">→</button>
+      <div id="m-cap"><span id="m-label"></span><span id="m-count"></span></div>
     </div>
-    <div id="modal-side">
-      <div id="modal-info">
-        <p id="modal-cat"></p>
-        <h2 id="modal-title"></h2>
-        <p id="modal-year"></p>
-        <p id="modal-desc"></p>
-        <div id="modal-tags"></div>
+    <div id="m-side">
+      <div id="m-info">
+        <p id="m-cat"></p><h2 id="m-title"></h2><p id="m-year"></p><p id="m-desc"></p>
+        <div id="m-tags"></div>
       </div>
-      <div id="modal-thumbs"></div>
-      <div id="modal-keys">
-        <span>← → naviguer</span>
-        <span>Esc fermer</span>
-      </div>
+      <div id="m-thumbs"></div>
     </div>
-    <button id="modal-close">✕</button>
+    <button id="m-close">✕</button>
   </div>
 </div>
 
 <script>
-/* ────────────────────────────────────
-   DATA
-──────────────────────────────────── */
-const PROJECTS = {
-  voyages: {
-    cat: 'Digital Painting · Packaging · Direction Artistique',
-    title: "Les Voyages d'Arsène",
-    year: 'Arsène Valentin · 2024',
-    desc: "6 destinations, 6 peintures plein format. Du ciel de Cappadoce aux aurores de Laponie, chaque flacon est un voyage. Direction artistique complète, cohérence de gamme.",
-    tags: ['Digital Painting','Packaging','Steampunk','Paysage','Direction Artistique'],
-    images: [
-      {src:'assets/voyages/cartes.jpg',    label:"Vue d'ensemble — 6 étiquettes"},
-      {src:'assets/voyages/cappadoce.jpg', label:'Ciel de Cappadoce — Baklava Pistache'},
-      {src:'assets/voyages/laponie.jpg',   label:"Aurore de Laponie — Chocolat Pain d'Épice"},
-      {src:'assets/voyages/fuji.jpg',      label:'Éclat du Fuji — Litchi Mangoustan'},
-      {src:'assets/voyages/pacifique.jpg', label:'Soleil du Pacifique — Banane Coco'},
-      {src:'assets/voyages/amazonie.jpg',  label:"Brume d'Amazonie — Goyave Pitaya"},
-      {src:'assets/voyages/canada.jpg',    label:"Rivage Canadien — Sirop d'Érable"},
-    ]
-  },
-  steam: {
-    cat: 'Illustration · Gravure Digitale · Packaging',
-    title: 'Steam Collection',
-    year: 'Arsène Valentin · 2023',
-    desc: "6 illustrations style gravure XIXe siècle — sablier, hibou mécanique, masque de plague doctor, cœur mécanique, main d'alchimiste, théière. Encre sur parchemin texturé.",
-    tags: ['Illustration','Gravure Digitale','Steampunk','XIXe siècle','Packaging'],
-    images: [
-      {src:'assets/steam/mockup.jpg',  label:"Steam Collection — Vue d'ensemble"},
-      {src:'assets/steam/main.jpg',    label:"La Main d'Alchimiste — White Choco Pistache"},
-      {src:'assets/steam/sablier.jpg', label:'Les Arcanes du Temps — Popcorn Caramel'},
-      {src:'assets/steam/hibou.jpg',   label:'Le Sage de Fer — Biscuit Caramel'},
-      {src:'assets/steam/coeur.jpg',   label:'Le Cœur Mécanique — Dulce de Leche'},
-      {src:'assets/steam/gueule.jpg',  label:"La Gueule d'Ange — Noisette"},
-      {src:'assets/steam/pomme.jpg',   label:'Le Fruit Défendu — Pomme Caramélisée'},
-    ]
-  },
-  dark: {
-    cat: 'Digital Painting · Illustration Originale',
-    title: 'Dark Fantasy',
-    year: 'Série personnelle · 2024',
-    desc: "Nécromancien, sorcières, lune de sang — peintures numériques sombres où l'alchimie rencontre la magie noire.",
-    tags: ['Digital Painting','Dark Fantasy','Halloween','Illustration'],
-    images: [
-      {src:'assets/dark/red.jpg',   label:"L'Alchimiste Maudit"},
-      {src:'assets/dark/salem.jpg', label:'Salem — Sorcière en vol'},
-      {src:'assets/dark/blood.jpg', label:'Blood Moon'},
-      {src:'assets/dark/cult.jpg',  label:'The Cult'},
-    ]
-  },
-  hiver: {
-    cat: 'Illustration · Aquarelle Digitale · Édition',
-    title: "Saveurs d'Hiver",
-    year: 'Clopinette · 2025',
-    desc: "Couverture illustrée pour catalogue saisonnier. Renard endormi dans la neige, cerf gracieux, stalactites de glace. Aquarelle digitale, palette froide pastel.",
-    tags: ['Illustration','Aquarelle Digitale','Hiver','Botanique'],
-    images: [
-      {src:'assets/saveurs/hiver.jpg',  label:"Saveurs d'Hiver — Couverture"},
-      {src:'assets/saveurs/renard.png', label:'Le renard — illustration détail'},
-    ]
-  },
-  automne: {
-    cat: 'Illustration · Aquarelle Digitale · Édition',
-    title: "Saveurs d'Automne",
-    year: 'Clopinette · 2025',
-    desc: "Écureuil sur branche de chêne, feuilles d'érable dorées, citrouilles et champignons. Palette chaude et enveloppante.",
-    tags: ['Illustration','Aquarelle Digitale','Automne','Botanique'],
-    images: [
-      {src:'assets/saveurs/automne.jpg',  label:"Saveurs d'Automne — Couverture"},
-      {src:'assets/saveurs/ete.jpg',      label:"Saveurs d'Été — Couverture"},
-      {src:'assets/saveurs/printemps.jpg',label:"Saveurs de Printemps — Couverture"},
-    ]
-  },
-  laponie: {
-    cat: 'Digital Painting · Packaging',
-    title: 'Aurore de Laponie',
-    year: 'Arsène Valentin · 2024',
-    desc: "Village enneigé sous aurore boréale, dirigeable traversant les lumières vertes et violettes du ciel nocturne arctique.",
-    tags: ['Digital Painting','Hiver','Aurore Boréale','Packaging'],
-    images: [
-      {src:'assets/voyages/laponie.jpg', label:'Aurore de Laponie — Flacon 50ml'},
-      {src:'assets/voyages/cartes.jpg',  label:"Contexte gamme — Les Voyages d'Arsène"},
-    ]
-  },
-  fuji: {
-    cat: 'Digital Painting · Packaging',
-    title: 'Éclat du Fuji',
-    year: 'Arsène Valentin · 2024',
-    desc: "Temple japonais sous les cerisiers en fleur, mont Fuji en arrière-plan, dirigeable survolant les sakura.",
-    tags: ['Digital Painting','Japon','Cerisiers','Packaging'],
-    images: [
-      {src:'assets/voyages/fuji.jpg',      label:'Éclat du Fuji — Flacon 50ml'},
-      {src:'assets/voyages/pacifique.jpg', label:'Soleil du Pacifique — comparaison'},
-    ]
-  },
-  sage: {
-    cat: 'Illustration · Gravure Digitale',
-    title: 'Le Sage de Fer',
-    year: 'Arsène Valentin · 2023',
-    desc: "Hibou mécanique aux plumes d'acier, yeux de verre lumineux, posé sur une branche d'engrenages.",
-    tags: ['Gravure Digitale','Animal Mécanique','Steampunk'],
-    images: [
-      {src:'assets/steam/hibou.jpg',  label:'Le Sage de Fer — Steam Collection'},
-      {src:'assets/steam/mockup.jpg', label:'Contexte gamme — Steam Collection'},
-    ]
-  },
-  main: {
-    cat: 'Illustration · Gravure Digitale',
-    title: "La Main d'Alchimiste",
-    year: 'Arsène Valentin · 2023',
-    desc: "Main articulée en métal forgé tenant un cristal magique. Encre de Chine sur papier ancien, ombres hachurées.",
-    tags: ['Gravure Digitale','Alchimie','Steampunk'],
-    images: [
-      {src:'assets/steam/main.jpg',    label:"La Main d'Alchimiste"},
-      {src:'assets/steam/sablier.jpg', label:'Les Arcanes du Temps — même gamme'},
-      {src:'assets/steam/coeur.jpg',   label:'Le Cœur Mécanique — même gamme'},
-    ]
-  },
-  salem: {
-    cat: 'Digital Painting · Dark Fantasy',
-    title: 'Salem',
-    year: 'Série personnelle · 2024',
-    desc: "Sorcière en vol sur fond de pleine lune — citrouilles sculptées, corbeaux et brume.",
-    tags: ['Digital Painting','Halloween','Sorcière','Dark Fantasy'],
-    images: [
-      {src:'assets/dark/salem.jpg', label:'Salem'},
-      {src:'assets/dark/red.jpg',   label:"L'Alchimiste Maudit — même série"},
-    ]
-  },
-  blood: {
-    cat: 'Digital Painting · Dark Fantasy',
-    title: 'Blood Moon',
-    year: 'Série personnelle · 2024',
-    desc: "Paysage lunaire rouge sang avec silhouettes fantomatiques surgissant de la brume. Palette monochrome cramoisie.",
-    tags: ['Digital Painting','Halloween','Atmosphère'],
-    images: [
-      {src:'assets/dark/blood.jpg', label:'Blood Moon'},
-      {src:'assets/dark/cult.jpg',  label:'The Cult — même série'},
-    ]
-  },
-  millenaire: {
-    cat: 'Illustration · Packaging · Identité Locale',
-    title: 'La Pomme Conquérante — Millénaire Caen',
-    year: 'Millénaire Caen · 2024',
-    desc: "Pomme stylisée en armure de chevalier, référence à l'histoire de Caen et de Guillaume le Conquérant.",
-    tags: ['Illustration','Packaging','Normandie','Identité Locale'],
-    images: [
-      {src:'assets/millenaire/pomme2.jpg', label:'La Pomme Conquérante — variante dorée'},
-      {src:'assets/millenaire/pomme3.jpg', label:'La Pomme Conquérante — variante chaude'},
-      {src:'assets/millenaire/cadomum.jpg',label:'Cadomum — mascotte Millénaire Caen'},
-    ]
-  },
-  aristocrate: {
-    cat: 'Illustration · Character Design',
-    title: 'Série Aristocrate',
-    year: 'Série personnelle · 2024',
-    desc: "Personnages de gentlemen dandy steampunk — Le Nanti, La Veste, Le Casque, L'Explorateur.",
-    tags: ['Character Design','Steampunk','Illustration','Ligne Claire'],
-    images: [
-      {src:'assets/aristocrate/nanti.jpg',      label:'Le Nanti'},
-      {src:'assets/aristocrate/veste.jpg',       label:'La Veste — étude de costume'},
-      {src:'assets/aristocrate/casque.jpg',      label:"Le Casque — étude d'équipement"},
-      {src:'assets/aristocrate/explorateur.jpg', label:"L'Explorateur"},
-    ]
-  },
-  pulse: {
-    cat: 'Digital Painting · Concept Art',
-    title: 'Pulse',
-    year: 'Personnel · 2024',
-    desc: "Composition abstraite-organique représentant une énergie vitale — ondes, particules, flux lumineux.",
-    tags: ['Concept Art','Abstrait','Énergie','Digital Painting'],
-    images: [
-      {src:'assets/pulse.jpg', label:'Pulse — Illustration originale'},
-    ]
-  },
-  formation: {
-    cat: 'Digital Painting · Formation',
-    title: 'Études & Explorations',
-    year: 'Formation · 2024–2025',
-    desc: "Exercices de formation en digital painting — environnements de fantasy, character design, paysages SF. Progression visible, maîtrise croissante.",
-    tags: ['Formation','Digital Painting','Environnement','Character Design','Fantasy'],
-    images: [
-      {src:'assets/formation/environnement.jpg', label:'Environnement Final — Module 4'},
-      {src:'assets/formation/character.jpg',     label:'Character Final — Arsène'},
-      {src:'assets/formation/foret.jpg',          label:'Forêt Enchantée'},
-      {src:'assets/formation/halloween.jpg',      label:'Halloween Challenge'},
-      {src:'assets/formation/sf.jpg',             label:'Décors Science-Fiction'},
-      {src:'assets/formation/hoth.jpg',           label:'Hoth — étude planète glace'},
-      {src:'assets/formation/mobydick.jpg',       label:'Moby Dick — illustration littéraire'},
-      {src:'assets/formation/paysage.jpg',        label:'Paysage — étude atmosphère'},
-    ]
-  },
+/* ════════ DONNÉES PROJETS (galerie) ════════ */
+const PROJECTS={
+  voyages:{cat:'Digital Painting · Packaging · Direction Artistique',title:"Les Voyages d'Arsène",year:'Arsène Valentin · 2024',
+    desc:"6 destinations, 6 peintures plein format. Du ciel de Cappadoce aux aurores de Laponie, chaque flacon est un voyage. Direction artistique complète, cohérence de gamme.",
+    tags:['Digital Painting','Packaging','Steampunk','Paysage','Direction Artistique'],
+    images:[{src:'assets/voyages/cartes.jpg',label:"Vue d'ensemble — 6 étiquettes"},{src:'assets/voyages/cappadoce.jpg',label:'Ciel de Cappadoce'},{src:'assets/voyages/laponie.jpg',label:'Aurore de Laponie'},{src:'assets/voyages/fuji.jpg',label:'Éclat du Fuji'},{src:'assets/voyages/pacifique.jpg',label:'Soleil du Pacifique'},{src:'assets/voyages/amazonie.jpg',label:"Brume d'Amazonie"},{src:'assets/voyages/canada.jpg',label:'Rivage Canadien'}]},
+  steam:{cat:'Illustration · Gravure Digitale · Packaging',title:'Steam Collection',year:'Arsène Valentin · 2023',
+    desc:"6 illustrations style gravure XIXe siècle — sablier, hibou mécanique, masque de plague doctor, cœur mécanique, main d'alchimiste, théière. Encre sur parchemin texturé.",
+    tags:['Illustration','Gravure Digitale','Steampunk','XIXe siècle','Packaging'],
+    images:[{src:'assets/steam/mockup.jpg',label:"Vue d'ensemble"},{src:'assets/steam/main.jpg',label:"La Main d'Alchimiste"},{src:'assets/steam/sablier.jpg',label:'Les Arcanes du Temps'},{src:'assets/steam/hibou.jpg',label:'Le Sage de Fer'},{src:'assets/steam/coeur.jpg',label:'Le Cœur Mécanique'},{src:'assets/steam/gueule.jpg',label:"La Gueule d'Ange"},{src:'assets/steam/pomme.jpg',label:'Le Fruit Défendu'}]},
+  dark:{cat:'Digital Painting · Illustration Originale',title:'Dark Fantasy',year:'Série personnelle · 2024',
+    desc:"Nécromancien, sorcières, lune de sang — peintures numériques sombres où l'alchimie rencontre la magie noire.",
+    tags:['Digital Painting','Dark Fantasy','Halloween','Illustration'],
+    images:[{src:'assets/dark/red.jpg',label:"L'Alchimiste Maudit"},{src:'assets/dark/salem.jpg',label:'Salem'},{src:'assets/dark/blood.jpg',label:'Blood Moon'},{src:'assets/dark/cult.jpg',label:'The Cult'}]},
+  hiver:{cat:'Illustration · Aquarelle Digitale · Édition',title:"Saveurs d'Hiver",year:'Clopinette · 2025',
+    desc:"Couverture illustrée pour catalogue saisonnier. Renard endormi dans la neige, cerf gracieux, stalactites de glace. Aquarelle digitale, palette froide pastel.",
+    tags:['Illustration','Aquarelle Digitale','Hiver','Botanique'],
+    images:[{src:'assets/saveurs/hiver.jpg',label:"Saveurs d'Hiver — Couverture"},{src:'assets/saveurs/renard.png',label:'Le renard — détail'}]},
+  automne:{cat:'Illustration · Aquarelle Digitale · Édition',title:"Saveurs d'Automne",year:'Clopinette · 2025',
+    desc:"Écureuil sur branche de chêne, feuilles d'érable dorées, citrouilles et champignons. Palette chaude et enveloppante.",
+    tags:['Illustration','Aquarelle Digitale','Automne','Botanique'],
+    images:[{src:'assets/saveurs/automne.jpg',label:"Saveurs d'Automne"},{src:'assets/saveurs/ete.jpg',label:"Saveurs d'Été"},{src:'assets/saveurs/printemps.jpg',label:"Saveurs de Printemps"}]},
+  laponie:{cat:'Digital Painting · Packaging',title:'Aurore de Laponie',year:'Arsène Valentin · 2024',
+    desc:"Village enneigé sous aurore boréale, dirigeable traversant les lumières vertes et violettes du ciel nocturne arctique.",
+    tags:['Digital Painting','Hiver','Aurore Boréale','Packaging'],
+    images:[{src:'assets/voyages/laponie.jpg',label:'Aurore de Laponie'},{src:'assets/voyages/cartes.jpg',label:'Contexte gamme'}]},
+  fuji:{cat:'Digital Painting · Packaging',title:'Éclat du Fuji',year:'Arsène Valentin · 2024',
+    desc:"Temple japonais sous les cerisiers en fleur, mont Fuji en arrière-plan, dirigeable survolant les sakura.",
+    tags:['Digital Painting','Japon','Cerisiers','Packaging'],
+    images:[{src:'assets/voyages/fuji.jpg',label:'Éclat du Fuji'},{src:'assets/voyages/pacifique.jpg',label:'Soleil du Pacifique'}]},
+  sage:{cat:'Illustration · Gravure Digitale',title:'Le Sage de Fer',year:'Arsène Valentin · 2023',
+    desc:"Hibou mécanique aux plumes d'acier, yeux de verre lumineux, posé sur une branche d'engrenages.",
+    tags:['Gravure Digitale','Animal Mécanique','Steampunk'],
+    images:[{src:'assets/steam/hibou.jpg',label:'Le Sage de Fer'},{src:'assets/steam/mockup.jpg',label:'Contexte gamme'}]},
+  main:{cat:'Illustration · Gravure Digitale',title:"La Main d'Alchimiste",year:'Arsène Valentin · 2023',
+    desc:"Main articulée en métal forgé tenant un cristal magique. Encre de Chine sur papier ancien, ombres hachurées.",
+    tags:['Gravure Digitale','Alchimie','Steampunk'],
+    images:[{src:'assets/steam/main.jpg',label:"La Main d'Alchimiste"},{src:'assets/steam/sablier.jpg',label:'Les Arcanes du Temps'},{src:'assets/steam/coeur.jpg',label:'Le Cœur Mécanique'}]},
+  salem:{cat:'Digital Painting · Dark Fantasy',title:'Salem',year:'Série personnelle · 2024',
+    desc:"Sorcière en vol sur fond de pleine lune — citrouilles sculptées, corbeaux et brume.",
+    tags:['Digital Painting','Halloween','Sorcière','Dark Fantasy'],
+    images:[{src:'assets/dark/salem.jpg',label:'Salem'},{src:'assets/dark/red.jpg',label:"L'Alchimiste Maudit"}]},
+  blood:{cat:'Digital Painting · Dark Fantasy',title:'Blood Moon',year:'Série personnelle · 2024',
+    desc:"Paysage lunaire rouge sang avec silhouettes fantomatiques surgissant de la brume. Palette monochrome cramoisie.",
+    tags:['Digital Painting','Halloween','Atmosphère'],
+    images:[{src:'assets/dark/blood.jpg',label:'Blood Moon'},{src:'assets/dark/cult.jpg',label:'The Cult'}]},
+  millenaire:{cat:'Illustration · Packaging · Identité Locale',title:'La Pomme Conquérante',year:'Millénaire Caen · 2024',
+    desc:"Pomme stylisée en armure de chevalier, référence à l'histoire de Caen et de Guillaume le Conquérant.",
+    tags:['Illustration','Packaging','Normandie','Identité Locale'],
+    images:[{src:'assets/millenaire/pomme2.jpg',label:'Variante dorée'},{src:'assets/millenaire/pomme3.jpg',label:'Variante chaude'},{src:'assets/millenaire/cadomum.jpg',label:'Cadomum — mascotte'}]},
+  aristocrate:{cat:'Illustration · Character Design',title:'Série Aristocrate',year:'Série personnelle · 2024',
+    desc:"Personnages de gentlemen dandy steampunk — Le Nanti, La Veste, Le Casque, L'Explorateur.",
+    tags:['Character Design','Steampunk','Illustration','Ligne Claire'],
+    images:[{src:'assets/aristocrate/nanti.jpg',label:'Le Nanti'},{src:'assets/aristocrate/veste.jpg',label:'La Veste'},{src:'assets/aristocrate/casque.jpg',label:'Le Casque'},{src:'assets/aristocrate/explorateur.jpg',label:"L'Explorateur"}]},
+  pulse:{cat:'Digital Painting · Concept Art',title:'Pulse',year:'Personnel · 2024',
+    desc:"Composition abstraite-organique représentant une énergie vitale — ondes, particules, flux lumineux.",
+    tags:['Concept Art','Abstrait','Énergie','Digital Painting'],
+    images:[{src:'assets/pulse.jpg',label:'Pulse — Illustration originale'}]},
+  formation:{cat:'Digital Painting · Formation',title:'Études & Explorations',year:'Formation · 2024–2025',
+    desc:"Exercices de formation en digital painting — environnements de fantasy, character design, paysages SF. Progression visible.",
+    tags:['Formation','Digital Painting','Environnement','Character Design','Fantasy'],
+    images:[{src:'assets/formation/environnement.jpg',label:'Environnement Final'},{src:'assets/formation/character.jpg',label:'Character Final'},{src:'assets/formation/foret.jpg',label:'Forêt Enchantée'},{src:'assets/formation/halloween.jpg',label:'Halloween Challenge'},{src:'assets/formation/sf.jpg',label:'Décors SF'},{src:'assets/formation/hoth.jpg',label:'Hoth'},{src:'assets/formation/mobydick.jpg',label:'Moby Dick'},{src:'assets/formation/paysage.jpg',label:'Paysage — étude'}]},
 };
 
-/* ────────────────────────────────────
-   LOADER
-──────────────────────────────────── */
-const loader    = document.getElementById('loader');
-const loaderBar = document.getElementById('loader-bar');
-const loaderPct = document.getElementById('loader-pct');
-let pct = 0;
+/* ════════ MISE EN PLACE DU MUR ════════ */
+const BOARD_W=3400, BOARD_H=2500;
 
-function pad(n){ return String(n).padStart(3,'0'); }
-const fill = setInterval(()=>{
-  pct = Math.min(pct + Math.random()*18, 99);
-  loaderPct.textContent = pad(Math.floor(pct)) + '%';
-  loaderBar.style.width = pct + '%';
-}, 60);
+const LABELS=[
+  {t:'ARSÈNE VALENTIN', x:700,  y:430},
+  {t:'DARK FANTASY',    x:1430, y:1480},
+  {t:'CLOPINETTE',      x:2560, y:470},
+  {t:'ÉTUDES & PERSO',  x:2640, y:1500},
+];
 
-window.addEventListener('load', ()=>{
-  clearInterval(fill);
-  loaderBar.style.width = '100%';
-  loaderPct.textContent = '100%';
-  setTimeout(()=>{
-    loader.classList.add('out');
-    document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
-  }, 500);
+const PINS=[
+  // — Arsène Valentin —
+  {id:'voyages',  x:360, y:620,  w:360, rot:-4, pin:'tape',       img:'assets/voyages/cappadoce.jpg', t:"Les Voyages d'Arsène", c:'Packaging · DA'},
+  {id:'laponie',  x:800, y:560,  w:210, rot:6,  pin:'var(--cyan)',img:'assets/voyages/laponie.jpg',   t:'Aurore de Laponie',    c:'Digital Painting'},
+  {id:'fuji',     x:785, y:865,  w:210, rot:-7, pin:'var(--navy)',img:'assets/voyages/fuji.jpg',      t:'Éclat du Fuji',        c:'Digital Painting'},
+  {id:'steam',    x:360, y:1075, w:330, rot:3,  pin:'tape',       img:'assets/steam/mockup.jpg',      t:'Steam Collection',     c:'Gravure XIXᵉ'},
+  {id:'sage',     x:765, y:1190, w:190, rot:9,  pin:'var(--cyan)',img:'assets/steam/hibou.jpg',       t:'Le Sage de Fer',       c:'Gravure'},
+  {id:'main',     x:330, y:1520, w:200, rot:-5, pin:'var(--navy)',img:'assets/steam/main.jpg',        t:"Main d'Alchimiste",    c:'Gravure'},
+  // — Caen (pont central) —
+  {id:'millenaire',x:1720,y:840, w:215, rot:5,  pin:'var(--navy)',img:'assets/millenaire/pomme2.jpg', t:'Pomme Conquérante',    c:'Millénaire Caen'},
+  // — Dark Fantasy —
+  {id:'dark',     x:1180,y:1300, w:250, rot:4,  pin:'tape',       img:'assets/dark/red.jpg',          t:"L'Alchimiste Maudit",  c:'Dark Fantasy'},
+  {id:'salem',    x:1520,y:1295, w:210, rot:-6, pin:'var(--navy)',img:'assets/dark/salem.jpg',        t:'Salem',                c:'Dark Fantasy'},
+  {id:'blood',    x:1355,y:1610, w:240, rot:8,  pin:'var(--cyan)',img:'assets/dark/blood.jpg',        t:'Blood Moon',           c:'Dark Fantasy'},
+  // — Clopinette —
+  {id:'hiver',    x:2300,y:640,  w:270, rot:-5, pin:'tape',       img:'assets/saveurs/hiver.jpg',     t:"Saveurs d'Hiver",      c:'Aquarelle'},
+  {id:'automne',  x:2665,y:705,  w:250, rot:6,  pin:'var(--cyan)',img:'assets/saveurs/automne.jpg',   t:"Saveurs d'Automne",    c:'Aquarelle'},
+  // — Études & Perso —
+  {id:'aristocrate',x:2280,y:1560,w:220,rot:-4, pin:'var(--navy)',img:'assets/aristocrate/nanti.jpg', t:'Série Aristocrate',    c:'Character Design'},
+  {id:'pulse',    x:2655,y:1605, w:240, rot:7,  pin:'tape',       img:'assets/pulse.jpg',             t:'Pulse',                c:'Concept Art'},
+  {id:'formation',x:2390,y:1905, w:300, rot:-7, pin:'var(--cyan)',img:'assets/formation/environnement.jpg',t:'Études & Explorations',c:'Formation'},
+];
+
+const NOTES=[
+  {x:1480,y:330, w:280, rot:-3, html:"Bienvenue dans mon atelier ✦<br>Attrape le mur & fais-le glisser pour explorer →"},
+  {x:250, y:250, w:250, rot:2,  html:"Anthony Armand<br><span class='scrib'>Peintre numérique, illustrateur &amp; directeur artistique. 5 ans à donner vie à des univers.</span>"},
+  {x:2860,y:2030,w:265, rot:4,  html:"On bosse ensemble ?<br><b>aardesign14@gmail.com</b><br><span class='scrib'>06 79 46 62 19 · France &amp; remote</span>"},
+];
+
+const CLUSTERS=[
+  {name:'Arsène',     x:680,  y:1050, s:.85},
+  {name:'Caen',       x:1825, y:945,  s:1.0},
+  {name:'Dark',       x:1450, y:1480, s:.85},
+  {name:'Clopinette', x:2620, y:740,  s:.9},
+  {name:'Études',     x:2640, y:1720, s:.82},
+];
+
+/* ─── construire le DOM du board ─── */
+const board=document.getElementById('board');
+let html='';
+LABELS.forEach(l=> html+=`<div class="board-label" style="left:${l.x}px;top:${l.y}px">${l.t}</div>`);
+NOTES.forEach(n=> html+=`<div class="note" style="left:${n.x}px;top:${n.y}px;--w:${n.w}px;--rot:${n.rot}deg"><div class="tape"></div>${n.html}</div>`);
+PINS.forEach((p,i)=>{
+  const fix = p.pin==='tape' ? `<div class="tape"></div>` : `<div class="pin" style="--pc:${p.pin}"></div>`;
+  html+=`<button class="pin-item" data-project="${p.id}" style="left:${p.x}px;top:${p.y}px;--w:${p.w}px;--rot:${p.rot}deg">
+    <div class="pin-inner" style="animation-delay:${.25+i*0.045}s">
+      ${fix}
+      <div class="photo">
+        <img src="${p.img}" alt="${p.t}" draggable="false">
+        <div class="cap"><div class="cap-t">${p.t}</div><div class="cap-c">${p.c}</div></div>
+      </div>
+    </div></button>`;
+});
+board.innerHTML=html;
+
+/* nav clusters */
+const navEl=document.getElementById('cluster-nav');
+CLUSTERS.forEach(c=>{
+  const b=document.createElement('button'); b.textContent=c.name;
+  b.addEventListener('click',()=>{ setActive(b); tweenTo(c.x,c.y,c.s); });
+  navEl.appendChild(b);
+});
+function setActive(b){ navEl.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b)); }
+
+/* ════════ MOTEUR PAN / ZOOM ════════ */
+const stage=document.getElementById('stage');
+let scale=.72, tx=0, ty=0;
+const MIN=.4, MAX=1.8;
+
+function clamp(){
+  const bw=BOARD_W*scale, bh=BOARD_H*scale, PAD=120;
+  tx = bw<=innerWidth  ? (innerWidth-bw)/2  : Math.min(PAD, Math.max(innerWidth-bw-PAD, tx));
+  ty = bh<=innerHeight ? (innerHeight-bh)/2 : Math.min(PAD, Math.max(innerHeight-bh-PAD, ty));
+}
+function apply(){
+  clamp();
+  board.style.transform=`translate3d(${tx}px,${ty}px,0) scale(${scale})`;
+  document.getElementById('zoom-val').textContent=Math.round(scale*100)+'%';
+}
+function zoomAt(cx,cy,ns){
+  ns=Math.max(MIN,Math.min(MAX,ns));
+  const bx=(cx-tx)/scale, by=(cy-ty)/scale;
+  scale=ns; tx=cx-bx*scale; ty=cy-by*scale; apply();
+}
+
+/* drag + inertie */
+let down=false, moved=false, sx,sy,stx,sty, downItem=null, vx=0,vy=0, lx,ly, inertia=0;
+stage.addEventListener('pointerdown',e=>{
+  down=true; moved=false; sx=e.clientX; sy=e.clientY; stx=tx; sty=ty;
+  lx=e.clientX; ly=e.clientY; vx=vy=0; cancelAnimationFrame(inertia);
+  downItem=e.target.closest('.pin-item');
+  stage.classList.add('grabbing'); stage.setPointerCapture(e.pointerId);
+});
+stage.addEventListener('pointermove',e=>{
+  if(!down) return;
+  const dx=e.clientX-sx, dy=e.clientY-sy;
+  if(Math.abs(dx)+Math.abs(dy)>6) moved=true;
+  tx=stx+dx; ty=sty+dy; apply();
+  vx=e.clientX-lx; vy=e.clientY-ly; lx=e.clientX; ly=e.clientY;
+});
+stage.addEventListener('pointerup',e=>{
+  down=false; stage.classList.remove('grabbing');
+  if(!moved && downItem && downItem.dataset.project){ openProject(downItem.dataset.project); return; }
+  (function glide(){
+    vx*=.92; vy*=.92; tx+=vx; ty+=vy; apply();
+    if(Math.abs(vx)+Math.abs(vy)>.4) inertia=requestAnimationFrame(glide);
+  })();
 });
 
-/* ────────────────────────────────────
-   CURSOR
-──────────────────────────────────── */
-const dot  = document.getElementById('cur-dot');
-const ring = document.getElementById('cur-ring');
-let mx=0,my=0,dx=0,dy=0,rx=0,ry=0;
+/* molette */
+stage.addEventListener('wheel',e=>{
+  e.preventDefault();
+  zoomAt(e.clientX,e.clientY, scale*(e.deltaY<0?1.12:.89));
+},{passive:false});
+/* double-clic = zoom ciblé */
+stage.addEventListener('dblclick',e=>{
+  if(e.target.closest('.pin-item')) return;
+  zoomAt(e.clientX,e.clientY, scale<1.1?1.45:.6);
+});
 
-document.addEventListener('mousemove', e=>{ mx=e.clientX; my=e.clientY; });
-(function tickCursor(){
-  dx += (mx-dx)*.22; dy += (my-dy)*.22;
-  rx += (mx-rx)*.10; ry += (my-ry)*.10;
-  dot.style.cssText  = `left:${dx}px;top:${dy}px`;
-  ring.style.cssText = `left:${rx}px;top:${ry}px`;
-  requestAnimationFrame(tickCursor);
+/* boutons */
+document.getElementById('zoom-in').onclick =()=>zoomAt(innerWidth/2,innerHeight/2,scale*1.25);
+document.getElementById('zoom-out').onclick=()=>zoomAt(innerWidth/2,innerHeight/2,scale*.8);
+document.getElementById('recenter').onclick=()=>{ navEl.querySelectorAll('button').forEach(x=>x.classList.remove('active')); tweenTo(1700,1180,.5); };
+document.getElementById('brand').onclick=e=>{ e.preventDefault(); tweenTo(1700,1180,.5); };
+
+/* tween fluide vers un point */
+function tweenTo(fx,fy,ts){
+  cancelAnimationFrame(inertia);
+  const s0=scale,tx0=tx,ty0=ty;
+  const sE=Math.max(MIN,Math.min(MAX,ts));
+  const txE=innerWidth/2-fx*sE, tyE=innerHeight/2-fy*sE;
+  let t0=null;
+  (function step(ts2){
+    if(!t0)t0=ts2;
+    const p=Math.min((ts2-t0)/700,1), e=p<.5?4*p*p*p:1-Math.pow(-2*p+2,3)/2;
+    scale=s0+(sE-s0)*e; tx=tx0+(txE-tx0)*e; ty=ty0+(tyE-ty0)*e; apply();
+    if(p<1) requestAnimationFrame(step);
+  })(performance.now());
+}
+
+/* clavier */
+addEventListener('keydown',e=>{
+  if(modal.classList.contains('open')) return;
+  const step=90;
+  if(e.key==='ArrowLeft'){ tx+=step; apply(); }
+  if(e.key==='ArrowRight'){ tx-=step; apply(); }
+  if(e.key==='ArrowUp'){ ty+=step; apply(); }
+  if(e.key==='ArrowDown'){ ty-=step; apply(); }
+  if(e.key==='+'||e.key==='='){ zoomAt(innerWidth/2,innerHeight/2,scale*1.2); }
+  if(e.key==='-'||e.key==='_'){ zoomAt(innerWidth/2,innerHeight/2,scale*.83); }
+  if(e.key==='0'){ tweenTo(1700,1180,.5); }
+});
+addEventListener('resize',apply);
+
+/* position initiale */
+(function init(){
+  const fx=1700,fy=1180;
+  tx=innerWidth/2-fx*scale; ty=innerHeight/2-fy*scale; apply();
 })();
 
-document.querySelectorAll('a,button,.stat-card,.service-card').forEach(el=>{
-  el.addEventListener('mouseenter', ()=> document.body.classList.add('hovering'));
-  el.addEventListener('mouseleave', ()=> document.body.classList.remove('hovering'));
-});
+/* ════════ DARK MODE ════════ */
+const root=document.documentElement, themeBtn=document.getElementById('theme');
+const savedT=localStorage.getItem('aar-theme'); if(savedT) root.setAttribute('data-theme',savedT);
+themeBtn.onclick=()=>{ const d=root.getAttribute('data-theme')==='dark'; const n=d?'light':'dark';
+  root.setAttribute('data-theme',n); localStorage.setItem('aar-theme',n); };
 
-/* ────────────────────────────────────
-   PROGRESS + NAV
-──────────────────────────────────── */
-window.addEventListener('scroll', ()=>{
-  const s = document.documentElement.scrollTop;
-  const h = document.documentElement.scrollHeight - innerHeight;
-  document.getElementById('progress').style.width = (s/h*100) + '%';
-  document.getElementById('nav').classList.toggle('compact', s > 60);
-});
+/* ════════ INTRO ════════ */
+const intro=document.getElementById('intro');
+document.getElementById('enter').onclick=()=>{
+  intro.classList.add('out');
+  board.classList.add('ready');
+  setTimeout(()=>tweenTo(900,1000,.82),250);   // petit voyage d'accueil
+};
 
-/* ────────────────────────────────────
-   DARK MODE
-──────────────────────────────────── */
-const html = document.documentElement;
-const themeBtn = document.getElementById('theme-btn');
-const saved = localStorage.getItem('aar-theme');
-if(saved) html.setAttribute('data-theme', saved);
-
-themeBtn.addEventListener('click', ()=>{
-  const dark = html.getAttribute('data-theme') === 'dark';
-  const next = dark ? 'light' : 'dark';
-  html.setAttribute('data-theme', next);
-  localStorage.setItem('aar-theme', next);
-});
-
-/* ────────────────────────────────────
-   REVEAL ON SCROLL
-──────────────────────────────────── */
-const revealObs = new IntersectionObserver(entries=>{
-  entries.forEach(e=>{
-    if(e.isIntersecting) {
-      e.target.classList.add('visible');
-      revealObs.unobserve(e.target);
-      // Skill bars
-      e.target.querySelectorAll('.skill-bar[data-pct]').forEach(bar=>{
-        setTimeout(()=>{ bar.style.width = bar.dataset.pct + '%'; }, 200);
-      });
-      // Stat counters
-      e.target.querySelectorAll('.stat-num[data-target]').forEach(el=>{
-        const target = +el.dataset.target;
-        const sup    = el.querySelector('sup')?.outerHTML || '';
-        let start = null;
-        function step(ts){
-          if(!start) start=ts;
-          const p = Math.min((ts-start)/1200, 1);
-          const v = Math.floor((1-Math.pow(1-p,3))*target);
-          el.innerHTML = v + sup;
-          if(p<1) requestAnimationFrame(step);
-        }
-        requestAnimationFrame(step);
-      });
-    }
-  });
-},{threshold:.1, rootMargin:'0px 0px -40px 0px'});
-
-/* Skills in about section get observed separately */
-document.querySelectorAll('#about .skill-bar').forEach(bar=>{
-  const obs2 = new IntersectionObserver(entries=>{
-    if(entries[0].isIntersecting){
-      setTimeout(()=>{ bar.style.width = bar.dataset.pct + '%'; }, 300);
-      obs2.disconnect();
-    }
-  },{threshold:.5});
-  obs2.observe(bar);
-});
-
-document.querySelectorAll('.stat-num[data-target]').forEach(el=>{
-  const target = +el.dataset.target;
-  const sup = el.querySelector('sup')?.outerHTML || '';
-  const obs3 = new IntersectionObserver(entries=>{
-    if(entries[0].isIntersecting){
-      let start=null;
-      function step(ts){
-        if(!start) start=ts;
-        const p=Math.min((ts-start)/1200,1);
-        el.innerHTML=Math.floor((1-Math.pow(1-p,3))*target)+sup;
-        if(p<1) requestAnimationFrame(step);
-      }
-      requestAnimationFrame(step);
-      obs3.disconnect();
-    }
-  },{threshold:.5});
-  obs3.observe(el);
-});
-
-/* ────────────────────────────────────
-   MODAL
-──────────────────────────────────── */
-const modal     = document.getElementById('modal');
-const mMainImg  = document.getElementById('modal-main-img');
-const mCat      = document.getElementById('modal-cat');
-const mTitle    = document.getElementById('modal-title');
-const mYear     = document.getElementById('modal-year');
-const mDesc     = document.getElementById('modal-desc');
-const mTags     = document.getElementById('modal-tags');
-const mThumbs   = document.getElementById('modal-thumbs');
-const mLabel    = document.getElementById('modal-img-label');
-const mCount    = document.getElementById('modal-img-count');
-
-let currentProject = null, currentIdx = 0;
-
+/* ════════ MODAL GALERIE ════════ */
+const modal=document.getElementById('modal'),
+  mImg=document.getElementById('m-img'),mCat=document.getElementById('m-cat'),
+  mTitle=document.getElementById('m-title'),mYear=document.getElementById('m-year'),
+  mDesc=document.getElementById('m-desc'),mTags=document.getElementById('m-tags'),
+  mThumbs=document.getElementById('m-thumbs'),mLabel=document.getElementById('m-label'),
+  mCount=document.getElementById('m-count');
+let curP=null,curI=0;
 function openProject(id){
-  const p = PROJECTS[id];
-  if(!p) return;
-  currentProject = p;
-  mCat.textContent   = p.cat;
-  mTitle.textContent = p.title;
-  mYear.textContent  = p.year;
-  mDesc.textContent  = p.desc;
-  mTags.innerHTML    = p.tags.map(t=>`<span class="modal-tag">${t}</span>`).join('');
-  mThumbs.innerHTML  = p.images.map((img,i)=>`
-    <div class="modal-thumb${i===0?' active':''}" data-i="${i}">
-      <img src="${img.src}" alt="${img.label}" loading="lazy">
-    </div>`).join('');
-  mThumbs.querySelectorAll('.modal-thumb').forEach(th=>{
-    th.addEventListener('click', ()=> showImage(+th.dataset.i));
-  });
-  showImage(0);
-  modal.classList.add('open');
-  document.body.style.overflow = 'hidden';
+  const p=PROJECTS[id]; if(!p)return; curP=p;
+  mCat.textContent=p.cat; mTitle.textContent=p.title; mYear.textContent=p.year; mDesc.textContent=p.desc;
+  mTags.innerHTML=p.tags.map(t=>`<span class="m-tag">${t}</span>`).join('');
+  mThumbs.innerHTML=p.images.map((im,i)=>`<div class="m-thumb${i===0?' active':''}" data-i="${i}"><img src="${im.src}" loading="lazy" alt=""></div>`).join('');
+  mThumbs.querySelectorAll('.m-thumb').forEach(th=>th.onclick=()=>show(+th.dataset.i));
+  show(0); modal.classList.add('open');
 }
-
-function showImage(i){
-  const p = currentProject;
-  currentIdx = (i + p.images.length) % p.images.length;
-  const img = p.images[currentIdx];
-  mMainImg.classList.add('switching');
-  setTimeout(()=>{
-    mMainImg.src = img.src;
-    mMainImg.onload = ()=> mMainImg.classList.remove('switching');
-  }, 250);
-  mLabel.textContent = img.label;
-  mCount.textContent = `${currentIdx+1} / ${p.images.length}`;
-  mThumbs.querySelectorAll('.modal-thumb').forEach((th,j)=>{
-    th.classList.toggle('active', j===currentIdx);
-  });
-  const active = mThumbs.querySelector('.modal-thumb.active');
-  if(active) active.scrollIntoView({block:'nearest', behavior:'smooth'});
+function show(i){
+  const p=curP; curI=(i+p.images.length)%p.images.length; const im=p.images[curI];
+  mImg.classList.add('sw');
+  setTimeout(()=>{ mImg.src=im.src; mImg.onload=()=>mImg.classList.remove('sw'); },200);
+  mLabel.textContent=im.label; mCount.textContent=`${curI+1} / ${p.images.length}`;
+  mThumbs.querySelectorAll('.m-thumb').forEach((th,j)=>th.classList.toggle('active',j===curI));
+  const a=mThumbs.querySelector('.m-thumb.active'); if(a)a.scrollIntoView({block:'nearest',behavior:'smooth'});
 }
-
-function closeModal(){
-  modal.classList.remove('open');
-  document.body.style.overflow = '';
-  setTimeout(()=>{ mMainImg.src=''; }, 500);
-}
-
-document.getElementById('modal-overlay').addEventListener('click', closeModal);
-document.getElementById('modal-close').addEventListener('click', closeModal);
-document.getElementById('modal-prev').addEventListener('click', ()=> showImage(currentIdx-1));
-document.getElementById('modal-next').addEventListener('click', ()=> showImage(currentIdx+1));
-
-document.addEventListener('keydown', e=>{
-  if(!modal.classList.contains('open')) return;
-  if(e.key==='Escape')      closeModal();
-  if(e.key==='ArrowLeft')   showImage(currentIdx-1);
-  if(e.key==='ArrowRight')  showImage(currentIdx+1);
-});
-
-document.querySelectorAll('.proj[data-project]').forEach(row=>{
-  row.addEventListener('click', e=>{
-    e.preventDefault();
-    openProject(row.dataset.project);
-  });
+function closeM(){ modal.classList.remove('open'); setTimeout(()=>mImg.src='',400); }
+document.getElementById('modal-ov').onclick=closeM;
+document.getElementById('m-close').onclick=closeM;
+document.getElementById('m-prev').onclick=()=>show(curI-1);
+document.getElementById('m-next').onclick=()=>show(curI+1);
+addEventListener('keydown',e=>{
+  if(!modal.classList.contains('open'))return;
+  if(e.key==='Escape')closeM(); if(e.key==='ArrowLeft')show(curI-1); if(e.key==='ArrowRight')show(curI+1);
 });
 </script>
 </body>
