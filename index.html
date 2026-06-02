@@ -16,6 +16,8 @@
 
   /* dark (default) */
   --wall-a:#060c16; --wall-b:#0a1428;
+  --desk-a:#060c16; --desk-b:#0a1428;
+  --desk-img:none;
   --bar-bg:rgba(8,14,30,.88);
   --bar-border:rgba(41,184,217,.14);
   --ink:#e8eef8; --mid:#6e84a6; --line:rgba(255,255,255,.07);
@@ -49,10 +51,12 @@ body{background:var(--wall-a);color:var(--ink);transition:background .4s,color .
 #wall{
   position:fixed;inset:0;z-index:0;
   background:
+    var(--desk-img, none),
     radial-gradient(ellipse 80% 60% at 15% 90%, rgba(0,151,186,.25) 0%, transparent 55%),
     radial-gradient(ellipse 60% 50% at 85% 10%, rgba(27,53,96,.6) 0%, transparent 50%),
     radial-gradient(ellipse 100% 80% at 50% 50%, rgba(10,20,60,.4) 0%, transparent 70%),
     linear-gradient(160deg, var(--wall-a) 0%, var(--wall-b) 100%);
+  background-size:cover;
   transition:background .4s;
 }
 #wall::before{
@@ -374,14 +378,7 @@ body{background:var(--wall-a);color:var(--ink);transition:background .4s,color .
      LOCK SCREEN
 ══════════════════════════════════════════ -->
 <div id="lockscreen">
-  <div id="ls-logo">
-    <svg width="48" height="48" viewBox="0 0 88 88" fill="none">
-      <rect x="4" y="4" width="36" height="36" rx="6" fill="#29B8D9" opacity=".9"/>
-      <rect x="48" y="4" width="36" height="36" rx="6" fill="#1B3560" opacity=".9"/>
-      <rect x="4" y="48" width="36" height="36" rx="6" fill="#1B3560" opacity=".9"/>
-      <rect x="48" y="48" width="36" height="36" rx="6" fill="#29B8D9" opacity=".9"/>
-    </svg>
-  </div>
+  <div id="ls-logo"><img src="assets/Logo-Aardesign-Long.png" alt="AAR Design" style="height:38px;opacity:.85;filter:brightness(0) invert(1)"></div>
   <div id="ls-time">00:00</div>
   <div id="ls-date">—</div>
   <div id="ls-name">Anthony Armand</div>
@@ -395,13 +392,7 @@ body{background:var(--wall-a);color:var(--ink);transition:background .4s,color .
 <div id="topbar">
   <!-- Logo / menu -->
   <div id="tb-logo">
-    <svg width="16" height="16" viewBox="0 0 88 88" fill="none">
-      <rect x="2" y="2" width="38" height="38" rx="5" fill="#29B8D9"/>
-      <rect x="48" y="2" width="38" height="38" rx="5" fill="#1B3560"/>
-      <rect x="2" y="48" width="38" height="38" rx="5" fill="#1B3560"/>
-      <rect x="48" y="48" width="38" height="38" rx="5" fill="#29B8D9"/>
-    </svg>
-    AAR OS
+    <img src="assets/Logo-Aardesign-Long.png" alt="AAR OS" style="height:14px;opacity:.9;filter:brightness(0) invert(1)">
     <div id="tb-menu">
       <button class="tm-item" onclick="openApp('atelier')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
@@ -551,12 +542,17 @@ const ADMIN_PWD='aardesign2026';
     const t = JSON.parse(localStorage.getItem('aar_theme')||'null');
     if (!t) return;
     const r = document.documentElement.style;
-    if (t.navy)  r.setProperty('--navy', t.navy);
-    if (t.cyan)  r.setProperty('--cyan', t.cyan);
-    if (t.cyan2) r.setProperty('--cyan2', t.cyan2);
-    if (t.wall)  { r.setProperty('--wall-a', t.wall); r.setProperty('--wall-b', t.wall); }
-    if (t.win)   r.setProperty('--win-bg', t.win + 'f0');
-    if (t.txt)   { r.setProperty('--ink', t.txt); r.setProperty('--ink-l', t.txt); }
+    if (t.navy)   r.setProperty('--navy', t.navy);
+    if (t.cyan)   r.setProperty('--cyan', t.cyan);
+    if (t.cyan2)  r.setProperty('--cyan2', t.cyan2);
+    if (t.lsbg1)  { r.setProperty('--wall-a', t.lsbg1); r.setProperty('--desk-a', t.lsbg1); }
+    if (t.lsbg2)  { r.setProperty('--wall-b', t.lsbg2); r.setProperty('--desk-b', t.lsbg2); }
+    if (t.deskbg1) r.setProperty('--desk-a', t.deskbg1);
+    if (t.deskbg2) r.setProperty('--desk-b', t.deskbg2);
+    if (t.wallpaper) r.setProperty('--desk-img', `url('${t.wallpaper}')`);
+    else r.setProperty('--desk-img', 'none');
+    if (t.win)    r.setProperty('--win-bg', t.win + 'f0');
+    if (t.txt)    { r.setProperty('--ink', t.txt); r.setProperty('--ink-l', t.txt); }
     if (t.fontBody) r.setProperty('--font', `'${t.fontBody}', sans-serif`);
   } catch(e) {}
 })();
