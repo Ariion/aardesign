@@ -301,6 +301,72 @@ tr:hover td{background:rgba(17,16,16,.015);}
 .empty-s{font-size:.72rem;}
 
 @media(max-width:1100px){.stats-row{grid-template-columns:repeat(2,1fr);}}
+
+/* ═══ PORTFOLIO OS MANAGER ═══ */
+.pf-folders { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:1rem; }
+.pf-folder {
+  background:var(--bg2); border:1px solid var(--line); padding:1rem;
+  cursor:pointer; transition:border-color .18s;
+}
+.pf-folder:hover { border-color:var(--gold); }
+.pf-folder-hd { display:flex; align-items:center; gap:.6rem; margin-bottom:.6rem; }
+.pf-folder-dot { width:10px; height:10px; border-radius:2px; flex-shrink:0; }
+.pf-folder-name { font-size:.76rem; font-weight:500; }
+.pf-folder-count { font-size:.58rem; color:var(--mid); margin-left:auto; }
+.pf-folder-thumbs { display:flex; gap:4px; flex-wrap:wrap; min-height:48px; }
+.pf-folder-thumb { width:46px; height:40px; object-fit:cover; border-radius:2px; background:var(--bg3); }
+.pf-folder-empty { font-size:.6rem; color:var(--mid); display:flex; align-items:center; }
+
+/* Folder editor */
+.pf-ed-header { display:flex; align-items:center; gap:.8rem; margin-bottom:1.2rem; }
+.pf-ed-back { background:none; border:none; cursor:pointer; font-size:.78rem; color:var(--mid); font-family:inherit; display:flex; align-items:center; gap:.3rem; }
+.pf-ed-back:hover { color:var(--ink); }
+.pf-ed-title { font-family:'DM Serif Display',serif; font-size:1rem; }
+.pf-add-methods { display:grid; grid-template-columns:repeat(3,1fr); gap:.8rem; margin-bottom:1.2rem; }
+.pf-method {
+  border:1px dashed var(--line2); padding:1rem; text-align:center; cursor:pointer;
+  transition:all .15s; background:transparent;
+}
+.pf-method:hover { border-color:var(--gold); background:var(--goldA); }
+.pf-method-ico { font-size:1.3rem; display:block; margin-bottom:.4rem; }
+.pf-method-label { font-size:.65rem; color:var(--ink); }
+.pf-method-sub { font-size:.55rem; color:var(--mid); margin-top:.15rem; }
+
+/* URL input inline */
+.pf-url-form { display:flex; gap:.5rem; margin-bottom:1rem; }
+.pf-url-form input { flex:1; background:var(--bg2); border:1px solid var(--line); padding:.46rem .85rem; font-family:'DM Sans',sans-serif; font-size:.78rem; outline:none; color:var(--ink); }
+.pf-url-form input:focus { border-color:var(--gold); }
+
+/* Image grid in editor */
+.pf-img-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:.65rem; }
+.pf-img-card {
+  position:relative; background:var(--bg3); border:1px solid var(--line); border-radius:2px;
+  overflow:hidden; aspect-ratio:4/3;
+}
+.pf-img-card img { width:100%; height:100%; object-fit:cover; display:block; }
+.pf-img-overlay {
+  position:absolute; inset:0; background:rgba(0,0,0,.5);
+  display:flex; align-items:center; justify-content:center; gap:.5rem;
+  opacity:0; transition:opacity .18s;
+}
+.pf-img-card:hover .pf-img-overlay { opacity:1; }
+.pf-img-btn { background:rgba(255,255,255,.15); border:1px solid rgba(255,255,255,.3); color:#fff; font-size:.62rem; padding:3px 8px; cursor:pointer; font-family:inherit; }
+.pf-img-btn:hover { background:rgba(255,255,255,.25); }
+.pf-img-title { position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,.6); color:#fff; font-size:.58rem; padding:3px 6px; }
+
+/* Library picker */
+.pf-lib-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(90px,1fr)); gap:.5rem; max-height:320px; overflow-y:auto; }
+.pf-lib-item { position:relative; aspect-ratio:1; cursor:pointer; border:2px solid transparent; transition:border-color .15s; }
+.pf-lib-item img { width:100%; height:100%; object-fit:cover; display:block; }
+.pf-lib-item.selected,.pf-lib-item.sel { border-color:var(--gold); }
+.pf-lib-item.selected::after,.pf-lib-item.sel::after { content:'✓'; position:absolute; top:3px; right:3px; background:var(--gold); color:#fff; font-size:.55rem; width:16px; height:16px; display:flex; align-items:center; justify-content:center; border-radius:50%; }
+.pf-lib-check { display:none; }
+.pf-folder-preview { width:100%; aspect-ratio:1; display:flex; align-items:center; justify-content:center; border-radius:6px; border:1px solid; overflow:hidden; margin-bottom:.5rem; }
+.pf-folder-label { font-size:.76rem; font-weight:500; }
+.pf-img-del { position:absolute; top:4px; right:4px; background:rgba(0,0,0,.6); color:#fff; border:none; cursor:pointer; width:20px; height:20px; border-radius:50%; font-size:.65rem; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .15s; }
+.pf-img-card:hover .pf-img-del { opacity:1; }
+.pf-add-methods { display:grid; grid-template-columns:repeat(3,1fr); gap:.6rem; margin-bottom:1rem; }
+
 </style>
 </head>
 <body>
@@ -332,6 +398,7 @@ tr:hover td{background:rgba(17,16,16,.015);}
   <div class="sb-group">
     <div class="sb-group-label">Médias</div>
     <div class="ni" onclick="nav('library',this)"><span class="ni-ico">⊞</span>Bibliothèque</div>
+    <div class="ni" onclick="nav('portfolio',this)"><span class="ni-ico">🖼</span>Portfolio OS</div>
   </div>
 
   <div class="sb-group">
@@ -650,6 +717,78 @@ tr:hover td{background:rgba(17,16,16,.015);}
         </select>
       </div>
       <div id="imgGrid"></div>
+    </div>
+
+
+    <!-- ══ PORTFOLIO OS ══ -->
+    <div class="panel" id="panel-portfolio">
+      <div class="ph">
+        <div><h1>Portfolio <em>OS</em></h1><p>Images affichées dans Windows 11 et iOS 27 quand on ouvre un dossier projet.</p></div>
+      </div>
+      <!-- Folder list view -->
+      <div id="pf-list-view">
+        <div class="pf-folders" id="pf-folders-grid"></div>
+      </div>
+      <!-- Folder editor view -->
+      <div id="pf-editor-view" style="display:none">
+        <div class="pf-ed-header">
+          <button class="pf-ed-back" onclick="pfBack()">← Tous les dossiers</button>
+          <div class="pf-ed-title" id="pf-ed-title">Dossier</div>
+          <span id="pf-ed-count" style="font-size:.6rem;color:var(--mid);margin-left:auto"></span>
+        </div>
+
+        <!-- Add methods -->
+        <div class="pf-add-methods">
+          <div class="pf-method" onclick="pfAddUrl()">
+            <span class="pf-method-ico">🔗</span>
+            <div class="pf-method-label">Depuis une URL</div>
+            <div class="pf-method-sub">Coller un lien image</div>
+          </div>
+          <div class="pf-method" onclick="document.getElementById('pf-file-inp').click()">
+            <span class="pf-method-ico">💻</span>
+            <div class="pf-method-label">Depuis l'ordinateur</div>
+            <div class="pf-method-sub">Upload JPG · PNG · WebP</div>
+          </div>
+          <div class="pf-method" onclick="pfOpenLib()">
+            <span class="pf-method-ico">⊞</span>
+            <div class="pf-method-label">Depuis la bibliothèque</div>
+            <div class="pf-method-sub">Images déjà uploadées</div>
+          </div>
+        </div>
+        <input type="file" id="pf-file-inp" multiple accept="image/*" style="display:none" onchange="pfHandleFiles(this.files)">
+
+        <!-- URL form (hidden by default) -->
+        <div id="pf-url-form" style="display:none" class="pf-url-form">
+          <input type="url" id="pf-url-inp" placeholder="https://exemple.com/image.jpg" onkeydown="if(event.key==='Enter')pfConfirmUrl()">
+          <button class="btn btn-ink" onclick="pfConfirmUrl()">Ajouter</button>
+          <button class="btn btn-out btn-sm" onclick="pfCloseUrl()">✕</button>
+        </div>
+
+        <!-- Images grid -->
+        <div class="pf-img-grid" id="pf-img-grid"></div>
+
+        <div class="save-bar" style="margin-top:1rem">
+          <span class="save-msg">Les changements sont sauvegardés automatiquement.</span>
+          <button class="btn btn-gold" onclick="pfSave()">💾 Appliquer sur l'OS</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Library picker modal -->
+    <div class="modal-bd" id="m-pf-lib" style="display:none">
+      <div class="modal" style="max-width:640px">
+        <div class="modal-hd">
+          <div class="modal-title">Bibliothèque — Sélectionner des images</div>
+          <button class="modal-x" onclick="closeM('m-pf-lib')">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="pf-lib-grid" id="pf-lib-grid"></div>
+        </div>
+        <div class="modal-ft">
+          <button class="btn btn-out" onclick="closeM('m-pf-lib')">Annuler</button>
+          <button class="btn btn-gold" onclick="pfImportLib()">Importer la sélection</button>
+        </div>
+      </div>
     </div>
 
     <!-- ══ MESSAGES ══ -->
@@ -1246,6 +1385,160 @@ function changePwd() {
 }
 
 function doLogout() { sessionStorage.removeItem('aar-auth'); window.location.href = '/' }
+
+// ═══════════════════════════════
+//  PORTFOLIO OS
+// ═══════════════════════════════
+const PF_FOLDERS=[
+  {id:'arsene',      label:'Arsène',          color:'#a78bfa'},
+  {id:'clopinette',  label:'Clopinette',       color:'#f472b6'},
+  {id:'digital',     label:'Digital Painting', color:'#60a5fa'},
+  {id:'logo',        label:'Logo',             color:'#34d399'},
+  {id:'animation',   label:'Animation',        color:'#fb923c'},
+  {id:'perso',       label:'Perso',            color:'#facc15'},
+  {id:'etudes',      label:'Études',           color:'#94a3b8'},
+];
+let _pfCurrent=null;
+
+function pfData(){
+  return JSON.parse(localStorage.getItem('aar_portfolio')||'{}');
+}
+function pfSaveData(d){
+  localStorage.setItem('aar_portfolio', JSON.stringify(d));
+}
+
+function pfRender(){
+  const d=pfData();
+  const g=document.getElementById('pf-folders-grid');
+  if(!g) return;
+  g.innerHTML=PF_FOLDERS.map(f=>{
+    const imgs=d[f.id]||[];
+    const preview=imgs.slice(0,4).map(im=>`<div style="background:url('${im.src}') center/cover;width:100%;height:100%;"></div>`).join('');
+    return `<div class="pf-folder" onclick="pfEdit('${f.id}')">
+      <div class="pf-folder-preview" style="background:${f.color}22;border-color:${f.color}44">
+        ${imgs.length?`<div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;width:100%;height:100%;padding:6px;box-sizing:border-box">${preview}</div>`:`<div style="font-size:2rem;opacity:.4">🖼</div>`}
+      </div>
+      <div class="pf-folder-label">${f.label}</div>
+      <div class="pf-folder-count">${imgs.length} image${imgs.length!==1?'s':''}</div>
+    </div>`;
+  }).join('');
+}
+
+function pfEdit(fid){
+  _pfCurrent=fid;
+  const fd=PF_FOLDERS.find(f=>f.id===fid);
+  document.getElementById('pf-list-view').style.display='none';
+  document.getElementById('pf-editor-view').style.display='';
+  document.getElementById('pf-ed-title').textContent=fd?fd.label:fid;
+  document.getElementById('pf-url-form').style.display='none';
+  pfRenderEditor();
+}
+
+function pfBack(){
+  _pfCurrent=null;
+  document.getElementById('pf-editor-view').style.display='none';
+  document.getElementById('pf-list-view').style.display='';
+  pfRender();
+}
+
+function pfRenderEditor(){
+  if(!_pfCurrent) return;
+  const d=pfData();
+  const imgs=d[_pfCurrent]||[];
+  document.getElementById('pf-ed-count').textContent=imgs.length+' image'+(imgs.length!==1?'s':'');
+  const g=document.getElementById('pf-img-grid');
+  if(!imgs.length){ g.innerHTML='<div style="color:var(--mid);font-size:.8rem;padding:1rem 0">Aucune image — ajoutez-en ci-dessus.</div>'; return; }
+  g.innerHTML=imgs.map((im,i)=>`<div class="pf-img-card">
+    <img src="${im.src}" alt="${im.title||''}">
+    <div class="pf-img-del" onclick="pfDelete('${_pfCurrent}',${i})" title="Supprimer">✕</div>
+  </div>`).join('');
+}
+
+function pfAddUrl(){
+  const f=document.getElementById('pf-url-form');
+  f.style.display=f.style.display==='none'?'flex':'none';
+  if(f.style.display==='flex') document.getElementById('pf-url-inp').focus();
+}
+function pfCloseUrl(){
+  document.getElementById('pf-url-form').style.display='none';
+  document.getElementById('pf-url-inp').value='';
+}
+function pfConfirmUrl(){
+  const url=document.getElementById('pf-url-inp').value.trim();
+  if(!url){ toast('URL vide','err'); return; }
+  const d=pfData();
+  if(!d[_pfCurrent]) d[_pfCurrent]=[];
+  d[_pfCurrent].push({id:Date.now(),src:url,title:''});
+  pfSaveData(d);
+  pfCloseUrl();
+  pfRenderEditor();
+  toast('✓ Image ajoutée');
+}
+
+function pfHandleFiles(files){
+  if(!_pfCurrent||!files.length) return;
+  Array.from(files).forEach(file=>{
+    const r=new FileReader();
+    r.onload=e=>{
+      const d=pfData();
+      if(!d[_pfCurrent]) d[_pfCurrent]=[];
+      d[_pfCurrent].push({id:Date.now()+Math.random(),src:e.target.result,title:file.name.replace(/\.[^.]+$/,'')});
+      pfSaveData(d);
+      pfRenderEditor();
+    };
+    r.readAsDataURL(file);
+  });
+  toast('✓ '+files.length+' image(s) ajoutée(s)');
+}
+
+function pfOpenLib(){
+  const imgs=_ls.get('images')||[];
+  const g=document.getElementById('pf-lib-grid');
+  if(!imgs.length){ g.innerHTML='<div style="color:var(--mid)">Aucune image dans la bibliothèque.</div>'; }
+  else{ g.innerHTML=imgs.map((im,i)=>`<div class="pf-lib-item ${im._sel?'sel':''}" onclick="pfLibToggle(${i},this)"><img src="${im.src||im.url}" alt="${im.alt||''}"><div class="pf-lib-check">✓</div></div>`).join(''); }
+  openM('m-pf-lib');
+}
+
+function pfLibToggle(i,el){
+  el.classList.toggle('sel');
+}
+
+function pfImportLib(){
+  const selected=Array.from(document.querySelectorAll('#pf-lib-grid .pf-lib-item.sel'));
+  if(!selected.length){ toast('Aucune image sélectionnée','err'); return; }
+  const imgs=_ls.get('images')||[];
+  const d=pfData();
+  if(!d[_pfCurrent]) d[_pfCurrent]=[];
+  selected.forEach(el=>{
+    const idx=Array.from(el.parentElement.children).indexOf(el);
+    const im=imgs[idx];
+    if(im) d[_pfCurrent].push({id:Date.now()+Math.random(),src:im.src||im.url,title:im.alt||im.name||''});
+  });
+  pfSaveData(d);
+  closeM('m-pf-lib');
+  pfRenderEditor();
+  toast('✓ '+selected.length+' image(s) importée(s)');
+}
+
+function pfDelete(fid,idx){
+  const d=pfData();
+  if(!d[fid]) return;
+  d[fid].splice(idx,1);
+  pfSaveData(d);
+  pfRenderEditor();
+  toast('✓ Image supprimée');
+}
+
+function pfSave(){
+  toast('✓ Portfolio mis à jour sur l\'OS !');
+}
+
+// init portfolio when navigating to it
+const _origNav=window.nav;
+window.nav=function(sec,el){
+  _origNav(sec,el);
+  if(sec==='portfolio') pfRender();
+};
 
 // ═══════════════════════════════
 //  UI HELPERS
