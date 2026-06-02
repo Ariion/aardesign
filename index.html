@@ -528,9 +528,22 @@ body{
    iOS 18 — INTERFACE COMPLÈTE
    ═══════════════════════════════════════════ */
 #ios-hud{
-  position:fixed; inset:0; z-index:200;
+  /* Toujours un iPhone centré */
+  position:fixed;
+  width:390px; height:844px;
+  top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  z-index:200;
   display:none; flex-direction:column;
   font-family:-apple-system,'Helvetica Neue',sans-serif;
+  border-radius:52px;
+  border:10px solid #1c1c1e;
+  box-shadow:0 0 0 1px #3a3a3c,
+             inset 0 0 0 1px rgba(255,255,255,.08),
+             0 40px 120px rgba(0,0,0,.7),
+             0 0 0 1px rgba(0,0,0,.5);
+  overflow:hidden;
+  box-sizing:border-box;
 }
 #ios-hud.active{ display:flex; }
 
@@ -611,9 +624,10 @@ body{
 .ios-grid{
   position:relative; z-index:2;
   display:grid; grid-template-columns:repeat(4,1fr);
-  gap:.8rem 0; padding:70px 14px 0;
-  flex:1; align-content:start;
+  gap:.6rem 0; padding:54px 8px 10px;
+  flex:1; align-content:start; overflow-y:auto;
 }
+.ios-grid::-webkit-scrollbar{ display:none; }
 .ios-app-icon{
   display:flex; flex-direction:column; align-items:center; gap:.28rem;
   cursor:pointer; -webkit-tap-highlight-color:transparent;
@@ -621,12 +635,12 @@ body{
 }
 .ios-app-icon:active .ios-icon-img{ transform:scale(.88); }
 .ios-icon-img{
-  width:72px; height:72px; border-radius:17.5px;
+  width:60px; height:60px; border-radius:14px;
   display:flex; align-items:center; justify-content:center;
-  box-shadow:0 2px 10px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.15);
+  box-shadow:0 2px 8px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.15);
   transition:transform .12s cubic-bezier(.4,0,.2,1);
 }
-.ios-icon-img svg{ width:34px; height:34px; }
+.ios-icon-img svg{ width:30px; height:30px; }
 .ios-icon-label{
   font-size:.6rem; font-weight:400; color:#fff; text-align:center;
   text-shadow:0 1px 3px rgba(0,0,0,.8); max-width:72px; overflow:hidden;
@@ -643,7 +657,7 @@ body{
   box-shadow:inset 0 1px 0 rgba(255,255,255,.1);
 }
 .ios-dock .ios-app-icon{ padding:0; }
-.ios-dock .ios-icon-img{ width:64px; height:64px; }
+.ios-dock .ios-icon-img{ width:56px; height:56px; }
 
 /* ── App layer (apps plein écran) ── */
 #ios-app-layer{
@@ -849,9 +863,9 @@ body{
 .desktop-icon-img svg{ width:36px; height:36px; }
 .desktop-icon-label{ font-size:.62rem; color:#fff; text-align:center; text-shadow:0 1px 3px rgba(0,0,0,.8); line-height:1.2; }
 .desktop-folders{
-  position:absolute; top:50%; left:50%; transform:translate(-50%,-60%);
-  display:flex; flex-wrap:wrap; gap:20px; justify-content:center;
-  pointer-events:auto; z-index:2; max-width:560px;
+  position:absolute; top:calc(50% - 24px); left:50%; transform:translate(-50%,-50%);
+  display:flex; flex-wrap:wrap; gap:16px 20px; justify-content:center;
+  pointer-events:auto; z-index:2; max-width:620px;
 }
 .desktop-folder{
   width:80px; display:flex; flex-direction:column; align-items:center;
@@ -969,11 +983,12 @@ body{
   cursor:pointer; user-select:none;
 }
 .ios-folder-box{
-  width:60px; height:60px; border-radius:13px;
+  width:60px; height:60px; border-radius:14px;
   background:rgba(255,255,255,.28); backdrop-filter:blur(20px);
   border:1px solid rgba(255,255,255,.4);
   display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr;
-  gap:3px; padding:6px; box-sizing:border-box;
+  gap:3px; padding:5px; box-sizing:border-box;
+  box-shadow:0 2px 8px rgba(0,0,0,.3);
 }
 .ios-folder-mini{
   border-radius:5px; display:flex; align-items:center; justify-content:center;
@@ -1047,37 +1062,12 @@ body{
 /* ═══════════════════════════════════════════
    RESPONSIVE MOBILE — MOCKUP TÉLÉPHONE
    ═══════════════════════════════════════════ */
-@media (max-width:768px){
+@media (max-width:480px){
+  /* Sur très petits écrans, réduire légèrement l'iPhone */
   #ios-hud{
-    width:390px; max-width:100%;
-    height:844px; max-height:100vh;
-    margin:0 auto;
-    border-radius:50px;
-    border:8px solid #1c1c1e;
-    box-shadow:0 0 0 2px #3a3a3c, 0 30px 80px rgba(0,0,0,.6);
-    overflow:hidden;
-    position:fixed;
-    top:50%; left:50%;
-    transform:translate(-50%,-50%);
-    inset:unset;
-  }
-  #w11-desktop{
-    border-radius:16px;
-    border:6px solid #2a2a2a;
-    box-shadow:0 0 0 2px #444, 0 30px 80px rgba(0,0,0,.6);
-    overflow:hidden;
-    position:fixed;
-    top:50%; left:50%;
-    transform:translate(-50%,-50%);
-    inset:unset;
-    width:min(540px,100vw);
-    height:min(360px,100vh);
-  }
-  #taskbar{
-    display:none;
-  }
-  #windows{
-    display:none;
+    width:min(390px,96vw);
+    height:min(844px,96vh);
+    border-radius:42px;
   }
 }
 </style>
