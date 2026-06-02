@@ -310,12 +310,6 @@ tr:hover td{background:rgba(41,184,217,.03);}
 .uprow-name{font-size:.7rem;margin-bottom:.1rem;font-weight:500;}
 .uprow-st{font-size:.58rem;color:var(--mid);flex-shrink:0;width:52px;text-align:right;}
 
-/* ── COLORS ── */
-.color-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
-.color-item{display:flex;flex-direction:column;gap:.4rem;}
-.color-item label{font-size:.5rem;letter-spacing:.2em;text-transform:uppercase;color:var(--mid);font-weight:600;}
-.color-preview{height:38px;border:1px solid var(--line);border-radius:6px;transition:background .2s;display:flex;align-items:center;justify-content:center;font-size:.6rem;color:var(--mid);font-weight:500;}
-
 /* ── MARQUEE ITEMS ── */
 .mq-items{display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:.75rem;}
 .mq-pill{display:inline-flex;align-items:center;gap:.3rem;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:.25rem .65rem;font-size:.68rem;font-weight:500;transition:all .15s;}
@@ -657,7 +651,7 @@ tr:hover td{background:rgba(17,16,16,.015);}
 .drop-zone:hover,.drop-zone.over{border-color:var(--ink);background:rgba(17,16,16,.02);}
 .dz-ico{font-size:1.6rem;display:block;margin-bottom:.5rem;transition:transform .3s var(--E);}
 .drop-zone:hover .dz-ico{transform:translateY(-3px);}
-.dz-t{font-family:'DM Serif Display',serif;font-size:.88rem;margin-bottom:.2rem;}
+.dz-t{font-family:'Montserrat',sans-serif;font-size:.88rem;font-weight:600;margin-bottom:.2rem;}
 .dz-s{font-size:.68rem;}
 .uprow{display:flex;align-items:center;gap:.75rem;padding:.55rem .85rem;background:var(--bg2);border:1px solid var(--line);margin-bottom:.35rem;}
 .uprow-thumb{width:32px;height:32px;object-fit:cover;flex-shrink:0;}
@@ -669,8 +663,17 @@ tr:hover td{background:rgba(17,16,16,.015);}
 /* ── COLORS ── */
 .color-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.1rem;}
 .color-item{display:flex;flex-direction:column;gap:.4rem;}
-.color-item label{font-size:.5rem;letter-spacing:.24em;text-transform:uppercase;color:var(--mid);}
-.color-preview{height:36px;border:1px solid var(--line);transition:background .2s;display:flex;align-items:center;justify-content:center;font-size:.62rem;color:var(--mid);}
+.color-item label{font-size:.5rem;letter-spacing:.24em;text-transform:uppercase;color:var(--mid);font-weight:600;}
+.color-preview{height:36px;border-radius:6px;border:1px solid var(--line);transition:background .2s;display:flex;align-items:center;justify-content:center;font-size:.58rem;color:#fff;font-weight:600;text-shadow:0 1px 3px rgba(0,0,0,.4);}
+/* ── DESIGN PREVIEW ── */
+.design-preview-wrap{border-radius:10px;overflow:hidden;border:1px solid var(--line2);margin-top:1.2rem;position:relative;background:#060c16;}
+.design-preview-label{font-size:.5rem;letter-spacing:.2em;text-transform:uppercase;color:var(--mid);font-weight:600;margin-bottom:.6rem;}
+.design-preview-iframe{width:100%;height:360px;border:none;pointer-events:none;transform-origin:top left;display:block;}
+.design-preview-overlay{position:absolute;inset:0;cursor:default;}
+.preset-btns{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem;}
+.preset-btn{padding:.38rem .85rem;border-radius:6px;border:1px solid var(--line2);background:transparent;font-family:'Montserrat',sans-serif;font-size:.65rem;font-weight:600;cursor:pointer;color:var(--mid);transition:all .15s;display:flex;align-items:center;gap:.4rem;}
+.preset-btn:hover{border-color:var(--cyan);color:var(--cyan);}
+.preset-btn.active{background:var(--cyan3);border-color:var(--cyan);color:var(--cyan2);}
 
 /* ── MARQUEE ITEMS ── */
 .mq-items{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.75rem;}
@@ -1109,54 +1112,107 @@ tr:hover td{background:rgba(17,16,16,.015);}
 
     <!-- ══ DESIGN ══ -->
     <div class="panel" id="panel-design">
-      <div class="ph"><div><h1>Design <em>&amp; Couleurs</em></h1><p>Personnalisez l'apparence du site.</p></div></div>
+      <div class="ph"><div><h1>Design <em>&amp; Couleurs</em></h1><p>Personnalisez les couleurs de l'OS AAR.</p></div></div>
+
+      <!-- Palette principale -->
       <div class="sec-card">
         <div class="sec-hd open" onclick="toggleSec(this)">
           <div class="sec-title"><span class="sec-ico">◐</span>Palette de couleurs</div><span class="sec-arrow">▶</span>
         </div>
         <div class="sec-body open">
+          <p style="font-size:.65rem;color:var(--mid);margin-bottom:1rem;">Ces couleurs s'appliquent directement sur l'OS AAR (index.html). Sauvegardez pour voir l'effet en prévisualisation.</p>
           <div class="color-grid">
-            <div class="color-item"><label>Fond principal</label><div class="color-preview" id="pv-bg"></div><input type="color" id="cl-bg" oninput="pvColor('bg',this.value)"></div>
-            <div class="color-item"><label>Texte principal</label><div class="color-preview" id="pv-ink"></div><input type="color" id="cl-ink" oninput="pvColor('ink',this.value)"></div>
-            <div class="color-item"><label>Texte secondaire</label><div class="color-preview" id="pv-mid"></div><input type="color" id="cl-mid" oninput="pvColor('mid',this.value)"></div>
-            <div class="color-item"><label>Accent doré</label><div class="color-preview" id="pv-gold"></div><input type="color" id="cl-gold" oninput="pvColor('gold',this.value)"></div>
-            <div class="color-item"><label>Fond secondaire</label><div class="color-preview" id="pv-bg2"></div><input type="color" id="cl-bg2" oninput="pvColor('bg2',this.value)"></div>
-            <div class="color-item"><label>Bordures</label><div class="color-preview" id="pv-line"></div><input type="color" id="cl-line" oninput="pvColor('line',this.value)"></div>
+            <div class="color-item">
+              <label>Navy — couleur principale</label>
+              <div class="color-preview" id="pv-navy"></div>
+              <input type="color" id="cl-navy" oninput="pvColor('navy',this.value);markDirty('design')">
+            </div>
+            <div class="color-item">
+              <label>Cyan — accent &amp; liens</label>
+              <div class="color-preview" id="pv-cyan"></div>
+              <input type="color" id="cl-cyan" oninput="pvColor('cyan',this.value);markDirty('design')">
+            </div>
+            <div class="color-item">
+              <label>Cyan foncé — hover</label>
+              <div class="color-preview" id="pv-cyan2"></div>
+              <input type="color" id="cl-cyan2" oninput="pvColor('cyan2',this.value);markDirty('design')">
+            </div>
+            <div class="color-item">
+              <label>Fond OS — dark</label>
+              <div class="color-preview" id="pv-wall"></div>
+              <input type="color" id="cl-wall" oninput="pvColor('wall',this.value);markDirty('design')">
+            </div>
+            <div class="color-item">
+              <label>Fond fenêtres</label>
+              <div class="color-preview" id="pv-win"></div>
+              <input type="color" id="cl-win" oninput="pvColor('win',this.value);markDirty('design')">
+            </div>
+            <div class="color-item">
+              <label>Texte principal</label>
+              <div class="color-preview" id="pv-txt"></div>
+              <input type="color" id="cl-txt" oninput="pvColor('txt',this.value);markDirty('design')">
+            </div>
           </div>
-          <div style="display:flex;gap:.6rem;margin-top:1.1rem;flex-wrap:wrap">
-            <button class="btn btn-out btn-sm" onclick="presetLight()">↺ Clair (défaut)</button>
-            <button class="btn btn-out btn-sm" onclick="presetDark()">◉ Sombre</button>
+
+          <!-- Presets -->
+          <div class="preset-btns">
+            <button class="preset-btn active" id="preset-aar" onclick="applyPreset('aar')">★ AAR Dark (défaut)</button>
+            <button class="preset-btn" id="preset-ocean" onclick="applyPreset('ocean')">◈ Ocean Deep</button>
+            <button class="preset-btn" id="preset-midnight" onclick="applyPreset('midnight')">◉ Midnight Purple</button>
+            <button class="preset-btn" id="preset-forest" onclick="applyPreset('forest')">◆ Forest Night</button>
           </div>
         </div>
       </div>
+
+      <!-- Typographie -->
       <div class="sec-card">
         <div class="sec-hd open" onclick="toggleSec(this)">
           <div class="sec-title"><span class="sec-ico">T</span>Typographie</div><span class="sec-arrow">▶</span>
         </div>
         <div class="sec-body open">
           <div class="field-row">
-            <div class="field"><label>Police corps de texte</label>
-              <select id="ft-body">
-                <option value="DM Sans">DM Sans (défaut)</option>
+            <div class="field"><label>Police de l'OS</label>
+              <select id="ft-body" onchange="markDirty('design')">
+                <option value="Montserrat">Montserrat (AAR · défaut)</option>
                 <option value="Inter">Inter</option>
                 <option value="Raleway">Raleway</option>
-                <option value="Helvetica Neue">Helvetica Neue</option>
+                <option value="Sora">Sora</option>
+                <option value="Oxanium">Oxanium</option>
               </select>
             </div>
-            <div class="field"><label>Police titres (serif)</label>
-              <select id="ft-title">
-                <option value="DM Serif Display">DM Serif Display (défaut)</option>
-                <option value="Playfair Display">Playfair Display</option>
-                <option value="Cormorant Garamond">Cormorant Garamond</option>
-                <option value="Libre Baskerville">Libre Baskerville</option>
+            <div class="field"><label>Taille de base</label>
+              <select id="ft-size" onchange="markDirty('design')">
+                <option value="14px">14px (défaut)</option>
+                <option value="13px">13px — compact</option>
+                <option value="15px">15px — confort</option>
+                <option value="16px">16px — large</option>
               </select>
             </div>
           </div>
         </div>
       </div>
+
+      <!-- Prévisualisation live -->
+      <div class="sec-card">
+        <div class="sec-hd open" onclick="toggleSec(this)">
+          <div class="sec-title"><span class="sec-ico">▶</span>Prévisualisation du site</div><span class="sec-arrow">▶</span>
+        </div>
+        <div class="sec-body open">
+          <div class="design-preview-label">Aperçu en direct — index.html</div>
+          <div class="design-preview-wrap">
+            <iframe id="sitePreview" class="design-preview-iframe" src="index.html" onload="injectPreviewColors()"></iframe>
+            <div class="design-preview-overlay"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:.6rem;">
+            <span style="font-size:.58rem;color:var(--mid);">Cliquez Sauvegarder pour voir les couleurs appliquées</span>
+            <button class="btn btn-out btn-sm" onclick="document.getElementById('sitePreview').src='index.html'">↺ Recharger</button>
+          </div>
+        </div>
+      </div>
+
       <div class="save-bar">
         <span class="save-msg" id="sm-design">Modifiez puis sauvegardez.</span>
-        <button class="btn btn-gold" onclick="saveSection('design')">💾 Sauvegarder</button>
+        <button class="btn btn-gold" onclick="saveSection('design')">💾 Sauvegarder &amp; Appliquer</button>
       </div>
     </div>
 
@@ -1608,25 +1664,61 @@ function mqRm(n,i) { if (n===1) mq1.splice(i,1); else mq2.splice(i,1); renderMq(
 // ═══════════════════════════════
 //  DESIGN
 // ═══════════════════════════════
+const DESIGN_PRESETS = {
+  aar:      {navy:'#1B3560',cyan:'#29B8D9',cyan2:'#0097BA',wall:'#060c16',win:'#0c142c',txt:'#e8f4ff'},
+  ocean:    {navy:'#0d3b5e',cyan:'#00d4ff',cyan2:'#0099cc',wall:'#020d1a',win:'#041525',txt:'#d0f0ff'},
+  midnight: {navy:'#2d1b6b',cyan:'#a855f7',cyan2:'#7c3aed',wall:'#07030f',win:'#120927',txt:'#f0e8ff'},
+  forest:   {navy:'#1a3d2b',cyan:'#34d399',cyan2:'#059669',wall:'#030a05',win:'#071510',txt:'#d1fae5'}
+}
 function loadDesign() {
   const d = SD.design || DEF.design
-  const map = {bg:'#f0ede8',ink:'#111010',mid:'#888580',gold:'#b8945a',bg2:'#e8e4de',line:'#d4d0cb'}
-  Object.entries(map).forEach(([k,def]) => { const v = d[k]||def; const el = document.getElementById('cl-'+k); if (el) { el.value = v; pvColor(k,v) } })
-  const fb = document.getElementById('ft-body'), ft = document.getElementById('ft-title')
-  if (fb) fb.value = d.fontBody || 'DM Sans'
-  if (ft) ft.value = d.fontTitle || 'DM Serif Display'
+  const def = DESIGN_PRESETS.aar
+  const keys = ['navy','cyan','cyan2','wall','win','txt']
+  keys.forEach(k => { const val = d[k]||def[k]; const el = document.getElementById('cl-'+k); if (el) { el.value = val; pvColor(k,val) } })
+  const fb = document.getElementById('ft-body'), fs = document.getElementById('ft-size')
+  if (fb) fb.value = d.fontBody || 'Montserrat'
+  if (fs) fs.value = d.fontSize || '14px'
+  // mark active preset
+  document.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('active'))
+  const ap = d.preset || 'aar'
+  const pb = document.getElementById('preset-'+ap)
+  if (pb) pb.classList.add('active')
 }
-function pvColor(k, v) { const el = document.getElementById('pv-'+k); if (el) { el.style.background = v; el.textContent = v } }
-function presetLight() {
-  const lc = {bg:'#f0ede8',ink:'#111010',mid:'#888580',gold:'#b8945a',bg2:'#e8e4de',line:'#d4d0cb'}
-  Object.entries(lc).forEach(([k,v]) => { const el = document.getElementById('cl-'+k); if (el) { el.value = v; pvColor(k,v) } })
+function pvColor(k, v) {
+  const el = document.getElementById('pv-'+k)
+  if (!el) return
+  el.style.background = v
+  el.textContent = v
+  // pick readable text color
+  const r=parseInt(v.slice(1,3),16),g=parseInt(v.slice(3,5),16),b=parseInt(v.slice(5,7),16)
+  const lum = (0.299*r+0.587*g+0.114*b)/255
+  el.style.color = lum > 0.5 ? '#1B3560' : '#fff'
+}
+function applyPreset(name) {
+  const p = DESIGN_PRESETS[name]; if (!p) return
+  Object.entries(p).forEach(([k,v]) => { const el = document.getElementById('cl-'+k); if (el) { el.value = v; pvColor(k,v) } })
+  document.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('active'))
+  const pb = document.getElementById('preset-'+name); if (pb) pb.classList.add('active')
   markDirty('design')
 }
-function presetDark() {
-  const dc = {bg:'#0f0e0c',ink:'#f0ede8',mid:'#666260',gold:'#b8945a',bg2:'#1a1917',line:'#2a2826'}
-  Object.entries(dc).forEach(([k,v]) => { const el = document.getElementById('cl-'+k); if (el) { el.value = v; pvColor(k,v) } })
-  markDirty('design')
+function injectPreviewColors() {
+  try {
+    const f = document.getElementById('sitePreview')
+    const d = SD.design || DEF.design
+    const def = DESIGN_PRESETS.aar
+    const r = f.contentDocument.documentElement
+    if (!r) return
+    r.style.setProperty('--navy', d.navy||def.navy)
+    r.style.setProperty('--cyan', d.cyan||def.cyan)
+    r.style.setProperty('--cyan2', d.cyan2||def.cyan2)
+    r.style.setProperty('--wall-a', d.wall||def.wall)
+    r.style.setProperty('--wall-b', d.wall||def.wall)
+    r.style.setProperty('--win-bg', (d.win||def.win)+'f0')
+  } catch(e) {}
 }
+// legacy shims — not used but kept for safety
+function presetLight() { applyPreset('aar') }
+function presetDark()  { applyPreset('aar') }
 
 // ═══════════════════════════════
 //  SAVE SECTIONS
@@ -1641,7 +1733,13 @@ async function saveSection(sec) {
   else if (sec==='contact') SD.contact = {t1:v('ct-t1'),t2:v('ct-t2'),email:v('ct-email'),phone:v('ct-phone'),ig:v('ct-ig'),be:v('ct-be'),copy:v('ct-copy')}
   else if (sec==='nav') SD.nav = {l1:v('nv-l1'),a1:v('nv-a1'),l2:v('nv-l2'),a2:v('nv-a2'),l3:v('nv-l3'),a3:v('nv-a3'),cta:v('nv-cta')}
   else if (sec==='marquee') SD.marquee = {mq1:[...mq1],mq2:[...mq2]}
-  else if (sec==='design') SD.design = {bg:v('cl-bg'),ink:v('cl-ink'),mid:v('cl-mid'),gold:v('cl-gold'),bg2:v('cl-bg2'),line:v('cl-line'),fontBody:v('ft-body'),fontTitle:v('ft-title')}
+  else if (sec==='design') {
+    const activePreset = document.querySelector('.preset-btn.active')?.id?.replace('preset-','') || 'aar'
+    SD.design = {navy:v('cl-navy'),cyan:v('cl-cyan'),cyan2:v('cl-cyan2'),wall:v('cl-wall'),win:v('cl-win'),txt:v('cl-txt'),fontBody:v('ft-body'),fontSize:v('ft-size'),preset:activePreset}
+    // push to aar_theme so index.html can pick it up
+    localStorage.setItem('aar_theme', JSON.stringify(SD.design))
+    setTimeout(()=>{ const f=document.getElementById('sitePreview'); if(f) f.src='index.html' }, 400)
+  }
   await saveSec(sec)
   markClean(sec)
   document.getElementById('publishBtn').style.display = ''
