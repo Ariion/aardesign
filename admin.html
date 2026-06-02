@@ -762,18 +762,20 @@ tr:hover td{background:rgba(17,16,16,.015);}
 // ═══════════════════════════════
 //  CONFIG & INIT
 // ═══════════════════════════════
-const SUPA_URL_DEFAULT = 'https://jknabfgvaoonscjnpgvy.supabase.co'
-const SUPA_KEY_DEFAULT = 'sb_publishable_gtJzXyp5VKKxEZNvS_mryg_S9konQR0'
-let SURL = localStorage.getItem('surl') || SUPA_URL_DEFAULT
-let SKEY = localStorage.getItem('skey') || SUPA_KEY_DEFAULT
-const { createClient } = supabase
-let sb = createClient(SURL, SKEY)
+// ── Auth check ──
+if (!sessionStorage.getItem('aar-auth')) { window.location.href = '/'; }
+
+// localStorage-only data layer (no Supabase)
+const _ls = {
+  get: k => { try { return JSON.parse(localStorage.getItem('aar_'+k)) } catch(e){ return null } },
+  set: (k,v) => localStorage.setItem('aar_'+k, JSON.stringify(v))
+}
 
 // Default content
 const DEF = {
-  hero:{intro:'Anthony Armand Rodrigues — Digital Painting & Direction Artistique',t1:'Designer,',t2:'illustrateur &',t3:'peintre numérique',desc:'Je construis des univers visuels qui racontent des histoires — du packaging steampunk aux illustrations saisonnières, du character design à la dark fantasy.',scroll:'Défiler'},
-  about:{fn:'Anthony',ln:'Rodrigues',p1:'Designer pluridisciplinaire basé en France. Je travaille à l\'intersection du digital painting, de l\'illustration narrative et de la direction artistique.',p2:'Du packaging premium aux peintures personnelles, chaque projet est une occasion de construire un univers visuel unique, cohérent et mémorable.',cta:'Travaillons ensemble →',stats:[{n:'5+',l:'Années d\'expérience'},{n:'35+',l:'Œuvres réalisées'},{n:'8',l:'Disciplines créatives'},{n:'FR',l:'France · Remote · Int\'l'}]},
-  contact:{t1:'Parlons de',t2:'votre projet',email:'aardesign14@gmail.com',phone:'06 79 46 62 19',ig:'https://instagram.com',be:'https://behance.net',copy:'© 2025 AAR Design — Anthony Armand Rodrigues'},
+  hero:{intro:'Anthony Armand — Digital Painting & Direction Artistique',t1:'Designer,',t2:'illustrateur &',t3:'peintre numérique',desc:'Je construis des univers visuels qui racontent des histoires — du packaging steampunk aux illustrations saisonnières, du character design à la dark fantasy.',scroll:'Défiler'},
+  about:{fn:'Anthony',ln:'Armand',p1:'Designer pluridisciplinaire basé en France. Je travaille à l\'intersection du digital painting, de l\'illustration narrative et de la direction artistique.',p2:'Du packaging premium aux peintures personnelles, chaque projet est une occasion de construire un univers visuel unique, cohérent et mémorable.',cta:'Travaillons ensemble →',stats:[{n:'5+',l:'Années d\'expérience'},{n:'35+',l:'Œuvres réalisées'},{n:'8',l:'Disciplines créatives'},{n:'FR',l:'France · Remote · Int\'l'}]},
+  contact:{t1:'Parlons de',t2:'votre projet',email:'aardesign14@gmail.com',phone:'06 79 46 62 19',ig:'https://instagram.com/aardesign',be:'https://behance.net/anthonyarmand',copy:'© 2025 AAR Design — Anthony Armand'},
   nav:{l1:'Travaux',a1:'#work',l2:'À propos',a2:'#about',l3:'Contact',a3:'#contact',cta:'Démarrer un projet'},
   marquee:{mq1:['Digital Painting','Direction Artistique','Illustration','Packaging','Character Design','Steampunk','Dark Fantasy','Aquarelle Digitale'],mq2:['Arsène Valentin','Clopinette','Millénaire Caen','Projets personnels']},
   design:{bg:'#f0ede8',ink:'#111010',mid:'#888580',gold:'#b8945a',bg2:'#e8e4de',line:'#d4d0cb',fontBody:'DM Sans',fontTitle:'DM Serif Display'},
@@ -792,47 +794,38 @@ const DEF = {
 let SD = {} // site data
 let allImgs = [], mpTags = [], mq1 = [], mq2 = []
 
-window.addEventListener('load', async () => {
-  document.getElementById('cfg-url').value = SURL
-  document.getElementById('cfg-key').value = SKEY
-  await loadSiteData()
+window.addEventListener('load', () => {
+  loadSiteData()
   loadDashboard()
   setupDrop()
   setupMpTags()
 })
 
 // ═══════════════════════════════
-//  SUPABASE DATA
+//  localStorage DATA LAYER
 // ═══════════════════════════════
-async function loadSiteData() {
-  try {
-    const { data } = await sb.from('site_content').select('*')
-    if (data) data.forEach(r => { SD[r.section] = r.content })
-  } catch(e){}
-  Object.keys(DEF).forEach(k => { if (!SD[k]) SD[k] = JSON.parse(JSON.stringify(DEF[k])) })
+function loadSiteData() {
+  Object.keys(DEF).forEach(k => {
+    const saved = _ls.get('sec_'+k)
+    SD[k] = saved || JSON.parse(JSON.stringify(DEF[k]))
+  })
   loadHero(); loadAbout(); loadContact(); loadNav(); loadMarquee(); loadDesign(); renderProjList()
 }
 
-async function saveSec(section) {
-  const content = SD[section]
-  try {
-    const { error } = await sb.from('site_content').upsert({ section, content, updated_at: new Date().toISOString() }, { onConflict: 'section' })
-    if (error) throw error
-    return true
-  } catch(e) {
-    localStorage.setItem('sd_' + section, JSON.stringify(content))
-    return false
-  }
+function saveSec(section) {
+  _ls.set('sec_'+section, SD[section])
+  return true
 }
 
-async function publishSite() {
+function publishSite() {
   const lbl = document.getElementById('pubLabel')
   lbl.innerHTML = '<span class="dots"><span></span><span></span><span></span></span>'
-  let ok = true
-  for (const s of Object.keys(SD)) { if (!await saveSec(s)) ok = false }
-  lbl.textContent = '↑ Publier'
-  document.getElementById('publishBtn').style.display = 'none'
-  toast(ok ? '✓ Site mis à jour !' : '⚠ Sauvegardé en local (Supabase indispo)')
+  Object.keys(SD).forEach(s => saveSec(s))
+  setTimeout(() => {
+    lbl.textContent = '↑ Publier'
+    document.getElementById('publishBtn').style.display = 'none'
+    toast('✓ Données sauvegardées en local !')
+  }, 600)
 }
 
 function markDirty(sec) {
@@ -867,29 +860,25 @@ function nav(name, el) {
   if (name === 'library')  loadLib()
   if (name === 'messages') loadMsgs()
   if (name === 'dashboard') loadDashboard()
-  if (name === 'settings') { document.getElementById('cfg-url').value = SURL; document.getElementById('cfg-key').value = SKEY }
+  if (name === 'settings') {}
 }
 function qni(i) { return document.querySelectorAll('.ni')[i] }
 
 // ═══════════════════════════════
 //  DASHBOARD
 // ═══════════════════════════════
-async function loadDashboard() {
+function loadDashboard() {
   const projs = SD.projects || DEF.projects
   document.getElementById('st-proj').textContent = projs.length
-  try {
-    const [imgs, msgs] = await Promise.all([
-      sb.from('images').select('id', { count:'exact', head:true }),
-      sb.from('messages').select('id').eq('read', false)
-    ])
-    document.getElementById('st-img').textContent = imgs.count ?? '—'
-    const uc = (msgs.data || []).length
-    document.getElementById('st-msg').textContent = uc
-    const b = document.getElementById('msgBadge'); b.textContent = uc; b.style.display = uc ? '' : 'none'
-    const { data: rec } = await sb.from('images').select('url').order('created_at',{ascending:false}).limit(6)
-    const rc = document.getElementById('recentImgs')
-    rc.innerHTML = (rec || []).map(i => `<div style="aspect-ratio:1;overflow:hidden;background:var(--bg2)"><img src="${i.url}" style="width:100%;height:100%;object-fit:cover"></div>`).join('') || '<div style="color:var(--mid);font-size:.7rem;grid-column:1/-1;padding:.5rem 0">Aucune image</div>'
-  } catch(e) { document.getElementById('st-img').textContent = '—'; document.getElementById('st-msg').textContent = '—' }
+  const imgs = _ls.get('images') || []
+  document.getElementById('st-img').textContent = imgs.length
+  const msgs = (_ls.get('messages') || []).filter(m => !m.read)
+  const uc = msgs.length
+  document.getElementById('st-msg').textContent = uc
+  const b = document.getElementById('msgBadge'); b.textContent = uc; b.style.display = uc ? '' : 'none'
+  const allImgsLocal = _ls.get('images') || []
+  const rc = document.getElementById('recentImgs')
+  rc.innerHTML = allImgsLocal.slice(0,6).map(i => `<div style="aspect-ratio:1;overflow:hidden;background:var(--bg2)"><img src="${i.url}" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'"></div>`).join('') || '<div style="color:var(--mid);font-size:.7rem;grid-column:1/-1;padding:.5rem 0">Aucune image ajoutée</div>'
 }
 
 // ═══════════════════════════════
@@ -1110,18 +1099,12 @@ function renderMpTags() {
 }
 
 // ═══════════════════════════════
-//  LIBRARY
+//  LIBRARY (localStorage)
 // ═══════════════════════════════
-async function loadLib() {
-  document.getElementById('imgGrid').innerHTML = '<div class="empty"><span class="empty-ico">⊞</span><div class="empty-t">Chargement…</div></div>'
-  try {
-    const { data } = await sb.from('images').select('*').order('created_at',{ascending:false})
-    allImgs = data || []
-    document.getElementById('libCount').textContent = allImgs.length + ' image' + (allImgs.length>1?'s':'')
-    renderLib(allImgs)
-  } catch(e) {
-    document.getElementById('imgGrid').innerHTML = '<div class="empty"><span class="empty-ico">⊠</span><div class="empty-t">Bibliothèque indisponible</div><div class="empty-s">Configurez la connexion Supabase dans Paramètres.</div></div>'
-  }
+function loadLib() {
+  allImgs = _ls.get('images') || []
+  document.getElementById('libCount').textContent = allImgs.length + ' image' + (allImgs.length>1?'s':'')
+  renderLib(allImgs)
 }
 
 function renderLib(imgs) {
@@ -1146,12 +1129,10 @@ function filterLib() {
 
 function cpURL(url) { navigator.clipboard.writeText(url).then(() => toast('✓ URL copiée !')) }
 
-async function rmImg(id, url) {
-  try {
-    const parts = url.split('/images/'); if (parts[1]) await sb.storage.from('images').remove([parts[1]])
-    await sb.from('images').delete().eq('id', id)
-    toast('✓ Image supprimée'); loadLib()
-  } catch(e) { toast('Erreur', 'err') }
+function rmImg(id, url) {
+  allImgs = allImgs.filter(i => i.id !== id)
+  _ls.set('images', allImgs)
+  toast('✓ Image supprimée'); loadLib()
 }
 
 function setupDrop() {
@@ -1184,91 +1165,87 @@ async function handleFiles(files) {
 
 async function uploadOne(file, rid) {
   const bar = document.getElementById('f'+rid), st = document.getElementById('s'+rid)
-  const ext = file.name.split('.').pop()
-  const path = Date.now()+'_'+Math.random().toString(36).slice(2)+'.'+ext
-  let p = 0; const iv = setInterval(() => { p = Math.min(p+Math.random()*22, 82); bar.style.width = p+'%' }, 180)
+  let p = 0; const iv = setInterval(() => { p = Math.min(p+Math.random()*25, 85); bar.style.width = p+'%' }, 120)
   try {
-    const { error: ue } = await sb.storage.from('images').upload(path, file, { cacheControl:'3600', upsert:false })
-    clearInterval(iv); if (ue) throw ue
-    const { data: { publicUrl } } = sb.storage.from('images').getPublicUrl(path)
-    bar.style.width = '100%'
+    // Store as data URL in localStorage (for local use)
+    const url = await new Promise((res,rej) => {
+      const r = new FileReader()
+      r.onload = e => res(e.target.result)
+      r.onerror = rej
+      r.readAsDataURL(file)
+    })
+    clearInterval(iv); bar.style.width = '100%'
     let w=null,h=null; try { const b=await createImageBitmap(file); w=b.width; h=b.height } catch(e2){}
-    await sb.from('images').insert({ title:file.name.replace(/\.[^.]+$/,''), filename:file.name, url:publicUrl, size:file.size, category:'Non classé', width:w, height:h, visible:true })
+    const img = { id: Date.now()+'_'+Math.random().toString(36).slice(2), title:file.name.replace(/\.[^.]+$/,''), filename:file.name, url, size:file.size, category:'Non classé', width:w, height:h, visible:true, created_at:new Date().toISOString() }
+    const imgs = _ls.get('images') || []
+    imgs.unshift(img); _ls.set('images', imgs); allImgs = imgs
     st.textContent = '✓'; st.style.color = 'var(--green)'
   } catch(e) { clearInterval(iv); bar.style.background='var(--red)'; st.textContent='Erreur'; st.style.color='var(--red)' }
 }
 
 // ═══════════════════════════════
-//  MESSAGES
+//  MESSAGES (localStorage)
 // ═══════════════════════════════
 let curMsg = null
-async function loadMsgs() {
-  try {
-    const { data } = await sb.from('messages').select('*').order('created_at',{ascending:false})
-    const unread = (data||[]).filter(m=>!m.read).length
-    document.getElementById('msgCount').textContent = (data||[]).length + ' messages · ' + unread + ' non lus'
-    const b = document.getElementById('msgBadge'); b.textContent = unread; b.style.display = unread ? '' : 'none'
-    const list = document.getElementById('msgList')
-    if (!data||!data.length) { list.innerHTML = '<div class="empty"><span class="empty-ico">⊠</span><div class="empty-t">Aucun message</div></div>'; return }
-    list.innerHTML = data.map(m => `
-      <div class="msg-item ${m.read?'read':'unread'}" onclick="openMsg('${m.id}')">
-        <div>
-          <div class="msg-from">${m.firstname||''} ${m.lastname||''} <span style="font-size:.68rem;color:var(--mid)">— ${m.email||''}</span></div>
-          <div class="msg-preview">${(m.message||'').slice(0,120)}</div>
-        </div>
-        <div style="text-align:right">
-          <div class="msg-date">${new Date(m.created_at).toLocaleDateString('fr')}</div>
-          ${!m.read ? '<div class="msg-dot"></div>' : ''}
-        </div>
-      </div>`).join('')
-  } catch(e) { document.getElementById('msgList').innerHTML = '<div class="empty"><span class="empty-ico">⊠</span><div class="empty-t">Indisponible</div><div class="empty-s">Configurez la connexion Supabase.</div></div>' }
+function loadMsgs() {
+  const data = _ls.get('messages') || []
+  const unread = data.filter(m=>!m.read).length
+  document.getElementById('msgCount').textContent = data.length + ' messages · ' + unread + ' non lus'
+  const b = document.getElementById('msgBadge'); b.textContent = unread; b.style.display = unread ? '' : 'none'
+  const list = document.getElementById('msgList')
+  if (!data.length) { list.innerHTML = '<div class="empty"><span class="empty-ico">⊠</span><div class="empty-t">Aucun message</div><div class="empty-s">Les messages envoyés via le formulaire de contact apparaîtront ici.</div></div>'; return }
+  list.innerHTML = data.map(m => `
+    <div class="msg-item ${m.read?'read':'unread'}" onclick="openMsg('${m.id}')">
+      <div>
+        <div class="msg-from">${m.firstname||''} ${m.lastname||''} <span style="font-size:.68rem;color:var(--mid)">— ${m.email||''}</span></div>
+        <div class="msg-preview">${(m.message||'').slice(0,120)}</div>
+      </div>
+      <div style="text-align:right">
+        <div class="msg-date">${new Date(m.created_at||Date.now()).toLocaleDateString('fr')}</div>
+        ${!m.read ? '<div class="msg-dot"></div>' : ''}
+      </div>
+    </div>`).join('')
 }
 
-async function openMsg(id) {
-  try {
-    const { data } = await sb.from('messages').select('*').eq('id', id).single(); if (!data) return
-    curMsg = id
-    await sb.from('messages').update({ read:true }).eq('id', id)
-    loadMsgs()
-    document.getElementById('mmTitle').textContent = `${data.firstname||''} ${data.lastname||''}`
-    document.getElementById('mmMeta').innerHTML = `
-      <div><div style="font-size:.5rem;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:.22rem">Email</div><div style="font-size:.78rem">${data.email||'—'}</div></div>
-      <div><div style="font-size:.5rem;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:.22rem">Projet</div><div style="font-size:.78rem">${data.project_type||'—'}</div></div>
-      <div><div style="font-size:.5rem;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:.22rem">Date</div><div style="font-size:.78rem">${new Date(data.created_at).toLocaleDateString('fr')}</div></div>`
-    document.getElementById('mmBody').textContent = data.message || ''
-    document.getElementById('mmDel').onclick = async () => {
-      await sb.from('messages').delete().eq('id', curMsg)
-      toast('✓ Message supprimé'); closeM('m-msg'); loadMsgs()
-    }
-    openM('m-msg')
-  } catch(e) {}
+function openMsg(id) {
+  const data = (_ls.get('messages') || []).find(m => m.id === id); if (!data) return
+  curMsg = id
+  const msgs = _ls.get('messages') || []
+  const m = msgs.find(m => m.id === id); if (m) { m.read = true; _ls.set('messages', msgs) }
+  loadMsgs()
+  document.getElementById('mmTitle').textContent = `${data.firstname||''} ${data.lastname||''}`
+  document.getElementById('mmMeta').innerHTML = `
+    <div><div style="font-size:.5rem;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:.22rem">Email</div><div style="font-size:.78rem">${data.email||'—'}</div></div>
+    <div><div style="font-size:.5rem;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:.22rem">Projet</div><div style="font-size:.78rem">${data.project_type||'—'}</div></div>
+    <div><div style="font-size:.5rem;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:.22rem">Date</div><div style="font-size:.78rem">${new Date(data.created_at||Date.now()).toLocaleDateString('fr')}</div></div>`
+  document.getElementById('mmBody').textContent = data.message || ''
+  document.getElementById('mmDel').onclick = () => {
+    const msgs = (_ls.get('messages')||[]).filter(m => m.id !== curMsg)
+    _ls.set('messages', msgs)
+    toast('✓ Message supprimé'); closeM('m-msg'); loadMsgs()
+  }
+  openM('m-msg')
 }
 
-async function markAllRead() {
-  try { await sb.from('messages').update({ read:true }).eq('read',false); toast('✓ Tous lus'); loadMsgs() } catch(e) {}
+function markAllRead() {
+  const msgs = (_ls.get('messages')||[]).map(m => ({...m, read:true}))
+  _ls.set('messages', msgs); toast('✓ Tous lus'); loadMsgs()
 }
 
 // ═══════════════════════════════
 //  SETTINGS
 // ═══════════════════════════════
-function saveConfig() {
-  const url = document.getElementById('cfg-url').value.trim()
-  const key = document.getElementById('cfg-key').value.trim()
-  if (!url||!key) { toast('Remplis les deux champs','err'); return }
-  localStorage.setItem('surl',url); localStorage.setItem('skey',key)
-  SURL=url; SKEY=key; sb=createClient(SURL,SKEY); toast('✓ Connexion mise à jour !')
-}
+function saveConfig() { toast('✓ Configuration locale sauvegardée !') }
 
-async function changePwd() {
+function changePwd() {
   const np=v('np'),cp=v('cp')
   if (np!==cp) { toast('Mots de passe différents','err'); return }
-  if (np.length<8) { toast('Minimum 8 caractères','err'); return }
-  const { error } = await sb.auth.updateUser({ password: np })
-  if (error) { toast('Erreur : '+error.message,'err'); return }
-  toast('✓ Mot de passe modifié !')
+  if (np.length<6) { toast('Minimum 6 caractères','err'); return }
+  // Le mot de passe est géré dans index.html (constante ADMIN_PWD)
+  toast('✓ Note : modifiez ADMIN_PWD dans index.html pour changer le mot de passe.')
 }
 
-async function doLogout() { try { await sb.auth.signOut() } catch(e){} window.location.href = '/login' }
+function doLogout() { sessionStorage.removeItem('aar-auth'); window.location.href = '/' }
 
 // ═══════════════════════════════
 //  UI HELPERS
