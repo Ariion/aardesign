@@ -316,7 +316,23 @@ body{
   border:1px solid rgba(0,0,0,.1); border-radius:8px;
   box-shadow:0 8px 32px rgba(0,0,0,.2), 0 0 0 .5px rgba(0,0,0,.05);
   overflow:hidden; animation:winpop .22s var(--ease) both;
+  min-width:300px; min-height:160px;
+  display:flex; flex-direction:column;
 }
+/* Handle de redimensionnement (coin bas-droit) */
+.win-resize{
+  position:absolute; bottom:0; right:0;
+  width:16px; height:16px; cursor:se-resize; z-index:10;
+  display:flex; align-items:flex-end; justify-content:flex-end;
+  padding:3px;
+}
+.win-resize::before{
+  content:'';
+  display:block; width:8px; height:8px;
+  border-right:2px solid rgba(0,0,0,.25); border-bottom:2px solid rgba(0,0,0,.25);
+  border-radius:1px;
+}
+[data-theme="dark"] .win-resize::before{ border-color:rgba(255,255,255,.25); }
 [data-theme="dark"] .win{ background:rgba(32,32,32,.96); border-color:rgba(255,255,255,.08); }
 @keyframes winpop{ from{opacity:0; transform:translateY(10px) scale(.98)} to{opacity:1; transform:none} }
 /* Barre de titre W11 : titre à gauche, boutons à DROITE */
@@ -342,8 +358,7 @@ body{
 [data-theme="dark"] .win-ctrl:hover{ background:rgba(255,255,255,.1); color:#fff; }
 .win-ctrl.close:hover{ background:#c42b1c; color:#fff; }
 /* Corps de la fenêtre */
-.win-body{ padding:1.4rem; position:relative; overflow-y:auto; max-height:78vh; }
-.win-body{ padding:1.4rem; position:relative; }
+.win-body{ padding:1.4rem; position:relative; overflow-y:auto; flex:1; min-height:0; }
 .w-profile{ display:flex; align-items:center; gap:.9rem; margin-bottom:1.1rem; }
 .w-ava{ width:48px; height:48px; border-radius:13px; background:var(--navy); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
 .w-ava img{ height:24px; filter:brightness(10); }
@@ -833,6 +848,25 @@ body{
 .desktop-icon-img{ width:40px; height:40px; display:flex; align-items:center; justify-content:center; }
 .desktop-icon-img svg{ width:36px; height:36px; }
 .desktop-icon-label{ font-size:.62rem; color:#fff; text-align:center; text-shadow:0 1px 3px rgba(0,0,0,.8); line-height:1.2; }
+.desktop-folders{
+  position:absolute; top:50%; left:50%; transform:translate(-50%,-60%);
+  display:flex; flex-wrap:wrap; gap:20px; justify-content:center;
+  pointer-events:auto; z-index:2; max-width:560px;
+}
+.desktop-folder{
+  width:80px; display:flex; flex-direction:column; align-items:center;
+  gap:5px; padding:8px 4px; border-radius:4px; cursor:pointer;
+  user-select:none; border:1px solid transparent;
+  transition:background .15s, border-color .15s;
+}
+.desktop-folder:hover{ background:rgba(255,255,255,.12); border-color:rgba(255,255,255,.2); }
+.desktop-folder.selected{ background:rgba(0,120,212,.3); border-color:rgba(0,120,212,.6); }
+.desktop-folder-ico{
+  width:48px; height:42px; border-radius:6px; display:flex; align-items:center; justify-content:center;
+  box-shadow:0 2px 8px rgba(0,0,0,.3);
+}
+.desktop-folder-ico svg{ width:28px; height:28px; }
+.desktop-folder-label{ font-size:.6rem; color:#fff; text-align:center; text-shadow:0 1px 3px rgba(0,0,0,.9); line-height:1.3; max-width:72px; }
 
 /* ═══════════════════════════════════════════
    W11 FENÊTRES REDIMENSIONNABLES
@@ -959,6 +993,51 @@ body{
         </svg>
       </div>
       <span class="desktop-icon-label">Contact</span>
+    </div>
+  </div>
+  <!-- Dossiers Projets — centre du bureau -->
+  <div class="desktop-folders">
+    <div class="desktop-folder" data-cluster="arsene">
+      <div class="desktop-folder-ico" style="background:linear-gradient(135deg,#f59e0b,#d97706)">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M2 6a2 2 0 0 1 2-2h4l2 2h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z" fill="rgba(255,255,255,.9)"/></svg>
+      </div>
+      <span class="desktop-folder-label">Arsène Valentin</span>
+    </div>
+    <div class="desktop-folder" data-cluster="clopinette">
+      <div class="desktop-folder-ico" style="background:linear-gradient(135deg,#ec4899,#be185d)">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M2 6a2 2 0 0 1 2-2h4l2 2h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z" fill="rgba(255,255,255,.9)"/></svg>
+      </div>
+      <span class="desktop-folder-label">Clopinette</span>
+    </div>
+    <div class="desktop-folder" data-cluster="perso">
+      <div class="desktop-folder-ico" style="background:linear-gradient(135deg,#8b5cf6,#6d28d9)">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M2 6a2 2 0 0 1 2-2h4l2 2h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z" fill="rgba(255,255,255,.9)"/></svg>
+      </div>
+      <span class="desktop-folder-label">Perso</span>
+    </div>
+    <div class="desktop-folder" data-cluster="digital">
+      <div class="desktop-folder-ico" style="background:linear-gradient(135deg,#06b6d4,#0e7490)">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M2 6a2 2 0 0 1 2-2h4l2 2h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z" fill="rgba(255,255,255,.9)"/></svg>
+      </div>
+      <span class="desktop-folder-label">Digital Painting</span>
+    </div>
+    <div class="desktop-folder" data-cluster="logo">
+      <div class="desktop-folder-ico" style="background:linear-gradient(135deg,#10b981,#065f46)">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M2 6a2 2 0 0 1 2-2h4l2 2h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z" fill="rgba(255,255,255,.9)"/></svg>
+      </div>
+      <span class="desktop-folder-label">Logo</span>
+    </div>
+    <div class="desktop-folder" data-cluster="animation">
+      <div class="desktop-folder-ico" style="background:linear-gradient(135deg,#f97316,#c2410c)">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M2 6a2 2 0 0 1 2-2h4l2 2h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z" fill="rgba(255,255,255,.9)"/></svg>
+      </div>
+      <span class="desktop-folder-label">Animation</span>
+    </div>
+    <div class="desktop-folder" data-cluster="etudes">
+      <div class="desktop-folder-ico" style="background:linear-gradient(135deg,#3b82f6,#1d4ed8)">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M2 6a2 2 0 0 1 2-2h4l2 2h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z" fill="rgba(255,255,255,.9)"/></svg>
+      </div>
+      <span class="desktop-folder-label">Études</span>
     </div>
   </div>
 </div>
@@ -1207,12 +1286,12 @@ body{
 
   <!-- ══ TASKBAR WINDOWS 11 ══ -->
   <div id="taskbar">
+    <!-- Gauche : Bouton Retour Accueil -->
+    <button id="w11-home-btn" title="Retour à l'accueil" style="position:absolute;left:0;top:0;bottom:0;margin:0;border-radius:0">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 12L12 3l9 9"/><path d="M9 21V12h6v9"/></svg>
+    </button>
     <!-- Centre : Start + apps -->
     <div class="tb-apps">
-      <!-- Bouton Retour Accueil -->
-      <button id="w11-home-btn" title="Retour à l'accueil">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 12L12 3l9 9"/><path d="M9 21V12h6v9"/><path d="M3 12v9h18v-9" opacity="0"/></svg>
-      </button>
       <!-- Start button W11 -->
       <button id="start" class="tb-start" title="Démarrer">
         <svg width="17" height="17" viewBox="0 0 88 88" xmlns="http://www.w3.org/2000/svg">
@@ -1607,10 +1686,7 @@ function updateIosTime(){
 setInterval(updateIosTime,10000);
 
 const iosLock=document.getElementById('ios-lock');
-iosLock.addEventListener('click',()=>{
-  iosLock.classList.add('unlocking');
-  setTimeout(()=>{ iosLock.style.display='none'; },500);
-});
+iosLock.style.display='none';
 
 // iOS app open
 const iosAppLayer=document.getElementById('ios-app-layer');
@@ -1926,13 +2002,20 @@ function openApp(id){
   w.style.left=Math.max(12, Math.min(innerWidth-ww-20, 130+n*36))+'px';
   w.style.top=Math.max(64, 88+n*32)+'px';
   w.style.zIndex=++topZ;
-  w.innerHTML='<div class="win-bar"><span class="win-title">'+app.title+'</span><div class="win-controls"><button class="win-ctrl" title="Réduire">&#x2013;</button><button class="win-ctrl" title="Agrandir">&#x25A1;</button><button class="win-ctrl close win-close" title="Fermer">&#x2715;</button></div></div><div class="win-body">'+app.body()+'<div class="w-toastmini">Copié !</div></div>';
+  w.innerHTML='<div class="win-bar"><span class="win-title">'+app.title+'</span><div class="win-controls"><button class="win-ctrl win-max" title="Agrandir">&#x25A1;</button><button class="win-ctrl close win-close" title="Fermer">&#x2715;</button></div></div><div class="win-body">'+app.body()+'<div class="w-toastmini">Copié !</div></div><div class="win-resize"></div>';
   winLayer.appendChild(w); openWins[id]=w; markApp(id,true);
   w.addEventListener('pointerdown',()=>bringFront(w));
+  const maxBtn=w.querySelector('.win-max');
+  if(maxBtn){ let maxed=false; maxBtn.addEventListener('click',()=>{
+    if(!maxed){ w._sw=w.style.width; w._sh=w.style.height; w._sl=w.style.left; w._st=w.style.top;
+      w.style.left='0'; w.style.top='0'; w.style.width='100%'; w.style.height='calc(100% - 48px)'; maxed=true; maxBtn.innerHTML='&#x2750;';
+    } else { w.style.width=w._sw; w.style.height=w._sh; w.style.left=w._sl; w.style.top=w._st; maxed=false; maxBtn.innerHTML='&#x25A1;'; }
+  }); }
   const closeBtn=w.querySelector('.win-close');
   closeBtn.addEventListener('pointerdown',e=>e.stopPropagation());
   closeBtn.addEventListener('click',()=>closeApp(id));
   makeDraggable(w, w.querySelector('.win-bar'), closeBtn);
+  makeResizable(w);
   w.querySelectorAll('[data-copy]').forEach(b=>b.addEventListener('click',async()=>{
     try{ await navigator.clipboard.writeText(b.dataset.copy); }catch(_){}
     miniToast(w);
@@ -1947,6 +2030,22 @@ function openApp(id){
 function closeApp(id){ const w=openWins[id]; if(!w)return;
   w.style.animation='winpop .2s var(--ease) reverse forwards';
   setTimeout(()=>w.remove(),180); delete openWins[id]; markApp(id,false); }
+function makeResizable(w){
+  const h=w.querySelector('.win-resize'); if(!h) return;
+  let rs=false,rsx,rsy,rw,rh;
+  h.addEventListener('pointerdown',e=>{
+    e.stopPropagation(); rs=true;
+    rsx=e.clientX; rsy=e.clientY; rw=w.offsetWidth; rh=w.offsetHeight;
+    h.setPointerCapture(e.pointerId);
+  });
+  h.addEventListener('pointermove',e=>{
+    if(!rs) return;
+    const nw=Math.max(300, rw+(e.clientX-rsx));
+    const nh=Math.max(160, rh+(e.clientY-rsy));
+    w.style.width=nw+'px'; w.style.height=nh+'px';
+  });
+  h.addEventListener('pointerup',()=>{ rs=false; });
+}
 function makeDraggable(w, handle, closeBtn){
   let drag=false,ox,oy;
   handle.addEventListener('pointerdown',e=>{
@@ -2019,15 +2118,24 @@ if(iosHomeBtn) iosHomeBtn.addEventListener('click', goHome);
 
 /* ════════ ICÔNES BUREAU W11 ════════ */
 document.querySelectorAll('.desktop-icon[data-app]').forEach(icon => {
-  let clickTimer = null;
   icon.addEventListener('click', function(){
-    // Single click = select
-    document.querySelectorAll('.desktop-icon').forEach(i => i.classList.remove('selected'));
+    document.querySelectorAll('.desktop-icon,.desktop-folder').forEach(i => i.classList.remove('selected'));
     this.classList.add('selected');
   });
   icon.addEventListener('dblclick', function(){
     const appId = this.dataset.app;
     if(appId) openApp(appId);
+  });
+});
+
+/* ════════ DOSSIERS PROJETS W11 ════════ */
+document.querySelectorAll('.desktop-folder').forEach(folder => {
+  folder.addEventListener('click', function(){
+    document.querySelectorAll('.desktop-icon,.desktop-folder').forEach(i => i.classList.remove('selected'));
+    this.classList.add('selected');
+  });
+  folder.addEventListener('dblclick', function(){
+    openApp('atelier');
   });
 });
 
