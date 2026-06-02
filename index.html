@@ -545,6 +545,22 @@ body{background:var(--wall-a);color:var(--ink);transition:background .4s,color .
 <script>
 const ADMIN_PWD='aardesign2026';
 
+/* Apply custom theme from admin if saved */
+(function applyTheme(){
+  try {
+    const t = JSON.parse(localStorage.getItem('aar_theme')||'null');
+    if (!t) return;
+    const r = document.documentElement.style;
+    if (t.navy)  r.setProperty('--navy', t.navy);
+    if (t.cyan)  r.setProperty('--cyan', t.cyan);
+    if (t.cyan2) r.setProperty('--cyan2', t.cyan2);
+    if (t.wall)  { r.setProperty('--wall-a', t.wall); r.setProperty('--wall-b', t.wall); }
+    if (t.win)   r.setProperty('--win-bg', t.win + 'f0');
+    if (t.txt)   { r.setProperty('--ink', t.txt); r.setProperty('--ink-l', t.txt); }
+    if (t.fontBody) r.setProperty('--font', `'${t.fontBody}', sans-serif`);
+  } catch(e) {}
+})();
+
 /* ═══════════════════════════════════════
    LOCK SCREEN
 ═══════════════════════════════════════ */
