@@ -386,10 +386,11 @@ tr:hover td{background:rgba(17,16,16,.015);}
 
   <div class="sb-group">
     <div class="sb-group-label">Éditeur de site</div>
-    <div class="ni" onclick="nav('hero',this)"><span class="ni-ico">✦</span>Hero</div>
+    <div class="ni" onclick="nav('hero',this)"><span class="ni-ico">✦</span>Identité OS</div>
     <div class="ni" onclick="nav('projects',this)"><span class="ni-ico">⬡</span>Projets</div>
     <div class="ni" onclick="nav('about',this)"><span class="ni-ico">◎</span>À propos</div>
     <div class="ni" onclick="nav('contact',this)"><span class="ni-ico">✉</span>Contact</div>
+    <div class="ni" onclick="nav('cv',this)"><span class="ni-ico">📄</span>CV</div>
     <div class="ni" onclick="nav('nav',this)"><span class="ni-ico">≡</span>Navigation</div>
     <div class="ni" onclick="nav('marquee',this)"><span class="ni-ico">↔</span>Marquee</div>
     <div class="ni" onclick="nav('design',this)"><span class="ni-ico">◐</span>Design</div>
@@ -470,20 +471,20 @@ tr:hover td{background:rgba(17,16,16,.015);}
 
     <!-- ══ HERO ══ -->
     <div class="panel" id="panel-hero">
-      <div class="ph"><div><h1>Section <em>Hero</em></h1><p>La première impression du portfolio.</p></div></div>
+      <div class="ph"><div><h1>Identité <em>OS</em></h1><p>Nom, rôle et infos affichés dans le Lock Screen et le badge de l'OS.</p></div></div>
       <div class="sec-card">
         <div class="sec-hd open" onclick="toggleSec(this)">
           <div class="sec-title"><span class="sec-ico">✦</span>Textes</div><span class="sec-arrow">▶</span>
         </div>
         <div class="sec-body open">
-          <div class="field"><label>Ligne d'introduction (au-dessus du titre)</label><input type="text" id="h-intro"></div>
+          <div class="field"><label>Nom complet</label><input type="text" id="h-intro"></div>
           <div class="field-row">
-            <div class="field"><label>Titre — ligne 1</label><input type="text" id="h-t1"></div>
-            <div class="field"><label>Titre — ligne 2</label><input type="text" id="h-t2"></div>
+            <div class="field"><label>Rôle — ligne 1</label><input type="text" id="h-t1"></div>
+            <div class="field"><label>Rôle — ligne 2</label><input type="text" id="h-t2"></div>
           </div>
-          <div class="field"><label>Titre — ligne 3 (italique)</label><input type="text" id="h-t3"></div>
-          <div class="field"><label>Description sous le titre</label><textarea id="h-desc"></textarea></div>
-          <div class="field"><label>Texte "Défiler"</label><input type="text" id="h-scroll" placeholder="Défiler"></div>
+          <div class="field"><label>Localisation</label><input type="text" id="h-t3"></div>
+          <div class="field"><label>Description courte (fenêtre À propos)</label><textarea id="h-desc"></textarea></div>
+          <div class="field"><label>Tagline (optionnel)</label><input type="text" id="h-scroll" placeholder="Défiler"></div>
         </div>
       </div>
       <div class="save-bar">
@@ -570,6 +571,40 @@ tr:hover td{background:rgba(17,16,16,.015);}
         <div class="save-actions">
           <button class="btn btn-out btn-sm" onclick="loadContact()">↺ Annuler</button>
           <button class="btn btn-gold" onclick="saveSection('contact')">💾 Sauvegarder</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ CV ══ -->
+    <div class="panel" id="panel-cv">
+      <div class="ph"><div><h1>CV <em>&amp; Compétences</em></h1><p>Données affichées dans la fenêtre CV de l'OS.</p></div></div>
+
+      <div class="sec-card">
+        <div class="sec-hd open" onclick="toggleSec(this)">
+          <div class="sec-title"><span class="sec-ico">◈</span>Compétences</div><span class="sec-arrow">▶</span>
+        </div>
+        <div class="sec-body open" id="cv-skills-wrap"></div>
+      </div>
+
+      <div class="sec-card">
+        <div class="sec-hd open" onclick="toggleSec(this)">
+          <div class="sec-title"><span class="sec-ico">◉</span>Expériences</div><span class="sec-arrow">▶</span>
+        </div>
+        <div class="sec-body open" id="cv-exp-wrap"></div>
+      </div>
+
+      <div class="sec-card">
+        <div class="sec-hd open" onclick="toggleSec(this)">
+          <div class="sec-title"><span class="sec-ico">◎</span>Langues</div><span class="sec-arrow">▶</span>
+        </div>
+        <div class="sec-body open" id="cv-lang-wrap"></div>
+      </div>
+
+      <div class="save-bar">
+        <span class="save-msg" id="sm-cv">Modifiez puis sauvegardez.</span>
+        <div class="save-actions">
+          <button class="btn btn-out btn-sm" onclick="loadCV()">↺ Annuler</button>
+          <button class="btn btn-gold" onclick="saveCV()">💾 Sauvegarder</button>
         </div>
       </div>
     </div>
@@ -912,7 +947,7 @@ const _ls = {
 
 // Default content
 const DEF = {
-  hero:{intro:'Anthony Armand — Digital Painting & Direction Artistique',t1:'Designer,',t2:'illustrateur &',t3:'peintre numérique',desc:'Je construis des univers visuels qui racontent des histoires — du packaging steampunk aux illustrations saisonnières, du character design à la dark fantasy.',scroll:'Défiler'},
+  hero:{intro:'Anthony Armand',t1:'Directeur Artistique',t2:'AAR Design',t3:'Caen · Normandie · Remote',desc:'Designer pluridisciplinaire à l\'intersection du digital painting, de l\'illustration narrative et de la direction artistique. 5+ ans d\'expérience.',scroll:'aardesign.fr'},
   about:{fn:'Anthony',ln:'Armand',p1:'Designer pluridisciplinaire basé en France. Je travaille à l\'intersection du digital painting, de l\'illustration narrative et de la direction artistique.',p2:'Du packaging premium aux peintures personnelles, chaque projet est une occasion de construire un univers visuel unique, cohérent et mémorable.',cta:'Travaillons ensemble →',stats:[{n:'5+',l:'Années d\'expérience'},{n:'35+',l:'Œuvres réalisées'},{n:'8',l:'Disciplines créatives'},{n:'FR',l:'France · Remote · Int\'l'}]},
   contact:{t1:'Parlons de',t2:'votre projet',email:'aardesign14@gmail.com',phone:'06 79 46 62 19',ig:'https://instagram.com/aardesign',be:'https://behance.net/anthonyarmand',copy:'© 2025 AAR Design — Anthony Armand'},
   nav:{l1:'Travaux',a1:'#work',l2:'À propos',a2:'#about',l3:'Contact',a3:'#contact',cta:'Démarrer un projet'},
@@ -943,11 +978,62 @@ window.addEventListener('load', () => {
 // ═══════════════════════════════
 //  localStorage DATA LAYER
 // ═══════════════════════════════
+function initPresetLibrary() {
+  const existing = _ls.get('images') || [];
+  if (existing.length > 0) return; // déjà peuplée
+  const PRESET = [
+    {id:'pa-1',  url:'assets/aristocrate/casque.jpg',      title:'L\'Aristocrate — Casque',      filename:'casque.jpg',      category:'aristocrate'},
+    {id:'pa-2',  url:'assets/aristocrate/explorateur.jpg', title:'L\'Aristocrate — Explorateur', filename:'explorateur.jpg', category:'aristocrate'},
+    {id:'pa-3',  url:'assets/aristocrate/nanti.jpg',       title:'L\'Aristocrate — Nanti',       filename:'nanti.jpg',       category:'aristocrate'},
+    {id:'pa-4',  url:'assets/aristocrate/veste.jpg',       title:'L\'Aristocrate — Veste',       filename:'veste.jpg',       category:'aristocrate'},
+    {id:'pa-5',  url:'assets/dark/blood.jpg',              title:'Dark — Blood',                 filename:'blood.jpg',       category:'dark'},
+    {id:'pa-6',  url:'assets/dark/cult.jpg',               title:'Dark — Cult',                  filename:'cult.jpg',        category:'dark'},
+    {id:'pa-7',  url:'assets/dark/red.jpg',                title:'Dark — Red',                   filename:'red.jpg',         category:'dark'},
+    {id:'pa-8',  url:'assets/dark/salem.jpg',              title:'Dark — Salem',                 filename:'salem.jpg',       category:'dark'},
+    {id:'pa-9',  url:'assets/formation/cathedrale.jpg',    title:'Formation — Cathédrale',       filename:'cathedrale.jpg',  category:'formation'},
+    {id:'pa-10', url:'assets/formation/character.jpg',     title:'Formation — Character',        filename:'character.jpg',   category:'formation'},
+    {id:'pa-11', url:'assets/formation/environnement.jpg', title:'Formation — Environnement',    filename:'environnement.jpg',category:'formation'},
+    {id:'pa-12', url:'assets/formation/foret.jpg',         title:'Formation — Forêt',            filename:'foret.jpg',       category:'formation'},
+    {id:'pa-13', url:'assets/formation/halloween.jpg',     title:'Formation — Halloween',        filename:'halloween.jpg',   category:'formation'},
+    {id:'pa-14', url:'assets/formation/hoth.jpg',          title:'Formation — Hoth',             filename:'hoth.jpg',        category:'formation'},
+    {id:'pa-15', url:'assets/formation/mobydick.jpg',      title:'Formation — Moby Dick',        filename:'mobydick.jpg',    category:'formation'},
+    {id:'pa-16', url:'assets/formation/paysage.jpg',       title:'Formation — Paysage',          filename:'paysage.jpg',     category:'formation'},
+    {id:'pa-17', url:'assets/formation/sf.jpg',            title:'Formation — SF',               filename:'sf.jpg',          category:'formation'},
+    {id:'pa-18', url:'assets/millenaire/cadomum.jpg',      title:'Millénaire — Cadomum',         filename:'cadomum.jpg',     category:'millenaire'},
+    {id:'pa-19', url:'assets/millenaire/pomme2.jpg',       title:'Millénaire — Pomme 2',         filename:'pomme2.jpg',      category:'millenaire'},
+    {id:'pa-20', url:'assets/millenaire/pomme3.jpg',       title:'Millénaire — Pomme 3',         filename:'pomme3.jpg',      category:'millenaire'},
+    {id:'pa-21', url:'assets/saveurs/automne.jpg',         title:'Saveurs — Automne',            filename:'automne.jpg',     category:'saveurs'},
+    {id:'pa-22', url:'assets/saveurs/ete.jpg',             title:'Saveurs — Été',                filename:'ete.jpg',         category:'saveurs'},
+    {id:'pa-23', url:'assets/saveurs/hiver.jpg',           title:'Saveurs — Hiver',              filename:'hiver.jpg',       category:'saveurs'},
+    {id:'pa-24', url:'assets/saveurs/printemps.jpg',       title:'Saveurs — Printemps',          filename:'printemps.jpg',   category:'saveurs'},
+    {id:'pa-25', url:'assets/saveurs/renard.png',          title:'Saveurs — Renard',             filename:'renard.png',      category:'saveurs'},
+    {id:'pa-26', url:'assets/steam/coeur.jpg',             title:'Steam — Cœur',                 filename:'coeur.jpg',       category:'steam'},
+    {id:'pa-27', url:'assets/steam/gueule.jpg',            title:'Steam — Gueule',               filename:'gueule.jpg',      category:'steam'},
+    {id:'pa-28', url:'assets/steam/hibou.jpg',             title:'Steam — Hibou',                filename:'hibou.jpg',       category:'steam'},
+    {id:'pa-29', url:'assets/steam/main.jpg',              title:'Steam — Main',                 filename:'main.jpg',        category:'steam'},
+    {id:'pa-30', url:'assets/steam/mockup.jpg',            title:'Steam — Mockup',               filename:'mockup.jpg',      category:'steam'},
+    {id:'pa-31', url:'assets/steam/pomme.jpg',             title:'Steam — Pomme',                filename:'pomme.jpg',       category:'steam'},
+    {id:'pa-32', url:'assets/steam/sablier.jpg',           title:'Steam — Sablier',              filename:'sablier.jpg',     category:'steam'},
+    {id:'pa-33', url:'assets/voyages/amazonie.jpg',        title:'Voyages — Amazonie',           filename:'amazonie.jpg',    category:'voyages'},
+    {id:'pa-34', url:'assets/voyages/canada.jpg',          title:'Voyages — Canada',             filename:'canada.jpg',      category:'voyages'},
+    {id:'pa-35', url:'assets/voyages/cappadoce.jpg',       title:'Voyages — Cappadoce',          filename:'cappadoce.jpg',   category:'voyages'},
+    {id:'pa-36', url:'assets/voyages/cartes.jpg',          title:'Voyages — Cartes',             filename:'cartes.jpg',      category:'voyages'},
+    {id:'pa-37', url:'assets/voyages/fuji.jpg',            title:'Voyages — Fuji',               filename:'fuji.jpg',        category:'voyages'},
+    {id:'pa-38', url:'assets/voyages/laponie.jpg',         title:'Voyages — Laponie',            filename:'laponie.jpg',     category:'voyages'},
+    {id:'pa-39', url:'assets/voyages/pacifique.jpg',       title:'Voyages — Pacifique',          filename:'pacifique.jpg',   category:'voyages'},
+    {id:'pa-40', url:'assets/pulse.jpg',                   title:'Pulse',                        filename:'pulse.jpg',       category:'perso'},
+  ];
+  _ls.set('images', PRESET);
+  allImgs = PRESET;
+  toast('✓ Bibliothèque initialisée avec ' + PRESET.length + ' images !');
+}
+
 function loadSiteData() {
   Object.keys(DEF).forEach(k => {
     const saved = _ls.get('sec_'+k)
     SD[k] = saved || JSON.parse(JSON.stringify(DEF[k]))
   })
+  initPresetLibrary()
   loadHero(); loadAbout(); loadContact(); loadNav(); loadMarquee(); loadDesign(); renderProjList()
 }
 
@@ -983,7 +1069,7 @@ function markClean(sec) {
 const TITLES = {
   dashboard:['Dashboard','Vue d\'ensemble'],hero:['Hero','Éditeur — Section Hero'],
   projects:['Projets','Gestion des projets'],about:['À propos','Section À propos'],
-  contact:['Contact','Section Contact'],nav:['Navigation','Barre de navigation'],
+  contact:['Contact','Section Contact'],cv:['CV','Compétences & Expériences'],nav:['Navigation','Barre de navigation'],
   marquee:['Marquee','Bandeaux défilants'],design:['Design','Couleurs & Typographie'],
   library:['Bibliothèque','Gestion des images'],messages:['Messages','Boîte de réception'],
   settings:['Paramètres','Configuration système']
@@ -999,6 +1085,7 @@ function nav(name, el) {
   if (name === 'library')  loadLib()
   if (name === 'messages') loadMsgs()
   if (name === 'dashboard') loadDashboard()
+  if (name === 'cv') loadCV()
   if (name === 'settings') {}
 }
 function qni(i) { return document.querySelectorAll('.ni')[i] }
@@ -1370,6 +1457,76 @@ function markAllRead() {
   const msgs = (_ls.get('messages')||[]).map(m => ({...m, read:true}))
   _ls.set('messages', msgs); toast('✓ Tous lus'); loadMsgs()
 }
+
+// ═══════════════════════════════
+//  CV
+// ═══════════════════════════════
+const DEF_CV = {
+  skills:[
+    {n:'Photoshop',p:95},{n:'InDesign',p:92},{n:'Illustrator',p:90},
+    {n:'Lightroom',p:88},{n:'HTML/CSS',p:75},{n:'Digital Painting',p:65}
+  ],
+  experiences:[
+    {t:'AAR Design — Auto-entrepreneur',d:'2024–présent',c:'Création graphique, DA, Web, Illustration'},
+    {t:'Clopinette / Arsène Valentin — CDI',d:'2020–présent · Caen',c:'DA, Packaging, Digital Painting'},
+    {t:'Creacom — CDD',d:'2019 · Valence',c:'Création graphique, communication'},
+    {t:'Optimind Winter — Stage',d:'2017–2019 · Paris VIII',c:'DA, Web design, Communication digitale'},
+  ],
+  languages:[
+    {l:'Français',n:'Natif'},{l:'Anglais',n:'C1'},{l:'Italien',n:'A2'},{l:'Japonais',n:'A1'}
+  ]
+};
+
+function loadCV() {
+  const d = _ls.get('cv') || DEF_CV;
+  // Skills
+  const sw = document.getElementById('cv-skills-wrap'); if(!sw) return;
+  sw.innerHTML = d.skills.map((s,i)=>`
+    <div class="field-row" style="margin-bottom:.6rem">
+      <div class="field"><label>Logiciel</label><input type="text" id="cvs-n-${i}" value="${s.n}" oninput="markDirty('cv')"></div>
+      <div class="field" style="max-width:100px"><label>Niveau %</label><input type="number" id="cvs-p-${i}" value="${s.p}" min="0" max="100" oninput="markDirty('cv')"></div>
+      <button class="btn btn-danger btn-xs" style="align-self:flex-end;margin-bottom:4px" onclick="cvRmSkill(${i})">🗑</button>
+    </div>`).join('') +
+    `<button class="btn btn-out btn-sm" onclick="cvAddSkill()">+ Ajouter une compétence</button>`;
+  // Experiences
+  const ew = document.getElementById('cv-exp-wrap'); if(!ew) return;
+  ew.innerHTML = d.experiences.map((e,i)=>`
+    <div class="sec-card" style="margin-bottom:.8rem;padding:.8rem">
+      <div class="field-row">
+        <div class="field"><label>Poste / Entreprise</label><input type="text" id="cve-t-${i}" value="${e.t}" oninput="markDirty('cv')"></div>
+        <div class="field" style="max-width:200px"><label>Période</label><input type="text" id="cve-d-${i}" value="${e.d}" oninput="markDirty('cv')"></div>
+      </div>
+      <div class="field"><label>Description</label><input type="text" id="cve-c-${i}" value="${e.c}" oninput="markDirty('cv')"></div>
+      <button class="btn btn-danger btn-xs" style="margin-top:.4rem" onclick="cvRmExp(${i})">🗑 Supprimer</button>
+    </div>`).join('') +
+    `<button class="btn btn-out btn-sm" onclick="cvAddExp()">+ Ajouter une expérience</button>`;
+  // Languages
+  const lw = document.getElementById('cv-lang-wrap'); if(!lw) return;
+  lw.innerHTML = d.languages.map((lang,i)=>`
+    <div class="field-row" style="margin-bottom:.5rem">
+      <div class="field"><label>Langue</label><input type="text" id="cvl-l-${i}" value="${lang.l}" oninput="markDirty('cv')"></div>
+      <div class="field"><label>Niveau</label><input type="text" id="cvl-n-${i}" value="${lang.n}" oninput="markDirty('cv')"></div>
+      <button class="btn btn-danger btn-xs" style="align-self:flex-end;margin-bottom:4px" onclick="cvRmLang(${i})">🗑</button>
+    </div>`).join('') +
+    `<button class="btn btn-out btn-sm" onclick="cvAddLang()">+ Ajouter une langue</button>`;
+}
+
+function saveCV() {
+  const d = _ls.get('cv') || DEF_CV;
+  const skills = d.skills.map((_,i)=>({n:v('cvs-n-'+i)||'', p:parseInt(v('cvs-p-'+i))||0})).filter(s=>s.n);
+  const experiences = d.experiences.map((_,i)=>({t:v('cve-t-'+i)||'',d:v('cve-d-'+i)||'',c:v('cve-c-'+i)||''})).filter(e=>e.t);
+  const languages = d.languages.map((_,i)=>({l:v('cvl-l-'+i)||'',n:v('cvl-n-'+i)||''})).filter(l=>l.l);
+  _ls.set('cv', {skills,experiences,languages});
+  markClean('cv');
+  toast('✓ CV sauvegardé !');
+}
+
+function cvAddSkill(){ const d=_ls.get('cv')||DEF_CV; d.skills.push({n:'',p:80}); _ls.set('cv',d); loadCV(); markDirty('cv'); }
+function cvRmSkill(i){ const d=_ls.get('cv')||DEF_CV; d.skills.splice(i,1); _ls.set('cv',d); loadCV(); markDirty('cv'); }
+function cvAddExp(){ const d=_ls.get('cv')||DEF_CV; d.experiences.push({t:'',d:'',c:''}); _ls.set('cv',d); loadCV(); markDirty('cv'); }
+function cvRmExp(i){ const d=_ls.get('cv')||DEF_CV; d.experiences.splice(i,1); _ls.set('cv',d); loadCV(); markDirty('cv'); }
+function cvAddLang(){ const d=_ls.get('cv')||DEF_CV; d.languages.push({l:'',n:''}); _ls.set('cv',d); loadCV(); markDirty('cv'); }
+function cvRmLang(i){ const d=_ls.get('cv')||DEF_CV; d.languages.splice(i,1); _ls.set('cv',d); loadCV(); markDirty('cv'); }
 
 // ═══════════════════════════════
 //  SETTINGS
