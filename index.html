@@ -122,62 +122,78 @@ body{background:var(--wall-a);color:var(--ink);transition:background .4s,color .
    TOP BAR
 ═══════════════════════════════════════ */
 #topbar{
-  position:fixed;top:0;left:0;right:0;height:36px;z-index:100;
-  display:flex;align-items:center;padding:0 12px;gap:8px;
+  position:fixed;top:0;left:0;right:0;height:44px;z-index:100;
+  display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:0 10px;
   background:var(--bar-bg);
   border-bottom:1px solid var(--bar-border);
   backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);
   transition:background .4s,border-color .4s;
 }
-#tb-logo{
-  display:flex;align-items:center;gap:7px;
-  font-size:.7rem;font-weight:800;letter-spacing:.06em;color:var(--cyan);
-  cursor:pointer;padding:4px 8px;border-radius:6px;
-  transition:background .15s;flex-shrink:0;
-  position:relative;
-}
-#tb-logo:hover{background:var(--icon-hover)}
-#tb-menu{
-  position:absolute;top:calc(100% + 6px);left:0;
-  background:var(--win-bg);border:1px solid var(--win-border);
-  border-radius:10px;padding:6px;min-width:180px;
-  box-shadow:0 16px 50px rgba(0,0,0,.4);backdrop-filter:blur(40px);
-  display:none;flex-direction:column;gap:2px;
-}
-#tb-menu.open{display:flex}
-.tm-item{
-  display:flex;align-items:center;gap:.6rem;padding:8px 10px;
-  border-radius:6px;cursor:pointer;font-size:.72rem;color:var(--ink);
-  transition:background .1s;border:none;background:none;font-family:inherit;width:100%;text-align:left;
-}
-.tm-item:hover{background:var(--icon-hover)}
-.tm-item svg{opacity:.7}
-.tm-sep{height:1px;background:var(--line);margin:3px 0}
-
-#tb-center{display:flex;align-items:center;gap:6px;flex:1;justify-content:center}
-.tb-app-pill{
-  display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;
-  cursor:pointer;border:none;background:none;font-family:'Montserrat',sans-serif;
-  font-size:.62rem;font-weight:600;color:var(--mid);letter-spacing:.03em;
+/* hamburger */
+#tb-burger{
+  display:flex;align-items:center;justify-content:flex-start;
+  width:36px;height:36px;border-radius:8px;border:none;cursor:pointer;
+  background:none;color:var(--mid);flex-direction:column;gap:4px;padding:8px 7px;
   transition:background .15s,color .15s;
 }
-.tb-app-pill:hover,.tb-app-pill.open{background:var(--icon-hover);color:var(--ink)}
-.tb-app-pill svg{width:14px;height:14px;opacity:.8}
-
-#tb-right{display:flex;align-items:center;gap:6px;flex-shrink:0}
+#tb-burger:hover{background:var(--icon-hover);color:var(--ink)}
+#tb-burger span{display:block;width:100%;height:2px;background:currentColor;border-radius:2px;transition:all .2s}
+/* logo centré */
+#tb-logo-center{
+  display:flex;align-items:center;justify-content:center;
+}
+#tb-logo-center img{height:16px;opacity:.88;filter:brightness(0) invert(1)}
+/* droite */
+#tb-right{display:flex;align-items:center;justify-content:flex-end;gap:6px}
 .tb-ico-btn{
-  width:28px;height:28px;border-radius:6px;border:none;cursor:pointer;
+  width:32px;height:32px;border-radius:6px;border:none;cursor:pointer;
   background:none;color:var(--mid);display:flex;align-items:center;justify-content:center;
   font-size:.85rem;transition:background .15s,color .15s;
 }
 .tb-ico-btn:hover{background:var(--icon-hover);color:var(--ink)}
 #tb-clock{font-size:.65rem;font-weight:600;color:var(--mid);letter-spacing:.04em;white-space:nowrap}
+/* drawer menu */
+#tb-drawer{
+  position:fixed;top:44px;left:0;bottom:0;width:240px;z-index:200;
+  background:var(--win-bg);border-right:1px solid var(--win-border);
+  backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);
+  display:flex;flex-direction:column;padding:8px;gap:2px;
+  transform:translateX(-100%);transition:transform .25s cubic-bezier(.4,0,.2,1);
+  box-shadow:8px 0 40px rgba(0,0,0,.35);
+}
+#tb-drawer.open{transform:translateX(0)}
+#tb-drawer-overlay{
+  position:fixed;inset:44px 0 0 0;z-index:199;
+  display:none;
+}
+#tb-drawer.open ~ #tb-drawer-overlay{display:block}
+.tm-item{
+  display:flex;align-items:center;gap:.7rem;padding:10px 12px;
+  border-radius:8px;cursor:pointer;font-size:.78rem;color:var(--ink);font-weight:500;
+  transition:background .1s;border:none;background:none;font-family:inherit;width:100%;text-align:left;
+}
+.tm-item:hover{background:var(--icon-hover)}
+.tm-item svg{opacity:.65;flex-shrink:0}
+.tm-sep{height:1px;background:var(--line);margin:4px 0}
+.tm-label{font-size:.5rem;letter-spacing:.2em;text-transform:uppercase;color:var(--mid);padding:8px 12px 2px;font-weight:700;opacity:.6}
+/* mobile home button */
+#mob-home{
+  display:none;
+  position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:9998;
+  background:rgba(41,184,217,.18);border:1px solid rgba(41,184,217,.35);
+  backdrop-filter:blur(20px);color:var(--cyan);
+  padding:10px 28px;border-radius:30px;font-size:.7rem;font-weight:700;
+  letter-spacing:.06em;cursor:pointer;border:none;font-family:'Montserrat',sans-serif;
+  gap:8px;align-items:center;
+  box-shadow:0 4px 20px rgba(0,0,0,.3);
+  transition:opacity .2s;
+}
 
 /* ═══════════════════════════════════════
    DESKTOP
 ═══════════════════════════════════════ */
 #desktop{
-  position:fixed;inset:36px 0 0 0;z-index:1;
+  position:fixed;inset:44px 0 0 0;z-index:1;
   display:flex;align-items:flex-start;
   pointer-events:none;
 }
@@ -259,11 +275,8 @@ body{background:var(--wall-a);color:var(--ink);transition:background .4s,color .
   .win-btn.close-mobile svg{opacity:1;width:14px;height:14px;color:rgba(255,255,255,.85)}
   .win-resize{display:none}
   .win-body{-webkit-overflow-scrolling:touch}
-  #topbar{gap:4px;padding:0 10px;overflow-x:auto;flex-wrap:nowrap}
-  #tb-logo{font-size:.7rem;flex-shrink:0}
-  .tb-pill{font-size:.6rem;padding:3px 8px;flex-shrink:0}
-  #tb-right{flex-shrink:0}
-  #desk-apps{display:none}
+  #desk-apps{display:flex}
+  #mob-home{display:flex}
   #desk-projects{padding:8px;gap:8px}
   .d-folder{width:80px}
   .d-folder-ico{width:52px;height:40px}
@@ -423,73 +436,64 @@ body{background:var(--wall-a);color:var(--ink);transition:background .4s,color .
      TOP BAR
 ══════════════════════════════════════════ -->
 <div id="topbar">
-  <!-- Logo / menu -->
-  <div id="tb-logo">
-    <img src="assets/Logo-Aardesign-Long.png" alt="AAR OS" style="height:14px;opacity:.9;filter:brightness(0) invert(1)">
-    <div id="tb-menu">
-      <button class="tm-item" onclick="openApp('atelier')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
-        Atelier AAR
-      </button>
-      <button class="tm-item" onclick="openApp('cv')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M9 7h6M9 11h6M9 15h4" stroke-linecap="round"/></svg>
-        Mon CV
-      </button>
-      <button class="tm-item" onclick="openApp('contact')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 7 8.5 6 8.5-6"/></svg>
-        Contact
-      </button>
-      <button class="tm-item" onclick="openApp('about')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><circle cx="12" cy="8" r="4"/><path d="M4 20a8 8 0 0 1 16 0"/></svg>
-        À propos
-      </button>
-      <div class="tm-sep"></div>
-      <button class="tm-item" onclick="document.getElementById('win-admin-overlay').style.display='flex';closeTbMenu()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
-        Admin
-      </button>
-    </div>
+  <!-- Hamburger gauche -->
+  <button id="tb-burger" onclick="toggleDrawer()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+
+  <!-- Logo centré -->
+  <div id="tb-logo-center">
+    <img src="assets/Logo-Aardesign-Long.png" alt="AAR Design" style="height:16px;opacity:.88;filter:brightness(0) invert(1)">
   </div>
 
-  <!-- Center pills -->
-  <div id="tb-center">
-    <button class="tb-app-pill" data-win="atelier" onclick="openApp('atelier')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
-      Atelier
-    </button>
-    <button class="tb-app-pill" data-win="cv" onclick="openApp('cv')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M9 7h6M9 11h6M9 15h4" stroke-linecap="round"/></svg>
-      CV
-    </button>
-    <button class="tb-app-pill" data-win="contact" onclick="openApp('contact')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 7 8.5 6 8.5-6"/></svg>
-      Contact
-    </button>
-    <button class="tb-app-pill" data-win="mail" onclick="openApp('mail')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.9v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.9z"/></svg>
-      Écrire
-    </button>
-  </div>
-
-  <!-- Right -->
+  <!-- Droite -->
   <div id="tb-right">
     <button class="tb-ico-btn" id="theme-btn" title="Thème" onclick="toggleTheme()">☾</button>
     <div id="tb-clock">00:00</div>
   </div>
 </div>
 
+<!-- Drawer menu -->
+<div id="tb-drawer">
+  <div class="tm-label">Navigation</div>
+  <button class="tm-item" onclick="openApp('atelier');closeDrawer()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+    Atelier
+  </button>
+  <button class="tm-item" onclick="openApp('cv');closeDrawer()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M9 7h6M9 11h6M9 15h4" stroke-linecap="round"/></svg>
+    Mon CV
+  </button>
+  <button class="tm-item" onclick="openApp('contact');closeDrawer()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 7 8.5 6 8.5-6"/></svg>
+    Contact
+  </button>
+  <button class="tm-item" onclick="openApp('mail');closeDrawer()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><path d="M22 16.9v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.9z"/></svg>
+    Écrire
+  </button>
+  <button class="tm-item" onclick="openApp('about');closeDrawer()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><circle cx="12" cy="8" r="4"/><path d="M4 20a8 8 0 0 1 16 0"/></svg>
+    À propos
+  </button>
+  <div class="tm-sep"></div>
+  <div class="tm-label">Système</div>
+  <button class="tm-item" onclick="document.getElementById('win-admin-overlay').style.display='flex';closeDrawer()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+    Admin
+  </button>
+</div>
+<div id="tb-drawer-overlay" onclick="closeDrawer()"></div>
+
+<!-- Bouton retour bureau (mobile, visible quand fenêtre ouverte) -->
+<button id="mob-home" onclick="closeAllWins()">⌂ Bureau</button>
+
 <!-- ══════════════════════════════════════════
      DESKTOP
 ══════════════════════════════════════════ -->
 <div id="desktop">
-  <!-- Left app icons -->
+  <!-- Left app icons — CV · Contact · Écrire · À propos -->
   <div id="desk-apps">
-    <div class="d-icon" onclick="openApp('atelier')">
-      <div class="d-icon-face" style="background:linear-gradient(145deg,#1B3560,#0097BA)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.7" width="22" height="22"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
-      </div>
-      <span class="d-icon-label">Atelier</span>
-    </div>
     <div class="d-icon" onclick="openApp('cv')">
       <div class="d-icon-face" style="background:linear-gradient(145deg,#1d4520,#30D158)">
         <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.7" width="22" height="22"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M9 7h6M9 11h6M9 15h4" stroke-linecap="round"/></svg>
@@ -498,9 +502,15 @@ body{background:var(--wall-a);color:var(--ink);transition:background .4s,color .
     </div>
     <div class="d-icon" onclick="openApp('contact')">
       <div class="d-icon-face" style="background:linear-gradient(145deg,#1565C0,#29B8D9)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.7" width="22" height="22"><circle cx="12" cy="8" r="4"/><path d="M4 20a8 8 0 0 1 16 0"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.7" width="22" height="22"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 7 8.5 6 8.5-6"/></svg>
       </div>
       <span class="d-icon-label">Contact</span>
+    </div>
+    <div class="d-icon" onclick="openApp('mail')">
+      <div class="d-icon-face" style="background:linear-gradient(145deg,#0097BA,#29B8D9)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.7" width="22" height="22"><path d="M22 16.9v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.9z"/></svg>
+      </div>
+      <span class="d-icon-label">Écrire</span>
     </div>
     <div class="d-icon" onclick="openApp('about')">
       <div class="d-icon-face" style="background:linear-gradient(145deg,#3730a3,#818cf8)">
@@ -624,15 +634,24 @@ function toggleTheme(){
 /* ═══════════════════════════════════════
    TOP BAR MENU
 ═══════════════════════════════════════ */
-const tbLogo=document.getElementById('tb-logo');
-const tbMenu=document.getElementById('tb-menu');
-tbLogo.addEventListener('click',e=>{
-  e.stopPropagation();
-  tbMenu.classList.toggle('open');
+
+// close drawer on outside click
+document.addEventListener('click',e=>{
+  if(!e.target.closest('#tb-drawer')&&!e.target.closest('#tb-burger')) closeDrawer();
 });
-document.addEventListener('click',()=>tbMenu.classList.remove('open'));
-tbMenu.addEventListener('click',e=>e.stopPropagation());
-function closeTbMenu(){ tbMenu.classList.remove('open'); }
+function closeTbMenu(){ closeDrawer(); }
+function toggleDrawer(){
+  const d=document.getElementById('tb-drawer');
+  d.classList.toggle('open');
+}
+function closeDrawer(){
+  document.getElementById('tb-drawer').classList.remove('open');
+}
+function closeAllWins(){
+  Object.values(openWins).forEach(w=>{ w.style.animation='winclose .15s ease both'; setTimeout(()=>{ w.remove(); },150); });
+  Object.keys(openWins).forEach(k=>{ delete openWins[k]; markTb(k,false); });
+  document.getElementById('mob-home').style.display='none';
+}
 
 /* ═══════════════════════════════════════
    WINDOWS SYSTEM
@@ -700,6 +719,7 @@ function createWin(id,title,iconSvg,bodyHtml,w=440,h=480){
     <div class="win-resize"></div>`;
   winLayer.appendChild(win);
   openWins[id]=win;
+  if(window.innerWidth<=768) document.getElementById('mob-home').style.display='flex';
   win.addEventListener('pointerdown',()=>bringFront(win));
   makeDraggable(win,win.querySelector('.win-bar'));
   makeResizable(win);
@@ -716,7 +736,7 @@ function createWin(id,title,iconSvg,bodyHtml,w=440,h=480){
   });
   const closeFn=()=>{
     win.style.animation='winclose .15s ease both';
-    setTimeout(()=>{ win.remove(); delete openWins[id]; markTb(id,false); },150);
+    setTimeout(()=>{ win.remove(); delete openWins[id]; markTb(id,false); if(Object.keys(openWins).length===0) document.getElementById('mob-home').style.display='none'; },150);
   };
   win.querySelector('.win-btn.close').addEventListener('click',closeFn);
   win.querySelector('.win-btn.close-mobile').addEventListener('click',closeFn);
