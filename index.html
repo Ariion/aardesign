@@ -1800,7 +1800,9 @@ function launchOS(os){
 }
 
 document.getElementById('tile-w11').addEventListener('click',()=>launchOS('w11'));
-document.getElementById('tile-ios').addEventListener('click',()=>launchOS('ios'));
+document.getElementById('tile-ios').addEventListener('click',()=>{
+  window.location.href='ios.html';
+});
 
 /* ════════ W11 ADMIN LOGIN ════════ */
 const w11Login=document.getElementById('w11-login');
