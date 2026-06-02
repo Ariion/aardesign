@@ -429,6 +429,8 @@ html,body{
 .ab-stat-n{ font-size:1.2rem; font-weight:700; color:#fff; }
 .ab-stat-l{ font-size:.58rem; color:rgba(255,255,255,.65); }
 .ab-text{ font-size:.82rem; line-height:1.7; color:#444; padding:16px 20px; }
+/* ── IDENTITY ── */
+#ios-identity{text-align:center;font-size:.6rem;font-weight:600;letter-spacing:.08em;color:rgba(255,255,255,.35);padding:0 0 6px;pointer-events:none;text-transform:uppercase}
 /* ── GALLERY OVERLAY ── */
 #ios-gallery-overlay{position:fixed;inset:0;z-index:600;display:flex;flex-direction:column;background:rgba(10,10,20,.96);backdrop-filter:blur(40px);opacity:0;transform:translateY(30px);transition:opacity .3s,transform .3s cubic-bezier(.34,1.2,.64,1)}
 #ios-gallery-overlay.open{opacity:1;transform:translateY(0)}
@@ -541,13 +543,6 @@ html,body{
         </div>
 
         <!-- Admin -->
-        <div class="ios-icon" data-app="admin">
-          <div class="ios-icon-face" style="background:linear-gradient(145deg,#263238,#546E7A)">
-            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
-          </div>
-          <span class="ios-icon-label">Admin</span>
-        </div>
-
       </div>
     </div>
 
@@ -644,6 +639,7 @@ html,body{
   </div>
 
   <!-- DOCK -->
+  <div id="ios-identity">Anthony Armand · DA &amp; Designer</div>
   <div id="ios-dock">
     <div class="ios-dock-inner">
       <div class="ios-icon" data-app="atelier">
@@ -1000,12 +996,65 @@ const folderPopup=document.getElementById('ios-folder-popup');
 const fpTitle=document.getElementById('ios-fp-title');
 const fpGrid=document.getElementById('ios-fp-grid');
 
+const DEFAULT_PORTFOLIO={
+  arsene:[
+    {src:'assets/millenaire/cadomum.jpg',title:'Millénaire — Cadomum'},
+    {src:'assets/millenaire/pomme2.jpg',title:'Millénaire — Pomme'},
+    {src:'assets/millenaire/pomme3.jpg',title:''},
+    {src:'assets/aristocrate/nanti.jpg',title:'L\'Aristocrate — Nanti'},
+    {src:'assets/aristocrate/casque.jpg',title:''},
+    {src:'assets/aristocrate/veste.jpg',title:''},
+  ],
+  clopinette:[
+    {src:'assets/steam/mockup.jpg',title:'Steam — Mockup'},
+    {src:'assets/steam/hibou.jpg',title:''},
+    {src:'assets/steam/coeur.jpg',title:''},
+    {src:'assets/steam/gueule.jpg',title:''},
+    {src:'assets/steam/main.jpg',title:''},
+    {src:'assets/steam/sablier.jpg',title:''},
+  ],
+  digital:[
+    {src:'assets/dark/red.jpg',title:'Dark — Red'},
+    {src:'assets/dark/blood.jpg',title:''},
+    {src:'assets/dark/cult.jpg',title:''},
+    {src:'assets/dark/salem.jpg',title:''},
+    {src:'assets/saveurs/renard.png',title:''},
+    {src:'assets/pulse.jpg',title:'Pulse'},
+  ],
+  logo:[
+    {src:'assets/saveurs/hiver.jpg',title:'Saveurs — Hiver'},
+    {src:'assets/saveurs/ete.jpg',title:''},
+    {src:'assets/saveurs/automne.jpg',title:''},
+    {src:'assets/saveurs/printemps.jpg',title:''},
+  ],
+  animation:[
+    {src:'assets/pulse.jpg',title:'Pulse'},
+    {src:'assets/aristocrate/explorateur.jpg',title:''},
+  ],
+  perso:[
+    {src:'assets/voyages/cappadoce.jpg',title:'Cappadoce'},
+    {src:'assets/voyages/fuji.jpg',title:'Fuji'},
+    {src:'assets/voyages/laponie.jpg',title:'Laponie'},
+    {src:'assets/voyages/amazonie.jpg',title:'Amazonie'},
+    {src:'assets/voyages/canada.jpg',title:'Canada'},
+    {src:'assets/voyages/pacifique.jpg',title:'Pacifique'},
+  ],
+  etudes:[
+    {src:'assets/formation/foret.jpg',title:''},
+    {src:'assets/formation/cathedrale.jpg',title:''},
+    {src:'assets/formation/character.jpg',title:''},
+    {src:'assets/formation/environnement.jpg',title:''},
+    {src:'assets/formation/halloween.jpg',title:''},
+    {src:'assets/formation/hoth.jpg',title:''},
+  ],
+};
+
 document.querySelectorAll('.ios-icon[data-folder]').forEach(el=>{
   el.addEventListener('click',()=>{
     const fid=el.dataset.folder;
     const fd=FOLDERS[fid]; if(!fd) return;
     const portfolio=JSON.parse(localStorage.getItem('aar_portfolio')||'{}');
-    const imgs=portfolio[fid]||[];
+    const imgs=(portfolio[fid]&&portfolio[fid].length) ? portfolio[fid] : (DEFAULT_PORTFOLIO[fid]||[]);
     openGallery(fd.title, imgs);
   });
 });

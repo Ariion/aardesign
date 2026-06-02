@@ -474,6 +474,8 @@ html,body{ width:100%; height:100%; overflow:hidden; font-family:var(--sf); back
 .cv-tl-title{ font-size:.74rem; font-weight:600; color:#1a1a1a; }
 .cv-tl-sub{ font-size:.63rem; color:var(--accent); font-weight:500; }
 .cv-tl-desc{ font-size:.63rem; color:#888; }
+/* ── IDENTITY BADGE ── */
+#identity-badge{position:fixed;bottom:calc(var(--tb-h) + 12px);left:16px;z-index:5;padding:8px 12px;background:rgba(255,255,255,.06);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.1);border-radius:8px;pointer-events:none}
 /* ── GALLERY ── */
 .gal-wrap{display:flex;flex-direction:column;height:100%;background:rgba(20,20,30,.92)}
 .gal-header{display:flex;align-items:center;gap:.5rem;padding:.6rem 1rem;border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0}
@@ -530,12 +532,6 @@ html,body{ width:100%; height:100%; overflow:hidden; font-family:var(--sf); back
       </div>
       <span class="desk-icon-label">Contact</span>
     </div>
-    <div class="desk-icon" data-win="admin">
-      <div class="desk-icon-img">
-        <svg viewBox="0 0 48 48" fill="none"><rect x="10" y="22" width="28" height="22" rx="3" fill="none" stroke="white" stroke-width="2.2"/><path d="M16 22v-8a8 8 0 0 1 16 0v8" stroke="white" stroke-width="2.2" stroke-linecap="round"/><circle cx="24" cy="33" r="2.5" fill="white"/></svg>
-      </div>
-      <span class="desk-icon-label">Admin</span>
-    </div>
   </div>
 
   <!-- Project folders center -->
@@ -588,6 +584,12 @@ html,body{ width:100%; height:100%; overflow:hidden; font-family:var(--sf); back
 
 <!-- WINDOWS LAYER -->
 <div id="win-layer"></div>
+
+<!-- IDENTITY BADGE -->
+<div id="identity-badge">
+  <div style="font-size:.62rem;font-weight:700;color:rgba(255,255,255,.9);letter-spacing:.04em">ANTHONY ARMAND</div>
+  <div style="font-size:.55rem;color:rgba(255,255,255,.5);margin-top:1px">Directeur Artistique · AAR Design</div>
+</div>
 
 <!-- TASKBAR -->
 <div id="taskbar">
@@ -1017,13 +1019,66 @@ function buildExpList(items){
   }).join('')}</div>`;
 }
 
+const DEFAULT_PORTFOLIO={
+  arsene:[
+    {src:'assets/millenaire/cadomum.jpg',title:'Millénaire — Cadomum'},
+    {src:'assets/millenaire/pomme2.jpg',title:'Millénaire — Pomme'},
+    {src:'assets/millenaire/pomme3.jpg',title:'Millénaire — Détail'},
+    {src:'assets/aristocrate/nanti.jpg',title:'L\'Aristocrate — Nanti'},
+    {src:'assets/aristocrate/casque.jpg',title:'L\'Aristocrate — Casque'},
+    {src:'assets/aristocrate/veste.jpg',title:'L\'Aristocrate — Veste'},
+  ],
+  clopinette:[
+    {src:'assets/steam/mockup.jpg',title:'Steam — Mockup'},
+    {src:'assets/steam/hibou.jpg',title:'Steam — Hibou'},
+    {src:'assets/steam/coeur.jpg',title:'Steam — Cœur'},
+    {src:'assets/steam/gueule.jpg',title:'Steam — Gueule'},
+    {src:'assets/steam/main.jpg',title:'Steam — Main'},
+    {src:'assets/steam/sablier.jpg',title:'Steam — Sablier'},
+  ],
+  digital:[
+    {src:'assets/dark/red.jpg',title:'Dark — Red'},
+    {src:'assets/dark/blood.jpg',title:'Dark — Blood'},
+    {src:'assets/dark/cult.jpg',title:'Dark — Cult'},
+    {src:'assets/dark/salem.jpg',title:'Dark — Salem'},
+    {src:'assets/saveurs/renard.png',title:'Saveurs — Renard'},
+    {src:'assets/pulse.jpg',title:'Pulse'},
+  ],
+  logo:[
+    {src:'assets/saveurs/hiver.jpg',title:'Saveurs — Hiver'},
+    {src:'assets/saveurs/ete.jpg',title:'Saveurs — Été'},
+    {src:'assets/saveurs/automne.jpg',title:'Saveurs — Automne'},
+    {src:'assets/saveurs/printemps.jpg',title:'Saveurs — Printemps'},
+  ],
+  animation:[
+    {src:'assets/pulse.jpg',title:'Pulse'},
+    {src:'assets/aristocrate/explorateur.jpg',title:'L\'Aristocrate — Explorateur'},
+  ],
+  perso:[
+    {src:'assets/voyages/cappadoce.jpg',title:'Voyages — Cappadoce'},
+    {src:'assets/voyages/fuji.jpg',title:'Voyages — Fuji'},
+    {src:'assets/voyages/laponie.jpg',title:'Voyages — Laponie'},
+    {src:'assets/voyages/amazonie.jpg',title:'Voyages — Amazonie'},
+    {src:'assets/voyages/canada.jpg',title:'Voyages — Canada'},
+    {src:'assets/voyages/pacifique.jpg',title:'Voyages — Pacifique'},
+  ],
+  etudes:[
+    {src:'assets/formation/foret.jpg',title:'Formation — Forêt'},
+    {src:'assets/formation/cathedrale.jpg',title:'Formation — Cathédrale'},
+    {src:'assets/formation/character.jpg',title:'Formation — Character'},
+    {src:'assets/formation/environnement.jpg',title:'Formation — Environnement'},
+    {src:'assets/formation/halloween.jpg',title:'Formation — Halloween'},
+    {src:'assets/formation/hoth.jpg',title:'Formation — Hoth'},
+  ],
+};
+
 function openFolder(fid){
   const fd=FOLDERS[fid]; if(!fd) return;
   const winId='folder-'+fid;
   if(openWins[winId]){ bringFront(openWins[winId]); return; }
 
   const portfolio=JSON.parse(localStorage.getItem('aar_portfolio')||'{}');
-  const imgs=portfolio[fid]||[];
+  const imgs=(portfolio[fid]&&portfolio[fid].length) ? portfolio[fid] : (DEFAULT_PORTFOLIO[fid]||[]);
 
   const ico=`<svg viewBox="0 0 16 16" fill="none"><path d="M1 5a1.5 1.5 0 0 1 1.5-1.5H6l2 2h6.5A1.5 1.5 0 0 1 16 7v6.5A1.5 1.5 0 0 1 14.5 15h-13A1.5 1.5 0 0 1 1 13.5z" fill="${fd.color}"/></svg>`;
 
@@ -1076,8 +1131,8 @@ document.querySelectorAll('.desk-icon[data-win]').forEach(el=>{
   el.addEventListener('click',()=>{
     document.querySelectorAll('.desk-icon,.desk-folder').forEach(i=>i.classList.remove('sel'));
     el.classList.add('sel');
+    openWin(el.dataset.win);
   });
-  el.addEventListener('dblclick',()=> openWin(el.dataset.win));
 });
 document.querySelectorAll('.desk-folder[data-folder]').forEach(el=>{
   el.addEventListener('click',()=>{
