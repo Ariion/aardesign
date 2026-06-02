@@ -1,2541 +1,943 @@
 <!DOCTYPE html>
-<html lang="fr" data-theme="light">
+<html lang="fr" data-theme="dark">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>AAR Design — L'Atelier d'Anthony Armand</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AAR Design — Anthony Armand</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Montserrat:ital,wght@0,300;0,400;0,600;0,700;0,800;0,900;1,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-/* ───────── TOKENS ───────── */
+/* ═══════════════════════════════════════
+   TOKENS
+═══════════════════════════════════════ */
 :root{
-  --navy:#1B3560; --cyan:#29B8D9; --cyan2:#0097BA; --white:#fff;
-  --wall:#C7D0DD;            /* mur derrière la feuille */
-  --sheet:#F2EEE4;           /* la feuille de papier    */
-  --sheet-line:rgba(27,53,96,.04);
-  --ink:#1B3560; --sub:#7C8AA0;
-  --ease:cubic-bezier(.22,1,.36,1);
+  --navy:#1B3560; --cyan:#29B8D9; --cyan2:#0097BA;
+  --tb:#36px;
+
+  /* dark (default) */
+  --wall-a:#060c16; --wall-b:#0a1428;
+  --bar-bg:rgba(8,14,30,.88);
+  --bar-border:rgba(41,184,217,.14);
+  --ink:#e8eef8; --mid:#6e84a6; --line:rgba(255,255,255,.07);
+  --win-bg:rgba(12,20,44,.94); --win-bar:rgba(8,14,36,.96);
+  --win-border:rgba(41,184,217,.18);
+  --icon-bg:rgba(41,184,217,.08); --icon-hover:rgba(41,184,217,.16);
+  --folder-bg:rgba(27,53,96,.5); --folder-hover:rgba(27,53,96,.8);
+  --skill-bg:rgba(41,184,217,.12);
+  --chip-bg:rgba(41,184,217,.1); --chip-c:var(--cyan);
 }
-[data-theme="dark"]{
-  --wall:#060C16; --sheet:#0E1B30; --sheet-line:rgba(255,255,255,.03);
-  --ink:#E8EEF8; --sub:#6E84A6;
-}
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-html,body{height:100%;overflow:hidden}
-body{
-  font-family:'Montserrat',sans-serif;
-  background:var(--wall);
-  color:var(--ink);
-  -webkit-font-smoothing:antialiased;
-  transition:background .5s var(--ease),color .5s var(--ease);
-  position:fixed; inset:0;
+[data-theme="light"]{
+  --wall-a:#dde3ed; --wall-b:#e8eef8;
+  --bar-bg:rgba(240,244,252,.92);
+  --bar-border:rgba(27,53,96,.12);
+  --ink:#1B3560; --mid:#7C8AA0; --line:rgba(27,53,96,.06);
+  --win-bg:rgba(248,250,255,.97); --win-bar:rgba(235,240,252,.98);
+  --win-border:rgba(27,53,96,.1);
+  --icon-bg:rgba(27,53,96,.06); --icon-hover:rgba(27,53,96,.12);
+  --folder-bg:rgba(27,53,96,.07); --folder-hover:rgba(27,53,96,.14);
+  --skill-bg:rgba(27,53,96,.08);
+  --chip-bg:rgba(27,53,96,.07); --chip-c:var(--navy);
 }
 
-/* ───────── VIEWPORT (la fenêtre sur le mur) ───────── */
-#stage{
-  position:absolute; inset:0; overflow:hidden;
-  cursor:grab; touch-action:none;
-}
-#stage.grabbing{cursor:grabbing}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'Montserrat',sans-serif;-webkit-font-smoothing:antialiased}
+body{background:var(--wall-a);color:var(--ink);transition:background .4s,color .4s;user-select:none}
 
-/* ───────── BOARD (la feuille géante) ───────── */
-#board{
-  position:absolute; top:0; left:0;
-  width:3400px; height:2500px;
-  transform-origin:0 0;
+/* ═══════════════════════════════════════
+   WALLPAPER
+═══════════════════════════════════════ */
+#wall{
+  position:fixed;inset:0;z-index:0;
   background:
-    radial-gradient(120% 120% at 30% 20%, rgba(255,255,255,.5), transparent 60%),
-    repeating-linear-gradient(0deg, var(--sheet-line) 0 1px, transparent 1px 46px),
-    repeating-linear-gradient(90deg, var(--sheet-line) 0 1px, transparent 1px 46px),
-    var(--sheet);
-  box-shadow:0 60px 120px rgba(0,0,0,.35), 0 0 0 1px rgba(0,0,0,.04);
+    radial-gradient(ellipse 80% 60% at 15% 90%, rgba(0,151,186,.25) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 50% at 85% 10%, rgba(27,53,96,.6) 0%, transparent 50%),
+    radial-gradient(ellipse 100% 80% at 50% 50%, rgba(10,20,60,.4) 0%, transparent 70%),
+    linear-gradient(160deg, var(--wall-a) 0%, var(--wall-b) 100%);
+  transition:background .4s;
+}
+#wall::before{
+  content:'';position:absolute;inset:0;
+  background-image:
+    repeating-linear-gradient(0deg, var(--line) 0 1px, transparent 1px 44px),
+    repeating-linear-gradient(90deg, var(--line) 0 1px, transparent 1px 44px);
+  transition:background .4s;
+}
+/* Particules lumineuses (dark uniquement) */
+#wall::after{
+  content:'';position:absolute;inset:0;
+  background-image:
+    radial-gradient(1px 1px at 12% 20%,rgba(41,184,217,.7) 0%,transparent 100%),
+    radial-gradient(1px 1px at 38% 8%, rgba(41,184,217,.5) 0%,transparent 100%),
+    radial-gradient(1px 1px at 70% 25%,rgba(255,255,255,.4) 0%,transparent 100%),
+    radial-gradient(1px 1px at 88% 60%,rgba(41,184,217,.4) 0%,transparent 100%),
+    radial-gradient(1px 1px at 55% 75%,rgba(255,255,255,.3) 0%,transparent 100%),
+    radial-gradient(2px 2px at 92% 15%,rgba(41,184,217,.6) 0%,transparent 100%),
+    radial-gradient(1px 1px at 25% 88%,rgba(41,184,217,.3) 0%,transparent 100%);
+  opacity:1;transition:opacity .4s;
+}
+[data-theme="light"] #wall::after{opacity:0}
+
+/* ═══════════════════════════════════════
+   LOCK SCREEN
+═══════════════════════════════════════ */
+#lockscreen{
+  position:fixed;inset:0;z-index:999;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:
+    radial-gradient(ellipse 90% 70% at 20% 85%, rgba(0,151,186,.3) 0%, transparent 55%),
+    radial-gradient(ellipse 70% 60% at 80% 15%, rgba(27,53,96,.5) 0%, transparent 50%),
+    linear-gradient(160deg,#040810 0%,#071020 50%,#040810 100%);
+  cursor:pointer;
+  transition:transform .6s cubic-bezier(.4,0,.2,1),opacity .4s;
   will-change:transform;
 }
-/* grain papier */
-#board::before{
-  content:''; position:absolute; inset:0; pointer-events:none;
-  opacity:.5; mix-blend-mode:multiply;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+#lockscreen.unlocking{transform:translateY(-100%);opacity:.7}
+#ls-logo{margin-bottom:2.5rem;opacity:.7}
+#ls-time{
+  font-size:clamp(4rem,12vw,7rem);font-weight:300;letter-spacing:-.03em;
+  color:#fff;line-height:1;margin-bottom:.4rem;
+  text-shadow:0 0 60px rgba(41,184,217,.3);
 }
-[data-theme="dark"] #board::before{mix-blend-mode:screen;opacity:.4}
+#ls-date{font-size:.9rem;font-weight:400;color:rgba(255,255,255,.5);letter-spacing:.04em;margin-bottom:2.5rem}
+#ls-name{font-size:1rem;font-weight:700;letter-spacing:.12em;color:rgba(255,255,255,.9);text-transform:uppercase}
+#ls-role{font-size:.72rem;font-weight:400;color:rgba(255,255,255,.45);letter-spacing:.06em;margin-top:.3rem}
+#ls-hint{
+  position:absolute;bottom:40px;left:50%;transform:translateX(-50%);
+  font-size:.65rem;letter-spacing:.1em;color:rgba(255,255,255,.3);text-transform:uppercase;
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+}
+#ls-hint::before{
+  content:'';width:1px;height:24px;background:linear-gradient(transparent,rgba(41,184,217,.5));
+  animation:pulseup 2s ease-in-out infinite;
+}
+@keyframes pulseup{0%,100%{opacity:.3;transform:scaleY(.7)}50%{opacity:1;transform:scaleY(1)}}
+@keyframes winopen{from{opacity:0;transform:scale(.94) translateY(8px)}to{opacity:1;transform:none}}
+@keyframes winclose{from{opacity:1;transform:scale(1)}to{opacity:0;transform:scale(.94) translateY(6px)}}
 
-/* ───────── SECTION LABELS (filigrane Montserrat 900) ───────── */
-.board-label{
-  position:absolute; transform:translate(-50%,-50%) rotate(-2deg);
-  font-weight:900; font-size:128px; letter-spacing:-.04em;
-  color:var(--navy); opacity:.07; white-space:nowrap;
-  pointer-events:none; user-select:none;
+/* ═══════════════════════════════════════
+   TOP BAR
+═══════════════════════════════════════ */
+#topbar{
+  position:fixed;top:0;left:0;right:0;height:36px;z-index:100;
+  display:flex;align-items:center;padding:0 12px;gap:8px;
+  background:var(--bar-bg);
+  border-bottom:1px solid var(--bar-border);
+  backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);
+  transition:background .4s,border-color .4s;
 }
+#tb-logo{
+  display:flex;align-items:center;gap:7px;
+  font-size:.7rem;font-weight:800;letter-spacing:.06em;color:var(--cyan);
+  cursor:pointer;padding:4px 8px;border-radius:6px;
+  transition:background .15s;flex-shrink:0;
+  position:relative;
+}
+#tb-logo:hover{background:var(--icon-hover)}
+#tb-menu{
+  position:absolute;top:calc(100% + 6px);left:0;
+  background:var(--win-bg);border:1px solid var(--win-border);
+  border-radius:10px;padding:6px;min-width:180px;
+  box-shadow:0 16px 50px rgba(0,0,0,.4);backdrop-filter:blur(40px);
+  display:none;flex-direction:column;gap:2px;
+}
+#tb-menu.open{display:flex}
+.tm-item{
+  display:flex;align-items:center;gap:.6rem;padding:8px 10px;
+  border-radius:6px;cursor:pointer;font-size:.72rem;color:var(--ink);
+  transition:background .1s;border:none;background:none;font-family:inherit;width:100%;text-align:left;
+}
+.tm-item:hover{background:var(--icon-hover)}
+.tm-item svg{opacity:.7}
+.tm-sep{height:1px;background:var(--line);margin:3px 0}
 
-/* ───────── PIN ITEMS (œuvres punaisées) ───────── */
-.pin-item{
-  position:absolute; width:var(--w); border:0; padding:0; background:none;
-  transform:rotate(var(--rot)); transform-origin:center top;
-  transition:transform .4s var(--ease), filter .4s;
-  cursor:pointer; -webkit-tap-highlight-color:transparent;
+#tb-center{display:flex;align-items:center;gap:6px;flex:1;justify-content:center}
+.tb-app-pill{
+  display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;
+  cursor:pointer;border:none;background:none;font-family:'Montserrat',sans-serif;
+  font-size:.62rem;font-weight:600;color:var(--mid);letter-spacing:.03em;
+  transition:background .15s,color .15s;
 }
-.pin-item:hover{ transform:rotate(0deg) scale(1.06) translateY(-8px); z-index:100; }
-.pin-inner{ position:relative; }
-#board.ready .pin-inner{ animation:pop .6s var(--ease) both; }
-@keyframes pop{ from{opacity:0; transform:translateY(26px) scale(.9)} to{opacity:1; transform:none} }
+.tb-app-pill:hover,.tb-app-pill.open{background:var(--icon-hover);color:var(--ink)}
+.tb-app-pill svg{width:14px;height:14px;opacity:.8}
 
-.photo{
-  background:#fff; padding:11px 11px 0;
-  box-shadow:0 10px 26px rgba(0,0,0,.22), 0 2px 4px rgba(0,0,0,.12);
-  transition:box-shadow .4s var(--ease);
+#tb-right{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.tb-ico-btn{
+  width:28px;height:28px;border-radius:6px;border:none;cursor:pointer;
+  background:none;color:var(--mid);display:flex;align-items:center;justify-content:center;
+  font-size:.85rem;transition:background .15s,color .15s;
 }
-.pin-item:hover .photo{ box-shadow:0 26px 50px rgba(0,0,0,.32), 0 4px 8px rgba(0,0,0,.16); }
-.photo img{ width:100%; display:block; user-select:none; -webkit-user-drag:none; }
-.cap{ padding:9px 4px 13px; text-align:center; }
-.cap-t{ font-family:'Caveat',cursive; font-weight:700; font-size:1.55rem; line-height:.95; color:var(--navy); }
-.cap-c{ font-size:.5rem; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:#9aa6b5; margin-top:5px; }
+.tb-ico-btn:hover{background:var(--icon-hover);color:var(--ink)}
+#tb-clock{font-size:.65rem;font-weight:600;color:var(--mid);letter-spacing:.04em;white-space:nowrap}
 
-/* punaise */
-.pin{
-  position:absolute; top:-9px; left:50%; transform:translateX(-50%);
-  width:20px; height:20px; border-radius:50%;
-  background:radial-gradient(circle at 34% 30%, rgba(255,255,255,.85), var(--pc) 60%, rgba(0,0,0,.25));
-  box-shadow:0 4px 6px rgba(0,0,0,.35); z-index:3;
-}
-.pin::after{ content:''; position:absolute; top:14px; left:50%; transform:translateX(-50%);
-  width:2px; height:7px; background:rgba(0,0,0,.25); }
-/* scotch washi */
-.tape{
-  position:absolute; top:-13px; left:50%; transform:translateX(-50%) rotate(-4deg);
-  width:96px; height:28px; z-index:3;
-  background:repeating-linear-gradient(90deg, rgba(41,184,217,.34) 0 7px, rgba(41,184,217,.22) 7px 14px);
-  border-left:1px dashed rgba(255,255,255,.5); border-right:1px dashed rgba(255,255,255,.5);
-  box-shadow:0 2px 3px rgba(0,0,0,.08);
-}
-
-/* ───────── STICKY NOTES (manuscrites) ───────── */
-.note{
-  position:absolute; width:var(--w,250px); padding:22px 24px 26px;
-  background:linear-gradient(180deg,#FFFDF5,#FBF6E6);
-  border-left:3px solid var(--cyan);
-  box-shadow:0 14px 30px rgba(0,0,0,.16);
-  transform:rotate(var(--rot)); transform-origin:center top;
-  font-family:'Caveat',cursive; font-weight:600; font-size:1.5rem; line-height:1.22;
-  color:var(--navy);
-}
-[data-theme="dark"] .note{ background:linear-gradient(180deg,#16273f,#11203a); color:#DCE6F5; }
-.note .tape{ background:repeating-linear-gradient(90deg, rgba(255,255,255,.4) 0 7px, rgba(255,255,255,.25) 7px 14px); }
-.note b{ color:var(--cyan2); font-weight:700; }
-.note .scrib{ display:block; font-size:1rem; color:var(--sub); margin-top:8px; letter-spacing:.02em; }
-
-/* ───────── DESKTOP OS CHROME ───────── */
-.hud{ position:fixed; inset:0; pointer-events:none; z-index:50; }
-.hud>*{ pointer-events:auto; }
-
-/* hint toast */
-#toast{
-  position:fixed; left:50%; bottom:76px; transform:translateX(-50%) translateY(10px);
-  z-index:2000; pointer-events:none;
-  background:var(--navy); color:#fff; padding:.7rem 1.3rem; border-radius:30px;
-  font-size:.54rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
-  box-shadow:0 14px 34px rgba(0,0,0,.3); opacity:0; visibility:hidden; white-space:nowrap;
-  transition:opacity .4s, transform .4s, visibility .4s;
-}
-#toast.show{ opacity:1; visibility:visible; transform:translateX(-50%) translateY(0); }
-
-/* ═══════════════════════════════════════════
-   WINDOWS 11 — TASKBAR (centré, mica/acrylic)
-   ═══════════════════════════════════════════ */
-#taskbar{
-  position:fixed; left:0; right:0; bottom:0; height:48px; z-index:3000;
-  display:flex; align-items:center; justify-content:center;
-  background:rgba(243,243,243,.85); backdrop-filter:blur(40px) saturate(180%);
-  border-top:1px solid rgba(0,0,0,.08);
-}
-[data-theme="dark"] #taskbar{
-  background:rgba(32,32,32,.85);
-  border-color:rgba(255,255,255,.08);
-}
-/* Les icônes sont centrées dans la taskbar */
-.tb-apps{
-  display:flex; align-items:center; gap:2px;
-}
-/* Bouton Start W11 */
-.tb-start{
-  width:40px; height:40px; border:0; border-radius:4px;
-  background:transparent; cursor:pointer;
-  display:flex; align-items:center; justify-content:center;
-  transition:background .15s; flex-shrink:0;
-}
-.tb-start:hover{ background:rgba(0,0,0,.06); }
-[data-theme="dark"] .tb-start:hover{ background:rgba(255,255,255,.08); }
-.tb-start.active{ background:rgba(0,0,0,.08); }
-/* Icônes apps W11 */
-.tb-app{
-  width:40px; height:40px; border:0; border-radius:4px;
-  background:transparent; color:#1a1a1a; cursor:pointer;
-  display:flex; align-items:center; justify-content:center;
-  position:relative; transition:background .15s; text-decoration:none; flex-shrink:0;
-}
-[data-theme="dark"] .tb-app{ color:#f0f0f0; }
-.tb-app:hover{ background:rgba(0,0,0,.06); }
-[data-theme="dark"] .tb-app:hover{ background:rgba(255,255,255,.08); }
-.tb-app svg{ width:18px; height:18px; }
-.tb-app .be{ font-weight:900; font-size:.9rem; line-height:1; font-family:'Segoe UI',sans-serif; }
-/* Indicateur app ouverte (trait bleu W11) */
-.tb-app.open::after{
-  content:''; position:absolute; bottom:2px; left:50%; transform:translateX(-50%);
-  width:12px; height:2px; border-radius:1px; background:#0078D4;
-}
-/* System tray (droite) */
-.tb-tray{
-  position:absolute; right:0; top:0; bottom:0;
-  display:flex; align-items:center; gap:0; padding-right:8px;
-}
-.tray-btn{
-  height:40px; min-width:36px; padding:0 4px; border:0; border-radius:4px;
-  background:transparent; color:#1a1a1a; cursor:pointer;
-  font:inherit; font-size:.78rem; font-weight:600;
-  display:flex; align-items:center; justify-content:center;
-  transition:background .15s;
-}
-[data-theme="dark"] .tray-btn{ color:#f0f0f0; }
-.tray-btn:hover{ background:rgba(0,0,0,.06); }
-[data-theme="dark"] .tray-btn:hover{ background:rgba(255,255,255,.08); }
-#zoom-val{ font-size:.55rem; font-weight:600; color:#666; min-width:36px; text-align:center; font-variant-numeric:tabular-nums; }
-[data-theme="dark"] #zoom-val{ color:#aaa; }
-#theme::after{ content:'🌙'; font-size:.75rem; }
-[data-theme="dark"] #theme::after{ content:'☀️'; }
-#clock{
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  line-height:1.2; padding:0 10px; cursor:default; height:40px; border-radius:4px;
-  transition:background .15s;
-}
-#clock:hover{ background:rgba(0,0,0,.06); }
-[data-theme="dark"] #clock:hover{ background:rgba(255,255,255,.08); }
-#clk-time{ font-size:.68rem; font-weight:400; color:#1a1a1a; font-variant-numeric:tabular-nums; }
-[data-theme="dark"] #clk-time{ color:#f0f0f0; }
-#clk-date{ font-size:.58rem; font-weight:400; color:#444; }
-[data-theme="dark"] #clk-date{ color:#aaa; }
-
-/* ═══════════════════════════════════════════
-   WINDOWS 11 — START MENU (centré au-dessus du Start)
-   ═══════════════════════════════════════════ */
-#startmenu{
-  position:fixed; left:50%; bottom:56px; transform:translateX(-50%) translateY(8px) scale(.98);
-  z-index:3100; width:640px; max-width:96vw;
-  background:rgba(243,243,243,.96); backdrop-filter:blur(40px) saturate(180%);
-  border:1px solid rgba(0,0,0,.1); border-radius:12px; padding:1.2rem;
-  box-shadow:0 20px 60px rgba(0,0,0,.22), 0 0 0 .5px rgba(0,0,0,.04);
-  opacity:0; visibility:hidden;
-  transition:opacity .22s var(--ease), transform .22s var(--ease), visibility .22s;
-}
-[data-theme="dark"] #startmenu{
-  background:rgba(44,44,44,.96); border-color:rgba(255,255,255,.08);
-}
-#startmenu.open{ opacity:1; visibility:visible; transform:translateX(-50%) translateY(0) scale(1); }
-/* Barre de recherche W11 */
-.sm-search{
-  display:flex; align-items:center; gap:.6rem;
-  background:rgba(255,255,255,.9); border:1px solid rgba(0,0,0,.12); border-radius:8px;
-  padding:.6rem .9rem; margin-bottom:1.2rem;
-}
-[data-theme="dark"] .sm-search{ background:rgba(255,255,255,.06); border-color:rgba(255,255,255,.12); }
-.sm-search svg{ width:16px; height:16px; color:#666; flex-shrink:0; }
-.sm-search-input{
-  flex:1; border:none; background:transparent; outline:none;
-  font:inherit; font-size:.78rem; color:#1a1a1a;
-}
-[data-theme="dark"] .sm-search-input{ color:#f0f0f0; }
-.sm-search-input::placeholder{ color:#999; }
-/* Section épinglé */
-.sm-section-title{
-  font-size:.6rem; font-weight:600; color:#444; letter-spacing:.04em;
-  margin-bottom:.7rem; display:flex; justify-content:space-between; align-items:center;
-}
-[data-theme="dark"] .sm-section-title{ color:#aaa; }
-/* Grille apps épinglées */
-.sm-pinned{
-  display:grid; grid-template-columns:repeat(6,1fr); gap:.3rem; margin-bottom:1.2rem;
-}
-.sm-pin-item{
-  display:flex; flex-direction:column; align-items:center; gap:.3rem;
-  padding:.5rem .2rem; border-radius:8px; cursor:pointer;
-  transition:background .15s; border:0; background:transparent;
-}
-.sm-pin-item:hover{ background:rgba(0,0,0,.06); }
-[data-theme="dark"] .sm-pin-item:hover{ background:rgba(255,255,255,.08); }
-.sm-pin-ico{
-  width:36px; height:36px; border-radius:8px;
-  display:flex; align-items:center; justify-content:center;
-  font-size:1.2rem;
-}
-.sm-pin-ico svg{ width:22px; height:22px; }
-.sm-pin-label{ font-size:.52rem; font-weight:500; color:#1a1a1a; text-align:center; line-height:1.2; }
-[data-theme="dark"] .sm-pin-label{ color:#f0f0f0; }
-/* Section Recommandé */
-.sm-sep{ height:1px; background:rgba(0,0,0,.08); margin:.4rem 0 1rem; }
-[data-theme="dark"] .sm-sep{ background:rgba(255,255,255,.08); }
-/* Navigation clusters */
-#cluster-nav{ display:grid; grid-template-columns:1fr 1fr; gap:.3rem; margin-bottom:.8rem; }
-#cluster-nav button{
-  text-align:left; border:0; background:transparent; color:#1a1a1a; cursor:pointer; font:inherit;
-  font-size:.72rem; font-weight:400; padding:.5rem .7rem; border-radius:6px;
-  display:flex; align-items:center; gap:.55rem; transition:background .15s;
-}
-[data-theme="dark"] #cluster-nav button{ color:#f0f0f0; }
-#cluster-nav button::before{ content:''; width:6px; height:6px; border-radius:50%; background:#0078D4; flex-shrink:0; }
-#cluster-nav button:hover{ background:rgba(0,0,0,.06); }
-[data-theme="dark"] #cluster-nav button:hover{ background:rgba(255,255,255,.08); }
-#cluster-nav button.active{ background:rgba(0,120,212,.1); color:#0078D4; }
-/* Pied de page start menu */
-.sm-foot-row{
-  display:flex; justify-content:space-between; align-items:center;
-  padding-top:.9rem; border-top:1px solid rgba(0,0,0,.08); margin-top:.3rem;
-}
-[data-theme="dark"] .sm-foot-row{ border-color:rgba(255,255,255,.08); }
-.sm-user{ display:flex; align-items:center; gap:.6rem; }
-.sm-user-ava{
-  width:30px; height:30px; border-radius:50%;
-  background:linear-gradient(135deg,#0078D4,#29B8D9);
-  display:flex; align-items:center; justify-content:center; flex-shrink:0;
-}
-.sm-user-ava img{ height:16px; filter:brightness(10); }
-.sm-user-name{ font-size:.72rem; font-weight:500; color:#1a1a1a; }
-[data-theme="dark"] .sm-user-name{ color:#f0f0f0; }
-#sm-overview{
-  border:0; background:transparent; cursor:pointer;
-  font:inherit; font-size:.66rem; color:#666; padding:.3rem .6rem; border-radius:4px;
-  transition:background .15s;
-}
-#sm-overview:hover{ background:rgba(0,0,0,.06); }
-
-/* ═══════════════════════════════════════════
-   WINDOWS 11 — FENÊTRES (chrome W11 authentique)
-   ═══════════════════════════════════════════ */
-#windows{ position:fixed; inset:0 0 48px 0; z-index:300; pointer-events:none; overflow:hidden; }
-.win{
-  position:absolute; width:var(--w,380px); max-width:94vw; pointer-events:auto;
-  background:rgba(243,243,243,.96); backdrop-filter:blur(20px);
-  border:1px solid rgba(0,0,0,.1); border-radius:8px;
-  box-shadow:0 8px 32px rgba(0,0,0,.2), 0 0 0 .5px rgba(0,0,0,.05);
-  overflow:hidden; animation:winpop .22s var(--ease) both;
-  min-width:300px; min-height:160px;
-  display:flex; flex-direction:column;
-}
-/* Handle de redimensionnement (coin bas-droit) */
-.win-resize{
-  position:absolute; bottom:0; right:0;
-  width:16px; height:16px; cursor:se-resize; z-index:10;
-  display:flex; align-items:flex-end; justify-content:flex-end;
-  padding:3px;
-}
-.win-resize::before{
-  content:'';
-  display:block; width:8px; height:8px;
-  border-right:2px solid rgba(0,0,0,.25); border-bottom:2px solid rgba(0,0,0,.25);
-  border-radius:1px;
-}
-[data-theme="dark"] .win-resize::before{ border-color:rgba(255,255,255,.25); }
-[data-theme="dark"] .win{ background:rgba(32,32,32,.96); border-color:rgba(255,255,255,.08); }
-@keyframes winpop{ from{opacity:0; transform:translateY(10px) scale(.98)} to{opacity:1; transform:none} }
-/* Barre de titre W11 : titre à gauche, boutons à DROITE */
-.win-bar{
-  display:flex; align-items:center; height:32px; cursor:grab; user-select:none;
-  background:transparent; border-bottom:1px solid rgba(0,0,0,.08); padding-left:14px;
-}
-[data-theme="dark"] .win-bar{ border-color:rgba(255,255,255,.08); }
-.win-bar.grab{ cursor:grabbing; }
-.win-title{
-  font-size:.68rem; font-weight:400; color:#1a1a1a; letter-spacing:.01em; flex:1;
-}
-[data-theme="dark"] .win-title{ color:#f0f0f0; }
-/* Boutons W11 : min / max / close — à DROITE, hover uniquement */
-.win-controls{ display:flex; align-items:stretch; height:32px; margin-left:auto; }
-.win-ctrl{
-  width:46px; height:32px; border:0; background:transparent; cursor:pointer;
-  display:flex; align-items:center; justify-content:center;
-  font-size:.7rem; color:#666; transition:background .12s, color .12s;
-}
-[data-theme="dark"] .win-ctrl{ color:#aaa; }
-.win-ctrl:hover{ background:rgba(0,0,0,.08); color:#1a1a1a; }
-[data-theme="dark"] .win-ctrl:hover{ background:rgba(255,255,255,.1); color:#fff; }
-.win-ctrl.close:hover{ background:#c42b1c; color:#fff; }
-/* Corps de la fenêtre */
-.win-body{ padding:1.4rem; position:relative; overflow-y:auto; flex:1; min-height:0; }
-.w-profile{ display:flex; align-items:center; gap:.9rem; margin-bottom:1.1rem; }
-.w-ava{ width:48px; height:48px; border-radius:13px; background:var(--navy); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-.w-ava img{ height:24px; filter:brightness(10); }
-.w-name{ font-size:.98rem; font-weight:800; color:var(--ink); letter-spacing:-.01em; }
-.w-role{ font-size:.52rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--cyan); margin-top:3px; }
-.w-row{ display:flex; align-items:center; gap:.7rem; padding:.7rem 0; border-top:1px solid rgba(27,53,96,.08); }
-[data-theme="dark"] .w-row{ border-color:rgba(255,255,255,.07); }
-.w-row .ic{ width:34px; height:34px; border-radius:10px; background:rgba(41,184,217,.13); color:var(--cyan2); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-.w-row .ic svg{ width:16px; height:16px; }
-.w-row .info{ min-width:0; }
-.w-row .lbl{ font-size:.46rem; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:var(--sub); }
-.w-row .val{ font-size:.78rem; font-weight:600; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.w-row .acts{ margin-left:auto; display:flex; gap:.3rem; flex-shrink:0; }
-.w-mini{ border:1px solid rgba(27,53,96,.16); background:transparent; color:var(--ink); cursor:pointer; font:inherit; font-size:.48rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; padding:.4rem .55rem; border-radius:7px; transition:background .2s,color .2s,border-color .2s; text-decoration:none; }
-[data-theme="dark"] .w-mini{ border-color:rgba(255,255,255,.16); }
-.w-mini:hover{ background:var(--navy); color:#fff; border-color:var(--navy); }
-.w-mini.cy:hover{ background:var(--cyan); border-color:var(--cyan); }
-.w-field{ display:flex; flex-direction:column; gap:.3rem; margin-bottom:.7rem; }
-.w-field label{ font-size:.48rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--sub); }
-.w-field input, .w-field textarea{ font:inherit; font-size:.78rem; color:var(--ink); background:rgba(27,53,96,.04); border:1px solid rgba(27,53,96,.1); border-radius:9px; padding:.6rem .7rem; outline:none; transition:border-color .2s; }
-[data-theme="dark"] .w-field input, [data-theme="dark"] .w-field textarea{ background:rgba(255,255,255,.04); border-color:rgba(255,255,255,.1); }
-.w-field input:focus, .w-field textarea:focus{ border-color:var(--cyan); }
-.w-field textarea{ resize:vertical; min-height:88px; }
-.w-send{ width:100%; border:0; background:var(--cyan); color:#fff; cursor:pointer; font:inherit; font-size:.58rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; padding:.85rem; border-radius:10px; transition:background .2s,transform .1s; }
-.w-send:hover{ background:var(--cyan2); } .w-send:active{ transform:scale(.99); }
-.w-big{ font-size:1.7rem; font-weight:800; color:var(--ink); text-align:center; letter-spacing:-.01em; margin:.5rem 0 1.1rem; }
-.w-text{ font-size:.76rem; font-weight:300; line-height:1.75; color:var(--sub); }
-.w-text b{ color:var(--ink); font-weight:700; }
-.w-toastmini{ position:absolute; bottom:12px; left:50%; transform:translateX(-50%); background:var(--navy); color:#fff; font-size:.5rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; padding:.4rem .85rem; border-radius:20px; opacity:0; transition:opacity .2s; pointer-events:none; }
-.w-toastmini.show{ opacity:1; }
-@media(max-width:820px){
-  .tb-app span, .tb-start span{ display:none; }
-  .tb-app{ padding:0 .7rem; } .tb-start{ padding:0 .8rem; }
-  #clock{ display:none; }
-}
-
-/* ───────── BOOT SCREEN ───────── */
-#boot{
-  position:fixed; inset:0; z-index:9999;
-  background:#040810;
-  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3rem;
-  text-align:center; padding:2rem;
-  transition:opacity .8s var(--ease), visibility .8s;
-}
-#boot.out{ opacity:0; visibility:hidden; pointer-events:none; }
-/* étoiles */
-#boot::before{
-  content:''; position:absolute; inset:0; pointer-events:none;
-  background-image:
-    radial-gradient(1px 1px at 15% 22%, rgba(255,255,255,.6) 0%, transparent 100%),
-    radial-gradient(1px 1px at 42% 58%, rgba(255,255,255,.4) 0%, transparent 100%),
-    radial-gradient(1.5px 1.5px at 67% 18%, rgba(255,255,255,.5) 0%, transparent 100%),
-    radial-gradient(1px 1px at 80% 75%, rgba(255,255,255,.35) 0%, transparent 100%),
-    radial-gradient(1px 1px at 28% 88%, rgba(255,255,255,.4) 0%, transparent 100%),
-    radial-gradient(1px 1px at 55% 40%, rgba(255,255,255,.3) 0%, transparent 100%),
-    radial-gradient(1px 1px at 90% 33%, rgba(255,255,255,.45) 0%, transparent 100%);
-}
-.boot-logo{
-  height:110px; filter:brightness(10) drop-shadow(0 0 28px rgba(41,184,217,.7));
-  animation:bootpulse 2.8s ease-in-out infinite;
-}
-@keyframes bootpulse{
-  0%,100%{ filter:brightness(10) drop-shadow(0 0 18px rgba(41,184,217,.5)); transform:scale(1); }
-  50%{ filter:brightness(12) drop-shadow(0 0 42px rgba(41,184,217,.9)); transform:scale(1.04); }
-}
-.boot-tag{
-  font-size:.52rem; font-weight:700; letter-spacing:.28em; text-transform:uppercase;
-  color:rgba(41,184,217,.7); margin-top:-.8rem;
-}
-.boot-question{
-  font-size:.7rem; font-weight:600; letter-spacing:.15em; text-transform:uppercase;
-  color:rgba(255,255,255,.4);
-}
-.os-tiles{ display:flex; gap:1.6rem; align-items:stretch; }
-.os-tile{
-  width:200px; padding:2rem 1.6rem 1.8rem;
-  border-radius:22px; cursor:pointer; border:1px solid rgba(255,255,255,.1);
-  display:flex; flex-direction:column; align-items:center; gap:1.2rem;
-  transition:transform .3s var(--ease), box-shadow .3s var(--ease), border-color .3s;
-  position:relative; overflow:hidden; user-select:none;
-}
-.os-tile::before{
-  content:''; position:absolute; inset:0;
-  background:linear-gradient(135deg, rgba(255,255,255,.07) 0%, transparent 60%);
+/* ═══════════════════════════════════════
+   DESKTOP
+═══════════════════════════════════════ */
+#desktop{
+  position:fixed;inset:36px 0 0 0;z-index:1;
+  display:flex;align-items:flex-start;
   pointer-events:none;
 }
-#tile-w11{
-  background:rgba(12,20,35,.8);
-  box-shadow:0 20px 50px rgba(0,120,215,.15);
-}
-#tile-w11:hover{
-  transform:translateY(-8px) scale(1.02);
-  border-color:rgba(0,120,215,.5);
-  box-shadow:0 30px 70px rgba(0,120,215,.3);
-}
-#tile-ios{
-  background:rgba(18,12,35,.8);
-  box-shadow:0 20px 50px rgba(130,80,255,.15);
-}
-#tile-ios:hover{
-  transform:translateY(-8px) scale(1.02);
-  border-color:rgba(130,80,255,.5);
-  box-shadow:0 30px 70px rgba(130,80,255,.3);
-}
-.os-tile-label{
-  font-size:.72rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#fff;
-}
-.os-tile-sub{
-  font-size:.48rem; font-weight:600; letter-spacing:.14em; text-transform:uppercase;
-  color:rgba(255,255,255,.35);
-}
-/* Logo Windows 11 */
-.w11-logo{ width:54px; height:54px; flex-shrink:0; }
-/* Logo Apple */
-.apple-logo{ width:46px; height:56px; flex-shrink:0; fill:white; }
 
-/* ───────── W11 LOGIN OVERLAY ───────── */
-#w11-login{
-  position:fixed; inset:0; z-index:8000;
-  background:rgba(4,8,16,.85); backdrop-filter:blur(24px);
-  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1.4rem;
-  opacity:0; visibility:hidden; transition:opacity .4s var(--ease), visibility .4s;
+/* App icons — left column */
+#desk-apps{
+  display:flex;flex-direction:column;gap:4px;padding:16px 10px;pointer-events:all;
 }
-#w11-login.open{ opacity:1; visibility:visible; }
-.wl-clock{ font-size:4rem; font-weight:800; color:#fff; letter-spacing:-.04em; font-variant-numeric:tabular-nums; }
-.wl-date{ font-size:.8rem; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:rgba(255,255,255,.5); margin-top:-.6rem; }
-.wl-avatar{
-  width:72px; height:72px; border-radius:50%;
-  background:linear-gradient(135deg, var(--navy), var(--cyan));
-  display:flex; align-items:center; justify-content:center; margin-top:.6rem;
+.d-icon{
+  width:72px;display:flex;flex-direction:column;align-items:center;gap:5px;
+  padding:10px 6px;border-radius:10px;cursor:pointer;
+  background:var(--icon-bg);border:1px solid transparent;
+  transition:background .15s,border-color .15s,transform .15s;
 }
-.wl-avatar img{ height:38px; filter:brightness(10); }
-.wl-name{ font-size:1.1rem; font-weight:700; color:#fff; }
-.wl-field{
-  display:flex; align-items:center; gap:.6rem;
-  background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.15);
-  border-radius:10px; padding:.65rem .9rem; width:280px;
+.d-icon:hover{background:var(--icon-hover);border-color:var(--bar-border);transform:translateY(-2px)}
+.d-icon:active{transform:scale(.95)}
+.d-icon-face{
+  width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
 }
-.wl-field input{
-  flex:1; background:none; border:none; outline:none;
-  font:inherit; font-size:.82rem; color:#fff;
-}
-.wl-field input::placeholder{ color:rgba(255,255,255,.35); }
-.wl-field button{ background:none; border:none; cursor:pointer; color:rgba(255,255,255,.5); font-size:.9rem; padding:0 2px; }
-.wl-submit{
-  width:280px; padding:.8rem; border:0; border-radius:10px;
-  background:rgba(0,120,215,.85); color:#fff; cursor:pointer;
-  font:inherit; font-size:.65rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
-  transition:background .2s, transform .1s;
-}
-.wl-submit:hover{ background:#0078D4; } .wl-submit:active{ transform:scale(.99); }
-.wl-error{
-  font-size:.7rem; color:#ff6b6b; font-weight:600;
-  opacity:0; transition:opacity .3s; text-align:center; max-width:280px;
-}
-.wl-error.show{ opacity:1; }
-.wl-back{
-  font:inherit; font-size:.58rem; font-weight:600; letter-spacing:.08em; text-transform:uppercase;
-  background:none; border:1px solid rgba(255,255,255,.2); color:rgba(255,255,255,.6);
-  padding:.55rem 1.4rem; border-radius:8px; cursor:pointer; transition:all .2s;
-}
-.wl-back:hover{ background:rgba(255,255,255,.08); color:#fff; }
-@keyframes wlshake{ 0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)} }
-.wl-field.shake{ animation:wlshake .35s var(--ease); }
+.d-icon-label{font-size:.52rem;font-weight:600;color:var(--ink);text-align:center;line-height:1.2;letter-spacing:.01em}
 
-/* ═══════════════════════════════════════════
-   iOS 18 — INTERFACE COMPLÈTE
-   ═══════════════════════════════════════════ */
-#ios-hud{
-  /* Toujours un iPhone centré */
-  position:fixed;
-  width:390px; height:844px;
-  top:50%; left:50%;
+/* Project folders — center */
+#desk-folders{
+  position:absolute;top:50%;left:50%;
   transform:translate(-50%,-50%);
-  z-index:200;
-  display:none; flex-direction:column;
-  font-family:-apple-system,'Helvetica Neue',sans-serif;
-  border-radius:52px;
-  border:10px solid #1c1c1e;
-  box-shadow:0 0 0 1px #3a3a3c,
-             inset 0 0 0 1px rgba(255,255,255,.08),
-             0 40px 120px rgba(0,0,0,.7),
-             0 0 0 1px rgba(0,0,0,.5);
-  overflow:hidden;
-  box-sizing:border-box;
+  display:flex;flex-wrap:wrap;gap:10px 14px;justify-content:center;
+  max-width:600px;pointer-events:all;
 }
-#ios-hud.active{ display:flex; }
+.d-folder{
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  width:80px;cursor:pointer;padding:8px 4px;border-radius:10px;
+  border:1px solid transparent;transition:background .15s,border-color .15s,transform .15s;
+}
+.d-folder:hover{background:var(--folder-hover);border-color:var(--bar-border);transform:translateY(-3px)}
+.d-folder:active{transform:scale(.95)}
+.d-folder-ico{width:54px;height:46px;display:flex;align-items:center;justify-content:center}
+.d-folder-label{font-size:.54rem;font-weight:600;color:var(--ink);text-align:center;line-height:1.3}
 
-/* ── Status bar ── */
-.ios-status{
-  position:absolute; top:0; left:0; right:0; height:44px; z-index:50;
-  display:flex; align-items:flex-end; justify-content:space-between;
-  padding:0 20px 8px; color:#fff;
+/* Identity hint */
+#desk-identity{
+  position:fixed;bottom:12px;left:14px;z-index:5;pointer-events:none;
 }
-.ios-status-time{ font-size:.78rem; font-weight:700; letter-spacing:-.01em; }
-.ios-status-icons{ display:flex; align-items:center; gap:6px; }
-.ios-status-icons svg{ width:15px; height:12px; fill:white; }
-.ios-battery{
-  width:22px; height:11px; border-radius:3px; border:1.5px solid rgba(255,255,255,.6);
-  position:relative; display:flex; align-items:center; padding:1px;
-}
-.ios-battery::after{ content:''; position:absolute; right:-4px; top:50%; transform:translateY(-50%); width:2.5px; height:5px; background:rgba(255,255,255,.5); border-radius:0 1px 1px 0; }
-.ios-battery-fill{ background:#fff; height:100%; border-radius:1.5px; width:75%; }
+#desk-identity div:first-child{font-size:.6rem;font-weight:800;letter-spacing:.09em;color:rgba(41,184,217,.7);text-transform:uppercase}
+#desk-identity div:last-child{font-size:.52rem;color:var(--mid);margin-top:1px;letter-spacing:.04em}
 
-/* ── Lock Screen ── */
-#ios-lock{
-  position:absolute; inset:0; z-index:20;
-  background:linear-gradient(185deg, #1c1c3e 0%, #2d1b69 30%, #1a1040 60%, #0d1a35 100%);
-  display:flex; flex-direction:column; align-items:center;
-  overflow:hidden; cursor:pointer;
-  transition:opacity .6s cubic-bezier(.4,0,.2,1), transform .6s cubic-bezier(.4,0,.2,1);
-}
-/* Cercles décoratifs lock screen */
-#ios-lock::before{
-  content:''; position:absolute;
-  width:600px; height:600px; border-radius:50%;
-  background:radial-gradient(circle, rgba(130,80,255,.25) 0%, transparent 70%);
-  top:-100px; left:50%; transform:translateX(-50%);
-  pointer-events:none;
-}
-#ios-lock.unlocking{ opacity:0; transform:scale(1.08); pointer-events:none; }
-.lock-clock-wrap{ margin-top:140px; text-align:center; }
-.lock-time{
-  font-size:5.8rem; font-weight:100; color:#fff;
-  letter-spacing:-.04em; line-height:1; font-variant-numeric:tabular-nums;
-}
-.lock-date{ font-size:1rem; font-weight:300; color:rgba(255,255,255,.85); margin-top:.3rem; }
-.lock-widgets{ margin-top:2rem; display:flex; gap:.8rem; }
-.lock-widget{
-  background:rgba(255,255,255,.12); backdrop-filter:blur(12px);
-  border-radius:14px; padding:.7rem 1.2rem;
-  color:#fff; font-size:.72rem; font-weight:500; display:flex; align-items:center; gap:.5rem;
-}
-.lock-hint{
-  position:absolute; bottom:2rem; left:0; right:0; text-align:center;
-  display:flex; flex-direction:column; align-items:center; gap:.5rem;
-}
-.lock-hint-bar{
-  width:130px; height:5px; border-radius:3px; background:rgba(255,255,255,.5);
-}
-.lock-hint-text{
-  font-size:.62rem; font-weight:500; color:rgba(255,255,255,.45);
-  letter-spacing:.08em; text-transform:uppercase;
-  animation:hinpulse 2.2s ease-in-out infinite;
-}
-@keyframes hinpulse{ 0%,100%{opacity:.35} 50%{opacity:.8} }
-
-/* ── Home Screen ── */
-#ios-home{
-  position:absolute; inset:0; z-index:10;
-  display:flex; flex-direction:column; overflow:hidden;
-  background:linear-gradient(180deg, #1c2a4a 0%, #0f1e3a 100%);
-}
-/* Wallpaper flou avec les œuvres */
-.ios-wallpaper{
-  position:absolute; inset:0; pointer-events:none;
-  background:
-    radial-gradient(ellipse at 30% 20%, rgba(41,184,217,.15) 0%, transparent 50%),
-    radial-gradient(ellipse at 70% 80%, rgba(130,80,255,.12) 0%, transparent 50%),
-    linear-gradient(160deg, #111d35 0%, #1a1040 50%, #0d1a30 100%);
-}
-/* App icons grid */
-.ios-grid{
-  position:relative; z-index:2;
-  display:grid; grid-template-columns:repeat(4,1fr);
-  gap:.6rem 0; padding:54px 8px 10px;
-  flex:1; align-content:start; overflow-y:auto;
-}
-.ios-grid::-webkit-scrollbar{ display:none; }
-.ios-app-icon{
-  display:flex; flex-direction:column; align-items:center; gap:.28rem;
-  cursor:pointer; -webkit-tap-highlight-color:transparent;
-  padding:.3rem 0;
-}
-.ios-app-icon:active .ios-icon-img{ transform:scale(.88); }
-.ios-icon-img{
-  width:60px; height:60px; border-radius:14px;
-  display:flex; align-items:center; justify-content:center;
-  box-shadow:0 2px 8px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.15);
-  transition:transform .12s cubic-bezier(.4,0,.2,1);
-}
-.ios-icon-img svg{ width:30px; height:30px; }
-.ios-icon-label{
-  font-size:.6rem; font-weight:400; color:#fff; text-align:center;
-  text-shadow:0 1px 3px rgba(0,0,0,.8); max-width:72px; overflow:hidden;
-  white-space:nowrap; text-overflow:ellipsis;
-}
-/* Dock iOS */
-.ios-dock{
-  position:relative; z-index:2;
-  display:flex; justify-content:center; align-items:flex-end; gap:1.2rem;
-  padding:12px 20px 16px;
-  margin:0 12px 8px;
-  background:rgba(255,255,255,.14); backdrop-filter:blur(30px) saturate(180%);
-  border-radius:30px; border:1px solid rgba(255,255,255,.18);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.1);
-}
-.ios-dock .ios-app-icon{ padding:0; }
-.ios-dock .ios-icon-img{ width:56px; height:56px; }
-
-/* ── App layer (apps plein écran) ── */
-#ios-app-layer{
-  position:absolute; inset:0; z-index:30;
-  display:flex; flex-direction:column;
-  transform:translateY(100%);
-  transition:transform .38s cubic-bezier(.4,0,.2,1);
-  background:#000;
-}
-#ios-app-layer.open{ transform:translateY(0); }
-/* Nav bar de l'app */
-.ios-app-nav{
-  display:flex; align-items:flex-end; height:88px; padding:0 16px 12px;
-  background:rgba(248,248,248,.95); backdrop-filter:blur(20px);
-  border-bottom:1px solid rgba(0,0,0,.1); flex-shrink:0; position:relative;
-}
-/* Bouton retour iOS (chevron + texte) */
-.ios-app-back{
-  display:flex; align-items:center; gap:4px;
-  background:none; border:none; color:#007AFF; cursor:pointer;
-  font-family:inherit; font-size:.88rem; font-weight:400; padding:.2rem 0;
-  position:relative; z-index:2;
-}
-.ios-app-back-ico{ font-size:1.1rem; line-height:1; }
-.ios-app-title{
-  position:absolute; left:0; right:0; bottom:12px; text-align:center;
-  font-size:.88rem; font-weight:600; color:#1a1a1a; pointer-events:none;
-}
-.ios-app-content{ flex:1; overflow-y:auto; background:#f2f2f7; }
-.ios-app-content::-webkit-scrollbar{ display:none; }
-
-/* ── Home indicator ── */
-.ios-home-indicator{
-  position:absolute; bottom:6px; left:50%; transform:translateX(-50%);
-  width:130px; height:5px; border-radius:3px; background:rgba(255,255,255,.4); z-index:100;
-}
-
-/* ── iOS Admin Login ── */
-#ios-login{
-  position:absolute; inset:0; z-index:35;
-  background:linear-gradient(185deg, #1c1c3e 0%, #2d1b69 40%, #0d1a35 100%);
-  display:none; flex-direction:column; align-items:center; justify-content:center; gap:1.2rem;
-}
-#ios-login.open{ display:flex; }
-.il-lock{ font-size:3rem; margin-bottom:.5rem; }
-.il-app-name{ font-size:1.2rem; font-weight:600; color:#fff; letter-spacing:-.01em; }
-.il-sub{ font-size:.65rem; color:rgba(255,255,255,.5); font-weight:400; }
-.il-field{
-  background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.2);
-  border-radius:14px; padding:.9rem 1.1rem; width:260px; display:flex; align-items:center; gap:.6rem;
-}
-.il-field input{
-  flex:1; background:none; border:none; outline:none;
-  font:inherit; font-size:.85rem; color:#fff; text-align:center; letter-spacing:.1em;
-}
-.il-field input::placeholder{ color:rgba(255,255,255,.35); letter-spacing:.05em; }
-.il-submit{
-  width:260px; padding:.9rem; border:0; border-radius:14px;
-  background:var(--cyan); color:#fff; cursor:pointer;
-  font:inherit; font-size:.7rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
-  transition:background .2s, transform .1s;
-}
-.il-submit:hover{ background:var(--cyan2); } .il-submit:active{ transform:scale(.98); }
-.il-error{
-  font-size:.72rem; color:#ff6b6b; font-weight:500;
-  opacity:0; transition:opacity .3s; text-align:center;
-}
-.il-error.show{ opacity:1; }
-.il-back{
-  font:inherit; font-size:.6rem; font-weight:500; color:rgba(255,255,255,.5);
-  background:none; border:none; cursor:pointer; text-decoration:underline; margin-top:.4rem;
-}
-@keyframes ilshake{ 0%,100%{transform:translateX(0)} 25%{transform:translateX(-10px)} 75%{transform:translateX(10px)} }
-.il-field.shake{ animation:ilshake .35s; }
-
-/* ───────── CV WINDOW STYLES ───────── */
-.cv-scroll{ max-height:72vh; overflow-y:auto; padding-right:4px; }
-.cv-scroll::-webkit-scrollbar{ width:3px; } .cv-scroll::-webkit-scrollbar-thumb{ background:rgba(27,53,96,.2); }
-.cv-header{ display:flex; align-items:center; gap:1rem; margin-bottom:1.3rem; }
-.cv-avatar{ width:64px; height:64px; border-radius:50%; background:linear-gradient(135deg,var(--navy),var(--cyan)); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-.cv-avatar img{ height:34px; filter:brightness(10); }
-.cv-name{ font-size:1.2rem; font-weight:800; color:var(--ink); letter-spacing:-.02em; }
-.cv-title{ font-size:.52rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--cyan); margin-top:2px; }
-.cv-contacts{ display:flex; flex-wrap:wrap; gap:.35rem; margin-bottom:1.2rem; }
-.cv-chip{ font-size:.5rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; padding:.28rem .65rem; border-radius:20px; background:rgba(27,53,96,.07); color:var(--sub); border:1px solid rgba(27,53,96,.1); white-space:nowrap; }
-.cv-section{ margin-bottom:1.4rem; }
-.cv-section-title{ font-size:.48rem; font-weight:700; letter-spacing:.22em; text-transform:uppercase; color:var(--cyan); margin-bottom:.7rem; padding-bottom:.4rem; border-bottom:1px solid rgba(27,53,96,.08); }
-.cv-skill{ display:flex; align-items:center; gap:.6rem; margin-bottom:.55rem; }
-.cv-skill-name{ font-size:.7rem; font-weight:600; color:var(--ink); min-width:130px; }
-.cv-skill-bar{ flex:1; height:5px; background:rgba(27,53,96,.1); border-radius:3px; overflow:hidden; }
-.cv-skill-fill{ height:100%; border-radius:3px; background:linear-gradient(90deg,var(--navy),var(--cyan)); transition:width 1s var(--ease); }
-.cv-skill-pct{ font-size:.48rem; font-weight:700; color:var(--sub); min-width:32px; text-align:right; }
-.cv-timeline{ display:flex; flex-direction:column; gap:.7rem; }
-.cv-item{ display:flex; gap:.75rem; }
-.cv-item-dot{ display:flex; flex-direction:column; align-items:center; flex-shrink:0; padding-top:3px; }
-.cv-item-dot::before{ content:''; width:9px; height:9px; border-radius:50%; background:var(--cyan); flex-shrink:0; }
-.cv-item-dot::after{ content:''; flex:1; width:1px; background:rgba(27,53,96,.15); margin-top:4px; }
-.cv-item:last-child .cv-item-dot::after{ display:none; }
-.cv-item-body{ padding-bottom:.55rem; }
-.cv-item-title{ font-size:.78rem; font-weight:700; color:var(--ink); }
-.cv-item-sub{ font-size:.6rem; font-weight:600; color:var(--cyan2); margin-top:1px; }
-.cv-item-desc{ font-size:.65rem; font-weight:400; color:var(--sub); margin-top:2px; line-height:1.5; }
-.cv-langs{ display:flex; flex-wrap:wrap; gap:.5rem; }
-.cv-lang{ background:rgba(27,53,96,.07); border:1px solid rgba(27,53,96,.12); padding:.3rem .75rem; border-radius:20px; }
-.cv-lang span:first-child{ font-size:.7rem; font-weight:700; color:var(--ink); }
-.cv-lang span:last-child{ font-size:.52rem; font-weight:600; color:var(--sub); margin-left:.3rem; }
-.cv-interests{ display:flex; flex-wrap:wrap; gap:.4rem; }
-.cv-interest{ font-size:.58rem; font-weight:600; color:var(--sub); background:rgba(41,184,217,.08); border:1px solid rgba(41,184,217,.2); padding:.28rem .7rem; border-radius:20px; }
-
-/* ───────── INTRO (gardé pour compatibilité mais caché) ───────── */
-#intro{ display:none; }
-
-/* ───────── MODAL ───────── */
-#modal{ position:fixed; inset:0; z-index:8000; opacity:0; visibility:hidden;
-  transition:opacity .4s var(--ease),visibility .4s; }
-#modal.open{ opacity:1; visibility:visible; }
-#modal-ov{ position:absolute; inset:0; background:rgba(6,12,22,.8); backdrop-filter:blur(8px); cursor:pointer; }
-#modal-panel{
-  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%) scale(.96);
-  width:min(1080px,94vw); max-height:90vh;
-  background:var(--sheet); display:grid; grid-template-columns:1fr 320px;
-  border-radius:6px; overflow:hidden; box-shadow:0 40px 100px rgba(0,0,0,.45);
-  transition:transform .5s var(--ease);
-}
-#modal.open #modal-panel{ transform:translate(-50%,-50%) scale(1); }
-#m-gal{ position:relative; background:rgba(0,0,0,.05); min-height:460px; }
-#m-img{ width:100%; height:100%; object-fit:contain; display:block; transition:opacity .3s; }
-#m-img.sw{ opacity:0; }
-.m-nav{ position:absolute; top:50%; transform:translateY(-50%); width:42px; height:42px;
-  background:var(--sheet); border:1px solid rgba(27,53,96,.12); border-radius:4px; cursor:pointer;
-  color:var(--ink); font-size:.85rem; display:flex; align-items:center; justify-content:center;
-  transition:background .2s,color .2s; }
-.m-nav:hover{ background:var(--navy); color:#fff; }
-#m-prev{ left:1rem; } #m-next{ right:1rem; }
-#m-cap{ position:absolute; bottom:0; left:0; right:0; padding:.65rem 1rem;
-  background:rgba(242,238,228,.92); border-top:1px solid rgba(27,53,96,.1);
-  display:flex; justify-content:space-between; }
-[data-theme="dark"] #m-cap{ background:rgba(14,27,48,.92); }
-#m-cap span{ font-size:.55rem; font-weight:600; letter-spacing:.12em; color:var(--sub); }
-#m-side{ border-left:1px solid rgba(27,53,96,.1); display:flex; flex-direction:column; overflow:hidden; }
-#m-info{ padding:1.9rem 1.7rem; border-bottom:1px solid rgba(27,53,96,.1); }
-#m-cat{ font-size:.5rem; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--cyan); margin-bottom:.5rem; }
-#m-title{ font-size:1.35rem; font-weight:800; letter-spacing:-.02em; color:var(--ink); }
-#m-year{ font-size:.55rem; font-weight:600; letter-spacing:.12em; color:var(--sub); margin-top:.3rem; }
-#m-desc{ font-size:.74rem; font-weight:300; line-height:1.75; color:var(--sub); margin-top:.9rem; }
-#m-tags{ display:flex; flex-wrap:wrap; gap:.35rem; margin-top:1rem; }
-.m-tag{ font-size:.46rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--sub);
-  border:1px solid rgba(27,53,96,.14); padding:.2rem .5rem; border-radius:2px; }
-#m-thumbs{ flex:1; overflow-y:auto; padding:1rem; display:grid; grid-template-columns:1fr 1fr; gap:.4rem; align-content:start; }
-#m-thumbs::-webkit-scrollbar{ width:3px; } #m-thumbs::-webkit-scrollbar-thumb{ background:rgba(27,53,96,.15); }
-.m-thumb{ aspect-ratio:4/3; overflow:hidden; cursor:pointer; border:2px solid transparent; border-radius:2px; }
-.m-thumb.active{ border-color:var(--cyan); }
-.m-thumb img{ width:100%; height:100%; object-fit:cover; opacity:.55; transition:opacity .3s,transform .4s var(--ease); }
-.m-thumb:hover img,.m-thumb.active img{ opacity:1; } .m-thumb:hover img{ transform:scale(1.08); }
-#m-close{ position:absolute; top:1rem; right:1rem; z-index:10; width:38px; height:38px; border-radius:4px;
-  background:var(--sheet); border:1px solid rgba(27,53,96,.12); cursor:pointer; color:var(--sub);
-  display:flex; align-items:center; justify-content:center; font-size:.72rem; transition:background .2s,color .2s; }
-#m-close:hover{ background:var(--navy); color:#fff; }
-@media(max-width:820px){ #modal-panel{ grid-template-columns:1fr; } #m-side{ display:none; } }
-
-/* ═══════════════════════════════════════════
-   W11 DESKTOP WALLPAPER & DESKTOP ICONS
-   ═══════════════════════════════════════════ */
-#w11-desktop{
-  position:fixed; inset:0 0 48px 0; z-index:1; pointer-events:none;
-  overflow:hidden;
-}
-#w11-wallpaper{
-  position:absolute; inset:0;
-  background: radial-gradient(ellipse 120% 80% at 65% 55%, #1a6ec4 0%, #0f4fa8 20%, #0a2d6b 45%, #06122a 70%, #040810 100%);
-}
-/* Blobs W11 Bloom */
-#w11-wallpaper::before{
-  content:''; position:absolute; inset:0; pointer-events:none;
-  background:
-    radial-gradient(ellipse 80% 60% at 20% 40%, rgba(26,110,196,.45) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 80% at 80% 20%, rgba(100,60,200,.35) 0%, transparent 55%),
-    radial-gradient(ellipse 50% 40% at 50% 80%, rgba(15,79,168,.5) 0%, transparent 50%),
-    radial-gradient(ellipse 40% 30% at 10% 80%, rgba(80,40,180,.3) 0%, transparent 50%);
-}
-#w11-wallpaper::after{
-  content:''; position:absolute;
-  width:900px; height:600px; left:-100px; top:30%;
-  background:radial-gradient(ellipse at 50% 50%, rgba(40,130,220,.25) 0%, transparent 70%);
-  border-radius:50%; transform:rotate(-20deg);
-  pointer-events:none;
-}
-/* Desktop icons area */
-.desktop-icons{
-  position:absolute; top:20px; left:20px;
-  display:flex; flex-direction:column; gap:8px;
-  pointer-events:auto; z-index:2;
-}
-.desktop-icon{
-  width:72px; display:flex; flex-direction:column; align-items:center;
-  gap:4px; padding:8px 4px; border-radius:4px; cursor:pointer;
-  user-select:none; border:1px solid transparent;
-  transition:background .15s, border-color .15s;
-}
-.desktop-icon:hover{ background:rgba(255,255,255,.1); border-color:rgba(255,255,255,.15); }
-.desktop-icon.selected{ background:rgba(0,120,212,.3); border-color:rgba(0,120,212,.6); }
-.desktop-icon-img{ width:40px; height:40px; display:flex; align-items:center; justify-content:center; }
-.desktop-icon-img svg{ width:36px; height:36px; }
-.desktop-icon-label{ font-size:.62rem; color:#fff; text-align:center; text-shadow:0 1px 3px rgba(0,0,0,.8); line-height:1.2; }
-.desktop-folders{
-  position:absolute; top:calc(50% - 24px); left:50%; transform:translate(-50%,-50%);
-  display:flex; flex-wrap:wrap; gap:16px 20px; justify-content:center;
-  pointer-events:auto; z-index:2; max-width:620px;
-}
-.desktop-folder{
-  width:80px; display:flex; flex-direction:column; align-items:center;
-  gap:5px; padding:8px 4px; border-radius:4px; cursor:pointer;
-  user-select:none; border:1px solid transparent;
-  transition:background .15s, border-color .15s;
-}
-.desktop-folder:hover{ background:rgba(255,255,255,.12); border-color:rgba(255,255,255,.2); }
-.desktop-folder.selected{ background:rgba(0,120,212,.3); border-color:rgba(0,120,212,.6); }
-.desktop-folder-ico{
-  width:48px; height:42px; border-radius:6px; display:flex; align-items:center; justify-content:center;
-  box-shadow:0 2px 8px rgba(0,0,0,.3);
-}
-.desktop-folder-ico svg{ width:28px; height:28px; }
-.desktop-folder-label{ font-size:.6rem; color:#fff; text-align:center; text-shadow:0 1px 3px rgba(0,0,0,.9); line-height:1.3; max-width:72px; }
-
-/* ═══════════════════════════════════════════
-   W11 EXPLORATEUR DE FICHIERS
-   ═══════════════════════════════════════════ */
-.w11-explorer{ display:flex; flex-direction:column; height:100%; }
-.w11-exp-toolbar{
-  display:flex; align-items:center; gap:2px; padding:4px 8px;
-  border-bottom:1px solid rgba(0,0,0,.08); background:rgba(243,243,243,.6);
-  flex-shrink:0; flex-wrap:wrap; row-gap:2px;
-}
-.w11-exp-tb-btn{
-  display:flex; align-items:center; gap:5px; padding:5px 9px;
-  border:none; background:transparent; border-radius:4px; cursor:pointer;
-  font-size:.72rem; font-family:inherit; color:#222; transition:background .12s;
-}
-.w11-exp-tb-btn:hover{ background:rgba(0,0,0,.06); }
-.w11-exp-tb-btn svg{ width:15px; height:15px; flex-shrink:0; }
-.w11-exp-tb-sep{ width:1px; height:22px; background:rgba(0,0,0,.1); margin:0 4px; }
-.w11-exp-tb-right{ margin-left:auto; display:flex; gap:2px; }
-.w11-exp-view-btn{
-  border:none; background:transparent; border-radius:4px; padding:4px 6px;
-  cursor:pointer; font-size:.72rem; font-family:inherit; color:#555; transition:background .12s;
-  display:flex; align-items:center; gap:4px;
-}
-.w11-exp-view-btn:hover{ background:rgba(0,0,0,.06); }
-.w11-exp-view-btn.active{ background:rgba(0,120,212,.15); color:#0078d4; }
-.w11-exp-addrbar{
-  display:flex; align-items:center; gap:6px; padding:5px 10px;
-  border-bottom:1px solid rgba(0,0,0,.07); background:rgba(255,255,255,.5);
-  flex-shrink:0;
-}
-.w11-exp-nav-btn{
-  width:28px; height:28px; border:none; background:transparent; border-radius:4px;
-  cursor:pointer; display:flex; align-items:center; justify-content:center; color:#444;
-  transition:background .12s;
-}
-.w11-exp-nav-btn:hover{ background:rgba(0,0,0,.06); }
-.w11-exp-nav-btn:disabled{ opacity:.3; cursor:default; }
-.w11-exp-addr{
-  flex:1; background:rgba(255,255,255,.85); border:1px solid rgba(0,0,0,.12);
-  border-radius:4px; padding:4px 10px; font-size:.73rem; font-family:inherit;
-  display:flex; align-items:center; gap:5px; cursor:default; color:#333;
-}
-.w11-exp-addr-sep{ color:#999; font-size:.7rem; }
-.w11-exp-search{
-  border:1px solid rgba(0,0,0,.12); background:rgba(255,255,255,.85);
-  border-radius:4px; padding:4px 8px; font-size:.72rem; font-family:inherit;
-  width:160px; outline:none; color:#333;
-}
-.w11-exp-search:focus{ border-color:#0078d4; box-shadow:0 0 0 2px rgba(0,120,212,.15); }
-.w11-exp-body{
-  flex:1; min-height:0; overflow-y:auto; padding:8px;
-}
-/* Vue grandes icônes */
-.w11-exp-grid{
-  display:grid; grid-template-columns:repeat(auto-fill,minmax(90px,1fr)); gap:4px;
-}
-.w11-exp-item{
-  display:flex; flex-direction:column; align-items:center; gap:4px;
-  padding:8px 4px; border-radius:4px; cursor:pointer; user-select:none;
-  border:1px solid transparent; transition:background .12s;
-  text-align:center;
-}
-.w11-exp-item:hover{ background:rgba(0,120,212,.08); border-color:rgba(0,120,212,.2); }
-.w11-exp-item.selected{ background:rgba(0,120,212,.2); border-color:rgba(0,120,212,.5); }
-.w11-exp-item-thumb{
-  width:64px; height:64px; border-radius:6px; object-fit:cover;
-  box-shadow:0 1px 4px rgba(0,0,0,.15); background:#eee;
-  display:flex; align-items:center; justify-content:center;
-}
-.w11-exp-item-thumb img{ width:64px; height:64px; border-radius:6px; object-fit:cover; }
-.w11-exp-item-label{ font-size:.62rem; color:#222; line-height:1.3; max-width:82px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-/* Vue liste/détails */
-.w11-exp-list{ display:flex; flex-direction:column; gap:0; }
-.w11-exp-list-head{
-  display:grid; grid-template-columns:1fr 80px 80px; gap:0;
-  border-bottom:1px solid rgba(0,0,0,.1); padding:4px 8px;
-  font-size:.64rem; font-weight:600; color:#666; text-transform:uppercase; letter-spacing:.05em;
-}
-.w11-exp-list-row{
-  display:grid; grid-template-columns:1fr 80px 80px; gap:0;
-  padding:5px 8px; border-radius:4px; cursor:pointer; user-select:none;
-  font-size:.72rem; align-items:center; transition:background .1s;
-}
-.w11-exp-list-row:hover{ background:rgba(0,120,212,.07); }
-.w11-exp-list-row.selected{ background:rgba(0,120,212,.18); }
-.w11-exp-list-name{ display:flex; align-items:center; gap:8px; }
-.w11-exp-list-ico{ width:20px; height:20px; border-radius:3px; flex-shrink:0; }
-.w11-exp-statusbar{
-  display:flex; align-items:center; gap:8px; padding:3px 10px;
-  border-top:1px solid rgba(0,0,0,.07); font-size:.62rem; color:#666;
-  background:rgba(243,243,243,.6); flex-shrink:0;
-}
-
-/* ═══════════════════════════════════════════
-   iOS DOSSIERS
-   ═══════════════════════════════════════════ */
-.ios-folder-icon{
-  display:flex; flex-direction:column; align-items:center; gap:4px;
-  cursor:pointer; user-select:none;
-}
-.ios-folder-box{
-  width:60px; height:60px; border-radius:14px;
-  background:rgba(255,255,255,.28); backdrop-filter:blur(20px);
-  border:1px solid rgba(255,255,255,.4);
-  display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr;
-  gap:3px; padding:5px; box-sizing:border-box;
-  box-shadow:0 2px 8px rgba(0,0,0,.3);
-}
-.ios-folder-mini{
-  border-radius:5px; display:flex; align-items:center; justify-content:center;
-}
-.ios-folder-mini svg{ width:10px; height:10px; }
-.ios-folder-name{ font-size:.58rem; color:#fff; text-align:center; text-shadow:0 1px 3px rgba(0,0,0,.7); line-height:1.2; max-width:65px; }
-/* Popup dossier iOS */
-#ios-folder-popup{
-  position:absolute; inset:0; z-index:28; display:flex; flex-direction:column;
-  align-items:center; justify-content:center;
-  background:rgba(0,0,0,.5); backdrop-filter:blur(20px);
-  opacity:0; pointer-events:none; transition:opacity .28s;
-}
-#ios-folder-popup.open{ opacity:1; pointer-events:auto; }
-.ios-fp-box{
-  background:rgba(255,255,255,.22); backdrop-filter:blur(30px);
-  border-radius:20px; padding:16px; width:240px;
-  border:1px solid rgba(255,255,255,.3);
-  transform:scale(.85); transition:transform .28s cubic-bezier(.34,1.56,.64,1);
-}
-#ios-folder-popup.open .ios-fp-box{ transform:scale(1); }
-.ios-fp-title{ color:#fff; font-size:.75rem; font-weight:600; text-align:center; margin-bottom:12px; letter-spacing:.02em; }
-.ios-fp-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; justify-items:center; }
-.ios-fp-close{
-  margin-top:14px; width:40px; height:40px; border-radius:50%;
-  background:rgba(255,255,255,.2); border:none; color:#fff;
-  font-size:1.1rem; cursor:pointer; display:flex; align-items:center; justify-content:center;
-  align-self:center;
-}
-
-/* ═══════════════════════════════════════════
-   W11 FENÊTRES REDIMENSIONNABLES
-   ═══════════════════════════════════════════ */
+/* ═══════════════════════════════════════
+   WINDOWS
+═══════════════════════════════════════ */
+#win-layer{position:fixed;inset:36px 0 0 0;z-index:50;pointer-events:none}
 .win{
-  resize:both;
-  min-width:300px;
-  min-height:200px;
+  position:absolute;display:flex;flex-direction:column;pointer-events:all;
+  background:var(--win-bg);border:1px solid var(--win-border);border-radius:10px;
+  box-shadow:0 20px 60px rgba(0,0,0,.4),0 2px 8px rgba(0,0,0,.2);
+  backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);
+  overflow:hidden;min-width:320px;min-height:200px;
+  animation:winopen .2s cubic-bezier(.34,1.2,.64,1) both;
+  transition:background .4s,border-color .4s;
 }
+.win-bar{
+  display:flex;align-items:center;gap:8px;padding:0 10px;height:38px;
+  background:var(--win-bar);border-bottom:1px solid var(--line);flex-shrink:0;
+  cursor:default;transition:background .4s;
+}
+.win-icon{width:16px;height:16px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.win-title{font-size:.7rem;font-weight:600;color:var(--ink);flex:1;letter-spacing:.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.win-ctrls{display:flex;gap:5px}
+.win-btn{
+  width:12px;height:12px;border-radius:50%;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:filter .15s;
+}
+.win-btn.close{background:#ff5f57}
+.win-btn.min{background:#febc2e}
+.win-btn.max{background:#28c840}
+.win-btn svg{opacity:0;width:8px;height:8px;color:rgba(0,0,0,.5);transition:opacity .15s}
+.win-bar:hover .win-btn svg{opacity:1}
+.win-body{flex:1;overflow:auto;padding:14px;font-size:.8rem;color:var(--ink);position:relative;transition:color .4s}
+.win-resize{position:absolute;bottom:0;right:0;width:18px;height:18px;cursor:se-resize;z-index:2}
+.win-resize::after{content:'';position:absolute;bottom:4px;right:4px;width:6px;height:6px;border-right:2px solid var(--mid);border-bottom:2px solid var(--mid);opacity:.4;border-radius:1px}
+.w-toast{position:absolute;bottom:8px;right:8px;background:var(--cyan);color:#fff;font-size:.62rem;font-weight:600;padding:4px 10px;border-radius:20px;opacity:0;pointer-events:none;transition:opacity .2s;letter-spacing:.04em}
+.w-toast.show{opacity:1}
 
-/* ═══════════════════════════════════════════
-   BOUTON RETOUR ACCUEIL — W11
-   ═══════════════════════════════════════════ */
-#w11-home-btn{
-  width:40px; height:40px; border:0; border-radius:4px;
-  background:transparent; cursor:pointer;
-  display:flex; align-items:center; justify-content:center;
-  transition:background .15s; flex-shrink:0; margin-right:4px;
-  color:#1a1a1a;
-}
-[data-theme="dark"] #w11-home-btn{ color:#f0f0f0; }
-#w11-home-btn:hover{ background:rgba(0,0,0,.06); }
-[data-theme="dark"] #w11-home-btn:hover{ background:rgba(255,255,255,.08); }
-#w11-home-btn svg{ width:16px; height:16px; }
+/* ── CV ── */
+.cv-header{display:flex;align-items:center;gap:12px;padding-bottom:12px;border-bottom:1px solid var(--line);margin-bottom:12px}
+.cv-avatar{width:44px;height:44px;border-radius:10px;overflow:hidden;background:var(--icon-bg);flex-shrink:0}
+.cv-avatar img{width:100%;height:100%;object-fit:contain}
+.cv-h-name{font-size:.95rem;font-weight:800;color:var(--ink);letter-spacing:-.01em}
+.cv-h-role{font-size:.62rem;color:var(--mid);margin-top:2px}
+.cv-chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}
+.cv-chip{background:var(--chip-bg);color:var(--chip-c);font-size:.58rem;font-weight:600;padding:3px 8px;border-radius:20px;letter-spacing:.02em}
+.cv-sec-title{font-size:.62rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--cyan);margin:12px 0 8px}
+.cv-skill{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.cv-skill-name{font-size:.65rem;font-weight:600;width:96px;color:var(--ink);flex-shrink:0}
+.cv-skill-bar{flex:1;height:4px;background:var(--skill-bg);border-radius:2px;overflow:hidden}
+.cv-skill-fill{height:100%;background:linear-gradient(90deg,var(--cyan2),var(--cyan));border-radius:2px}
+.cv-skill-pct{font-size:.58rem;color:var(--mid);width:28px;text-align:right;flex-shrink:0}
+.cv-tl-item{display:flex;gap:10px;margin-bottom:10px;align-items:flex-start}
+.cv-tl-dot{width:8px;height:8px;border-radius:50%;background:var(--cyan);flex-shrink:0;margin-top:3px}
+.cv-tl-title{font-size:.68rem;font-weight:700;color:var(--ink)}
+.cv-tl-sub{font-size:.6rem;color:var(--cyan);margin-top:1px}
+.cv-tl-desc{font-size:.6rem;color:var(--mid);margin-top:2px}
 
-/* ═══════════════════════════════════════════
-   BOUTON RETOUR ACCUEIL — iOS
-   ═══════════════════════════════════════════ */
-#ios-home-btn{
-  position:absolute;
-  bottom:28px; left:50%; transform:translateX(-50%);
-  z-index:100;
-  background:rgba(255,255,255,.18); backdrop-filter:blur(12px);
-  border:1px solid rgba(255,255,255,.3);
-  color:#fff; font-size:.75rem; font-weight:600;
-  padding:.5rem 1.4rem; border-radius:20px; cursor:pointer;
-  white-space:nowrap; pointer-events:auto;
-  transition:background .2s;
-}
-#ios-home-btn:hover{ background:rgba(255,255,255,.28); }
+/* ── CONTACT / PROFILE ── */
+.w-profile{display:flex;align-items:center;gap:12px;padding-bottom:12px;border-bottom:1px solid var(--line);margin-bottom:12px}
+.w-ava{width:44px;height:44px;border-radius:10px;overflow:hidden;background:var(--icon-bg);flex-shrink:0}
+.w-ava img{width:100%;height:100%;object-fit:contain}
+.w-name{font-size:.95rem;font-weight:800;color:var(--ink)}
+.w-role{font-size:.62rem;color:var(--mid);margin-top:2px}
+.w-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.w-row:last-child{border:none}
+.w-row-ico{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--icon-bg)}
+.w-row-ico svg{width:18px;height:18px}
+.w-row-info{flex:1}
+.w-row-lbl{font-size:.58rem;color:var(--mid);font-weight:500}
+.w-row-val{font-size:.72rem;font-weight:600;color:var(--ink);margin-top:1px}
+.w-row-acts{display:flex;gap:5px;flex-shrink:0}
+.w-btn{font-size:.6rem;font-weight:600;padding:4px 10px;border-radius:5px;cursor:pointer;border:1px solid var(--line);background:var(--icon-bg);color:var(--ink);font-family:inherit;text-decoration:none;display:inline-flex;align-items:center;transition:background .15s}
+.w-btn:hover{background:var(--icon-hover)}
+.w-btn.pri{background:var(--cyan);border-color:var(--cyan);color:#fff}
+.w-btn.pri:hover{background:var(--cyan2);border-color:var(--cyan2)}
 
-/* ═══════════════════════════════════════════
-   RESPONSIVE MOBILE — MOCKUP TÉLÉPHONE
-   ═══════════════════════════════════════════ */
-@media (max-width:480px){
-  /* Sur très petits écrans, réduire légèrement l'iPhone */
-  #ios-hud{
-    width:min(390px,96vw);
-    height:min(844px,96vh);
-    border-radius:42px;
-  }
+/* ── MAIL ── */
+.w-field{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}
+.w-field label{font-size:.6rem;font-weight:700;color:var(--mid);letter-spacing:.04em;text-transform:uppercase}
+.w-field input,.w-field textarea{background:var(--icon-bg);border:1px solid var(--line);color:var(--ink);font-family:inherit;font-size:.75rem;padding:8px 10px;border-radius:6px;outline:none;transition:border-color .15s,background .4s}
+.w-field input:focus,.w-field textarea:focus{border-color:var(--cyan)}
+.w-field textarea{resize:vertical;min-height:80px}
+.w-send{width:100%;padding:10px;border-radius:6px;border:none;background:var(--cyan);color:#fff;font:700 .78rem 'Montserrat',sans-serif;cursor:pointer;letter-spacing:.04em;transition:background .15s}
+.w-send:hover{background:var(--cyan2)}
+
+/* ── ABOUT stats ── */
+.ab-stat{background:var(--icon-bg);border-radius:8px;padding:10px;text-align:center}
+.ab-stat-n{font-size:1.1rem;font-weight:800;color:var(--cyan)}
+.ab-stat-l{font-size:.6rem;color:var(--mid);margin-top:2px}
+.ab-tag{background:var(--chip-bg);border-radius:4px;padding:3px 8px;font-size:.65rem;color:var(--ink)}
+
+/* ═══════════════════════════════════════
+   GALLERY + LIGHTBOX
+═══════════════════════════════════════ */
+.gal-wrap{display:flex;flex-direction:column;height:100%}
+.gal-header{display:flex;align-items:center;gap:.5rem;padding:.5rem .8rem;border-bottom:1px solid var(--line);flex-shrink:0}
+.gal-grid{flex:1;overflow-y:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:3px;padding:3px;background:rgba(0,0,0,.1)}
+.gal-card{position:relative;aspect-ratio:1;cursor:pointer;overflow:hidden;background:#0a0f1e}
+.gal-card img{width:100%;height:100%;object-fit:cover;transition:transform .2s,filter .2s}
+.gal-card:hover img{transform:scale(1.05);filter:brightness(1.1)}
+.gal-title{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.75));color:#fff;font-size:.58rem;padding:16px 6px 5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gal-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:var(--mid);gap:.6rem;text-align:center;font-size:.75rem;padding:2rem}
+
+#w-lightbox{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center}
+.lb-bg{position:absolute;inset:0;background:rgba(0,0,0,.92);backdrop-filter:blur(10px)}
+.lb-img-wrap{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;max-width:90vw;max-height:90vh}
+#lb-img{max-width:100%;max-height:80vh;object-fit:contain;border-radius:4px;box-shadow:0 20px 80px rgba(0,0,0,.8)}
+.lb-caption{color:rgba(255,255,255,.6);font-size:.75rem;margin-top:.6rem;text-align:center}
+.lb-close{position:absolute;top:16px;right:20px;z-index:2;background:rgba(255,255,255,.1);border:none;color:#fff;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:background .15s}
+.lb-close:hover{background:rgba(255,255,255,.2)}
+.lb-nav{position:absolute;top:50%;transform:translateY(-50%);z-index:2;background:rgba(255,255,255,.1);border:none;color:#fff;width:44px;height:44px;border-radius:50%;cursor:pointer;font-size:1.6rem;display:flex;align-items:center;justify-content:center;transition:background .15s}
+.lb-nav:hover{background:rgba(255,255,255,.2)}
+.lb-prev{left:16px}.lb-next{right:16px}
+.lb-counter{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);z-index:2;color:rgba(255,255,255,.4);font-size:.7rem}
+
+/* ═══════════════════════════════════════
+   ADMIN OVERLAY
+═══════════════════════════════════════ */
+#win-admin-overlay{
+  position:fixed;inset:0;z-index:900;display:none;
+  align-items:center;justify-content:center;
+  background:rgba(0,0,0,.7);backdrop-filter:blur(20px);
 }
+.admin-card{
+  background:var(--win-bg);border:1px solid var(--win-border);border-radius:16px;
+  padding:32px 28px;width:min(320px,90vw);text-align:center;
+}
+.admin-card-ico{font-size:2rem;margin-bottom:12px}
+.admin-card h3{font-size:.9rem;font-weight:800;color:var(--ink);margin-bottom:4px}
+.admin-card p{font-size:.68rem;color:var(--mid);margin-bottom:20px}
+#admin-pwd{
+  width:100%;border:1px solid var(--line);border-radius:8px;padding:10px 12px;
+  font-size:.82rem;background:var(--icon-bg);color:var(--ink);outline:none;
+  margin-bottom:10px;font-family:inherit;transition:border-color .15s,background .4s;
+}
+#admin-pwd:focus{border-color:var(--cyan)}
+#admin-err{color:#ff5f57;font-size:.65rem;margin-bottom:10px;display:none}
+#admin-submit{
+  width:100%;padding:11px;border-radius:8px;border:none;
+  background:var(--cyan);color:#fff;font:700 .82rem 'Montserrat',sans-serif;cursor:pointer;transition:background .15s;
+}
+#admin-submit:hover{background:var(--cyan2)}
+#admin-cancel{background:none;border:none;color:var(--mid);font:.75rem 'Montserrat',sans-serif;margin-top:12px;cursor:pointer}
 </style>
 </head>
 <body>
 
-<!-- W11 DESKTOP (wallpaper + icônes bureau) -->
-<div id="w11-desktop" style="display:none">
-  <div id="w11-wallpaper"></div>
-  <div class="desktop-icons">
-    <!-- Corbeille -->
-    <div class="desktop-icon" id="icon-trash">
-      <div class="desktop-icon-img">
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M10 11v6M14 11v6" stroke="white" stroke-width="1.6" stroke-linecap="round"/>
-        </svg>
-      </div>
-      <span class="desktop-icon-label">Corbeille</span>
-    </div>
-    <!-- Atelier AAR Design -->
-    <div class="desktop-icon" id="icon-atelier" data-app="atelier">
-      <div class="desktop-icon-img">
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="3" y="3" width="7" height="7" rx="1.5" stroke="white" stroke-width="1.6"/>
-          <rect x="14" y="3" width="7" height="7" rx="1.5" stroke="white" stroke-width="1.6"/>
-          <rect x="3" y="14" width="7" height="7" rx="1.5" stroke="white" stroke-width="1.6"/>
-          <rect x="14" y="14" width="7" height="7" rx="1.5" stroke="white" stroke-width="1.6"/>
-        </svg>
-      </div>
-      <span class="desktop-icon-label">Atelier AAR Design</span>
-    </div>
-    <!-- Mon CV -->
-    <div class="desktop-icon" id="icon-cv" data-app="cv">
-      <div class="desktop-icon-img">
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="5" y="2" width="14" height="20" rx="2" stroke="white" stroke-width="1.6"/>
-          <path d="M9 7h6M9 11h6M9 15h4" stroke="white" stroke-width="1.6" stroke-linecap="round"/>
-        </svg>
-      </div>
-      <span class="desktop-icon-label">Mon CV</span>
-    </div>
-    <!-- Contact -->
-    <div class="desktop-icon" id="icon-contact" data-app="contact">
-      <div class="desktop-icon-img">
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="3" y="5" width="18" height="14" rx="2.5" stroke="white" stroke-width="1.6"/>
-          <path d="m3.5 7 8.5 6 8.5-6" stroke="white" stroke-width="1.6" stroke-linecap="round"/>
-        </svg>
-      </div>
-      <span class="desktop-icon-label">Contact</span>
-    </div>
+<!-- WALLPAPER -->
+<div id="wall"></div>
+
+<!-- ══════════════════════════════════════════
+     LOCK SCREEN
+══════════════════════════════════════════ -->
+<div id="lockscreen">
+  <div id="ls-logo">
+    <svg width="48" height="48" viewBox="0 0 88 88" fill="none">
+      <rect x="4" y="4" width="36" height="36" rx="6" fill="#29B8D9" opacity=".9"/>
+      <rect x="48" y="4" width="36" height="36" rx="6" fill="#1B3560" opacity=".9"/>
+      <rect x="4" y="48" width="36" height="36" rx="6" fill="#1B3560" opacity=".9"/>
+      <rect x="48" y="48" width="36" height="36" rx="6" fill="#29B8D9" opacity=".9"/>
+    </svg>
   </div>
-  <!-- Dossiers Projets — centre du bureau -->
-  <div class="desktop-folders">
-    <div class="desktop-folder" data-cluster="arsene">
-      <div class="desktop-folder-ico" style="background:linear-gradient(135deg,#f59e0b,#d97706)">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M2 6a2 2 0 0 1 2-2h4l2 2h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z" fill="rgba(255,255,255,.9)"/></svg>
-      </div>
-      <span class="desktop-folder-label">Arsène Valentin</span>
-    </div>
-    <div class="desktop-folder" data-cluster="clopinette">
-      <div class="desktop-folder-ico" style="background:linear-gradient(135deg,#ec4899,#be185d)">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M2 6a2 2 0 0 1 2-2h4l2 2h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z" fill="rgba(255,255,255,.9)"/></svg>
-      </div>
-      <span class="desktop-folder-label">Clopinette</span>
-    </div>
-    <div class="desktop-folder" data-cluster="perso">
-      <div class="desktop-folder-ico" style="background:linear-gradient(135deg,#8b5cf6,#6d28d9)">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M2 6a2 2 0 0 1 2-2h4l2 2h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z" fill="rgba(255,255,255,.9)"/></svg>
-      </div>
-      <span class="desktop-folder-label">Perso</span>
-    </div>
-    <div class="desktop-folder" data-cluster="digital">
-      <div class="desktop-folder-ico" style="background:linear-gradient(135deg,#06b6d4,#0e7490)">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M2 6a2 2 0 0 1 2-2h4l2 2h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z" fill="rgba(255,255,255,.9)"/></svg>
-      </div>
-      <span class="desktop-folder-label">Digital Painting</span>
-    </div>
-    <div class="desktop-folder" data-cluster="logo">
-      <div class="desktop-folder-ico" style="background:linear-gradient(135deg,#10b981,#065f46)">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M2 6a2 2 0 0 1 2-2h4l2 2h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z" fill="rgba(255,255,255,.9)"/></svg>
-      </div>
-      <span class="desktop-folder-label">Logo</span>
-    </div>
-    <div class="desktop-folder" data-cluster="animation">
-      <div class="desktop-folder-ico" style="background:linear-gradient(135deg,#f97316,#c2410c)">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M2 6a2 2 0 0 1 2-2h4l2 2h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z" fill="rgba(255,255,255,.9)"/></svg>
-      </div>
-      <span class="desktop-folder-label">Animation</span>
-    </div>
-    <div class="desktop-folder" data-cluster="etudes">
-      <div class="desktop-folder-ico" style="background:linear-gradient(135deg,#3b82f6,#1d4ed8)">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M2 6a2 2 0 0 1 2-2h4l2 2h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z" fill="rgba(255,255,255,.9)"/></svg>
-      </div>
-      <span class="desktop-folder-label">Études</span>
-    </div>
-  </div>
+  <div id="ls-time">00:00</div>
+  <div id="ls-date">—</div>
+  <div id="ls-name">Anthony Armand</div>
+  <div id="ls-role">Directeur Artistique · AAR Design</div>
+  <div id="ls-hint">Cliquer pour entrer</div>
 </div>
 
-
-<!-- BOOT SCREEN -->
-<div id="boot">
-  <img src="assets/Logo-Aardesign-Court.png" alt="AAR Design" class="boot-logo">
-  <div class="boot-tag">AAR Design · Anthony Armand</div>
-  <div class="boot-question">Choisissez votre environnement</div>
-  <div class="os-tiles">
-    <!-- Windows 11 -->
-    <div class="os-tile" id="tile-w11">
-      <svg class="w11-logo" viewBox="0 0 88 88" xmlns="http://www.w3.org/2000/svg">
-        <rect x="2" y="2" width="40" height="40" rx="3" fill="#F35325"/>
-        <rect x="46" y="2" width="40" height="40" rx="3" fill="#81BC06"/>
-        <rect x="2" y="46" width="40" height="40" rx="3" fill="#05A6F0"/>
-        <rect x="46" y="46" width="40" height="40" rx="3" fill="#FFBA08"/>
-      </svg>
-      <div>
-        <div class="os-tile-label">Windows 11</div>
-        <div class="os-tile-sub">Bureau · Atelier</div>
-      </div>
-    </div>
-    <!-- iOS -->
-    <div class="os-tile" id="tile-ios">
-      <svg class="apple-logo" viewBox="0 0 170 200" xmlns="http://www.w3.org/2000/svg">
-        <path fill="white" d="M150.4 106.9c-.3-30.7 25.2-45.6 26.3-46.3-14.3-20.9-36.6-23.8-44.6-24.1-19-1.9-37.1 11.2-46.8 11.2-9.6 0-24.5-10.9-40.3-10.6C25.3 37.4 7 48.9-2.6 66.5c-20.1 34.8-5.2 86.6 14.5 115 9.6 13.9 21.1 29.5 36.1 29 14.5-.6 20-9.3 37.6-9.3 17.5 0 22.5 9.3 37.9 9 15.6-.3 25.5-14.1 35-28.1 11.1-16.1 15.6-31.7 15.9-32.5-.4-.2-30.4-11.7-30.9-46.7zM121.1 24.4C129 15 134.5 2.7 133 -10c-10.2.4-22.6 6.8-29.9 15.4-6.6 7.6-12.4 19.8-10.9 31.5 11.5.9 23.1-5.8 28.9-12.5z"/>
-      </svg>
-      <div>
-        <div class="os-tile-label">iOS 18</div>
-        <div class="os-tile-sub">Mobile · App</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- W11 LOGIN OVERLAY (sur le desktop W11) -->
-<div id="w11-login">
-  <div class="wl-clock" id="wl-clock">--:--</div>
-  <div class="wl-date" id="wl-date"></div>
-  <div class="wl-avatar"><img src="assets/Logo-Aardesign-Court.png" alt=""></div>
-  <div class="wl-name">Anthony Armand</div>
-  <div class="wl-field" id="wl-field">
-    <input type="password" id="wl-pwd" placeholder="Mot de passe" autocomplete="current-password">
-    <button id="wl-show" title="Afficher">👁</button>
-  </div>
-  <button class="wl-submit" id="wl-submit">Se connecter →</button>
-  <div class="wl-error" id="wl-error">❌ T'es pas Anthony 😅 Le bureau te manque ?</div>
-  <button class="wl-back" id="wl-back">↩ Retour au bureau</button>
-</div>
-
-<!-- iOS HUD -->
-<div id="ios-hud">
-  <!-- Status bar (toujours visible) -->
-  <div class="ios-status" id="ios-status-bar">
-    <span class="ios-status-time" id="ios-time-l">00:00</span>
-    <div class="ios-status-icons">
-      <svg viewBox="0 0 17 12" width="17" height="12"><rect x="0" y="6" width="3" height="6" rx="1" fill="white" opacity=".4"/><rect x="4" y="4" width="3" height="8" rx="1" fill="white" opacity=".6"/><rect x="8" y="2" width="3" height="10" rx="1" fill="white" opacity=".8"/><rect x="12" y="0" width="3" height="12" rx="1" fill="white"/></svg>
-      <svg viewBox="0 0 16 12" width="16" height="12"><path d="M8 9.5a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" fill="white"/><path d="M5 7c.8-.9 1.8-1.5 3-1.5s2.2.6 3 1.5" stroke="white" stroke-width="1.3" fill="none" stroke-linecap="round"/><path d="M2 4.2C3.6 2.5 5.7 1.5 8 1.5s4.4 1 6 2.7" stroke="white" stroke-width="1.3" fill="none" stroke-linecap="round" opacity=".6"/></svg>
-      <div class="ios-battery"><div class="ios-battery-fill"></div></div>
-    </div>
-  </div>
-
-  <!-- ══ LOCK SCREEN ══ -->
-  <div id="ios-lock">
-    <div class="lock-clock-wrap">
-      <div class="lock-time" id="ios-lock-time">00:00</div>
-      <div class="lock-date" id="ios-lock-date">Lundi 2 juin</div>
-    </div>
-    <div class="lock-widgets">
-      <div class="lock-widget">🎨 AAR Design</div>
-      <div class="lock-widget">✦ Digital Art &amp; DA</div>
-    </div>
-    <div class="lock-hint">
-      <div class="lock-hint-bar"></div>
-      <div class="lock-hint-text">Appuyer pour déverrouiller</div>
-    </div>
-  </div>
-
-  <!-- ══ HOME SCREEN ══ -->
-  <div id="ios-home">
-    <div class="ios-wallpaper"></div>
-    <div class="ios-grid">
-      <div class="ios-app-icon" data-ios-app="atelier">
-        <div class="ios-icon-img" style="background:linear-gradient(145deg,#1B3560,#29B8D9)"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></div>
-        <span class="ios-icon-label">Atelier</span>
-      </div>
-      <div class="ios-app-icon" data-ios-app="cv">
-        <div class="ios-icon-img" style="background:linear-gradient(145deg,#1d3a2e,#2ecc71)"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M9 7h6M9 11h6M9 15h4"/></svg></div>
-        <span class="ios-icon-label">CV</span>
-      </div>
-      <div class="ios-app-icon" data-ios-app="mail">
-        <div class="ios-icon-img" style="background:linear-gradient(145deg,#1565C0,#42A5F5)"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 7 8.5 6 8.5-6"/></svg></div>
-        <span class="ios-icon-label">Mail</span>
-      </div>
-      <div class="ios-app-icon" data-ios-app="tel">
-        <div class="ios-icon-img" style="background:linear-gradient(145deg,#1B5E20,#66BB6A)"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.8.6 2.6a2 2 0 0 1-.5 2.1L10 9.6a16 16 0 0 0 6 6l1.2-1.2a2 2 0 0 1 2.1-.5c.8.3 1.7.5 2.6.6a2 2 0 0 1 1.7 2z"/></svg></div>
-        <span class="ios-icon-label">Téléphone</span>
-      </div>
-      <div class="ios-app-icon" onclick="window.open('https://instagram.com','_blank')">
-        <div class="ios-icon-img" style="background:radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%,#d6249f 60%,#285AEB 90%)"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5.5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1.1" fill="white" stroke="none"/></svg></div>
-        <span class="ios-icon-label">Instagram</span>
-      </div>
-      <div class="ios-app-icon" onclick="window.open('https://behance.net','_blank')">
-        <div class="ios-icon-img" style="background:linear-gradient(145deg,#053eff,#4169e1)"><span style="color:white;font-size:1.5rem;font-weight:900;font-family:Georgia,serif;line-height:1">B&#x0113;</span></div>
-        <span class="ios-icon-label">Behance</span>
-      </div>
-      <div class="ios-app-icon" data-ios-app="about">
-        <div class="ios-icon-img" style="background:linear-gradient(145deg,#1B3560,#0097BA)"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6"><circle cx="12" cy="12" r="9.2"/><path d="M12 11v5"/><circle cx="12" cy="7.6" r="1.1" fill="white" stroke="none"/></svg></div>
-        <span class="ios-icon-label">À propos</span>
-      </div>
-      <div class="ios-app-icon" data-ios-app="ios-admin">
-        <div class="ios-icon-img" style="background:linear-gradient(145deg,#263238,#546E7A)"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
-        <span class="ios-icon-label">Admin</span>
-      </div>
-      <!-- Dossiers projets iOS -->
-      <div class="ios-folder-icon" data-ios-folder="arsene">
-        <div class="ios-folder-box">
-          <div class="ios-folder-mini" style="background:linear-gradient(135deg,#f59e0b,#d97706)"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg></div>
-          <div class="ios-folder-mini" style="background:linear-gradient(135deg,#e67e22,#d35400)"><svg viewBox="0 0 24 24" fill="white"><rect x="3" y="3" width="8" height="8" rx="2"/></svg></div>
-          <div class="ios-folder-mini" style="background:linear-gradient(135deg,#f39c12,#e67e22)"><svg viewBox="0 0 24 24" fill="white"><circle cx="12" cy="12" r="7"/></svg></div>
-          <div class="ios-folder-mini" style="background:linear-gradient(135deg,#ffd700,#f59e0b)"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
-        </div>
-        <span class="ios-folder-name">Arsène Valentin</span>
-      </div>
-      <div class="ios-folder-icon" data-ios-folder="clopinette">
-        <div class="ios-folder-box">
-          <div class="ios-folder-mini" style="background:linear-gradient(135deg,#ec4899,#be185d)"><svg viewBox="0 0 24 24" fill="white"><rect x="3" y="3" width="8" height="8" rx="2"/></svg></div>
-          <div class="ios-folder-mini" style="background:linear-gradient(135deg,#f472b6,#ec4899)"><svg viewBox="0 0 24 24" fill="white"><circle cx="12" cy="12" r="7"/></svg></div>
-          <div class="ios-folder-mini" style="background:linear-gradient(135deg,#db2777,#be185d)"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
-          <div class="ios-folder-mini" style="background:linear-gradient(135deg,#9d174d,#ec4899)"><svg viewBox="0 0 24 24" fill="white"><rect x="3" y="3" width="8" height="8" rx="2"/></svg></div>
-        </div>
-        <span class="ios-folder-name">Clopinette</span>
-      </div>
-      <div class="ios-folder-icon" data-ios-folder="digital">
-        <div class="ios-folder-box">
-          <div class="ios-folder-mini" style="background:linear-gradient(135deg,#06b6d4,#0e7490)"><svg viewBox="0 0 24 24" fill="white"><path d="M12 20h9M16.5 3.5l4 4L7 21H3v-4z"/></svg></div>
-          <div class="ios-folder-mini" style="background:linear-gradient(135deg,#0891b2,#06b6d4)"><svg viewBox="0 0 24 24" fill="white"><circle cx="12" cy="12" r="7"/></svg></div>
-          <div class="ios-folder-mini" style="background:linear-gradient(135deg,#155e75,#0e7490)"><svg viewBox="0 0 24 24" fill="white"><rect x="3" y="3" width="8" height="8" rx="2"/></svg></div>
-          <div class="ios-folder-mini" style="background:linear-gradient(135deg,#22d3ee,#0891b2)"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
-        </div>
-        <span class="ios-folder-name">Digital Painting</span>
-      </div>
-      <div class="ios-folder-icon" data-ios-folder="logo">
-        <div class="ios-folder-box">
-          <div class="ios-folder-mini" style="background:linear-gradient(135deg,#10b981,#065f46)"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
-          <div class="ios-folder-mini" style="background:linear-gradient(135deg,#34d399,#10b981)"><svg viewBox="0 0 24 24" fill="white"><rect x="3" y="3" width="8" height="8" rx="2"/></svg></div>
-          <div class="ios-folder-mini" style="background:linear-gradient(135deg,#059669,#047857)"><svg viewBox="0 0 24 24" fill="white"><circle cx="12" cy="12" r="7"/></svg></div>
-          <div class="ios-folder-mini" style="background:linear-gradient(135deg,#6ee7b7,#34d399)"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
-        </div>
-        <span class="ios-folder-name">Logo</span>
-      </div>
-    </div>
-    <!-- Dock -->
-    <div class="ios-dock">
-      <div class="ios-app-icon" data-ios-app="atelier">
-        <div class="ios-icon-img" style="background:linear-gradient(145deg,#1B3560,#29B8D9)"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></div>
-        <span class="ios-icon-label">Atelier</span>
-      </div>
-      <div class="ios-app-icon" data-ios-app="mail">
-        <div class="ios-icon-img" style="background:linear-gradient(145deg,#1565C0,#42A5F5)"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 7 8.5 6 8.5-6"/></svg></div>
-        <span class="ios-icon-label">Mail</span>
-      </div>
-      <div class="ios-app-icon" data-ios-app="tel">
-        <div class="ios-icon-img" style="background:linear-gradient(145deg,#1B5E20,#66BB6A)"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.8.6 2.6a2 2 0 0 1-.5 2.1L10 9.6a16 16 0 0 0 6 6l1.2-1.2a2 2 0 0 1 2.1-.5c.8.3 1.7.5 2.6.6a2 2 0 0 1 1.7 2z"/></svg></div>
-        <span class="ios-icon-label">Téléphone</span>
-      </div>
-      <div class="ios-app-icon" data-ios-app="cv">
-        <div class="ios-icon-img" style="background:linear-gradient(145deg,#1d3a2e,#2ecc71)"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M9 7h6M9 11h6M9 15h4"/></svg></div>
-        <span class="ios-icon-label">CV</span>
-      </div>
-    </div>
-    <div class="ios-home-indicator"></div>
-  </div>
-
-  <!-- ══ POPUP DOSSIER iOS ══ -->
-  <div id="ios-folder-popup">
-    <div class="ios-fp-box">
-      <div class="ios-fp-title" id="ios-fp-title">Dossier</div>
-      <div class="ios-fp-grid" id="ios-fp-grid"></div>
-    </div>
-    <button class="ios-fp-close" id="ios-fp-close">&#x2715;</button>
-  </div>
-
-  <!-- ══ APP LAYER (slide-up depuis le bas) ══ -->
-  <div id="ios-app-layer">
-    <div class="ios-app-nav">
-      <button class="ios-app-back" id="ios-back">
-        <span class="ios-app-back-ico">&#x2039;</span> Accueil
+<!-- ══════════════════════════════════════════
+     TOP BAR
+══════════════════════════════════════════ -->
+<div id="topbar">
+  <!-- Logo / menu -->
+  <div id="tb-logo">
+    <svg width="16" height="16" viewBox="0 0 88 88" fill="none">
+      <rect x="2" y="2" width="38" height="38" rx="5" fill="#29B8D9"/>
+      <rect x="48" y="2" width="38" height="38" rx="5" fill="#1B3560"/>
+      <rect x="2" y="48" width="38" height="38" rx="5" fill="#1B3560"/>
+      <rect x="48" y="48" width="38" height="38" rx="5" fill="#29B8D9"/>
+    </svg>
+    AAR OS
+    <div id="tb-menu">
+      <button class="tm-item" onclick="openApp('atelier')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+        Atelier AAR
       </button>
-      <div class="ios-app-title" id="ios-app-title-bar"></div>
-    </div>
-    <div class="ios-app-content" id="ios-app-content"></div>
-    <div class="ios-home-indicator" style="background:rgba(0,0,0,.25)"></div>
-  </div>
-
-  <!-- iOS Admin Login -->
-  <div id="ios-login">
-    <div class="il-lock">&#x1F512;</div>
-    <div class="il-app-name">AAR Design Admin</div>
-    <div class="il-sub">Acc&#xE8;s r&#xE9;serv&#xE9; &middot; Entrez le mot de passe</div>
-    <div class="il-field" id="il-field">
-      <input type="password" id="il-pwd" placeholder="Mot de passe" autocomplete="current-password">
-    </div>
-    <button class="il-submit" id="il-submit">D&#xE9;verrouiller</button>
-    <div class="il-error" id="il-error">&#x274C; Acc&#xE8;s refus&#xE9; ! T&#x2019;es pas Anthony &#x1F605;</div>
-    <button class="il-back" id="il-back">&#x21A9; Retour &#xE0; l&#x2019;accueil</button>
-  </div>
-  <!-- Bouton retour accueil iOS -->
-  <button id="ios-home-btn">⌂ Accueil</button>
-</div>
-
-<!-- INTRO (hidden) -->
-<div id="intro"></div>
-
-<!-- STAGE + BOARD -->
-<div id="stage">
-  <div id="board"></div>
-</div>
-
-<!-- DESKTOP OS -->
-<div class="hud">
-  <div id="toast">✋ Attrape le mur &amp; glisse-le · molette pour zoomer · clic sur une œuvre</div>
-
-  <!-- fenêtres -->
-  <div id="windows"></div>
-
-  <!-- ══ START MENU WINDOWS 11 ══ -->
-  <div id="startmenu">
-    <!-- Recherche -->
-    <div class="sm-search">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      <input class="sm-search-input" placeholder="Rechercher des applications, fichiers…" id="sm-search-inp" autocomplete="off">
-    </div>
-    <!-- Épinglé -->
-    <div class="sm-section-title">
-      <span>Épinglé</span>
-      <button id="sm-overview" style="font-size:.6rem;color:#666;background:none;border:none;cursor:pointer;padding:.2rem .5rem;border-radius:4px">Vue d'ensemble ›</button>
-    </div>
-    <div class="sm-pinned">
-      <button class="sm-pin-item" data-app="contact">
-        <div class="sm-pin-ico" style="background:linear-gradient(135deg,#0078D4,#29B8D9)">
-          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
-        </div>
-        <span class="sm-pin-label">Contact</span>
+      <button class="tm-item" onclick="openApp('cv')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M9 7h6M9 11h6M9 15h4" stroke-linecap="round"/></svg>
+        Mon CV
       </button>
-      <button class="sm-pin-item" data-app="mail">
-        <div class="sm-pin-ico" style="background:linear-gradient(135deg,#0078D4,#1a6dcc)">
-          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 7 8.5 6 8.5-6"/></svg>
-        </div>
-        <span class="sm-pin-label">Mail</span>
+      <button class="tm-item" onclick="openApp('contact')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 7 8.5 6 8.5-6"/></svg>
+        Contact
       </button>
-      <button class="sm-pin-item" data-app="tel">
-        <div class="sm-pin-ico" style="background:linear-gradient(135deg,#107C10,#2e7d32)">
-          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.8.6 2.6a2 2 0 0 1-.5 2.1L10 9.6a16 16 0 0 0 6 6l1.2-1.2a2 2 0 0 1 2.1-.5c.8.3 1.7.5 2.6.6a2 2 0 0 1 1.7 2z"/></svg>
-        </div>
-        <span class="sm-pin-label">Téléphone</span>
+      <button class="tm-item" onclick="openApp('about')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><circle cx="12" cy="8" r="4"/><path d="M4 20a8 8 0 0 1 16 0"/></svg>
+        À propos
       </button>
-      <button class="sm-pin-item" data-app="cv">
-        <div class="sm-pin-ico" style="background:linear-gradient(135deg,#2D6A4F,#40C9A2)">
-          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M9 7h6M9 11h6M9 15h4"/></svg>
-        </div>
-        <span class="sm-pin-label">Mon CV</span>
-      </button>
-      <button class="sm-pin-item" data-app="about">
-        <div class="sm-pin-ico" style="background:linear-gradient(135deg,#1B3560,#29B8D9)">
-          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8"><circle cx="12" cy="12" r="9.2"/><path d="M12 11v5"/><circle cx="12" cy="7.6" r="1.1" fill="white" stroke="none"/></svg>
-        </div>
-        <span class="sm-pin-label">À propos</span>
-      </button>
-      <button class="sm-pin-item" id="sm-admin">
-        <div class="sm-pin-ico" style="background:linear-gradient(135deg,#333,#555)">
-          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
-        </div>
-        <span class="sm-pin-label">Admin</span>
+      <div class="tm-sep"></div>
+      <button class="tm-item" onclick="document.getElementById('win-admin-overlay').style.display='flex';closeTbMenu()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+        Admin
       </button>
     </div>
-    <!-- Recommandé = zones de l'atelier -->
-    <div class="sm-sep"></div>
-    <div class="sm-section-title"><span>Naviguer dans l'Atelier</span></div>
-    <nav id="cluster-nav"></nav>
-    <!-- Pied -->
-    <div class="sm-foot-row">
-      <div class="sm-user">
-        <div class="sm-user-ava"><img src="assets/Logo-Aardesign-Court.png" alt=""></div>
-        <span class="sm-user-name">Anthony Armand</span>
-      </div>
-      <button onclick="window.location.reload()" style="font-size:.6rem;color:#666;background:none;border:none;cursor:pointer;padding:.3rem .6rem;border-radius:4px">⏻</button>
-    </div>
   </div>
 
-  <!-- ══ TASKBAR WINDOWS 11 ══ -->
-  <div id="taskbar">
-    <!-- Gauche : Bouton Retour Accueil -->
-    <button id="w11-home-btn" title="Retour à l'accueil" style="position:absolute;left:0;top:0;bottom:0;margin:0;border-radius:0">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 12L12 3l9 9"/><path d="M9 21V12h6v9"/></svg>
+  <!-- Center pills -->
+  <div id="tb-center">
+    <button class="tb-app-pill" data-win="atelier" onclick="openApp('atelier')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+      Atelier
     </button>
-    <!-- Centre : Start + apps -->
-    <div class="tb-apps">
-      <!-- Start button W11 -->
-      <button id="start" class="tb-start" title="Démarrer">
-        <svg width="17" height="17" viewBox="0 0 88 88" xmlns="http://www.w3.org/2000/svg">
-          <rect x="2" y="2" width="40" height="40" rx="3" fill="#F35325"/>
-          <rect x="46" y="2" width="40" height="40" rx="3" fill="#81BC06"/>
-          <rect x="2" y="46" width="40" height="40" rx="3" fill="#05A6F0"/>
-          <rect x="46" y="46" width="40" height="40" rx="3" fill="#FFBA08"/>
-        </svg>
-      </button>
-      <!-- Apps épinglées -->
-      <button class="tb-app" data-app="contact" title="Contact">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
-      </button>
-      <button class="tb-app" data-app="mail" title="Mail">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 7 8.5 6 8.5-6"/></svg>
-      </button>
-      <button class="tb-app" data-app="tel" title="Téléphone">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.8.6 2.6a2 2 0 0 1-.5 2.1L10 9.6a16 16 0 0 0 6 6l1.2-1.2a2 2 0 0 1 2.1-.5c.8.3 1.7.5 2.6.6a2 2 0 0 1 1.7 2z"/></svg>
-      </button>
-      <a class="tb-app" href="https://instagram.com" target="_blank" rel="noopener" title="Instagram">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="3" width="18" height="18" rx="5.5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1.1" fill="currentColor" stroke="none"/></svg>
-      </a>
-      <a class="tb-app" href="https://behance.net" target="_blank" rel="noopener" title="Behance">
-        <span class="be">Bē</span>
-      </a>
-      <button class="tb-app" data-app="cv" title="Mon CV">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M9 7h6M9 11h6M9 15h4"/></svg>
-      </button>
-      <button class="tb-app" data-app="about" title="À propos">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9.2"/><path d="M12 11v5"/><circle cx="12" cy="7.6" r="1.1" fill="currentColor" stroke="none"/></svg>
-      </button>
-      <button class="tb-app" id="admin-btn" title="Admin">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
-      </button>
-    </div>
-    <!-- System tray droite -->
-    <div class="tb-tray">
-      <button class="tray-btn" id="zoom-out" title="−">−</button>
-      <span id="zoom-val">72%</span>
-      <button class="tray-btn" id="zoom-in" title="+">+</button>
-      <button class="tray-btn" id="theme" aria-label="Thème"></button>
-      <div id="clock">
-        <span id="clk-time">--:--</span>
-        <span id="clk-date">--/--/--</span>
+    <button class="tb-app-pill" data-win="cv" onclick="openApp('cv')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M9 7h6M9 11h6M9 15h4" stroke-linecap="round"/></svg>
+      CV
+    </button>
+    <button class="tb-app-pill" data-win="contact" onclick="openApp('contact')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 7 8.5 6 8.5-6"/></svg>
+      Contact
+    </button>
+    <button class="tb-app-pill" data-win="mail" onclick="openApp('mail')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.9v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.9z"/></svg>
+      Écrire
+    </button>
+  </div>
+
+  <!-- Right -->
+  <div id="tb-right">
+    <button class="tb-ico-btn" id="theme-btn" title="Thème" onclick="toggleTheme()">☾</button>
+    <div id="tb-clock">00:00</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     DESKTOP
+══════════════════════════════════════════ -->
+<div id="desktop">
+  <!-- Left app icons -->
+  <div id="desk-apps">
+    <div class="d-icon" onclick="openApp('atelier')">
+      <div class="d-icon-face" style="background:linear-gradient(145deg,#1B3560,#0097BA)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.7" width="22" height="22"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
       </div>
+      <span class="d-icon-label">Atelier</span>
+    </div>
+    <div class="d-icon" onclick="openApp('cv')">
+      <div class="d-icon-face" style="background:linear-gradient(145deg,#1d4520,#30D158)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.7" width="22" height="22"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M9 7h6M9 11h6M9 15h4" stroke-linecap="round"/></svg>
+      </div>
+      <span class="d-icon-label">CV</span>
+    </div>
+    <div class="d-icon" onclick="openApp('contact')">
+      <div class="d-icon-face" style="background:linear-gradient(145deg,#1565C0,#29B8D9)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.7" width="22" height="22"><circle cx="12" cy="8" r="4"/><path d="M4 20a8 8 0 0 1 16 0"/></svg>
+      </div>
+      <span class="d-icon-label">Contact</span>
+    </div>
+    <div class="d-icon" onclick="openApp('about')">
+      <div class="d-icon-face" style="background:linear-gradient(145deg,#3730a3,#818cf8)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.7" width="22" height="22"><circle cx="12" cy="8" r="4"/><path d="M4 20a8 8 0 0 1 16 0"/><path d="M12 12v3" stroke-linecap="round"/><circle cx="12" cy="17" r="1" fill="white" stroke="none"/></svg>
+      </div>
+      <span class="d-icon-label">À propos</span>
+    </div>
+  </div>
+
+  <!-- Project folders -->
+  <div id="desk-folders">
+    <div class="d-folder" onclick="openFolder('arsene')">
+      <div class="d-folder-ico"><svg viewBox="0 0 54 46" fill="none"><path d="M2 10a3 3 0 0 1 3-3h10l4 4h30a3 3 0 0 1 3 3v24a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#d97706" opacity=".7"/><path d="M2 17a3 3 0 0 1 3-3h44a3 3 0 0 1 3 3v20a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#fbbf24"/></svg></div>
+      <span class="d-folder-label">Arsène Valentin</span>
+    </div>
+    <div class="d-folder" onclick="openFolder('clopinette')">
+      <div class="d-folder-ico"><svg viewBox="0 0 54 46" fill="none"><path d="M2 10a3 3 0 0 1 3-3h10l4 4h30a3 3 0 0 1 3 3v24a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#be185d" opacity=".7"/><path d="M2 17a3 3 0 0 1 3-3h44a3 3 0 0 1 3 3v20a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#ec4899"/></svg></div>
+      <span class="d-folder-label">Clopinette</span>
+    </div>
+    <div class="d-folder" onclick="openFolder('digital')">
+      <div class="d-folder-ico"><svg viewBox="0 0 54 46" fill="none"><path d="M2 10a3 3 0 0 1 3-3h10l4 4h30a3 3 0 0 1 3 3v24a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#0e7490" opacity=".7"/><path d="M2 17a3 3 0 0 1 3-3h44a3 3 0 0 1 3 3v20a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#06b6d4"/></svg></div>
+      <span class="d-folder-label">Digital Painting</span>
+    </div>
+    <div class="d-folder" onclick="openFolder('logo')">
+      <div class="d-folder-ico"><svg viewBox="0 0 54 46" fill="none"><path d="M2 10a3 3 0 0 1 3-3h10l4 4h30a3 3 0 0 1 3 3v24a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#065f46" opacity=".7"/><path d="M2 17a3 3 0 0 1 3-3h44a3 3 0 0 1 3 3v20a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#10b981"/></svg></div>
+      <span class="d-folder-label">Logo</span>
+    </div>
+    <div class="d-folder" onclick="openFolder('animation')">
+      <div class="d-folder-ico"><svg viewBox="0 0 54 46" fill="none"><path d="M2 10a3 3 0 0 1 3-3h10l4 4h30a3 3 0 0 1 3 3v24a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#c2410c" opacity=".7"/><path d="M2 17a3 3 0 0 1 3-3h44a3 3 0 0 1 3 3v20a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#f97316"/></svg></div>
+      <span class="d-folder-label">Animation</span>
+    </div>
+    <div class="d-folder" onclick="openFolder('perso')">
+      <div class="d-folder-ico"><svg viewBox="0 0 54 46" fill="none"><path d="M2 10a3 3 0 0 1 3-3h10l4 4h30a3 3 0 0 1 3 3v24a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#6d28d9" opacity=".7"/><path d="M2 17a3 3 0 0 1 3-3h44a3 3 0 0 1 3 3v20a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#8b5cf6"/></svg></div>
+      <span class="d-folder-label">Perso</span>
+    </div>
+    <div class="d-folder" onclick="openFolder('etudes')">
+      <div class="d-folder-ico"><svg viewBox="0 0 54 46" fill="none"><path d="M2 10a3 3 0 0 1 3-3h10l4 4h30a3 3 0 0 1 3 3v24a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#1d4ed8" opacity=".7"/><path d="M2 17a3 3 0 0 1 3-3h44a3 3 0 0 1 3 3v20a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#3b82f6"/></svg></div>
+      <span class="d-folder-label">Études</span>
     </div>
   </div>
 </div>
 
-<!-- MODAL -->
-<div id="modal">
-  <div id="modal-ov"></div>
-  <div id="modal-panel">
-    <div id="m-gal">
-      <img id="m-img" src="" alt="">
-      <button class="m-nav" id="m-prev">←</button>
-      <button class="m-nav" id="m-next">→</button>
-      <div id="m-cap"><span id="m-label"></span><span id="m-count"></span></div>
-    </div>
-    <div id="m-side">
-      <div id="m-info">
-        <p id="m-cat"></p><h2 id="m-title"></h2><p id="m-year"></p><p id="m-desc"></p>
-        <div id="m-tags"></div>
-      </div>
-      <div id="m-thumbs"></div>
-    </div>
-    <button id="m-close">✕</button>
+<!-- Identity -->
+<div id="desk-identity">
+  <div>ANTHONY ARMAND</div>
+  <div>Directeur Artistique · AAR Design · Caen</div>
+</div>
+
+<!-- Windows layer -->
+<div id="win-layer"></div>
+
+<!-- Admin overlay -->
+<div id="win-admin-overlay">
+  <div class="admin-card">
+    <div class="admin-card-ico">🔐</div>
+    <h3>Espace Admin</h3>
+    <p>Accès réservé · AAR Design</p>
+    <input type="password" id="admin-pwd" placeholder="Mot de passe" autocomplete="current-password">
+    <div id="admin-err">Mot de passe incorrect</div>
+    <button id="admin-submit">Déverrouiller</button>
+    <br>
+    <button id="admin-cancel">Annuler</button>
   </div>
 </div>
 
 <script>
-/* ════════ DONNÉES PROJETS (galerie) ════════ */
-const PROJECTS={
-  voyages:{cat:'Digital Painting · Packaging · Direction Artistique',title:"Les Voyages d'Arsène",year:'Arsène Valentin · 2024',
-    desc:"6 destinations, 6 peintures plein format. Du ciel de Cappadoce aux aurores de Laponie, chaque flacon est un voyage. Direction artistique complète, cohérence de gamme.",
-    tags:['Digital Painting','Packaging','Steampunk','Paysage','Direction Artistique'],
-    images:[{src:'assets/voyages/cartes.jpg',label:"Vue d'ensemble — 6 étiquettes"},{src:'assets/voyages/cappadoce.jpg',label:'Ciel de Cappadoce'},{src:'assets/voyages/laponie.jpg',label:'Aurore de Laponie'},{src:'assets/voyages/fuji.jpg',label:'Éclat du Fuji'},{src:'assets/voyages/pacifique.jpg',label:'Soleil du Pacifique'},{src:'assets/voyages/amazonie.jpg',label:"Brume d'Amazonie"},{src:'assets/voyages/canada.jpg',label:'Rivage Canadien'}]},
-  steam:{cat:'Illustration · Gravure Digitale · Packaging',title:'Steam Collection',year:'Arsène Valentin · 2023',
-    desc:"6 illustrations style gravure XIXe siècle — sablier, hibou mécanique, masque de plague doctor, cœur mécanique, main d'alchimiste, théière. Encre sur parchemin texturé.",
-    tags:['Illustration','Gravure Digitale','Steampunk','XIXe siècle','Packaging'],
-    images:[{src:'assets/steam/mockup.jpg',label:"Vue d'ensemble"},{src:'assets/steam/main.jpg',label:"La Main d'Alchimiste"},{src:'assets/steam/sablier.jpg',label:'Les Arcanes du Temps'},{src:'assets/steam/hibou.jpg',label:'Le Sage de Fer'},{src:'assets/steam/coeur.jpg',label:'Le Cœur Mécanique'},{src:'assets/steam/gueule.jpg',label:"La Gueule d'Ange"},{src:'assets/steam/pomme.jpg',label:'Le Fruit Défendu'}]},
-  dark:{cat:'Digital Painting · Illustration Originale',title:'Dark Fantasy',year:'Série personnelle · 2024',
-    desc:"Nécromancien, sorcières, lune de sang — peintures numériques sombres où l'alchimie rencontre la magie noire.",
-    tags:['Digital Painting','Dark Fantasy','Halloween','Illustration'],
-    images:[{src:'assets/dark/red.jpg',label:"L'Alchimiste Maudit"},{src:'assets/dark/salem.jpg',label:'Salem'},{src:'assets/dark/blood.jpg',label:'Blood Moon'},{src:'assets/dark/cult.jpg',label:'The Cult'}]},
-  hiver:{cat:'Illustration · Aquarelle Digitale · Édition',title:"Saveurs d'Hiver",year:'Clopinette · 2025',
-    desc:"Couverture illustrée pour catalogue saisonnier. Renard endormi dans la neige, cerf gracieux, stalactites de glace. Aquarelle digitale, palette froide pastel.",
-    tags:['Illustration','Aquarelle Digitale','Hiver','Botanique'],
-    images:[{src:'assets/saveurs/hiver.jpg',label:"Saveurs d'Hiver — Couverture"},{src:'assets/saveurs/renard.png',label:'Le renard — détail'}]},
-  automne:{cat:'Illustration · Aquarelle Digitale · Édition',title:"Saveurs d'Automne",year:'Clopinette · 2025',
-    desc:"Écureuil sur branche de chêne, feuilles d'érable dorées, citrouilles et champignons. Palette chaude et enveloppante.",
-    tags:['Illustration','Aquarelle Digitale','Automne','Botanique'],
-    images:[{src:'assets/saveurs/automne.jpg',label:"Saveurs d'Automne"},{src:'assets/saveurs/ete.jpg',label:"Saveurs d'Été"},{src:'assets/saveurs/printemps.jpg',label:"Saveurs de Printemps"}]},
-  laponie:{cat:'Digital Painting · Packaging',title:'Aurore de Laponie',year:'Arsène Valentin · 2024',
-    desc:"Village enneigé sous aurore boréale, dirigeable traversant les lumières vertes et violettes du ciel nocturne arctique.",
-    tags:['Digital Painting','Hiver','Aurore Boréale','Packaging'],
-    images:[{src:'assets/voyages/laponie.jpg',label:'Aurore de Laponie'},{src:'assets/voyages/cartes.jpg',label:'Contexte gamme'}]},
-  fuji:{cat:'Digital Painting · Packaging',title:'Éclat du Fuji',year:'Arsène Valentin · 2024',
-    desc:"Temple japonais sous les cerisiers en fleur, mont Fuji en arrière-plan, dirigeable survolant les sakura.",
-    tags:['Digital Painting','Japon','Cerisiers','Packaging'],
-    images:[{src:'assets/voyages/fuji.jpg',label:'Éclat du Fuji'},{src:'assets/voyages/pacifique.jpg',label:'Soleil du Pacifique'}]},
-  sage:{cat:'Illustration · Gravure Digitale',title:'Le Sage de Fer',year:'Arsène Valentin · 2023',
-    desc:"Hibou mécanique aux plumes d'acier, yeux de verre lumineux, posé sur une branche d'engrenages.",
-    tags:['Gravure Digitale','Animal Mécanique','Steampunk'],
-    images:[{src:'assets/steam/hibou.jpg',label:'Le Sage de Fer'},{src:'assets/steam/mockup.jpg',label:'Contexte gamme'}]},
-  main:{cat:'Illustration · Gravure Digitale',title:"La Main d'Alchimiste",year:'Arsène Valentin · 2023',
-    desc:"Main articulée en métal forgé tenant un cristal magique. Encre de Chine sur papier ancien, ombres hachurées.",
-    tags:['Gravure Digitale','Alchimie','Steampunk'],
-    images:[{src:'assets/steam/main.jpg',label:"La Main d'Alchimiste"},{src:'assets/steam/sablier.jpg',label:'Les Arcanes du Temps'},{src:'assets/steam/coeur.jpg',label:'Le Cœur Mécanique'}]},
-  salem:{cat:'Digital Painting · Dark Fantasy',title:'Salem',year:'Série personnelle · 2024',
-    desc:"Sorcière en vol sur fond de pleine lune — citrouilles sculptées, corbeaux et brume.",
-    tags:['Digital Painting','Halloween','Sorcière','Dark Fantasy'],
-    images:[{src:'assets/dark/salem.jpg',label:'Salem'},{src:'assets/dark/red.jpg',label:"L'Alchimiste Maudit"}]},
-  blood:{cat:'Digital Painting · Dark Fantasy',title:'Blood Moon',year:'Série personnelle · 2024',
-    desc:"Paysage lunaire rouge sang avec silhouettes fantomatiques surgissant de la brume. Palette monochrome cramoisie.",
-    tags:['Digital Painting','Halloween','Atmosphère'],
-    images:[{src:'assets/dark/blood.jpg',label:'Blood Moon'},{src:'assets/dark/cult.jpg',label:'The Cult'}]},
-  millenaire:{cat:'Illustration · Packaging · Identité Locale',title:'La Pomme Conquérante',year:'Millénaire Caen · 2024',
-    desc:"Pomme stylisée en armure de chevalier, référence à l'histoire de Caen et de Guillaume le Conquérant.",
-    tags:['Illustration','Packaging','Normandie','Identité Locale'],
-    images:[{src:'assets/millenaire/pomme2.jpg',label:'Variante dorée'},{src:'assets/millenaire/pomme3.jpg',label:'Variante chaude'},{src:'assets/millenaire/cadomum.jpg',label:'Cadomum — mascotte'}]},
-  aristocrate:{cat:'Illustration · Character Design',title:'Série Aristocrate',year:'Série personnelle · 2024',
-    desc:"Personnages de gentlemen dandy steampunk — Le Nanti, La Veste, Le Casque, L'Explorateur.",
-    tags:['Character Design','Steampunk','Illustration','Ligne Claire'],
-    images:[{src:'assets/aristocrate/nanti.jpg',label:'Le Nanti'},{src:'assets/aristocrate/veste.jpg',label:'La Veste'},{src:'assets/aristocrate/casque.jpg',label:'Le Casque'},{src:'assets/aristocrate/explorateur.jpg',label:"L'Explorateur"}]},
-  pulse:{cat:'Digital Painting · Concept Art',title:'Pulse',year:'Personnel · 2024',
-    desc:"Composition abstraite-organique représentant une énergie vitale — ondes, particules, flux lumineux.",
-    tags:['Concept Art','Abstrait','Énergie','Digital Painting'],
-    images:[{src:'assets/pulse.jpg',label:'Pulse — Illustration originale'}]},
-  formation:{cat:'Digital Painting · Formation',title:'Études & Explorations',year:'Formation · 2024–2025',
-    desc:"Exercices de formation en digital painting — environnements de fantasy, character design, paysages SF. Progression visible.",
-    tags:['Formation','Digital Painting','Environnement','Character Design','Fantasy'],
-    images:[{src:'assets/formation/environnement.jpg',label:'Environnement Final'},{src:'assets/formation/character.jpg',label:'Character Final'},{src:'assets/formation/foret.jpg',label:'Forêt Enchantée'},{src:'assets/formation/halloween.jpg',label:'Halloween Challenge'},{src:'assets/formation/sf.jpg',label:'Décors SF'},{src:'assets/formation/hoth.jpg',label:'Hoth'},{src:'assets/formation/mobydick.jpg',label:'Moby Dick'},{src:'assets/formation/paysage.jpg',label:'Paysage — étude'}]},
-};
-
-/* ════════ MISE EN PLACE DU MUR ════════ */
-const BOARD_W=3400, BOARD_H=2500;
-
-const LABELS=[
-  {t:'ARSÈNE VALENTIN', x:700,  y:430},
-  {t:'DARK FANTASY',    x:1430, y:1480},
-  {t:'CLOPINETTE',      x:2560, y:470},
-  {t:'ÉTUDES & PERSO',  x:2640, y:1500},
-];
-
-const PINS=[
-  // — Arsène Valentin —
-  {id:'voyages',  x:360, y:620,  w:360, rot:-4, pin:'tape',       img:'assets/voyages/cappadoce.jpg', t:"Les Voyages d'Arsène", c:'Packaging · DA'},
-  {id:'laponie',  x:800, y:560,  w:210, rot:6,  pin:'var(--cyan)',img:'assets/voyages/laponie.jpg',   t:'Aurore de Laponie',    c:'Digital Painting'},
-  {id:'fuji',     x:785, y:865,  w:210, rot:-7, pin:'var(--navy)',img:'assets/voyages/fuji.jpg',      t:'Éclat du Fuji',        c:'Digital Painting'},
-  {id:'steam',    x:360, y:1075, w:330, rot:3,  pin:'tape',       img:'assets/steam/mockup.jpg',      t:'Steam Collection',     c:'Gravure XIXᵉ'},
-  {id:'sage',     x:765, y:1190, w:190, rot:9,  pin:'var(--cyan)',img:'assets/steam/hibou.jpg',       t:'Le Sage de Fer',       c:'Gravure'},
-  {id:'main',     x:330, y:1520, w:200, rot:-5, pin:'var(--navy)',img:'assets/steam/main.jpg',        t:"Main d'Alchimiste",    c:'Gravure'},
-  // — Caen (pont central) —
-  {id:'millenaire',x:1720,y:840, w:215, rot:5,  pin:'var(--navy)',img:'assets/millenaire/pomme2.jpg', t:'Pomme Conquérante',    c:'Millénaire Caen'},
-  // — Dark Fantasy —
-  {id:'dark',     x:1180,y:1300, w:250, rot:4,  pin:'tape',       img:'assets/dark/red.jpg',          t:"L'Alchimiste Maudit",  c:'Dark Fantasy'},
-  {id:'salem',    x:1520,y:1295, w:210, rot:-6, pin:'var(--navy)',img:'assets/dark/salem.jpg',        t:'Salem',                c:'Dark Fantasy'},
-  {id:'blood',    x:1355,y:1610, w:240, rot:8,  pin:'var(--cyan)',img:'assets/dark/blood.jpg',        t:'Blood Moon',           c:'Dark Fantasy'},
-  // — Clopinette —
-  {id:'hiver',    x:2300,y:640,  w:270, rot:-5, pin:'tape',       img:'assets/saveurs/hiver.jpg',     t:"Saveurs d'Hiver",      c:'Aquarelle'},
-  {id:'automne',  x:2665,y:705,  w:250, rot:6,  pin:'var(--cyan)',img:'assets/saveurs/automne.jpg',   t:"Saveurs d'Automne",    c:'Aquarelle'},
-  // — Études & Perso —
-  {id:'aristocrate',x:2280,y:1560,w:220,rot:-4, pin:'var(--navy)',img:'assets/aristocrate/nanti.jpg', t:'Série Aristocrate',    c:'Character Design'},
-  {id:'pulse',    x:2655,y:1605, w:240, rot:7,  pin:'tape',       img:'assets/pulse.jpg',             t:'Pulse',                c:'Concept Art'},
-  {id:'formation',x:2390,y:1905, w:300, rot:-7, pin:'var(--cyan)',img:'assets/formation/environnement.jpg',t:'Études & Explorations',c:'Formation'},
-];
-
-const NOTES=[
-  {x:1480,y:330, w:280, rot:-3, html:"Bienvenue dans mon atelier ✦<br>Attrape le mur & fais-le glisser pour explorer →"},
-  {x:250, y:250, w:250, rot:2,  html:"Anthony Armand<br><span class='scrib'>Peintre numérique, illustrateur &amp; directeur artistique. 5 ans à donner vie à des univers.</span>"},
-  {x:2860,y:2030,w:265, rot:4,  html:"On bosse ensemble ?<br><b>aardesign14@gmail.com</b><br><span class='scrib'>06 79 46 62 19 · France &amp; remote</span>"},
-];
-
-const CLUSTERS=[
-  {name:'Arsène',     x:680,  y:1050, s:.85},
-  {name:'Caen',       x:1825, y:945,  s:1.0},
-  {name:'Dark',       x:1450, y:1480, s:.85},
-  {name:'Clopinette', x:2620, y:740,  s:.9},
-  {name:'Études',     x:2640, y:1720, s:.82},
-];
-
-/* ─── construire le DOM du board ─── */
-const board=document.getElementById('board');
-let html='';
-LABELS.forEach(l=> html+=`<div class="board-label" style="left:${l.x}px;top:${l.y}px">${l.t}</div>`);
-NOTES.forEach(n=> html+=`<div class="note" style="left:${n.x}px;top:${n.y}px;--w:${n.w}px;--rot:${n.rot}deg"><div class="tape"></div>${n.html}</div>`);
-PINS.forEach((p,i)=>{
-  const fix = p.pin==='tape' ? `<div class="tape"></div>` : `<div class="pin" style="--pc:${p.pin}"></div>`;
-  html+=`<button class="pin-item" data-project="${p.id}" style="left:${p.x}px;top:${p.y}px;--w:${p.w}px;--rot:${p.rot}deg">
-    <div class="pin-inner" style="animation-delay:${.25+i*0.045}s">
-      ${fix}
-      <div class="photo">
-        <img src="${p.img}" alt="${p.t}" draggable="false">
-        <div class="cap"><div class="cap-t">${p.t}</div><div class="cap-c">${p.c}</div></div>
-      </div>
-    </div></button>`;
-});
-board.innerHTML=html;
-
-/* nav clusters */
-const navEl=document.getElementById('cluster-nav');
-CLUSTERS.forEach(c=>{
-  const b=document.createElement('button'); b.textContent=c.name;
-  b.addEventListener('click',()=>{ setActive(b); tweenTo(c.x,c.y,c.s); closeStart(); });
-  navEl.appendChild(b);
-});
-function setActive(b){ navEl.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b)); }
-
-/* ════════ MOTEUR PAN / ZOOM ════════ */
-const stage=document.getElementById('stage');
-let scale=.72, tx=0, ty=0;
-const MIN=.4, MAX=1.8;
-
-function clamp(){
-  const bw=BOARD_W*scale, bh=BOARD_H*scale, PAD=120;
-  tx = bw<=innerWidth  ? (innerWidth-bw)/2  : Math.min(PAD, Math.max(innerWidth-bw-PAD, tx));
-  ty = bh<=innerHeight ? (innerHeight-bh)/2 : Math.min(PAD, Math.max(innerHeight-bh-PAD, ty));
-}
-function apply(){
-  clamp();
-  board.style.transform=`translate3d(${tx}px,${ty}px,0) scale(${scale})`;
-  document.getElementById('zoom-val').textContent=Math.round(scale*100)+'%';
-}
-function zoomAt(cx,cy,ns){
-  ns=Math.max(MIN,Math.min(MAX,ns));
-  const bx=(cx-tx)/scale, by=(cy-ty)/scale;
-  scale=ns; tx=cx-bx*scale; ty=cy-by*scale; apply();
-}
-
-/* drag + inertie */
-let down=false, moved=false, sx,sy,stx,sty, downItem=null, vx=0,vy=0, lx,ly, inertia=0;
-stage.addEventListener('pointerdown',e=>{
-  down=true; moved=false; sx=e.clientX; sy=e.clientY; stx=tx; sty=ty;
-  lx=e.clientX; ly=e.clientY; vx=vy=0; cancelAnimationFrame(inertia);
-  downItem=e.target.closest('.pin-item');
-  stage.classList.add('grabbing'); stage.setPointerCapture(e.pointerId);
-});
-stage.addEventListener('pointermove',e=>{
-  if(!down) return;
-  const dx=e.clientX-sx, dy=e.clientY-sy;
-  if(Math.abs(dx)+Math.abs(dy)>6) moved=true;
-  tx=stx+dx; ty=sty+dy; apply();
-  vx=e.clientX-lx; vy=e.clientY-ly; lx=e.clientX; ly=e.clientY;
-});
-stage.addEventListener('pointerup',e=>{
-  down=false; stage.classList.remove('grabbing');
-  if(!moved && downItem && downItem.dataset.project){ openProject(downItem.dataset.project); return; }
-  (function glide(){
-    vx*=.92; vy*=.92; tx+=vx; ty+=vy; apply();
-    if(Math.abs(vx)+Math.abs(vy)>.4) inertia=requestAnimationFrame(glide);
-  })();
-});
-
-/* molette */
-stage.addEventListener('wheel',e=>{
-  e.preventDefault();
-  zoomAt(e.clientX,e.clientY, scale*(e.deltaY<0?1.12:.89));
-},{passive:false});
-/* double-clic = zoom ciblé */
-stage.addEventListener('dblclick',e=>{
-  if(e.target.closest('.pin-item')) return;
-  zoomAt(e.clientX,e.clientY, scale<1.1?1.45:.6);
-});
-
-/* boutons */
-document.getElementById('zoom-in').onclick =()=>zoomAt(innerWidth/2,innerHeight/2,scale*1.25);
-document.getElementById('zoom-out').onclick=()=>zoomAt(innerWidth/2,innerHeight/2,scale*.8);
-
-/* tween fluide vers un point */
-function tweenTo(fx,fy,ts){
-  cancelAnimationFrame(inertia);
-  const s0=scale,tx0=tx,ty0=ty;
-  const sE=Math.max(MIN,Math.min(MAX,ts));
-  const txE=innerWidth/2-fx*sE, tyE=innerHeight/2-fy*sE;
-  let t0=null;
-  (function step(ts2){
-    if(!t0)t0=ts2;
-    const p=Math.min((ts2-t0)/700,1), e=p<.5?4*p*p*p:1-Math.pow(-2*p+2,3)/2;
-    scale=s0+(sE-s0)*e; tx=tx0+(txE-tx0)*e; ty=ty0+(tyE-ty0)*e; apply();
-    if(p<1) requestAnimationFrame(step);
-  })(performance.now());
-}
-
-/* clavier */
-addEventListener('keydown',e=>{
-  if(modal.classList.contains('open')) return;
-  if(/^(INPUT|TEXTAREA)$/.test(document.activeElement&&document.activeElement.tagName)) return;
-  const step=90;
-  if(e.key==='ArrowLeft'){ tx+=step; apply(); }
-  if(e.key==='ArrowRight'){ tx-=step; apply(); }
-  if(e.key==='ArrowUp'){ ty+=step; apply(); }
-  if(e.key==='ArrowDown'){ ty-=step; apply(); }
-  if(e.key==='+'||e.key==='='){ zoomAt(innerWidth/2,innerHeight/2,scale*1.2); }
-  if(e.key==='-'||e.key==='_'){ zoomAt(innerWidth/2,innerHeight/2,scale*.83); }
-  if(e.key==='0'){ tweenTo(1700,1180,.5); }
-});
-addEventListener('resize',apply);
-
-/* position initiale */
-(function init(){
-  const fx=1700,fy=1180;
-  tx=innerWidth/2-fx*scale; ty=innerHeight/2-fy*scale; apply();
-})();
-
-/* ════════ DARK MODE ════════ */
-const root=document.documentElement, themeBtn=document.getElementById('theme');
-const savedT=localStorage.getItem('aar-theme'); if(savedT) root.setAttribute('data-theme',savedT);
-themeBtn.onclick=()=>{ const d=root.getAttribute('data-theme')==='dark'; const n=d?'light':'dark';
-  root.setAttribute('data-theme',n); localStorage.setItem('aar-theme',n); };
-
-/* ════════ BOOT SCREEN ════════ */
-const boot=document.getElementById('boot');
 const ADMIN_PWD='aardesign2026';
-let currentOS=null;
 
-function launchOS(os){
-  currentOS=os;
-  boot.classList.add('out');
-  board.classList.add('ready');
-  if(os==='w11'){
-    // Show W11 HUD (taskbar etc already visible by default)
-    document.querySelector('.hud').style.display='';
-    document.getElementById('ios-hud').classList.remove('active');
-    setTimeout(()=>tweenTo(900,1000,.82),300);
-    setTimeout(showHint,1100);
-  } else {
-    // Hide W11 HUD, show iOS
-    document.querySelector('.hud').style.display='none';
-    const iosHud=document.getElementById('ios-hud');
-    iosHud.classList.add('active');
-    updateIosTime();
-  }
+/* ═══════════════════════════════════════
+   LOCK SCREEN
+═══════════════════════════════════════ */
+function lsClock(){
+  const n=new Date();
+  const hh=String(n.getHours()).padStart(2,'0');
+  const mm=String(n.getMinutes()).padStart(2,'0');
+  document.getElementById('ls-time').textContent=hh+':'+mm;
+  document.getElementById('tb-clock').textContent=hh+':'+mm;
+  const days=['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+  const months=['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+  document.getElementById('ls-date').textContent=`${days[n.getDay()]} ${n.getDate()} ${months[n.getMonth()]} ${n.getFullYear()}`;
 }
+lsClock(); setInterval(lsClock,10000);
 
-document.getElementById('tile-w11').addEventListener('click',()=>{ window.location.href='windows.html'; });
-document.getElementById('tile-ios').addEventListener('click',()=>{
-  window.location.href='ios.html';
+document.getElementById('lockscreen').addEventListener('click',()=>{
+  const ls=document.getElementById('lockscreen');
+  ls.classList.add('unlocking');
+  setTimeout(()=>ls.style.display='none',620);
 });
 
-/* ════════ W11 ADMIN LOGIN ════════ */
-const w11Login=document.getElementById('w11-login');
-const adminBtn=document.getElementById('admin-btn');
-if(adminBtn) adminBtn.addEventListener('click',()=>openW11Login());
-
-function openW11Login(){
-  w11Login.classList.add('open');
-  document.getElementById('wl-pwd').value='';
-  document.getElementById('wl-error').classList.remove('show');
-  updateWlClock();
-  document.getElementById('wl-pwd').focus();
+/* ═══════════════════════════════════════
+   THEME
+═══════════════════════════════════════ */
+function toggleTheme(){
+  const html=document.documentElement;
+  const dark=html.dataset.theme==='dark';
+  html.dataset.theme=dark?'light':'dark';
+  document.getElementById('theme-btn').textContent=dark?'☀':'☾';
 }
-function closeW11Login(){ w11Login.classList.remove('open'); }
 
-function updateWlClock(){
-  const d=new Date();
-  const t=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
-  const el=document.getElementById('wl-clock'); if(el) el.textContent=t;
-  const el2=document.getElementById('wl-date'); if(el2) el2.textContent=d.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
-}
-setInterval(updateWlClock,10000); updateWlClock();
-
-document.getElementById('wl-show').addEventListener('click',()=>{
-  const inp=document.getElementById('wl-pwd');
-  inp.type=inp.type==='password'?'text':'password';
+/* ═══════════════════════════════════════
+   TOP BAR MENU
+═══════════════════════════════════════ */
+const tbLogo=document.getElementById('tb-logo');
+const tbMenu=document.getElementById('tb-menu');
+tbLogo.addEventListener('click',e=>{
+  e.stopPropagation();
+  tbMenu.classList.toggle('open');
 });
-document.getElementById('wl-submit').addEventListener('click',()=>checkW11Login());
-document.getElementById('wl-pwd').addEventListener('keydown',e=>{ if(e.key==='Enter') checkW11Login(); });
-document.getElementById('wl-back').addEventListener('click',closeW11Login);
+document.addEventListener('click',()=>tbMenu.classList.remove('open'));
+tbMenu.addEventListener('click',e=>e.stopPropagation());
+function closeTbMenu(){ tbMenu.classList.remove('open'); }
 
-function checkW11Login(){
-  const pwd=document.getElementById('wl-pwd').value;
-  if(pwd===ADMIN_PWD){
-    sessionStorage.setItem('aar-auth','1');
-    window.location.href='admin.html';
-  } else {
-    const f=document.getElementById('wl-field');
-    document.getElementById('wl-error').classList.add('show');
-    f.classList.remove('shake');
-    void f.offsetWidth;
-    f.classList.add('shake');
-    document.getElementById('wl-pwd').value='';
-  }
-}
+/* ═══════════════════════════════════════
+   WINDOWS SYSTEM
+═══════════════════════════════════════ */
+const winLayer=document.getElementById('win-layer');
+let topZ=10;
+const openWins={};
 
-/* ════════ iOS ════════ */
-function updateIosTime(){
-  const d=new Date();
-  const t=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
-  const el=document.getElementById('ios-lock-time'); if(el) el.textContent=t;
-  const el2=document.getElementById('ios-time-l'); if(el2) el2.textContent=t;
-  const el3=document.getElementById('ios-lock-date'); if(el3) el3.textContent=d.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
-}
-setInterval(updateIosTime,10000);
-
-const iosLock=document.getElementById('ios-lock');
-iosLock.style.display='none';
-
-// iOS app open
-const iosAppLayer=document.getElementById('ios-app-layer');
-const iosAppContent=document.getElementById('ios-app-content');
-const iosAppTitleBar=document.getElementById('ios-app-title-bar');
-const iosLogin=document.getElementById('ios-login');
-
-const IOS_APPS={
-  atelier:{title:'L\'Atelier',content:`<div style="padding:1.5rem;font-family:Montserrat,sans-serif;color:#333">
-    <h2 style="font-size:1.4rem;font-weight:800;color:#1B3560;margin-bottom:.8rem">L'Atelier</h2>
-    <p style="font-size:.85rem;line-height:1.7;color:#666;margin-bottom:1.2rem">L'Atelier est un espace infini explorable. Sur la version web complète, glissez le fond d'écran pour naviguer entre les œuvres.</p>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem">
-      ${Object.values({v:'assets/voyages/cappadoce.jpg',s:'assets/steam/mockup.jpg',d:'assets/dark/red.jpg',h:'assets/saveurs/hiver.jpg',a:'assets/aristocrate/nanti.jpg',p:'assets/pulse.jpg'}).map(s=>`<img src="${s}" style="width:100%;border-radius:10px;aspect-ratio:4/3;object-fit:cover" loading="lazy">`).join('')}
-    </div>
-  </div>`},
-  cv:{title:'Mon CV',content:buildIosCV()},
-  mail:{title:'Mail',content:`<div style="padding:1.5rem;font-family:Montserrat,sans-serif">
-    <h3 style="color:#1B3560;margin-bottom:1.2rem;font-size:1rem;font-weight:700">Nouveau message</h3>
-    <div style="margin-bottom:.8rem"><label style="font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#999;display:block;margin-bottom:.3rem">À</label>
-    <input value="aardesign14@gmail.com" readonly style="width:100%;border:1px solid #ddd;border-radius:10px;padding:.7rem .9rem;font-family:inherit;font-size:.82rem;background:#f9f9f9"></div>
-    <div style="margin-bottom:.8rem"><label style="font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#999;display:block;margin-bottom:.3rem">Objet</label>
-    <input id="ios-mail-subj" placeholder="Un projet…" style="width:100%;border:1px solid #ddd;border-radius:10px;padding:.7rem .9rem;font-family:inherit;font-size:.82rem"></div>
-    <div style="margin-bottom:1.2rem"><label style="font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#999;display:block;margin-bottom:.3rem">Message</label>
-    <textarea id="ios-mail-msg" placeholder="Bonjour Anthony…" rows="5" style="width:100%;border:1px solid #ddd;border-radius:10px;padding:.7rem .9rem;font-family:inherit;font-size:.82rem;resize:vertical"></textarea></div>
-    <button onclick="const s=document.getElementById('ios-mail-subj').value||'Contact AAR';const m=document.getElementById('ios-mail-msg').value||'';window.location='mailto:aardesign14@gmail.com?subject='+encodeURIComponent(s)+'&body='+encodeURIComponent(m)" style="width:100%;padding:.9rem;background:#29B8D9;color:#fff;border:0;border-radius:14px;font-family:inherit;font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer">Envoyer ✦</button>
-  </div>`},
-  tel:{title:'Téléphone',content:`<div style="padding:2rem 1.5rem;font-family:Montserrat,sans-serif;text-align:center">
-    <div style="font-size:2.4rem;margin-bottom:.5rem">📞</div>
-    <div style="font-size:1.6rem;font-weight:800;color:#1B3560;margin-bottom:1.5rem;letter-spacing:.04em">06 79 46 62 19</div>
-    <div style="display:flex;gap:.8rem;justify-content:center">
-      <a href="tel:0679466219" style="flex:1;padding:.9rem;background:#4CAF50;color:#fff;border-radius:14px;text-decoration:none;font-family:inherit;font-size:.75rem;font-weight:700;text-align:center;text-transform:uppercase;letter-spacing:.08em">Appeler</a>
-      <button onclick="navigator.clipboard.writeText('0679466219').catch(()=>{})" style="flex:1;padding:.9rem;background:#1B3560;color:#fff;border:0;border-radius:14px;font-family:inherit;font-size:.75rem;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:.08em">Copier</button>
-    </div>
-  </div>`},
-  about:{title:'À propos',content:`<div style="padding:1.5rem;font-family:Montserrat,sans-serif">
-    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.2rem">
-      <div style="width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#1B3560,#29B8D9);display:flex;align-items:center;justify-content:center;flex-shrink:0">
-        <img src="assets/Logo-Aardesign-Court.png" style="height:30px;filter:brightness(10)">
-      </div>
-      <div><div style="font-size:1.1rem;font-weight:800;color:#1B3560">Anthony Armand</div>
-      <div style="font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#29B8D9;margin-top:2px">AAR Design</div></div>
-    </div>
-    <p style="font-size:.82rem;line-height:1.7;color:#666;margin-bottom:1rem">Designer pluridisciplinaire à l'intersection du <strong style="color:#1B3560">digital painting</strong>, de l'illustration narrative et de la <strong style="color:#1B3560">direction artistique</strong>.</p>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-top:1rem">
-      ${[['5+','ans'],['35+','œuvres'],['8','disciplines']].map(([v,l])=>`<div style="text-align:center;background:#f5f5f7;border-radius:12px;padding:.8rem .5rem"><div style="font-size:1.4rem;font-weight:800;color:#1B3560">${v}</div><div style="font-size:.55rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#999">${l}</div></div>`).join('')}
-    </div>
-  </div>`},
-};
-
-function buildIosCV(){
-  return `<div style="padding:1.2rem;font-family:Montserrat,sans-serif">
-    <div style="background:linear-gradient(135deg,#1B3560,#29B8D9);border-radius:16px;padding:1.2rem;margin-bottom:1rem;color:#fff;text-align:center">
-      <div style="font-size:1.2rem;font-weight:800;letter-spacing:-.01em">Anthony Armand</div>
-      <div style="font-size:.6rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;opacity:.8;margin-top:3px">Directeur Artistique · Graphiste</div>
-      <div style="display:flex;justify-content:center;gap:.8rem;margin-top:.7rem;flex-wrap:wrap">
-        <span style="font-size:.58rem;opacity:.75">📧 aardesign14@gmail.com</span>
-        <span style="font-size:.58rem;opacity:.75">📱 06 79 46 62 19</span>
-        <span style="font-size:.58rem;opacity:.75">📍 Caen</span>
-      </div>
-    </div>
-    ${['Compétences','Expériences','Formation','Langues'].map((s,i)=>{
-      const contents=[
-        `<div>${[['Photoshop','95'],['InDesign','92'],['Illustrator','90'],['HTML/CSS','75'],['Digital Painting','65']].map(([n,p])=>`
-          <div style="margin-bottom:.7rem">
-            <div style="display:flex;justify-content:space-between;margin-bottom:.25rem">
-              <span style="font-size:.72rem;font-weight:600;color:#1B3560">${n}</span>
-              <span style="font-size:.6rem;color:#999">${p}%</span>
-            </div>
-            <div style="height:5px;background:#eee;border-radius:3px"><div style="width:${p}%;height:100%;background:linear-gradient(90deg,#1B3560,#29B8D9);border-radius:3px"></div></div>
-          </div>`).join('')}</div>`,
-        `<div>${[['AAR Design','2024–prés.','Auto-entrepreneur'],['Clopinette / Arsène Valentin','2020–prés.','CDI · DA, Packaging'],['Optimind Winter','2017–2019','Alternance · Paris'],['Euptech','2016','Stage · Grenoble']].map(([t,y,d])=>`
-          <div style="display:flex;gap:.7rem;margin-bottom:.8rem;padding-bottom:.8rem;border-bottom:1px solid #eee">
-            <div style="width:8px;height:8px;background:#29B8D9;border-radius:50%;flex-shrink:0;margin-top:4px"></div>
-            <div><div style="font-size:.75rem;font-weight:700;color:#1B3560">${t}</div>
-            <div style="font-size:.62rem;color:#29B8D9;font-weight:600">${y}</div>
-            <div style="font-size:.62rem;color:#999">${d}</div></div>
-          </div>`).join('')}</div>`,
-        `<div>${[['TOSA Photoshop Expert 879/1000','2024'],['Tuto.com Digital Painting TB','2024–2025'],["LIM'ART Paris — Bachelor & Mastère DA",'2016–2019'],['IUT1 Grenoble — DUT MMI + C2I','2014–2016']].map(([t,y])=>`
-          <div style="display:flex;gap:.7rem;margin-bottom:.8rem">
-            <div style="width:8px;height:8px;background:#29B8D9;border-radius:50%;flex-shrink:0;margin-top:4px"></div>
-            <div><div style="font-size:.75rem;font-weight:700;color:#1B3560">${t}</div>
-            <div style="font-size:.62rem;color:#29B8D9;font-weight:600">${y}</div></div>
-          </div>`).join('')}</div>`,
-        `<div style="display:flex;flex-wrap:wrap;gap:.5rem">${[['Français','Natif'],['Anglais','C1'],['Italien','A2'],['Japonais','A1']].map(([l,n])=>`
-          <div style="background:#f0f0f5;border-radius:20px;padding:.4rem .9rem;text-align:center">
-            <div style="font-size:.75rem;font-weight:700;color:#1B3560">${l}</div>
-            <div style="font-size:.55rem;color:#999">${n}</div>
-          </div>`).join('')}</div>`
-      ];
-      return `<div style="background:#fff;border-radius:16px;padding:1rem;margin-bottom:.8rem;box-shadow:0 2px 8px rgba(0,0,0,.06)">
-        <div style="font-size:.55rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#29B8D9;margin-bottom:.7rem">${s}</div>
-        ${contents[i]}
-      </div>`;
-    }).join('')}
-  </div>`;
-}
-
-document.querySelectorAll('[data-ios-app]').forEach(el=>{
-  el.addEventListener('click',()=>{
-    const appId=el.dataset.iosApp;
-    if(appId==='ios-admin'){ iosLogin.classList.add('open'); return; }
-    const app=IOS_APPS[appId];
-    if(!app) return;
-    iosAppTitleBar.textContent=app.title;
-    iosAppContent.innerHTML=app.content;
-    iosAppLayer.classList.add('open');
-  });
-});
-
-document.getElementById('ios-back').addEventListener('click',()=>{
-  iosAppLayer.classList.remove('open');
-  iosAppContent.innerHTML='';
-});
-
-window.openIosApp=function(appId){
-  document.getElementById('ios-folder-popup').classList.remove('open');
-  const app=IOS_APPS[appId]; if(!app) return;
-  iosAppTitleBar.textContent=app.title;
-  iosAppContent.innerHTML=app.content;
-  iosAppLayer.classList.add('open');
-};
-
-// iOS admin login
-document.getElementById('il-submit').addEventListener('click',()=>checkIosLogin());
-document.getElementById('il-pwd').addEventListener('keydown',e=>{ if(e.key==='Enter') checkIosLogin(); });
-document.getElementById('il-back').addEventListener('click',()=>iosLogin.classList.remove('open'));
-
-function checkIosLogin(){
-  const pwd=document.getElementById('il-pwd').value;
-  if(pwd===ADMIN_PWD){
-    sessionStorage.setItem('aar-auth','1');
-    window.location.href='admin.html';
-  } else {
-    const f=document.getElementById('il-field');
-    document.getElementById('il-error').classList.add('show');
-    f.classList.remove('shake');
-    void f.offsetWidth;
-    f.classList.add('shake');
-    document.getElementById('il-pwd').value='';
-  }
-}
-
-/* ════════ HORLOGE ════════ */
-function tickClock(){
-  const d=new Date();
-  const t=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
-  const e1=document.getElementById('clk-time'); if(e1) e1.textContent=t;
-  const e2=document.getElementById('clk-date'); if(e2) e2.textContent=d.toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'});
-}
-tickClock(); setInterval(tickClock,10000);
-
-/* ════════ HINT ════════ */
-const toast=document.getElementById('toast');
-function showHint(){ toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'),5200); }
-
-/* ════════ MENU DÉMARRER ════════ */
-const startBtn=document.getElementById('start'), startMenu=document.getElementById('startmenu');
-function closeStart(){ startMenu.classList.remove('open'); startBtn.classList.remove('active'); }
-function toggleStart(){ const o=!startMenu.classList.contains('open'); startMenu.classList.toggle('open',o); startBtn.classList.toggle('active',o); }
-startBtn.addEventListener('click',e=>{ e.stopPropagation(); toggleStart(); });
-document.addEventListener('pointerdown',e=>{
-  if(startMenu.classList.contains('open') && !startMenu.contains(e.target) && !startBtn.contains(e.target)) closeStart();
-});
-document.getElementById('sm-overview').addEventListener('click',()=>{
-  closeStart(); navEl.querySelectorAll('button').forEach(x=>x.classList.remove('active')); tweenTo(1700,1180,.5);
-});
-
-/* ════════ FENÊTRES (OS) ════════ */
-const ICON={
-  mail:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 7 8.5 6 8.5-6"/></svg>',
-  tel:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.8.6 2.6a2 2 0 0 1-.5 2.1L10 9.6a16 16 0 0 0 6 6l1.2-1.2a2 2 0 0 1 2.1-.5c.8.3 1.7.5 2.6.6a2 2 0 0 1 1.7 2z"/></svg>',
-  pin:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>',
-  link:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1.5 1.5"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1.5-1.5"/></svg>',
-};
-const APPS={
-  contact:{ title:'Contact', w:380, body:()=>`
-    <div class="w-profile"><div class="w-ava"><img src="assets/Logo-Aardesign-Court.png" alt=""></div>
-      <div><div class="w-name">Anthony Armand</div><div class="w-role">Digital Painting & DA</div></div></div>
-    <div class="w-row"><div class="ic">${ICON.mail}</div><div class="info"><div class="lbl">Email</div><div class="val">aardesign14@gmail.com</div></div>
-      <div class="acts"><a class="w-mini cy" href="mailto:aardesign14@gmail.com">Écrire</a><button class="w-mini" data-copy="aardesign14@gmail.com">Copier</button></div></div>
-    <div class="w-row"><div class="ic">${ICON.tel}</div><div class="info"><div class="lbl">Téléphone</div><div class="val">06 79 46 62 19</div></div>
-      <div class="acts"><a class="w-mini cy" href="tel:0679466219">Appeler</a><button class="w-mini" data-copy="0679466219">Copier</button></div></div>
-    <div class="w-row"><div class="ic">${ICON.pin}</div><div class="info"><div class="lbl">Localisation</div><div class="val">France · Remote · International</div></div></div>
-    <div class="w-row"><div class="ic">${ICON.link}</div><div class="info"><div class="lbl">Réseaux</div><div class="val">Suivre le travail</div></div>
-      <div class="acts"><a class="w-mini" href="https://instagram.com" target="_blank" rel="noopener">Instagram</a><a class="w-mini" href="https://behance.net" target="_blank" rel="noopener">Behance</a></div></div>` },
-  mail:{ title:'Nouveau message', w:380, body:()=>`
-    <form id="mail-form">
-      <div class="w-field"><label>À</label><input type="text" value="aardesign14@gmail.com" readonly></div>
-      <div class="w-field"><label>Objet</label><input id="mail-subj" type="text" placeholder="Un projet à discuter…"></div>
-      <div class="w-field"><label>Message</label><textarea id="mail-msg" placeholder="Bonjour Anthony, …"></textarea></div>
-      <button class="w-send" type="submit">Envoyer ✦</button>
-    </form>` },
-  tel:{ title:'Téléphone', w:300, body:()=>`
-    <div class="w-big">06 79 46 62 19</div>
-    <div style="display:flex; gap:.5rem;">
-      <a class="w-send" style="text-decoration:none; text-align:center;" href="tel:0679466219">Appeler</a>
-      <button class="w-send" style="background:var(--navy);" data-copy="0679466219">Copier</button>
-    </div>` },
-  cv:{ title:'CV — Anthony Armand', w:680, body:()=>`
-    <div class="cv-scroll">
-      <div class="cv-header">
-        <div class="cv-avatar"><img src="assets/Logo-Aardesign-Court.png" alt=""></div>
-        <div>
-          <div class="cv-name">Anthony Armand</div>
-          <div class="cv-title">Directeur Artistique · Graphiste · Designer</div>
-        </div>
-      </div>
-      <div class="cv-contacts">
-        <span class="cv-chip">📧 aardesign14@gmail.com</span>
-        <span class="cv-chip">📱 06 79 46 62 19</span>
-        <span class="cv-chip">📍 Caen, Normandie</span>
-        <span class="cv-chip">🌐 aardesign.fr</span>
-        <span class="cv-chip">🪪 Permis B</span>
-      </div>
-      <div class="cv-section">
-        <div class="cv-section-title">Profil</div>
-        <p class="w-text">Designer pluridisciplinaire à l'intersection du <b>digital painting</b>, de l'illustration narrative et de la <b>direction artistique</b>. 5+ ans d'expérience dans la création graphique, le packaging premium et la communication visuelle. Passionné par les univers graphiques cohérents et mémorables.</p>
-      </div>
-      <div class="cv-section">
-        <div class="cv-section-title">Compétences</div>
-        ${[
-          ['Photoshop','95','Expert'],['InDesign','92','Expert'],['Illustrator','90','Expert'],
-          ['Lightroom','88','Expert'],['HTML / CSS','75','Avancé'],['WordPress / Wix','72','Avancé'],
-          ['Photographie','70','Avancé'],['Digital Painting','65','En formation'],['Sculpting','45','Initié']
-        ].map(([n,p,l])=>`<div class="cv-skill">
-          <span class="cv-skill-name">${n}</span>
-          <div class="cv-skill-bar"><div class="cv-skill-fill" style="width:${p}%"></div></div>
-          <span class="cv-skill-pct">${l}</span>
-        </div>`).join('')}
-      </div>
-      <div class="cv-section">
-        <div class="cv-section-title">Expériences</div>
-        <div class="cv-timeline">
-          <div class="cv-item"><div class="cv-item-dot"></div><div class="cv-item-body">
-            <div class="cv-item-title">AAR Design — Auto-entrepreneur</div>
-            <div class="cv-item-sub">2024 – présent</div>
-            <div class="cv-item-desc">Création graphique, DA, Web, Illustration, Digital Painting — France & Remote</div>
-          </div></div>
-          <div class="cv-item"><div class="cv-item-dot"></div><div class="cv-item-body">
-            <div class="cv-item-title">Clopinette / Arsène Valentin — CDI</div>
-            <div class="cv-item-sub">2020 – présent · Caen</div>
-            <div class="cv-item-desc">Direction Artistique, Packaging, Digital Painting, Identité visuelle</div>
-          </div></div>
-          <div class="cv-item"><div class="cv-item-dot"></div><div class="cv-item-body">
-            <div class="cv-item-title">Creacom — CDD</div>
-            <div class="cv-item-sub">2019 · Valence</div>
-            <div class="cv-item-desc">Création graphique, communication visuelle</div>
-          </div></div>
-          <div class="cv-item"><div class="cv-item-dot"></div><div class="cv-item-body">
-            <div class="cv-item-title">Optimind Winter — Stage / Alternance</div>
-            <div class="cv-item-sub">2017 – 2019 · Paris VIII</div>
-            <div class="cv-item-desc">Direction Artistique, Web design, Communication digitale</div>
-          </div></div>
-          <div class="cv-item"><div class="cv-item-dot"></div><div class="cv-item-body">
-            <div class="cv-item-title">Euptech — Stage</div>
-            <div class="cv-item-sub">2016 · Grenoble</div>
-            <div class="cv-item-desc">Infographie, supports de communication</div>
-          </div></div>
-        </div>
-      </div>
-      <div class="cv-section">
-        <div class="cv-section-title">Formation</div>
-        <div class="cv-timeline">
-          <div class="cv-item"><div class="cv-item-dot"></div><div class="cv-item-body">
-            <div class="cv-item-title">TOSA Photoshop — Score Expert 879/1000</div>
-            <div class="cv-item-sub">2024</div>
-          </div></div>
-          <div class="cv-item"><div class="cv-item-dot"></div><div class="cv-item-body">
-            <div class="cv-item-title">Tuto.com — Digital Painting (Très Bien)</div>
-            <div class="cv-item-sub">2024 – 2025</div>
-          </div></div>
-          <div class="cv-item"><div class="cv-item-dot"></div><div class="cv-item-body">
-            <div class="cv-item-title">LIM'ART Paris — Bachelor & Mastère DA</div>
-            <div class="cv-item-sub">2016 – 2019</div>
-          </div></div>
-          <div class="cv-item"><div class="cv-item-dot"></div><div class="cv-item-body">
-            <div class="cv-item-title">IUT1 Grenoble — DUT MMI + C2I</div>
-            <div class="cv-item-sub">2014 – 2016</div>
-          </div></div>
-        </div>
-      </div>
-      <div class="cv-section">
-        <div class="cv-section-title">Langues</div>
-        <div class="cv-langs">
-          <div class="cv-lang"><span>Français</span><span>Natif</span></div>
-          <div class="cv-lang"><span>Anglais</span><span>C1</span></div>
-          <div class="cv-lang"><span>Italien</span><span>A2</span></div>
-          <div class="cv-lang"><span>Japonais</span><span>A1</span></div>
-        </div>
-      </div>
-      <div class="cv-section">
-        <div class="cv-section-title">Centres d'intérêt</div>
-        <div class="cv-interests">
-          ${['🥾 Marche','📷 Photographie','🎨 Digital Painting','✏️ Graphisme','🎮 Jeux vidéo','🎭 Roleplay','🎬 Cinéma','📚 Lecture'].map(i=>`<span class="cv-interest">${i}</span>`).join('')}
-        </div>
-      </div>
-    </div>` },
-  about:{ title:'À propos', w:400, body:()=>`
-    <div class="w-profile"><div class="w-ava"><img src="assets/Logo-Aardesign-Court.png" alt=""></div>
-      <div><div class="w-name">Anthony Armand</div><div class="w-role">AAR Design</div></div></div>
-    <p class="w-text">Designer pluridisciplinaire basé en France, à l'intersection du <b>digital painting</b>, de l'illustration narrative et de la <b>direction artistique</b>.</p>
-    <p class="w-text" style="margin-top:.7rem">Du packaging premium aux peintures personnelles, chaque projet construit un univers visuel unique, cohérent et mémorable.</p>
-    <div class="w-row" style="margin-top:1rem; gap:1.6rem;">
-      <div class="info"><div class="lbl">Expérience</div><div class="val">5+ ans</div></div>
-      <div class="info"><div class="lbl">Œuvres</div><div class="val">35+</div></div>
-      <div class="info"><div class="lbl">Disciplines</div><div class="val">8</div></div>
-    </div>` },
-};
-const winLayer=document.getElementById('windows');
-let topZ=300; const openWins={};
-function markApp(id,on){ document.querySelectorAll('.tb-app[data-app="'+id+'"]').forEach(b=>b.classList.toggle('open',on)); }
 function bringFront(w){ w.style.zIndex=++topZ; }
-function miniToast(w){ const t=w.querySelector('.w-toastmini'); if(!t)return; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1200); }
-function openApp(id, customTitle, customBody, customW, customH){
-  closeStart();
-  if(openWins[id]){ bringFront(openWins[id]); return; }
-  let app=APPS[id];
-  if(!app && !customBody) return;
-  if(!app) app={ title:customTitle, w:customW||500, body:customBody };
-  const w=document.createElement('div'); w.className='win'; const ww=app.w||360;
-  w.style.setProperty('--w',ww+'px');
-  if(customH) w.style.height=customH+'px';
-  const n=Object.keys(openWins).length;
-  w.style.left=Math.max(12, Math.min(innerWidth-ww-20, 130+n*36))+'px';
-  w.style.top=Math.max(64, 88+n*32)+'px';
-  w.style.zIndex=++topZ;
-  const isExplorer=id.startsWith('__folder__');
-  w.innerHTML='<div class="win-bar"><span class="win-title">'+app.title+'</span><div class="win-controls"><button class="win-ctrl win-max" title="Agrandir">&#x25A1;</button><button class="win-ctrl close win-close" title="Fermer">&#x2715;</button></div></div><div class="win-body"'+(isExplorer?' style="padding:0"':'')+'>'+app.body()+'<div class="w-toastmini">Copié !</div></div><div class="win-resize"></div>';
-  winLayer.appendChild(w); openWins[id]=w; markApp(id,true);
-  w.addEventListener('pointerdown',()=>bringFront(w));
-  const maxBtn=w.querySelector('.win-max');
-  if(maxBtn){ let maxed=false; maxBtn.addEventListener('click',()=>{
-    if(!maxed){ w._sw=w.style.width; w._sh=w.style.height; w._sl=w.style.left; w._st=w.style.top;
-      w.style.left='0'; w.style.top='0'; w.style.width='100%'; w.style.height='calc(100% - 48px)'; maxed=true; maxBtn.innerHTML='&#x2750;';
-    } else { w.style.width=w._sw; w.style.height=w._sh; w.style.left=w._sl; w.style.top=w._st; maxed=false; maxBtn.innerHTML='&#x25A1;'; }
-  }); }
-  const closeBtn=w.querySelector('.win-close');
-  closeBtn.addEventListener('pointerdown',e=>e.stopPropagation());
-  closeBtn.addEventListener('click',()=>closeApp(id));
-  makeDraggable(w, w.querySelector('.win-bar'), closeBtn);
-  makeResizable(w);
-  w.querySelectorAll('[data-copy]').forEach(b=>b.addEventListener('click',async()=>{
-    try{ await navigator.clipboard.writeText(b.dataset.copy); }catch(_){}
-    miniToast(w);
-  }));
-  const f=w.querySelector('#mail-form');
-  if(f) f.addEventListener('submit',ev=>{ ev.preventDefault();
-    const s=encodeURIComponent(w.querySelector('#mail-subj').value||'Contact via AAR Design');
-    const bd=encodeURIComponent(w.querySelector('#mail-msg').value||'');
-    window.location.href='mailto:aardesign14@gmail.com?subject='+s+'&body='+bd;
+
+function makeDraggable(win,bar){
+  let drag=false,ox,oy;
+  bar.addEventListener('pointerdown',e=>{
+    if(e.target.closest('.win-ctrls')) return;
+    drag=true; bringFront(win);
+    ox=e.clientX-win.offsetLeft; oy=e.clientY-win.offsetTop;
+    bar.setPointerCapture(e.pointerId);
   });
+  bar.addEventListener('pointermove',e=>{
+    if(!drag) return;
+    const x=Math.max(0,Math.min(innerWidth-80,e.clientX-ox));
+    const y=Math.max(36,Math.min(innerHeight-50,e.clientY-oy));
+    win.style.left=x+'px'; win.style.top=y+'px';
+  });
+  bar.addEventListener('pointerup',()=>drag=false);
 }
-function closeApp(id){ const w=openWins[id]; if(!w)return;
-  w.style.animation='winpop .2s var(--ease) reverse forwards';
-  setTimeout(()=>w.remove(),180); delete openWins[id]; markApp(id,false); }
-function makeResizable(w){
-  const h=w.querySelector('.win-resize'); if(!h) return;
-  let rs=false,rsx,rsy,rw,rh;
+
+function makeResizable(win){
+  const h=win.querySelector('.win-resize'); if(!h) return;
+  let rs=false,sx,sy,sw,sh;
   h.addEventListener('pointerdown',e=>{
     e.stopPropagation(); rs=true;
-    rsx=e.clientX; rsy=e.clientY; rw=w.offsetWidth; rh=w.offsetHeight;
+    sx=e.clientX; sy=e.clientY; sw=win.offsetWidth; sh=win.offsetHeight;
     h.setPointerCapture(e.pointerId);
   });
   h.addEventListener('pointermove',e=>{
     if(!rs) return;
-    const nw=Math.max(300, rw+(e.clientX-rsx));
-    const nh=Math.max(160, rh+(e.clientY-rsy));
-    w.style.width=nw+'px'; w.style.height=nh+'px';
+    win.style.width=Math.max(320,sw+(e.clientX-sx))+'px';
+    win.style.height=Math.max(200,sh+(e.clientY-sy))+'px';
   });
-  h.addEventListener('pointerup',()=>{ rs=false; });
+  h.addEventListener('pointerup',()=>rs=false);
 }
-function makeDraggable(w, handle, closeBtn){
-  let drag=false,ox,oy;
-  handle.addEventListener('pointerdown',e=>{
-    if(closeBtn && closeBtn.contains(e.target)) return;
-    drag=true; handle.classList.add('grab'); bringFront(w);
-    ox=e.clientX-w.offsetLeft; oy=e.clientY-w.offsetTop;
-    handle.setPointerCapture(e.pointerId);
-  });
-  handle.addEventListener('pointermove',e=>{
-    if(!drag)return;
-    w.style.left=Math.max(6,Math.min(innerWidth-60, e.clientX-ox))+'px';
-    w.style.top =Math.max(6,Math.min(innerHeight-100, e.clientY-oy))+'px';
-  });
-  handle.addEventListener('pointerup',()=>{ drag=false; handle.classList.remove('grab'); });
-}
-document.querySelectorAll('.tb-app[data-app]').forEach(b=>b.addEventListener('click',()=>openApp(b.dataset.app)));
-// Start menu pins → open apps
-document.querySelectorAll('.sm-pin-item[data-app]').forEach(b=>b.addEventListener('click',()=>{ closeStart(); openApp(b.dataset.app); }));
-// Start menu admin button
-const smAdmin=document.getElementById('sm-admin');
-if(smAdmin) smAdmin.addEventListener('click',()=>{ closeStart(); openW11Login(); });
-addEventListener('keydown',e=>{
-  if(e.key!=='Escape' || modal.classList.contains('open')) return;
-  let top=null,tz=-1; for(const id in openWins){ const z=+openWins[id].style.zIndex; if(z>tz){tz=z; top=id;} }
-  if(top) closeApp(top);
-});
 
-/* ════════ MODAL GALERIE ════════ */
-const modal=document.getElementById('modal'),
-  mImg=document.getElementById('m-img'),mCat=document.getElementById('m-cat'),
-  mTitle=document.getElementById('m-title'),mYear=document.getElementById('m-year'),
-  mDesc=document.getElementById('m-desc'),mTags=document.getElementById('m-tags'),
-  mThumbs=document.getElementById('m-thumbs'),mLabel=document.getElementById('m-label'),
-  mCount=document.getElementById('m-count');
-let curP=null,curI=0;
-function openProject(id){
-  const p=PROJECTS[id]; if(!p)return; curP=p;
-  mCat.textContent=p.cat; mTitle.textContent=p.title; mYear.textContent=p.year; mDesc.textContent=p.desc;
-  mTags.innerHTML=p.tags.map(t=>`<span class="m-tag">${t}</span>`).join('');
-  mThumbs.innerHTML=p.images.map((im,i)=>`<div class="m-thumb${i===0?' active':''}" data-i="${i}"><img src="${im.src}" loading="lazy" alt=""></div>`).join('');
-  mThumbs.querySelectorAll('.m-thumb').forEach(th=>th.onclick=()=>show(+th.dataset.i));
-  show(0); modal.classList.add('open');
-}
-function show(i){
-  const p=curP; curI=(i+p.images.length)%p.images.length; const im=p.images[curI];
-  mImg.classList.add('sw');
-  setTimeout(()=>{ mImg.src=im.src; mImg.onload=()=>mImg.classList.remove('sw'); },200);
-  mLabel.textContent=im.label; mCount.textContent=`${curI+1} / ${p.images.length}`;
-  mThumbs.querySelectorAll('.m-thumb').forEach((th,j)=>th.classList.toggle('active',j===curI));
-  const a=mThumbs.querySelector('.m-thumb.active'); if(a)a.scrollIntoView({block:'nearest',behavior:'smooth'});
-}
-function closeM(){ modal.classList.remove('open'); setTimeout(()=>mImg.src='',400); }
-document.getElementById('modal-ov').onclick=closeM;
-document.getElementById('m-close').onclick=closeM;
-document.getElementById('m-prev').onclick=()=>show(curI-1);
-document.getElementById('m-next').onclick=()=>show(curI+1);
-addEventListener('keydown',e=>{
-  if(!modal.classList.contains('open'))return;
-  if(e.key==='Escape')closeM(); if(e.key==='ArrowLeft')show(curI-1); if(e.key==='ArrowRight')show(curI+1);
-});
-
-/* ════════ RETOUR ACCUEIL ════════ */
-function goHome(){ window.location.reload(); }
-
-const w11HomeBtn = document.getElementById('w11-home-btn');
-if(w11HomeBtn) w11HomeBtn.addEventListener('click', goHome);
-
-const iosHomeBtn = document.getElementById('ios-home-btn');
-if(iosHomeBtn) iosHomeBtn.addEventListener('click', goHome);
-
-/* ════════ ICÔNES BUREAU W11 ════════ */
-document.querySelectorAll('.desktop-icon[data-app]').forEach(icon => {
-  icon.addEventListener('click', function(){
-    document.querySelectorAll('.desktop-icon,.desktop-folder').forEach(i => i.classList.remove('selected'));
-    this.classList.add('selected');
-  });
-  icon.addEventListener('dblclick', function(){
-    const appId = this.dataset.app;
-    if(appId) openApp(appId);
-  });
-});
-
-/* ════════ DOSSIERS PROJETS W11 ════════ */
-const FOLDERS = {
-  arsene:   { label:'Arsène Valentin', color:'#f59e0b', items:[
-    {name:'Identité visuelle',type:'folder',color:'#f59e0b'},
-    {name:'Charte graphique',type:'folder',color:'#d97706'},
-    {name:'Social media',type:'folder',color:'#f97316'},
-    {name:'Logo principal.svg',type:'file',ext:'SVG',color:'#f59e0b'},
-    {name:'Mockups.psd',type:'file',ext:'PSD',color:'#1565C0'},
-    {name:'Présentation.pdf',type:'file',ext:'PDF',color:'#e53935'},
-  ]},
-  clopinette:{ label:'Clopinette', color:'#ec4899', items:[
-    {name:'Branding',type:'folder',color:'#ec4899'},
-    {name:'Affiches',type:'folder',color:'#be185d'},
-    {name:'Réseaux sociaux',type:'folder',color:'#f472b6'},
-    {name:'Logo Clopinette.svg',type:'file',ext:'SVG',color:'#ec4899'},
-    {name:'Charte couleurs.pdf',type:'file',ext:'PDF',color:'#e53935'},
-    {name:'Vidéo promo.mp4',type:'file',ext:'MP4',color:'#9c27b0'},
-  ]},
-  perso:    { label:'Perso', color:'#8b5cf6', items:[
-    {name:'Croquis',type:'folder',color:'#8b5cf6'},
-    {name:'Photographie',type:'folder',color:'#7c3aed'},
-    {name:'Projets perso',type:'folder',color:'#a78bfa'},
-    {name:'Portfolio 2024.pdf',type:'file',ext:'PDF',color:'#e53935'},
-    {name:'CV Anthony.pdf',type:'file',ext:'PDF',color:'#e53935'},
-  ]},
-  digital:  { label:'Digital Painting', color:'#06b6d4', items:[
-    {name:'2024',type:'folder',color:'#0891b2'},
-    {name:'2023',type:'folder',color:'#06b6d4'},
-    {name:'WIP',type:'folder',color:'#22d3ee'},
-    {name:'Forêt mystique.psd',type:'file',ext:'PSD',color:'#1565C0'},
-    {name:'Portrait.procreate',type:'file',ext:'ART',color:'#8b5cf6'},
-    {name:'Paysage urbain.psd',type:'file',ext:'PSD',color:'#1565C0'},
-  ]},
-  logo:     { label:'Logo', color:'#10b981', items:[
-    {name:'AAR Design',type:'folder',color:'#10b981'},
-    {name:'Clients',type:'folder',color:'#059669'},
-    {name:'Études de cas',type:'folder',color:'#34d399'},
-    {name:'Logo AAR.svg',type:'file',ext:'SVG',color:'#10b981'},
-    {name:'Variations.ai',type:'file',ext:'AI',color:'#f97316'},
-    {name:'Guidelines.pdf',type:'file',ext:'PDF',color:'#e53935'},
-  ]},
-  animation:{ label:'Animation', color:'#f97316', items:[
-    {name:'Motion design',type:'folder',color:'#f97316'},
-    {name:'After Effects',type:'folder',color:'#7c3aed'},
-    {name:'Exports',type:'folder',color:'#f59e0b'},
-    {name:'Intro AAR.aep',type:'file',ext:'AEP',color:'#7c3aed'},
-    {name:'Logo animé.gif',type:'file',ext:'GIF',color:'#10b981'},
-  ]},
-  etudes:   { label:'Études', color:'#3b82f6', items:[
-    {name:"LIM'ART Paris",type:'folder',color:'#3b82f6'},
-    {name:'IUT1 Grenoble',type:'folder',color:'#1d4ed8'},
-    {name:'Certifications',type:'folder',color:'#60a5fa'},
-    {name:'TOSA Photoshop.pdf',type:'file',ext:'PDF',color:'#e53935'},
-    {name:'Diplôme Bachelor.pdf',type:'file',ext:'PDF',color:'#e53935'},
-  ]},
-};
-
-const EXT_ICONS={
-  SVG:'<svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" fill="currentColor" opacity=".15"/><text x="4" y="17" font-size="7" font-weight="700" fill="currentColor">SVG</text></svg>',
-  PSD:'<svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" fill="currentColor" opacity=".15"/><text x="4" y="17" font-size="7" font-weight="700" fill="currentColor">PSD</text></svg>',
-  PDF:'<svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" fill="currentColor" opacity=".15"/><text x="4" y="17" font-size="7" font-weight="700" fill="currentColor">PDF</text></svg>',
-  MP4:'<svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" fill="currentColor" opacity=".15"/><text x="4" y="17" font-size="7" font-weight="700" fill="currentColor">MP4</text></svg>',
-  ART:'<svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" fill="currentColor" opacity=".15"/><text x="5" y="17" font-size="6" font-weight="700" fill="currentColor">ART</text></svg>',
-  AEP:'<svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" fill="currentColor" opacity=".15"/><text x="4" y="17" font-size="7" font-weight="700" fill="currentColor">AEP</text></svg>',
-  GIF:'<svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" fill="currentColor" opacity=".15"/><text x="4" y="17" font-size="7" font-weight="700" fill="currentColor">GIF</text></svg>',
-  AI: '<svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" fill="currentColor" opacity=".15"/><text x="6" y="17" font-size="8" font-weight="700" fill="currentColor">Ai</text></svg>',
-};
-const FOLDER_SVG='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 6a2 2 0 0 1 2-2h4l2 2h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z"/></svg>';
-
-function buildExpBody(fid, view){
-  const fd=FOLDERS[fid]; if(!fd) return '';
-  if(view==='list'){
-    return `<div class="w11-exp-list">
-      <div class="w11-exp-list-head"><span>Nom</span><span>Type</span><span>Date</span></div>
-      ${fd.items.map((it,i)=>`
-      <div class="w11-exp-list-row" tabindex="0">
-        <div class="w11-exp-list-name">
-          <div class="w11-exp-list-ico" style="color:${it.color}">
-            ${it.type==='folder'?FOLDER_SVG:EXT_ICONS[it.ext]||''}
-          </div>
-          <span>${it.name}</span>
-        </div>
-        <span style="color:#888;font-size:.67rem">${it.type==='folder'?'Dossier':it.ext||'Fichier'}</span>
-        <span style="color:#aaa;font-size:.67rem">0${Math.floor(Math.random()*9+1)}/06/2025</span>
-      </div>`).join('')}
-    </div>`;
-  }
-  return `<div class="w11-exp-grid">
-    ${fd.items.map(it=>`
-    <div class="w11-exp-item">
-      <div class="w11-exp-item-thumb" style="color:${it.color};background:${it.color}18">
-        ${it.type==='folder'?FOLDER_SVG:EXT_ICONS[it.ext]||''}
+function createWin(id,title,iconSvg,bodyHtml,w=440,h=480){
+  if(openWins[id]){ bringFront(openWins[id]); return; }
+  const win=document.createElement('div');
+  win.className='win';
+  win.style.width=w+'px'; win.style.height=h+'px';
+  const n=Object.keys(openWins).length;
+  win.style.left=Math.max(10,Math.min(innerWidth-w-20,80+n*30))+'px';
+  win.style.top=Math.max(42,Math.min(innerHeight-h-20,50+n*28))+'px';
+  win.style.zIndex=++topZ;
+  win.innerHTML=`
+    <div class="win-bar">
+      <div class="win-icon">${iconSvg}</div>
+      <span class="win-title">${title}</span>
+      <div class="win-ctrls">
+        <button class="win-btn min" title="Réduire"><svg viewBox="0 0 10 10"><line x1="1" y1="5" x2="9" y2="5" stroke="currentColor" stroke-width="1.5"/></svg></button>
+        <button class="win-btn max" title="Agrandir"><svg viewBox="0 0 10 10"><rect x="1" y="1" width="8" height="8" rx="1" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></button>
+        <button class="win-btn close" title="Fermer"><svg viewBox="0 0 10 10"><line x1="1" y1="1" x2="9" y2="9" stroke="currentColor" stroke-width="1.5"/><line x1="9" y1="1" x2="1" y2="9" stroke="currentColor" stroke-width="1.5"/></svg></button>
       </div>
-      <div class="w11-exp-item-label">${it.name}</div>
-    </div>`).join('')}
-  </div>`;
+    </div>
+    <div class="win-body">${bodyHtml}<div class="w-toast">Copié !</div></div>
+    <div class="win-resize"></div>`;
+  winLayer.appendChild(win);
+  openWins[id]=win;
+  win.addEventListener('pointerdown',()=>bringFront(win));
+  makeDraggable(win,win.querySelector('.win-bar'));
+  makeResizable(win);
+  let maxed=false;
+  win.querySelector('.win-btn.max').addEventListener('click',()=>{
+    if(!maxed){
+      win._sw=win.style.width;win._sh=win.style.height;win._sl=win.style.left;win._st=win.style.top;
+      win.style.left='0';win.style.top='36px';win.style.width='100%';win.style.height='calc(100vh - 36px)';
+      maxed=true;
+    } else {
+      win.style.width=win._sw;win.style.height=win._sh;win.style.left=win._sl;win.style.top=win._st;
+      maxed=false;
+    }
+  });
+  win.querySelector('.win-btn.close').addEventListener('click',()=>{
+    win.style.animation='winclose .15s ease both';
+    setTimeout(()=>{ win.remove(); delete openWins[id]; markTb(id,false); },150);
+  });
+  win.querySelector('.win-btn.min').addEventListener('click',()=>{ win.style.display='none'; markTb(id,false); });
+  win.querySelectorAll('[data-copy]').forEach(b=>b.addEventListener('click',async()=>{
+    try{ await navigator.clipboard.writeText(b.dataset.copy); }catch(_){}
+    const t=win.querySelector('.w-toast');
+    if(t){ t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1400); }
+  }));
+  markTb(id,true);
 }
+
+function markTb(id,on){
+  document.querySelectorAll(`.tb-app-pill[data-win="${id}"]`).forEach(b=>b.classList.toggle('open',on));
+}
+
+/* ═══════════════════════════════════════
+   APP BUILDERS
+═══════════════════════════════════════ */
+function openApp(id){
+  closeTbMenu();
+  if(id==='admin'){ document.getElementById('win-admin-overlay').style.display='flex'; return; }
+
+  const icoAtelier=`<svg viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1" fill="#29B8D9"/><rect x="9" y="1" width="6" height="6" rx="1" fill="#1B3560"/><rect x="1" y="9" width="6" height="6" rx="1" fill="#1B3560"/><rect x="9" y="9" width="6" height="6" rx="1" fill="#29B8D9"/></svg>`;
+  const icoCV=`<svg viewBox="0 0 16 16" fill="none"><rect x="2" y="1" width="12" height="14" rx="1.5" stroke="#30D158" stroke-width="1.4"/><path d="M5 5h6M5 8h6M5 11h4" stroke="#30D158" stroke-width="1.4" stroke-linecap="round"/></svg>`;
+  const icoContact=`<svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5.5" r="3" stroke="#29B8D9" stroke-width="1.4"/><path d="M2 14a6 6 0 0 1 12 0" stroke="#29B8D9" stroke-width="1.4" stroke-linecap="round"/></svg>`;
+  const icoMail=`<svg viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="10" rx="2" stroke="#29B8D9" stroke-width="1.4"/><path d="m1 5 7 5 7-5" stroke="#29B8D9" stroke-width="1.4" stroke-linecap="round"/></svg>`;
+  const icoAbout=`<svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="#818cf8" stroke-width="1.4"/><path d="M8 7v5" stroke="#818cf8" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="5" r=".8" fill="#818cf8"/></svg>`;
+
+  const configs={
+    atelier:{
+      title:'Atelier AAR Design',w:700,h:520,ico:icoAtelier,
+      body:`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px">
+        ${['assets/voyages/cappadoce.jpg','assets/steam/mockup.jpg','assets/dark/red.jpg','assets/saveurs/hiver.jpg','assets/aristocrate/nanti.jpg','assets/pulse.jpg']
+          .map(s=>`<div style="border-radius:8px;overflow:hidden;aspect-ratio:4/3;cursor:pointer;background:#0a0f1e">
+            <img src="${s}" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform .25s,filter .25s"
+              onmouseover="this.style.transform='scale(1.05)';this.style.filter='brightness(1.1)'"
+              onmouseout="this.style.transform='';this.style.filter=''">
+          </div>`).join('')}
+      </div>`
+    },
+    cv:{
+      title:'CV — Anthony Armand',w:660,h:560,ico:icoCV,
+      body:`<div class="cv-header">
+        <div class="cv-avatar"><img src="assets/Logo-Aardesign-Court.png" alt=""></div>
+        <div><div class="cv-h-name">Anthony Armand</div><div class="cv-h-role">Directeur Artistique · Graphiste · Designer</div></div>
+      </div>
+      <div class="cv-chips">
+        ${['📧 aardesign14@gmail.com','📱 06 79 46 62 19','📍 Caen, Normandie','🌐 aardesign.fr','🪪 Permis B'].map(c=>`<span class="cv-chip">${c}</span>`).join('')}
+      </div>
+      <div class="cv-sec-title">Compétences</div>
+      ${[['Photoshop',95],['InDesign',92],['Illustrator',90],['Lightroom',88],['HTML/CSS',75],['Digital Painting',65]].map(([n,p])=>`
+      <div class="cv-skill">
+        <span class="cv-skill-name">${n}</span>
+        <div class="cv-skill-bar"><div class="cv-skill-fill" style="width:${p}%"></div></div>
+        <span class="cv-skill-pct">${p}%</span>
+      </div>`).join('')}
+      <div class="cv-sec-title">Expériences</div>
+      ${[['AAR Design — Auto-entrepreneur','2024–présent','Création graphique, DA, Web, Illustration'],
+         ['Clopinette / Arsène Valentin — CDI','2020–présent · Caen','DA, Packaging, Digital Painting'],
+         ['Creacom — CDD','2019 · Valence','Création graphique, communication'],
+         ['Optimind Winter — Stage','2017–2019 · Paris VIII','DA, Web design, Communication digitale']
+      ].map(([t,d,c])=>`<div class="cv-tl-item"><div class="cv-tl-dot"></div><div><div class="cv-tl-title">${t}</div><div class="cv-tl-sub">${d}</div><div class="cv-tl-desc">${c}</div></div></div>`).join('')}
+      <div class="cv-sec-title">Langues</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        ${[['Français','Natif'],['Anglais','C1'],['Italien','A2'],['Japonais','A1']].map(([l,n])=>`
+        <div style="background:var(--icon-bg);border-radius:20px;padding:5px 12px;text-align:center">
+          <div style="font-size:.7rem;font-weight:700;color:var(--ink)">${l}</div>
+          <div style="font-size:.58rem;color:var(--mid)">${n}</div>
+        </div>`).join('')}
+      </div>`
+    },
+    contact:{
+      title:'Contact',w:420,h:380,ico:icoContact,
+      body:`<div class="w-profile">
+        <div class="w-ava"><img src="assets/Logo-Aardesign-Court.png" alt=""></div>
+        <div><div class="w-name">Anthony Armand</div><div class="w-role">DA · Digital Painting · AAR Design</div></div>
+      </div>
+      <div class="w-row">
+        <div class="w-row-ico"><svg viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="1.8" width="18" height="18"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 7 8.5 6 8.5-6"/></svg></div>
+        <div class="w-row-info"><div class="w-row-lbl">Email</div><div class="w-row-val">aardesign14@gmail.com</div></div>
+        <div class="w-row-acts"><a class="w-btn pri" href="mailto:aardesign14@gmail.com">Écrire</a><button class="w-btn" data-copy="aardesign14@gmail.com">Copier</button></div>
+      </div>
+      <div class="w-row">
+        <div class="w-row-ico"><svg viewBox="0 0 24 24" fill="none" stroke="#30D158" stroke-width="1.8" width="18" height="18"><path d="M22 16.9v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.9z"/></svg></div>
+        <div class="w-row-info"><div class="w-row-lbl">Téléphone</div><div class="w-row-val">06 79 46 62 19</div></div>
+        <div class="w-row-acts"><a class="w-btn pri" href="tel:0679466219">Appeler</a><button class="w-btn" data-copy="0679466219">Copier</button></div>
+      </div>
+      <div class="w-row">
+        <div class="w-row-ico"><svg viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="1.8" width="18" height="18"><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></div>
+        <div class="w-row-info"><div class="w-row-lbl">Localisation</div><div class="w-row-val">Caen · France · Remote OK</div></div>
+      </div>`
+    },
+    mail:{
+      title:'Écrire à Anthony',w:420,h:370,ico:icoMail,
+      body:`<div class="w-field"><label>À</label><input type="text" value="aardesign14@gmail.com" readonly></div>
+      <div class="w-field"><label>Objet</label><input id="wm-subj" type="text" placeholder="Un projet à discuter…"></div>
+      <div class="w-field"><label>Message</label><textarea id="wm-msg" placeholder="Bonjour Anthony, je vous contacte au sujet de…"></textarea></div>
+      <button class="w-send" id="wm-send">Envoyer ✦</button>
+      <div id="wm-ok" style="display:none;margin-top:10px;text-align:center;color:var(--cyan);font-weight:600;font-size:.8rem">✓ Message envoyé !</div>`
+    },
+    about:{
+      title:'À propos — AAR Design',w:400,h:380,ico:icoAbout,
+      body:`<div class="w-profile">
+        <div class="w-ava"><img src="assets/Logo-Aardesign-Court.png" alt=""></div>
+        <div><div class="w-name">Anthony Armand</div><div class="w-role">AAR Design · Caen</div></div>
+      </div>
+      <p style="font-size:.78rem;line-height:1.75;color:var(--mid);margin-bottom:14px">Designer pluridisciplinaire à l'intersection du <b style="color:var(--ink)">digital painting</b>, de l'illustration narrative et de la <b style="color:var(--ink)">direction artistique</b>. 5+ ans d'expérience en création graphique, packaging premium et communication visuelle.</p>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px">
+        ${[['5+','Années exp.'],['35+','Œuvres'],['8','Disciplines']].map(([n,l])=>`
+        <div class="ab-stat"><div class="ab-stat-n">${n}</div><div class="ab-stat-l">${l}</div></div>`).join('')}
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:5px">
+        ${['🎨 Digital Painting','✏️ Illustration','📐 Direction Artistique','📦 Packaging','🌐 Web Design','📷 Photographie'].map(d=>`<span class="ab-tag">${d}</span>`).join('')}
+      </div>`
+    },
+  };
+
+  const c=configs[id]; if(!c) return;
+  createWin(id,c.title,c.ico,c.body,c.w,c.h);
+
+  setTimeout(()=>{
+    const btn=document.getElementById('wm-send');
+    if(btn) btn.addEventListener('click',()=>{
+      document.getElementById('wm-ok').style.display='block';
+      btn.style.display='none';
+    });
+  },50);
+}
+
+/* ═══════════════════════════════════════
+   GALLERY
+═══════════════════════════════════════ */
+const DEFAULT_PORTFOLIO={
+  arsene:[
+    {src:'assets/millenaire/cadomum.jpg',title:'Millénaire — Cadomum'},
+    {src:'assets/millenaire/pomme2.jpg',title:'Millénaire — Pomme'},
+    {src:'assets/millenaire/pomme3.jpg',title:''},
+    {src:'assets/aristocrate/nanti.jpg',title:'L\'Aristocrate — Nanti'},
+    {src:'assets/aristocrate/casque.jpg',title:''},
+    {src:'assets/aristocrate/veste.jpg',title:''},
+  ],
+  clopinette:[
+    {src:'assets/steam/mockup.jpg',title:'Steam — Mockup'},
+    {src:'assets/steam/hibou.jpg',title:''},
+    {src:'assets/steam/coeur.jpg',title:''},
+    {src:'assets/steam/gueule.jpg',title:''},
+    {src:'assets/steam/main.jpg',title:''},
+    {src:'assets/steam/sablier.jpg',title:''},
+  ],
+  digital:[
+    {src:'assets/dark/red.jpg',title:'Dark — Red'},
+    {src:'assets/dark/blood.jpg',title:''},
+    {src:'assets/dark/cult.jpg',title:''},
+    {src:'assets/dark/salem.jpg',title:''},
+    {src:'assets/saveurs/renard.png',title:''},
+    {src:'assets/pulse.jpg',title:'Pulse'},
+  ],
+  logo:[
+    {src:'assets/saveurs/hiver.jpg',title:'Saveurs — Hiver'},
+    {src:'assets/saveurs/ete.jpg',title:''},
+    {src:'assets/saveurs/automne.jpg',title:''},
+    {src:'assets/saveurs/printemps.jpg',title:''},
+  ],
+  animation:[
+    {src:'assets/pulse.jpg',title:'Pulse'},
+    {src:'assets/aristocrate/explorateur.jpg',title:''},
+  ],
+  perso:[
+    {src:'assets/voyages/cappadoce.jpg',title:'Cappadoce'},
+    {src:'assets/voyages/fuji.jpg',title:'Fuji'},
+    {src:'assets/voyages/laponie.jpg',title:'Laponie'},
+    {src:'assets/voyages/amazonie.jpg',title:'Amazonie'},
+    {src:'assets/voyages/canada.jpg',title:'Canada'},
+    {src:'assets/voyages/pacifique.jpg',title:'Pacifique'},
+  ],
+  etudes:[
+    {src:'assets/formation/foret.jpg',title:''},
+    {src:'assets/formation/cathedrale.jpg',title:''},
+    {src:'assets/formation/character.jpg',title:''},
+    {src:'assets/formation/environnement.jpg',title:''},
+    {src:'assets/formation/halloween.jpg',title:''},
+    {src:'assets/formation/hoth.jpg',title:''},
+  ],
+};
+
+const FOLDERS={
+  arsene:{label:'Arsène Valentin',color:'#fbbf24'},
+  clopinette:{label:'Clopinette',color:'#ec4899'},
+  digital:{label:'Digital Painting',color:'#06b6d4'},
+  logo:{label:'Logo',color:'#10b981'},
+  animation:{label:'Animation',color:'#f97316'},
+  perso:{label:'Perso',color:'#8b5cf6'},
+  etudes:{label:'Études',color:'#3b82f6'},
+};
 
 function openFolder(fid){
   const fd=FOLDERS[fid]; if(!fd) return;
-  let view='grid';
-  const body=()=>`
-    <div class="w11-explorer">
-      <div class="w11-exp-toolbar">
-        <button class="w11-exp-tb-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6a2 2 0 0 1 2-2h4l2 2h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z"/><path d="M12 11v6M9 14h6"/></svg>Nouveau</button>
-        <div class="w11-exp-tb-sep"></div>
-        <button class="w11-exp-tb-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 5H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2M8 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M8 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2"/></svg>Copier</button>
-        <button class="w11-exp-tb-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>Renommer</button>
-        <button class="w11-exp-tb-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>Supprimer</button>
-        <div class="w11-exp-tb-sep"></div>
-        <div class="w11-exp-tb-right">
-          <button class="w11-exp-view-btn active" id="vbtn-grid-${fid}" onclick="setExpView('${fid}',this,'grid')">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></svg>
-            Icônes
-          </button>
-          <button class="w11-exp-view-btn" id="vbtn-list-${fid}" onclick="setExpView('${fid}',this,'list')">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-            Détails
-          </button>
-        </div>
-      </div>
-      <div class="w11-exp-addrbar">
-        <button class="w11-exp-nav-btn" disabled title="Précédent"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
-        <button class="w11-exp-nav-btn" disabled title="Suivant"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>
-        <button class="w11-exp-nav-btn" title="Dossier parent"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="12 19 5 12 12 5"/><line x1="19" y1="12" x2="5" y2="12"/></svg></button>
-        <div class="w11-exp-addr">
-          <span>Ce PC</span><span class="w11-exp-addr-sep">›</span>
-          <span>Portfolio AAR</span><span class="w11-exp-addr-sep">›</span>
-          <span style="color:#0078d4;font-weight:600">${fd.label}</span>
-        </div>
-        <input class="w11-exp-search" placeholder="Rechercher dans ${fd.label}" type="search">
-      </div>
-      <div class="w11-exp-body" id="expbody-${fid}">${buildExpBody(fid,'grid')}</div>
-      <div class="w11-exp-statusbar"><span>${fd.items.length} élément(s)</span></div>
-    </div>`;
-  window._expViews=window._expViews||{};
-  window._expViews[fid]='grid';
-  openApp('__folder__'+fid, fd.label, body, 580, 440);
+  const winId='folder-'+fid;
+  if(openWins[winId]){ bringFront(openWins[winId]); return; }
+
+  const portfolio=JSON.parse(localStorage.getItem('aar_portfolio')||'{}');
+  const imgs=(portfolio[fid]&&portfolio[fid].length) ? portfolio[fid] : (DEFAULT_PORTFOLIO[fid]||[]);
+
+  const ico=`<svg viewBox="0 0 16 16" fill="none"><path d="M1 5a1.5 1.5 0 0 1 1.5-1.5H6l2 2h6.5A1.5 1.5 0 0 1 16 7v6.5A1.5 1.5 0 0 1 14.5 15h-13A1.5 1.5 0 0 1 1 13.5z" fill="${fd.color}"/></svg>`;
+
+  const gridHtml=imgs.length
+    ? imgs.map((im,i)=>`<div class="gal-card" onclick="openLightbox(${JSON.stringify(imgs).replace(/"/g,'&quot;')},${i})">
+        <img src="${im.src}" alt="${im.title||''}" loading="lazy">
+        ${im.title?`<div class="gal-title">${im.title}</div>`:''}
+      </div>`).join('')
+    : `<div class="gal-empty"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" width="40" height="40"><rect x="4" y="10" width="40" height="28" rx="3"/><circle cx="18" cy="22" r="4"/><path d="m4 32 12-10 8 8 6-5 14 13"/></svg><p>Aucune image</p><p style="font-size:.65rem;opacity:.6">Admin → Portfolio OS</p></div>`;
+
+  const body=`<div class="gal-wrap">
+    <div class="gal-header">
+      <svg viewBox="0 0 16 16" fill="none" width="14" height="14"><path d="M1 5a1.5 1.5 0 0 1 1.5-1.5H6l2 2h6.5A1.5 1.5 0 0 1 16 7v6.5A1.5 1.5 0 0 1 14.5 15h-13A1.5 1.5 0 0 1 1 13.5z" fill="${fd.color}"/></svg>
+      <span style="font-size:.72rem;font-weight:600">${fd.label}</span>
+      <span style="font-size:.6rem;color:var(--mid);margin-left:auto">${imgs.length} image${imgs.length!==1?'s':''}</span>
+    </div>
+    <div class="gal-grid">${gridHtml}</div>
+  </div>`;
+
+  createWin(winId,fd.label,ico,body,640,480);
+  openWins[winId].querySelector('.win-body').style.padding='0';
 }
-window.setExpView=function(fid,btn,v){
-  window._expViews[fid]=v;
-  const bd=document.getElementById('expbody-'+fid); if(!bd)return;
-  bd.innerHTML=buildExpBody(fid,v);
-  const gb=document.getElementById('vbtn-grid-'+fid);
-  const lb=document.getElementById('vbtn-list-'+fid);
-  if(gb)gb.classList.toggle('active',v==='grid');
-  if(lb)lb.classList.toggle('active',v==='list');
-};
 
-document.querySelectorAll('.desktop-folder').forEach(folder => {
-  folder.addEventListener('click', function(){
-    document.querySelectorAll('.desktop-icon,.desktop-folder').forEach(i => i.classList.remove('selected'));
-    this.classList.add('selected');
-    openFolder(this.dataset.cluster);
+/* ── Lightbox ── */
+function openLightbox(imgs,startIdx){
+  let idx=startIdx;
+  document.getElementById('w-lightbox')?.remove();
+  const lb=document.createElement('div');
+  lb.id='w-lightbox';
+  lb.innerHTML=`<div class="lb-bg"></div>
+    <button class="lb-close" onclick="document.getElementById('w-lightbox').remove()">✕</button>
+    <button class="lb-nav lb-prev" id="lb-prev">‹</button>
+    <div class="lb-img-wrap">
+      <img id="lb-img" src="${imgs[idx].src}" alt="">
+      <div class="lb-caption" id="lb-cap">${imgs[idx].title||''}</div>
+    </div>
+    <button class="lb-nav lb-next" id="lb-next">›</button>
+    <div class="lb-counter" id="lb-ctr">${idx+1} / ${imgs.length}</div>`;
+  document.body.appendChild(lb);
+  lb.querySelector('.lb-bg').addEventListener('click',()=>lb.remove());
+  function go(n){ idx=(n+imgs.length)%imgs.length; lb.querySelector('#lb-img').src=imgs[idx].src; lb.querySelector('#lb-cap').textContent=imgs[idx].title||''; lb.querySelector('#lb-ctr').textContent=(idx+1)+' / '+imgs.length; }
+  lb.querySelector('#lb-prev').addEventListener('click',()=>go(idx-1));
+  lb.querySelector('#lb-next').addEventListener('click',()=>go(idx+1));
+  document.addEventListener('keydown',function kh(e){
+    if(e.key==='Escape'){lb.remove();document.removeEventListener('keydown',kh);}
+    else if(e.key==='ArrowLeft') go(idx-1);
+    else if(e.key==='ArrowRight') go(idx+1);
   });
+  if(imgs.length<=1){ lb.querySelector('#lb-prev').style.display='none'; lb.querySelector('#lb-next').style.display='none'; }
+}
+
+/* ═══════════════════════════════════════
+   ADMIN
+═══════════════════════════════════════ */
+document.getElementById('admin-submit').addEventListener('click',()=>{
+  const v=document.getElementById('admin-pwd').value;
+  if(v===ADMIN_PWD){ sessionStorage.setItem('aar-auth','1'); window.location.href='admin.html'; }
+  else{ document.getElementById('admin-err').style.display='block'; }
 });
-
-/* ════════ iOS DOSSIERS ════════ */
-const IOS_FOLDERS={
-  arsene:{ title:'Arsène Valentin', items:[
-    {label:'Identité',bg:'linear-gradient(135deg,#f59e0b,#d97706)',app:'atelier'},
-    {label:'Charte',bg:'linear-gradient(135deg,#d97706,#b45309)',app:'atelier'},
-    {label:'Social',bg:'linear-gradient(135deg,#f97316,#ea580c)',app:'atelier'},
-    {label:'Mockups',bg:'linear-gradient(135deg,#fcd34d,#f59e0b)',app:'atelier'},
-  ]},
-  clopinette:{ title:'Clopinette', items:[
-    {label:'Branding',bg:'linear-gradient(135deg,#ec4899,#be185d)',app:'atelier'},
-    {label:'Affiches',bg:'linear-gradient(135deg,#f472b6,#ec4899)',app:'atelier'},
-    {label:'Réseaux',bg:'linear-gradient(135deg,#db2777,#9d174d)',app:'atelier'},
-    {label:'Vidéo',bg:'linear-gradient(135deg,#9d174d,#ec4899)',app:'atelier'},
-  ]},
-  digital:{ title:'Digital Painting', items:[
-    {label:'2024',bg:'linear-gradient(135deg,#06b6d4,#0e7490)',app:'atelier'},
-    {label:'2023',bg:'linear-gradient(135deg,#0891b2,#06b6d4)',app:'atelier'},
-    {label:'WIP',bg:'linear-gradient(135deg,#22d3ee,#0891b2)',app:'atelier'},
-  ]},
-  logo:{ title:'Logo', items:[
-    {label:'AAR Design',bg:'linear-gradient(135deg,#10b981,#065f46)',app:'atelier'},
-    {label:'Clients',bg:'linear-gradient(135deg,#059669,#047857)',app:'atelier'},
-    {label:'Guides',bg:'linear-gradient(135deg,#34d399,#10b981)',app:'atelier'},
-  ]},
-};
-const iosFolderPopup=document.getElementById('ios-folder-popup');
-const iosFpTitle=document.getElementById('ios-fp-title');
-const iosFpGrid=document.getElementById('ios-fp-grid');
-document.getElementById('ios-fp-close').addEventListener('click',()=>iosFolderPopup.classList.remove('open'));
-iosFolderPopup.addEventListener('click',e=>{ if(e.target===iosFolderPopup) iosFolderPopup.classList.remove('open'); });
-document.querySelectorAll('.ios-folder-icon[data-ios-folder]').forEach(el=>{
-  el.addEventListener('click',()=>{
-    const fid=el.dataset.iosFolder;
-    const fd=IOS_FOLDERS[fid]; if(!fd) return;
-    iosFpTitle.textContent=fd.title;
-    iosFpGrid.innerHTML=fd.items.map(it=>`
-      <div class="ios-app-icon" style="cursor:pointer" onclick="openIosApp('${it.app}')">
-        <div class="ios-icon-img" style="background:${it.bg};width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center">
-          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" width="26" height="26"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
-        </div>
-        <span class="ios-icon-label" style="color:#fff;font-size:.58rem">${it.label}</span>
-      </div>`).join('');
-    iosFolderPopup.classList.add('open');
-  });
+document.getElementById('admin-pwd').addEventListener('keydown',e=>{
+  if(e.key==='Enter') document.getElementById('admin-submit').click();
 });
-
-/* ════════ W11 DESKTOP TOGGLE ════════ */
-const w11Desktop = document.getElementById('w11-desktop');
-
-// Patch launchOS to show/hide w11 desktop
-const _origLaunchOS = launchOS;
-
-// Override launchOS to handle w11 desktop visibility
-const _launchOSPatched = launchOS;
-(function patchLaunchOS(){
-  const origFn = window.launchOS;
-  // Already patched via re-implementation below
-})();
-
-// Show w11 desktop when W11 OS is launched
-document.getElementById('tile-w11').addEventListener('click', function(){
-  if(w11Desktop) w11Desktop.style.display = '';
-});
-document.getElementById('tile-ios').addEventListener('click', function(){
-  if(w11Desktop) w11Desktop.style.display = 'none';
+document.getElementById('admin-cancel').addEventListener('click',()=>{
+  document.getElementById('win-admin-overlay').style.display='none';
+  document.getElementById('admin-err').style.display='none';
+  document.getElementById('admin-pwd').value='';
 });
 </script>
 </body>
