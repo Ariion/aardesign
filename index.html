@@ -237,6 +237,39 @@ body{background:var(--wall-a);color:var(--ink);transition:background .4s,color .
   animation:winopen .2s cubic-bezier(.34,1.2,.64,1) both;
   transition:background .4s,border-color .4s;
 }
+/* ── MOBILE: fenêtres = modals plein écran ── */
+@media(max-width:768px){
+  .win{
+    position:fixed!important;
+    inset:0!important;
+    width:100%!important;height:100%!important;
+    border-radius:0;min-width:0;min-height:0;
+    transform:none!important;
+    z-index:9999!important;
+  }
+  .win-bar{height:52px;padding:0 14px;}
+  .win-ctrls{display:none}
+  .win-btn.close-mobile{
+    display:flex!important;
+    width:36px;height:36px;border-radius:50%;border:none;
+    background:rgba(255,255,255,.12);cursor:pointer;
+    align-items:center;justify-content:center;
+    margin-left:auto;
+  }
+  .win-btn.close-mobile svg{opacity:1;width:14px;height:14px;color:rgba(255,255,255,.85)}
+  .win-resize{display:none}
+  .win-body{-webkit-overflow-scrolling:touch}
+  #topbar{gap:4px;padding:0 10px;overflow-x:auto;flex-wrap:nowrap}
+  #tb-logo{font-size:.7rem;flex-shrink:0}
+  .tb-pill{font-size:.6rem;padding:3px 8px;flex-shrink:0}
+  #tb-right{flex-shrink:0}
+  #desk-apps{display:none}
+  #desk-projects{padding:8px;gap:8px}
+  .d-folder{width:80px}
+  .d-folder-ico{width:52px;height:40px}
+  .d-folder-label{font-size:.55rem}
+  #id-badge{font-size:.55rem;bottom:8px;left:8px}
+}
 .win-bar{
   display:flex;align-items:center;gap:8px;padding:0 10px;height:38px;
   background:var(--win-bar);border-bottom:1px solid var(--line);flex-shrink:0;
@@ -661,6 +694,7 @@ function createWin(id,title,iconSvg,bodyHtml,w=440,h=480){
         <button class="win-btn max" title="Agrandir"><svg viewBox="0 0 10 10"><rect x="1" y="1" width="8" height="8" rx="1" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></button>
         <button class="win-btn close" title="Fermer"><svg viewBox="0 0 10 10"><line x1="1" y1="1" x2="9" y2="9" stroke="currentColor" stroke-width="1.5"/><line x1="9" y1="1" x2="1" y2="9" stroke="currentColor" stroke-width="1.5"/></svg></button>
       </div>
+      <button class="win-btn close-mobile" style="display:none" title="Fermer"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2"><line x1="1" y1="1" x2="13" y2="13"/><line x1="13" y1="1" x2="1" y2="13"/></svg></button>
     </div>
     <div class="win-body">${bodyHtml}<div class="w-toast">Copié !</div></div>
     <div class="win-resize"></div>`;
@@ -680,10 +714,12 @@ function createWin(id,title,iconSvg,bodyHtml,w=440,h=480){
       maxed=false;
     }
   });
-  win.querySelector('.win-btn.close').addEventListener('click',()=>{
+  const closeFn=()=>{
     win.style.animation='winclose .15s ease both';
     setTimeout(()=>{ win.remove(); delete openWins[id]; markTb(id,false); },150);
-  });
+  };
+  win.querySelector('.win-btn.close').addEventListener('click',closeFn);
+  win.querySelector('.win-btn.close-mobile').addEventListener('click',closeFn);
   win.querySelector('.win-btn.min').addEventListener('click',()=>{ win.style.display='none'; markTb(id,false); });
   win.querySelectorAll('[data-copy]').forEach(b=>b.addEventListener('click',async()=>{
     try{ await navigator.clipboard.writeText(b.dataset.copy); }catch(_){}
