@@ -142,7 +142,7 @@ body{background:var(--wall-a);color:var(--ink);transition:background .4s,color .
 #tb-logo-center{
   display:flex;align-items:center;justify-content:center;
 }
-#tb-logo-center img{height:26px;opacity:.92;filter:brightness(0) invert(1)}
+#tb-logo-center img{max-height:32px;width:auto;opacity:.92;filter:brightness(0) invert(1)}
 /* droite */
 #tb-right{display:flex;align-items:center;justify-content:flex-end;gap:6px}
 .tb-ico-btn{
@@ -424,7 +424,7 @@ body{background:var(--wall-a);color:var(--ink);transition:background .4s,color .
      LOCK SCREEN
 ══════════════════════════════════════════ -->
 <div id="lockscreen">
-  <div id="ls-logo"><img src="assets/Logo-Aardesign-Long.png" alt="AAR Design" style="height:60px;opacity:.88;filter:brightness(0) invert(1)"></div>
+  <div id="ls-logo"><img src="assets/Logo-Aardesign-Long.png" alt="AAR Design" style="width:min(20vw,280px);opacity:.88;filter:brightness(0) invert(1)"></div>
   <div id="ls-time">00:00</div>
   <div id="ls-date">—</div>
   <div id="ls-name">Anthony Armand</div>
@@ -443,7 +443,7 @@ body{background:var(--wall-a);color:var(--ink);transition:background .4s,color .
 
   <!-- Logo centré -->
   <div id="tb-logo-center">
-    <img src="assets/Logo-Aardesign-Long.png" alt="AAR Design" style="height:26px;opacity:.92;filter:brightness(0) invert(1)">
+    <img src="assets/Logo-Aardesign-Long.png" alt="AAR Design" style="width:min(18vw,260px);max-height:32px;opacity:.92;filter:brightness(0) invert(1)">
   </div>
 
   <!-- Droite -->
