@@ -841,6 +841,47 @@ tr:hover td{background:rgba(41,184,217,.03);}
         </div>
       </div>
 
+      <!-- Arrière-plans -->
+      <div class="sec-card">
+        <div class="sec-hd open" onclick="toggleSec(this)">
+          <div class="sec-title"><span class="sec-ico">🖼</span>Arrière-plans</div><span class="sec-arrow">▶</span>
+        </div>
+        <div class="sec-body open">
+          <p style="font-size:.65rem;color:var(--mid);margin-bottom:1rem;">Personnalisez les fonds de l'écran de verrouillage et du bureau.</p>
+          <div class="field-row" style="margin-bottom:1.2rem">
+            <div class="field">
+              <label>Fond lock screen — couleur A</label>
+              <div class="color-preview" id="pv-lsbg1" style="margin-bottom:.4rem"></div>
+              <input type="color" id="cl-lsbg1" oninput="pvColor('lsbg1',this.value);markDirty('design')">
+            </div>
+            <div class="field">
+              <label>Fond lock screen — couleur B</label>
+              <div class="color-preview" id="pv-lsbg2" style="margin-bottom:.4rem"></div>
+              <input type="color" id="cl-lsbg2" oninput="pvColor('lsbg2',this.value);markDirty('design')">
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label>Fond bureau — couleur A</label>
+              <div class="color-preview" id="pv-deskbg1" style="margin-bottom:.4rem"></div>
+              <input type="color" id="cl-deskbg1" oninput="pvColor('deskbg1',this.value);markDirty('design')">
+            </div>
+            <div class="field">
+              <label>Fond bureau — couleur B</label>
+              <div class="color-preview" id="pv-deskbg2" style="margin-bottom:.4rem"></div>
+              <input type="color" id="cl-deskbg2" oninput="pvColor('deskbg2',this.value);markDirty('design')">
+            </div>
+          </div>
+          <div style="margin-top:.8rem">
+            <div class="field">
+              <label>Image de fond bureau (URL optionnelle)</label>
+              <input type="text" id="desk-wallpaper" placeholder="https://... ou laisser vide pour couleur" oninput="markDirty('design')">
+              <div class="field-hint">Laissez vide pour utiliser le dégradé de couleurs.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="save-bar">
         <span class="save-msg" id="sm-design">Modifiez puis sauvegardez.</span>
         <button class="btn btn-gold" onclick="saveSection('design')">💾 Sauvegarder &amp; Appliquer</button>
@@ -930,7 +971,7 @@ tr:hover td{background:rgba(41,184,217,.03);}
     </div>
 
     <!-- Library picker modal -->
-    <div class="modal-bd" id="m-pf-lib" style="display:none">
+    <div class="modal-bd" id="m-pf-lib">
       <div class="modal" style="max-width:640px">
         <div class="modal-hd">
           <div class="modal-title">Bibliothèque — Sélectionner des images</div>
@@ -1309,6 +1350,11 @@ function loadDesign() {
   const fb = document.getElementById('ft-body'), fs = document.getElementById('ft-size')
   if (fb) fb.value = d.fontBody || 'Montserrat'
   if (fs) fs.value = d.fontSize || '14px'
+  // backgrounds
+  const bgKeys = {lsbg1:'#060c16',lsbg2:'#0a1428',deskbg1:'#060c16',deskbg2:'#0a1428'}
+  Object.entries(bgKeys).forEach(([k,def]) => { const val=d[k]||def; const el=document.getElementById('cl-'+k); if(el){el.value=val;pvColor(k,val)} })
+  const wp = document.getElementById('desk-wallpaper')
+  if (wp) wp.value = d.wallpaper || ''
   // mark active preset
   document.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('active'))
   const ap = d.preset || 'aar'
@@ -1366,8 +1412,14 @@ async function saveSection(sec) {
   else if (sec==='marquee') SD.marquee = {mq1:[...mq1],mq2:[...mq2]}
   else if (sec==='design') {
     const activePreset = document.querySelector('.preset-btn.active')?.id?.replace('preset-','') || 'aar'
-    SD.design = {navy:v('cl-navy'),cyan:v('cl-cyan'),cyan2:v('cl-cyan2'),wall:v('cl-wall'),win:v('cl-win'),txt:v('cl-txt'),fontBody:v('ft-body'),fontSize:v('ft-size'),preset:activePreset}
-    // push to aar_theme so index.html can pick it up
+    SD.design = {
+      navy:v('cl-navy'),cyan:v('cl-cyan'),cyan2:v('cl-cyan2'),
+      wall:v('cl-wall'),win:v('cl-win'),txt:v('cl-txt'),
+      fontBody:v('ft-body'),fontSize:v('ft-size'),preset:activePreset,
+      lsbg1:v('cl-lsbg1'),lsbg2:v('cl-lsbg2'),
+      deskbg1:v('cl-deskbg1'),deskbg2:v('cl-deskbg2'),
+      wallpaper:v('desk-wallpaper')
+    }
     localStorage.setItem('aar_theme', JSON.stringify(SD.design))
     setTimeout(()=>{ const f=document.getElementById('sitePreview'); if(f) f.src='index.html' }, 400)
   }
@@ -1708,6 +1760,48 @@ function doLogout() { sessionStorage.removeItem('aar-auth'); window.location.hre
 // ═══════════════════════════════
 //  PORTFOLIO OS
 // ═══════════════════════════════
+const DEFAULT_PORTFOLIO={
+  arsene:[
+    {src:'assets/millenaire/cadomum.jpg',title:'Millénaire — Cadomum'},
+    {src:'assets/millenaire/pomme2.jpg',title:'Millénaire — Pomme'},
+    {src:'assets/millenaire/pomme3.jpg',title:''},
+    {src:'assets/aristocrate/nanti.jpg',title:"L'Aristocrate — Nanti"},
+    {src:'assets/aristocrate/casque.jpg',title:''},
+    {src:'assets/aristocrate/veste.jpg',title:''},
+  ],
+  clopinette:[
+    {src:'assets/steam/mockup.jpg',title:'Steam — Mockup'},
+    {src:'assets/steam/hibou.jpg',title:''},
+    {src:'assets/steam/coeur.jpg',title:''},
+    {src:'assets/steam/gueule.jpg',title:''},
+    {src:'assets/steam/main.jpg',title:''},
+    {src:'assets/steam/sablier.jpg',title:''},
+  ],
+  digital:[
+    {src:'assets/dark/red.jpg',title:'Dark — Red'},
+    {src:'assets/dark/blood.jpg',title:''},
+    {src:'assets/dark/cult.jpg',title:''},
+    {src:'assets/dark/salem.jpg',title:''},
+  ],
+  logo:[
+    {src:'assets/saveurs/hiver.jpg',title:'Saveurs — Hiver'},
+    {src:'assets/saveurs/ete.jpg',title:''},
+    {src:'assets/saveurs/automne.jpg',title:''},
+    {src:'assets/saveurs/printemps.jpg',title:''},
+  ],
+  animation:[
+    {src:'assets/voyages/tokyo.jpg',title:'Tokyo'},
+    {src:'assets/voyages/kyoto.jpg',title:'Kyoto'},
+  ],
+  perso:[
+    {src:'assets/dark/red.jpg',title:''},
+    {src:'assets/pulse.jpg',title:'Pulse'},
+  ],
+  etudes:[
+    {src:'assets/formation/logo-etude.jpg',title:'Étude Logo'},
+    {src:'assets/formation/typo-etude.jpg',title:'Typographie'},
+  ],
+};
 const PF_FOLDERS=[
   {id:'arsene',      label:'Arsène',          color:'#a78bfa'},
   {id:'clopinette',  label:'Clopinette',       color:'#f472b6'},
@@ -1720,7 +1814,13 @@ const PF_FOLDERS=[
 let _pfCurrent=null;
 
 function pfData(){
-  return JSON.parse(localStorage.getItem('aar_portfolio')||'{}');
+  const stored=JSON.parse(localStorage.getItem('aar_portfolio')||'{}');
+  const merged={};
+  Object.keys(DEFAULT_PORTFOLIO).forEach(k=>{
+    merged[k]=(stored[k]&&stored[k].length)?stored[k]:DEFAULT_PORTFOLIO[k];
+  });
+  Object.keys(stored).forEach(k=>{if(!merged[k])merged[k]=stored[k];});
+  return merged;
 }
 function pfSaveData(d){
   localStorage.setItem('aar_portfolio', JSON.stringify(d));
