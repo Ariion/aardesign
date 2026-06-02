@@ -869,6 +869,142 @@ body{
 .desktop-folder-label{ font-size:.6rem; color:#fff; text-align:center; text-shadow:0 1px 3px rgba(0,0,0,.9); line-height:1.3; max-width:72px; }
 
 /* ═══════════════════════════════════════════
+   W11 EXPLORATEUR DE FICHIERS
+   ═══════════════════════════════════════════ */
+.w11-explorer{ display:flex; flex-direction:column; height:100%; }
+.w11-exp-toolbar{
+  display:flex; align-items:center; gap:2px; padding:4px 8px;
+  border-bottom:1px solid rgba(0,0,0,.08); background:rgba(243,243,243,.6);
+  flex-shrink:0; flex-wrap:wrap; row-gap:2px;
+}
+.w11-exp-tb-btn{
+  display:flex; align-items:center; gap:5px; padding:5px 9px;
+  border:none; background:transparent; border-radius:4px; cursor:pointer;
+  font-size:.72rem; font-family:inherit; color:#222; transition:background .12s;
+}
+.w11-exp-tb-btn:hover{ background:rgba(0,0,0,.06); }
+.w11-exp-tb-btn svg{ width:15px; height:15px; flex-shrink:0; }
+.w11-exp-tb-sep{ width:1px; height:22px; background:rgba(0,0,0,.1); margin:0 4px; }
+.w11-exp-tb-right{ margin-left:auto; display:flex; gap:2px; }
+.w11-exp-view-btn{
+  border:none; background:transparent; border-radius:4px; padding:4px 6px;
+  cursor:pointer; font-size:.72rem; font-family:inherit; color:#555; transition:background .12s;
+  display:flex; align-items:center; gap:4px;
+}
+.w11-exp-view-btn:hover{ background:rgba(0,0,0,.06); }
+.w11-exp-view-btn.active{ background:rgba(0,120,212,.15); color:#0078d4; }
+.w11-exp-addrbar{
+  display:flex; align-items:center; gap:6px; padding:5px 10px;
+  border-bottom:1px solid rgba(0,0,0,.07); background:rgba(255,255,255,.5);
+  flex-shrink:0;
+}
+.w11-exp-nav-btn{
+  width:28px; height:28px; border:none; background:transparent; border-radius:4px;
+  cursor:pointer; display:flex; align-items:center; justify-content:center; color:#444;
+  transition:background .12s;
+}
+.w11-exp-nav-btn:hover{ background:rgba(0,0,0,.06); }
+.w11-exp-nav-btn:disabled{ opacity:.3; cursor:default; }
+.w11-exp-addr{
+  flex:1; background:rgba(255,255,255,.85); border:1px solid rgba(0,0,0,.12);
+  border-radius:4px; padding:4px 10px; font-size:.73rem; font-family:inherit;
+  display:flex; align-items:center; gap:5px; cursor:default; color:#333;
+}
+.w11-exp-addr-sep{ color:#999; font-size:.7rem; }
+.w11-exp-search{
+  border:1px solid rgba(0,0,0,.12); background:rgba(255,255,255,.85);
+  border-radius:4px; padding:4px 8px; font-size:.72rem; font-family:inherit;
+  width:160px; outline:none; color:#333;
+}
+.w11-exp-search:focus{ border-color:#0078d4; box-shadow:0 0 0 2px rgba(0,120,212,.15); }
+.w11-exp-body{
+  flex:1; min-height:0; overflow-y:auto; padding:8px;
+}
+/* Vue grandes icônes */
+.w11-exp-grid{
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(90px,1fr)); gap:4px;
+}
+.w11-exp-item{
+  display:flex; flex-direction:column; align-items:center; gap:4px;
+  padding:8px 4px; border-radius:4px; cursor:pointer; user-select:none;
+  border:1px solid transparent; transition:background .12s;
+  text-align:center;
+}
+.w11-exp-item:hover{ background:rgba(0,120,212,.08); border-color:rgba(0,120,212,.2); }
+.w11-exp-item.selected{ background:rgba(0,120,212,.2); border-color:rgba(0,120,212,.5); }
+.w11-exp-item-thumb{
+  width:64px; height:64px; border-radius:6px; object-fit:cover;
+  box-shadow:0 1px 4px rgba(0,0,0,.15); background:#eee;
+  display:flex; align-items:center; justify-content:center;
+}
+.w11-exp-item-thumb img{ width:64px; height:64px; border-radius:6px; object-fit:cover; }
+.w11-exp-item-label{ font-size:.62rem; color:#222; line-height:1.3; max-width:82px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+/* Vue liste/détails */
+.w11-exp-list{ display:flex; flex-direction:column; gap:0; }
+.w11-exp-list-head{
+  display:grid; grid-template-columns:1fr 80px 80px; gap:0;
+  border-bottom:1px solid rgba(0,0,0,.1); padding:4px 8px;
+  font-size:.64rem; font-weight:600; color:#666; text-transform:uppercase; letter-spacing:.05em;
+}
+.w11-exp-list-row{
+  display:grid; grid-template-columns:1fr 80px 80px; gap:0;
+  padding:5px 8px; border-radius:4px; cursor:pointer; user-select:none;
+  font-size:.72rem; align-items:center; transition:background .1s;
+}
+.w11-exp-list-row:hover{ background:rgba(0,120,212,.07); }
+.w11-exp-list-row.selected{ background:rgba(0,120,212,.18); }
+.w11-exp-list-name{ display:flex; align-items:center; gap:8px; }
+.w11-exp-list-ico{ width:20px; height:20px; border-radius:3px; flex-shrink:0; }
+.w11-exp-statusbar{
+  display:flex; align-items:center; gap:8px; padding:3px 10px;
+  border-top:1px solid rgba(0,0,0,.07); font-size:.62rem; color:#666;
+  background:rgba(243,243,243,.6); flex-shrink:0;
+}
+
+/* ═══════════════════════════════════════════
+   iOS DOSSIERS
+   ═══════════════════════════════════════════ */
+.ios-folder-icon{
+  display:flex; flex-direction:column; align-items:center; gap:4px;
+  cursor:pointer; user-select:none;
+}
+.ios-folder-box{
+  width:60px; height:60px; border-radius:13px;
+  background:rgba(255,255,255,.28); backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,.4);
+  display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr;
+  gap:3px; padding:6px; box-sizing:border-box;
+}
+.ios-folder-mini{
+  border-radius:5px; display:flex; align-items:center; justify-content:center;
+}
+.ios-folder-mini svg{ width:10px; height:10px; }
+.ios-folder-name{ font-size:.58rem; color:#fff; text-align:center; text-shadow:0 1px 3px rgba(0,0,0,.7); line-height:1.2; max-width:65px; }
+/* Popup dossier iOS */
+#ios-folder-popup{
+  position:absolute; inset:0; z-index:28; display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  background:rgba(0,0,0,.5); backdrop-filter:blur(20px);
+  opacity:0; pointer-events:none; transition:opacity .28s;
+}
+#ios-folder-popup.open{ opacity:1; pointer-events:auto; }
+.ios-fp-box{
+  background:rgba(255,255,255,.22); backdrop-filter:blur(30px);
+  border-radius:20px; padding:16px; width:240px;
+  border:1px solid rgba(255,255,255,.3);
+  transform:scale(.85); transition:transform .28s cubic-bezier(.34,1.56,.64,1);
+}
+#ios-folder-popup.open .ios-fp-box{ transform:scale(1); }
+.ios-fp-title{ color:#fff; font-size:.75rem; font-weight:600; text-align:center; margin-bottom:12px; letter-spacing:.02em; }
+.ios-fp-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; justify-items:center; }
+.ios-fp-close{
+  margin-top:14px; width:40px; height:40px; border-radius:50%;
+  background:rgba(255,255,255,.2); border:none; color:#fff;
+  font-size:1.1rem; cursor:pointer; display:flex; align-items:center; justify-content:center;
+  align-self:center;
+}
+
+/* ═══════════════════════════════════════════
    W11 FENÊTRES REDIMENSIONNABLES
    ═══════════════════════════════════════════ */
 .win{
@@ -1154,6 +1290,43 @@ body{
         <div class="ios-icon-img" style="background:linear-gradient(145deg,#263238,#546E7A)"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
         <span class="ios-icon-label">Admin</span>
       </div>
+      <!-- Dossiers projets iOS -->
+      <div class="ios-folder-icon" data-ios-folder="arsene">
+        <div class="ios-folder-box">
+          <div class="ios-folder-mini" style="background:linear-gradient(135deg,#f59e0b,#d97706)"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg></div>
+          <div class="ios-folder-mini" style="background:linear-gradient(135deg,#e67e22,#d35400)"><svg viewBox="0 0 24 24" fill="white"><rect x="3" y="3" width="8" height="8" rx="2"/></svg></div>
+          <div class="ios-folder-mini" style="background:linear-gradient(135deg,#f39c12,#e67e22)"><svg viewBox="0 0 24 24" fill="white"><circle cx="12" cy="12" r="7"/></svg></div>
+          <div class="ios-folder-mini" style="background:linear-gradient(135deg,#ffd700,#f59e0b)"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+        </div>
+        <span class="ios-folder-name">Arsène Valentin</span>
+      </div>
+      <div class="ios-folder-icon" data-ios-folder="clopinette">
+        <div class="ios-folder-box">
+          <div class="ios-folder-mini" style="background:linear-gradient(135deg,#ec4899,#be185d)"><svg viewBox="0 0 24 24" fill="white"><rect x="3" y="3" width="8" height="8" rx="2"/></svg></div>
+          <div class="ios-folder-mini" style="background:linear-gradient(135deg,#f472b6,#ec4899)"><svg viewBox="0 0 24 24" fill="white"><circle cx="12" cy="12" r="7"/></svg></div>
+          <div class="ios-folder-mini" style="background:linear-gradient(135deg,#db2777,#be185d)"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+          <div class="ios-folder-mini" style="background:linear-gradient(135deg,#9d174d,#ec4899)"><svg viewBox="0 0 24 24" fill="white"><rect x="3" y="3" width="8" height="8" rx="2"/></svg></div>
+        </div>
+        <span class="ios-folder-name">Clopinette</span>
+      </div>
+      <div class="ios-folder-icon" data-ios-folder="digital">
+        <div class="ios-folder-box">
+          <div class="ios-folder-mini" style="background:linear-gradient(135deg,#06b6d4,#0e7490)"><svg viewBox="0 0 24 24" fill="white"><path d="M12 20h9M16.5 3.5l4 4L7 21H3v-4z"/></svg></div>
+          <div class="ios-folder-mini" style="background:linear-gradient(135deg,#0891b2,#06b6d4)"><svg viewBox="0 0 24 24" fill="white"><circle cx="12" cy="12" r="7"/></svg></div>
+          <div class="ios-folder-mini" style="background:linear-gradient(135deg,#155e75,#0e7490)"><svg viewBox="0 0 24 24" fill="white"><rect x="3" y="3" width="8" height="8" rx="2"/></svg></div>
+          <div class="ios-folder-mini" style="background:linear-gradient(135deg,#22d3ee,#0891b2)"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+        </div>
+        <span class="ios-folder-name">Digital Painting</span>
+      </div>
+      <div class="ios-folder-icon" data-ios-folder="logo">
+        <div class="ios-folder-box">
+          <div class="ios-folder-mini" style="background:linear-gradient(135deg,#10b981,#065f46)"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+          <div class="ios-folder-mini" style="background:linear-gradient(135deg,#34d399,#10b981)"><svg viewBox="0 0 24 24" fill="white"><rect x="3" y="3" width="8" height="8" rx="2"/></svg></div>
+          <div class="ios-folder-mini" style="background:linear-gradient(135deg,#059669,#047857)"><svg viewBox="0 0 24 24" fill="white"><circle cx="12" cy="12" r="7"/></svg></div>
+          <div class="ios-folder-mini" style="background:linear-gradient(135deg,#6ee7b7,#34d399)"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+        </div>
+        <span class="ios-folder-name">Logo</span>
+      </div>
     </div>
     <!-- Dock -->
     <div class="ios-dock">
@@ -1175,6 +1348,15 @@ body{
       </div>
     </div>
     <div class="ios-home-indicator"></div>
+  </div>
+
+  <!-- ══ POPUP DOSSIER iOS ══ -->
+  <div id="ios-folder-popup">
+    <div class="ios-fp-box">
+      <div class="ios-fp-title" id="ios-fp-title">Dossier</div>
+      <div class="ios-fp-grid" id="ios-fp-grid"></div>
+    </div>
+    <button class="ios-fp-close" id="ios-fp-close">&#x2715;</button>
   </div>
 
   <!-- ══ APP LAYER (slide-up depuis le bas) ══ -->
@@ -1801,6 +1983,14 @@ document.getElementById('ios-back').addEventListener('click',()=>{
   iosAppContent.innerHTML='';
 });
 
+window.openIosApp=function(appId){
+  document.getElementById('ios-folder-popup').classList.remove('open');
+  const app=IOS_APPS[appId]; if(!app) return;
+  iosAppTitleBar.textContent=app.title;
+  iosAppContent.innerHTML=app.content;
+  iosAppLayer.classList.add('open');
+};
+
 // iOS admin login
 document.getElementById('il-submit').addEventListener('click',()=>checkIosLogin());
 document.getElementById('il-pwd').addEventListener('keydown',e=>{ if(e.key==='Enter') checkIosLogin(); });
@@ -1992,17 +2182,21 @@ let topZ=300; const openWins={};
 function markApp(id,on){ document.querySelectorAll('.tb-app[data-app="'+id+'"]').forEach(b=>b.classList.toggle('open',on)); }
 function bringFront(w){ w.style.zIndex=++topZ; }
 function miniToast(w){ const t=w.querySelector('.w-toastmini'); if(!t)return; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1200); }
-function openApp(id){
+function openApp(id, customTitle, customBody, customW, customH){
   closeStart();
   if(openWins[id]){ bringFront(openWins[id]); return; }
-  const app=APPS[id]; if(!app) return;
+  let app=APPS[id];
+  if(!app && !customBody) return;
+  if(!app) app={ title:customTitle, w:customW||500, body:customBody };
   const w=document.createElement('div'); w.className='win'; const ww=app.w||360;
   w.style.setProperty('--w',ww+'px');
+  if(customH) w.style.height=customH+'px';
   const n=Object.keys(openWins).length;
   w.style.left=Math.max(12, Math.min(innerWidth-ww-20, 130+n*36))+'px';
   w.style.top=Math.max(64, 88+n*32)+'px';
   w.style.zIndex=++topZ;
-  w.innerHTML='<div class="win-bar"><span class="win-title">'+app.title+'</span><div class="win-controls"><button class="win-ctrl win-max" title="Agrandir">&#x25A1;</button><button class="win-ctrl close win-close" title="Fermer">&#x2715;</button></div></div><div class="win-body">'+app.body()+'<div class="w-toastmini">Copié !</div></div><div class="win-resize"></div>';
+  const isExplorer=id.startsWith('__folder__');
+  w.innerHTML='<div class="win-bar"><span class="win-title">'+app.title+'</span><div class="win-controls"><button class="win-ctrl win-max" title="Agrandir">&#x25A1;</button><button class="win-ctrl close win-close" title="Fermer">&#x2715;</button></div></div><div class="win-body"'+(isExplorer?' style="padding:0"':'')+'>'+app.body()+'<div class="w-toastmini">Copié !</div></div><div class="win-resize"></div>';
   winLayer.appendChild(w); openWins[id]=w; markApp(id,true);
   w.addEventListener('pointerdown',()=>bringFront(w));
   const maxBtn=w.querySelector('.win-max');
@@ -2129,13 +2323,205 @@ document.querySelectorAll('.desktop-icon[data-app]').forEach(icon => {
 });
 
 /* ════════ DOSSIERS PROJETS W11 ════════ */
+const FOLDERS = {
+  arsene:   { label:'Arsène Valentin', color:'#f59e0b', items:[
+    {name:'Identité visuelle',type:'folder',color:'#f59e0b'},
+    {name:'Charte graphique',type:'folder',color:'#d97706'},
+    {name:'Social media',type:'folder',color:'#f97316'},
+    {name:'Logo principal.svg',type:'file',ext:'SVG',color:'#f59e0b'},
+    {name:'Mockups.psd',type:'file',ext:'PSD',color:'#1565C0'},
+    {name:'Présentation.pdf',type:'file',ext:'PDF',color:'#e53935'},
+  ]},
+  clopinette:{ label:'Clopinette', color:'#ec4899', items:[
+    {name:'Branding',type:'folder',color:'#ec4899'},
+    {name:'Affiches',type:'folder',color:'#be185d'},
+    {name:'Réseaux sociaux',type:'folder',color:'#f472b6'},
+    {name:'Logo Clopinette.svg',type:'file',ext:'SVG',color:'#ec4899'},
+    {name:'Charte couleurs.pdf',type:'file',ext:'PDF',color:'#e53935'},
+    {name:'Vidéo promo.mp4',type:'file',ext:'MP4',color:'#9c27b0'},
+  ]},
+  perso:    { label:'Perso', color:'#8b5cf6', items:[
+    {name:'Croquis',type:'folder',color:'#8b5cf6'},
+    {name:'Photographie',type:'folder',color:'#7c3aed'},
+    {name:'Projets perso',type:'folder',color:'#a78bfa'},
+    {name:'Portfolio 2024.pdf',type:'file',ext:'PDF',color:'#e53935'},
+    {name:'CV Anthony.pdf',type:'file',ext:'PDF',color:'#e53935'},
+  ]},
+  digital:  { label:'Digital Painting', color:'#06b6d4', items:[
+    {name:'2024',type:'folder',color:'#0891b2'},
+    {name:'2023',type:'folder',color:'#06b6d4'},
+    {name:'WIP',type:'folder',color:'#22d3ee'},
+    {name:'Forêt mystique.psd',type:'file',ext:'PSD',color:'#1565C0'},
+    {name:'Portrait.procreate',type:'file',ext:'ART',color:'#8b5cf6'},
+    {name:'Paysage urbain.psd',type:'file',ext:'PSD',color:'#1565C0'},
+  ]},
+  logo:     { label:'Logo', color:'#10b981', items:[
+    {name:'AAR Design',type:'folder',color:'#10b981'},
+    {name:'Clients',type:'folder',color:'#059669'},
+    {name:'Études de cas',type:'folder',color:'#34d399'},
+    {name:'Logo AAR.svg',type:'file',ext:'SVG',color:'#10b981'},
+    {name:'Variations.ai',type:'file',ext:'AI',color:'#f97316'},
+    {name:'Guidelines.pdf',type:'file',ext:'PDF',color:'#e53935'},
+  ]},
+  animation:{ label:'Animation', color:'#f97316', items:[
+    {name:'Motion design',type:'folder',color:'#f97316'},
+    {name:'After Effects',type:'folder',color:'#7c3aed'},
+    {name:'Exports',type:'folder',color:'#f59e0b'},
+    {name:'Intro AAR.aep',type:'file',ext:'AEP',color:'#7c3aed'},
+    {name:'Logo animé.gif',type:'file',ext:'GIF',color:'#10b981'},
+  ]},
+  etudes:   { label:'Études', color:'#3b82f6', items:[
+    {name:"LIM'ART Paris",type:'folder',color:'#3b82f6'},
+    {name:'IUT1 Grenoble',type:'folder',color:'#1d4ed8'},
+    {name:'Certifications',type:'folder',color:'#60a5fa'},
+    {name:'TOSA Photoshop.pdf',type:'file',ext:'PDF',color:'#e53935'},
+    {name:'Diplôme Bachelor.pdf',type:'file',ext:'PDF',color:'#e53935'},
+  ]},
+};
+
+const EXT_ICONS={
+  SVG:'<svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" fill="currentColor" opacity=".15"/><text x="4" y="17" font-size="7" font-weight="700" fill="currentColor">SVG</text></svg>',
+  PSD:'<svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" fill="currentColor" opacity=".15"/><text x="4" y="17" font-size="7" font-weight="700" fill="currentColor">PSD</text></svg>',
+  PDF:'<svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" fill="currentColor" opacity=".15"/><text x="4" y="17" font-size="7" font-weight="700" fill="currentColor">PDF</text></svg>',
+  MP4:'<svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" fill="currentColor" opacity=".15"/><text x="4" y="17" font-size="7" font-weight="700" fill="currentColor">MP4</text></svg>',
+  ART:'<svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" fill="currentColor" opacity=".15"/><text x="5" y="17" font-size="6" font-weight="700" fill="currentColor">ART</text></svg>',
+  AEP:'<svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" fill="currentColor" opacity=".15"/><text x="4" y="17" font-size="7" font-weight="700" fill="currentColor">AEP</text></svg>',
+  GIF:'<svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" fill="currentColor" opacity=".15"/><text x="4" y="17" font-size="7" font-weight="700" fill="currentColor">GIF</text></svg>',
+  AI: '<svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" fill="currentColor" opacity=".15"/><text x="6" y="17" font-size="8" font-weight="700" fill="currentColor">Ai</text></svg>',
+};
+const FOLDER_SVG='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 6a2 2 0 0 1 2-2h4l2 2h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z"/></svg>';
+
+function buildExpBody(fid, view){
+  const fd=FOLDERS[fid]; if(!fd) return '';
+  if(view==='list'){
+    return `<div class="w11-exp-list">
+      <div class="w11-exp-list-head"><span>Nom</span><span>Type</span><span>Date</span></div>
+      ${fd.items.map((it,i)=>`
+      <div class="w11-exp-list-row" tabindex="0">
+        <div class="w11-exp-list-name">
+          <div class="w11-exp-list-ico" style="color:${it.color}">
+            ${it.type==='folder'?FOLDER_SVG:EXT_ICONS[it.ext]||''}
+          </div>
+          <span>${it.name}</span>
+        </div>
+        <span style="color:#888;font-size:.67rem">${it.type==='folder'?'Dossier':it.ext||'Fichier'}</span>
+        <span style="color:#aaa;font-size:.67rem">0${Math.floor(Math.random()*9+1)}/06/2025</span>
+      </div>`).join('')}
+    </div>`;
+  }
+  return `<div class="w11-exp-grid">
+    ${fd.items.map(it=>`
+    <div class="w11-exp-item">
+      <div class="w11-exp-item-thumb" style="color:${it.color};background:${it.color}18">
+        ${it.type==='folder'?FOLDER_SVG:EXT_ICONS[it.ext]||''}
+      </div>
+      <div class="w11-exp-item-label">${it.name}</div>
+    </div>`).join('')}
+  </div>`;
+}
+
+function openFolder(fid){
+  const fd=FOLDERS[fid]; if(!fd) return;
+  let view='grid';
+  const body=()=>`
+    <div class="w11-explorer">
+      <div class="w11-exp-toolbar">
+        <button class="w11-exp-tb-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6a2 2 0 0 1 2-2h4l2 2h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z"/><path d="M12 11v6M9 14h6"/></svg>Nouveau</button>
+        <div class="w11-exp-tb-sep"></div>
+        <button class="w11-exp-tb-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 5H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2M8 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M8 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2"/></svg>Copier</button>
+        <button class="w11-exp-tb-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>Renommer</button>
+        <button class="w11-exp-tb-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>Supprimer</button>
+        <div class="w11-exp-tb-sep"></div>
+        <div class="w11-exp-tb-right">
+          <button class="w11-exp-view-btn active" id="vbtn-grid-${fid}" onclick="setExpView('${fid}',this,'grid')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></svg>
+            Icônes
+          </button>
+          <button class="w11-exp-view-btn" id="vbtn-list-${fid}" onclick="setExpView('${fid}',this,'list')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            Détails
+          </button>
+        </div>
+      </div>
+      <div class="w11-exp-addrbar">
+        <button class="w11-exp-nav-btn" disabled title="Précédent"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
+        <button class="w11-exp-nav-btn" disabled title="Suivant"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>
+        <button class="w11-exp-nav-btn" title="Dossier parent"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="12 19 5 12 12 5"/><line x1="19" y1="12" x2="5" y2="12"/></svg></button>
+        <div class="w11-exp-addr">
+          <span>Ce PC</span><span class="w11-exp-addr-sep">›</span>
+          <span>Portfolio AAR</span><span class="w11-exp-addr-sep">›</span>
+          <span style="color:#0078d4;font-weight:600">${fd.label}</span>
+        </div>
+        <input class="w11-exp-search" placeholder="Rechercher dans ${fd.label}" type="search">
+      </div>
+      <div class="w11-exp-body" id="expbody-${fid}">${buildExpBody(fid,'grid')}</div>
+      <div class="w11-exp-statusbar"><span>${fd.items.length} élément(s)</span></div>
+    </div>`;
+  window._expViews=window._expViews||{};
+  window._expViews[fid]='grid';
+  openApp('__folder__'+fid, fd.label, body, 580, 440);
+}
+window.setExpView=function(fid,btn,v){
+  window._expViews[fid]=v;
+  const bd=document.getElementById('expbody-'+fid); if(!bd)return;
+  bd.innerHTML=buildExpBody(fid,v);
+  const gb=document.getElementById('vbtn-grid-'+fid);
+  const lb=document.getElementById('vbtn-list-'+fid);
+  if(gb)gb.classList.toggle('active',v==='grid');
+  if(lb)lb.classList.toggle('active',v==='list');
+};
+
 document.querySelectorAll('.desktop-folder').forEach(folder => {
   folder.addEventListener('click', function(){
     document.querySelectorAll('.desktop-icon,.desktop-folder').forEach(i => i.classList.remove('selected'));
     this.classList.add('selected');
+    openFolder(this.dataset.cluster);
   });
-  folder.addEventListener('dblclick', function(){
-    openApp('atelier');
+});
+
+/* ════════ iOS DOSSIERS ════════ */
+const IOS_FOLDERS={
+  arsene:{ title:'Arsène Valentin', items:[
+    {label:'Identité',bg:'linear-gradient(135deg,#f59e0b,#d97706)',app:'atelier'},
+    {label:'Charte',bg:'linear-gradient(135deg,#d97706,#b45309)',app:'atelier'},
+    {label:'Social',bg:'linear-gradient(135deg,#f97316,#ea580c)',app:'atelier'},
+    {label:'Mockups',bg:'linear-gradient(135deg,#fcd34d,#f59e0b)',app:'atelier'},
+  ]},
+  clopinette:{ title:'Clopinette', items:[
+    {label:'Branding',bg:'linear-gradient(135deg,#ec4899,#be185d)',app:'atelier'},
+    {label:'Affiches',bg:'linear-gradient(135deg,#f472b6,#ec4899)',app:'atelier'},
+    {label:'Réseaux',bg:'linear-gradient(135deg,#db2777,#9d174d)',app:'atelier'},
+    {label:'Vidéo',bg:'linear-gradient(135deg,#9d174d,#ec4899)',app:'atelier'},
+  ]},
+  digital:{ title:'Digital Painting', items:[
+    {label:'2024',bg:'linear-gradient(135deg,#06b6d4,#0e7490)',app:'atelier'},
+    {label:'2023',bg:'linear-gradient(135deg,#0891b2,#06b6d4)',app:'atelier'},
+    {label:'WIP',bg:'linear-gradient(135deg,#22d3ee,#0891b2)',app:'atelier'},
+  ]},
+  logo:{ title:'Logo', items:[
+    {label:'AAR Design',bg:'linear-gradient(135deg,#10b981,#065f46)',app:'atelier'},
+    {label:'Clients',bg:'linear-gradient(135deg,#059669,#047857)',app:'atelier'},
+    {label:'Guides',bg:'linear-gradient(135deg,#34d399,#10b981)',app:'atelier'},
+  ]},
+};
+const iosFolderPopup=document.getElementById('ios-folder-popup');
+const iosFpTitle=document.getElementById('ios-fp-title');
+const iosFpGrid=document.getElementById('ios-fp-grid');
+document.getElementById('ios-fp-close').addEventListener('click',()=>iosFolderPopup.classList.remove('open'));
+iosFolderPopup.addEventListener('click',e=>{ if(e.target===iosFolderPopup) iosFolderPopup.classList.remove('open'); });
+document.querySelectorAll('.ios-folder-icon[data-ios-folder]').forEach(el=>{
+  el.addEventListener('click',()=>{
+    const fid=el.dataset.iosFolder;
+    const fd=IOS_FOLDERS[fid]; if(!fd) return;
+    iosFpTitle.textContent=fd.title;
+    iosFpGrid.innerHTML=fd.items.map(it=>`
+      <div class="ios-app-icon" style="cursor:pointer" onclick="openIosApp('${it.app}')">
+        <div class="ios-icon-img" style="background:${it.bg};width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" width="26" height="26"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+        </div>
+        <span class="ios-icon-label" style="color:#fff;font-size:.58rem">${it.label}</span>
+      </div>`).join('');
+    iosFolderPopup.classList.add('open');
   });
 });
 
