@@ -686,6 +686,108 @@ function markTb(id,on){
 }
 
 /* ═══════════════════════════════════════
+   IDENTITY / DYNAMIC BUILDERS
+═══════════════════════════════════════ */
+function applyIdentity(){
+  const hero = JSON.parse(localStorage.getItem('aar_sec_hero')||'null');
+  if(hero){
+    const nameEl=document.getElementById('ls-name');
+    const roleEl=document.getElementById('ls-role');
+    const badgeEl=document.getElementById('desk-identity');
+    if(nameEl && hero.intro) nameEl.textContent=hero.intro;
+    if(roleEl && hero.t1) roleEl.textContent=(hero.t1||'')+(hero.t2?' · '+hero.t2:'');
+    if(badgeEl){
+      const lines=badgeEl.querySelectorAll('div');
+      if(lines[0] && hero.intro) lines[0].textContent=hero.intro.toUpperCase();
+      if(lines[1] && hero.t1) lines[1].textContent=(hero.t1||'')+(hero.t3?' · '+hero.t3:'')+(hero.t2?' · '+hero.t2:'');
+    }
+  }
+}
+applyIdentity();
+
+function buildContactChips(){
+  const ct = JSON.parse(localStorage.getItem('aar_sec_contact')||'null');
+  const email = ct?.email||'aardesign14@gmail.com';
+  const phone = ct?.phone||'06 79 46 62 19';
+  return [
+    `📧 ${email}`,`📱 ${phone}`,`📍 Caen, Normandie`,`🌐 aardesign.fr`,`🪪 Permis B`
+  ].map(c=>`<span class="cv-chip">${c}</span>`).join('');
+}
+
+function buildCVBody(){
+  const DEF_CV_DATA={skills:[['Photoshop',95],['InDesign',92],['Illustrator',90],['Lightroom',88],['HTML/CSS',75],['Digital Painting',65]],experiences:[['AAR Design — Auto-entrepreneur','2024–présent','Création graphique, DA, Web, Illustration'],['Clopinette / Arsène Valentin — CDI','2020–présent · Caen','DA, Packaging, Digital Painting'],['Creacom — CDD','2019 · Valence','Création graphique, communication'],['Optimind Winter — Stage','2017–2019 · Paris VIII','DA, Web design, Communication digitale']],languages:[['Français','Natif'],['Anglais','C1'],['Italien','A2'],['Japonais','A1']]};
+  const cv = JSON.parse(localStorage.getItem('aar_cv')||'null');
+  const hero = JSON.parse(localStorage.getItem('aar_sec_hero')||'null');
+  const name = hero ? (hero.intro||'Anthony Armand') : 'Anthony Armand';
+  const role = hero ? ((hero.t1||'')+(hero.t2?' · '+hero.t2:'')) : 'Directeur Artistique · AAR Design';
+  const skills = cv ? cv.skills.map(s=>[s.n,s.p]) : DEF_CV_DATA.skills;
+  const exps = cv ? cv.experiences.map(e=>[e.t,e.d,e.c]) : DEF_CV_DATA.experiences;
+  const langs = cv ? cv.languages.map(l=>[l.l,l.n]) : DEF_CV_DATA.languages;
+  return `<div class="cv-header">
+    <div class="cv-avatar"><img src="assets/Logo-Aardesign-Court.png" alt=""></div>
+    <div><div class="cv-h-name">${name}</div><div class="cv-h-role">${role}</div></div>
+  </div>
+  <div class="cv-chips">
+    ${buildContactChips()}
+  </div>
+  <div class="cv-sec-title">Compétences</div>
+  ${skills.map(([n,p])=>`<div class="cv-skill"><span class="cv-skill-name">${n}</span><div class="cv-skill-bar"><div class="cv-skill-fill" style="width:${p}%"></div></div><span class="cv-skill-pct">${p}%</span></div>`).join('')}
+  <div class="cv-sec-title">Expériences</div>
+  ${exps.map(([t,d,c])=>`<div class="cv-tl-item"><div class="cv-tl-dot"></div><div><div class="cv-tl-title">${t}</div><div class="cv-tl-sub">${d}</div><div class="cv-tl-desc">${c}</div></div></div>`).join('')}
+  <div class="cv-sec-title">Langues</div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap">
+    ${langs.map(([l,n])=>`<div style="background:var(--icon-bg);border-radius:20px;padding:5px 12px;text-align:center"><div style="font-size:.7rem;font-weight:700;color:var(--ink)">${l}</div><div style="font-size:.58rem;color:var(--mid)">${n}</div></div>`).join('')}
+  </div>`;
+}
+
+function buildContactBody(){
+  const ct = JSON.parse(localStorage.getItem('aar_sec_contact')||'null');
+  const email = ct?.email||'aardesign14@gmail.com';
+  const phone = ct?.phone||'06 79 46 62 19';
+  const ig = ct?.ig||'https://instagram.com/aardesign';
+  const be = ct?.be||'https://behance.net/anthonyarmand';
+  const hero = JSON.parse(localStorage.getItem('aar_sec_hero')||'null');
+  const role = hero ? ((hero.t1||'DA')+(hero.t2?' · '+hero.t2:'')) : 'DA · Digital Painting · AAR Design';
+  return `<div class="w-profile">
+    <div class="w-ava"><img src="assets/Logo-Aardesign-Court.png" alt=""></div>
+    <div><div class="w-name">Anthony Armand</div><div class="w-role">${role}</div></div>
+  </div>
+  <div class="w-row">
+    <div class="w-row-ico"><svg viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="1.8" width="18" height="18"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 7 8.5 6 8.5-6"/></svg></div>
+    <div class="w-row-info"><div class="w-row-lbl">Email</div><div class="w-row-val">${email}</div></div>
+    <div class="w-row-acts"><a class="w-btn pri" href="mailto:${email}">Écrire</a><button class="w-btn" data-copy="${email}">Copier</button></div>
+  </div>
+  <div class="w-row">
+    <div class="w-row-ico"><svg viewBox="0 0 24 24" fill="none" stroke="#30D158" stroke-width="1.8" width="18" height="18"><path d="M22 16.9v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.9z"/></svg></div>
+    <div class="w-row-info"><div class="w-row-lbl">Téléphone</div><div class="w-row-val">${phone}</div></div>
+    <div class="w-row-acts"><a class="w-btn pri" href="tel:${phone.replace(/\s/g,'')}">Appeler</a><button class="w-btn" data-copy="${phone}">Copier</button></div>
+  </div>
+  <div class="w-row">
+    <div class="w-row-ico"><svg viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="1.8" width="18" height="18"><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></div>
+    <div class="w-row-info"><div class="w-row-lbl">Localisation</div><div class="w-row-val">Caen · France · Remote OK</div></div>
+  </div>
+  ${ig?`<div class="w-row"><div class="w-row-ico"><svg viewBox="0 0 24 24" fill="none" stroke="#d6249f" stroke-width="1.8" width="18" height="18"><rect x="3" y="3" width="18" height="18" rx="5.5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="#d6249f" stroke="none"/></svg></div><div class="w-row-info"><div class="w-row-lbl">Instagram</div><div class="w-row-val">@aardesign</div></div><div class="w-row-acts"><a class="w-btn pri" href="${ig}" target="_blank">Voir</a></div></div>`:''}
+  ${be?`<div class="w-row"><div class="w-row-ico" style="background:var(--icon-bg)"><svg viewBox="0 0 24 24" fill="none" width="18" height="18"><text x="3" y="17" font-size="13" font-weight="900" fill="#053eff" font-family="Georgia">Bē</text></svg></div><div class="w-row-info"><div class="w-row-lbl">Behance</div><div class="w-row-val">Portfolio en ligne</div></div><div class="w-row-acts"><a class="w-btn pri" href="${be}" target="_blank">Voir</a></div></div>`:''}`;
+}
+
+function buildAboutBody(){
+  const ab = JSON.parse(localStorage.getItem('aar_sec_about')||'null');
+  const text = ab ? (ab.p1||'')+' '+(ab.p2||'') : 'Designer pluridisciplinaire à l\'intersection du digital painting, de l\'illustration narrative et de la direction artistique. 5+ ans d\'expérience en création graphique, packaging premium et communication visuelle.';
+  const stats = ab?.stats || [{n:'5+',l:'Années exp.'},{n:'35+',l:'Œuvres'},{n:'8',l:'Disciplines'}];
+  return `<div class="w-profile">
+    <div class="w-ava"><img src="assets/Logo-Aardesign-Court.png" alt=""></div>
+    <div><div class="w-name">Anthony Armand</div><div class="w-role">AAR Design · Caen</div></div>
+  </div>
+  <p style="font-size:.78rem;line-height:1.75;color:var(--mid);margin-bottom:14px">${text}</p>
+  <div style="display:grid;grid-template-columns:repeat(${Math.min(stats.length,4)},1fr);gap:8px;margin-bottom:14px">
+    ${stats.slice(0,4).map(s=>`<div class="ab-stat"><div class="ab-stat-n">${s.n}</div><div class="ab-stat-l">${s.l}</div></div>`).join('')}
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:5px">
+    ${'🎨 Digital Painting,✏️ Illustration,📐 Direction Artistique,📦 Packaging,🌐 Web Design,📷 Photographie'.split(',').map(d=>`<span class="ab-tag">${d}</span>`).join('')}
+  </div>`;
+}
+
+/* ═══════════════════════════════════════
    APP BUILDERS
 ═══════════════════════════════════════ */
 function openApp(id){
@@ -712,55 +814,11 @@ function openApp(id){
     },
     cv:{
       title:'CV — Anthony Armand',w:660,h:560,ico:icoCV,
-      body:`<div class="cv-header">
-        <div class="cv-avatar"><img src="assets/Logo-Aardesign-Court.png" alt=""></div>
-        <div><div class="cv-h-name">Anthony Armand</div><div class="cv-h-role">Directeur Artistique · Graphiste · Designer</div></div>
-      </div>
-      <div class="cv-chips">
-        ${['📧 aardesign14@gmail.com','📱 06 79 46 62 19','📍 Caen, Normandie','🌐 aardesign.fr','🪪 Permis B'].map(c=>`<span class="cv-chip">${c}</span>`).join('')}
-      </div>
-      <div class="cv-sec-title">Compétences</div>
-      ${[['Photoshop',95],['InDesign',92],['Illustrator',90],['Lightroom',88],['HTML/CSS',75],['Digital Painting',65]].map(([n,p])=>`
-      <div class="cv-skill">
-        <span class="cv-skill-name">${n}</span>
-        <div class="cv-skill-bar"><div class="cv-skill-fill" style="width:${p}%"></div></div>
-        <span class="cv-skill-pct">${p}%</span>
-      </div>`).join('')}
-      <div class="cv-sec-title">Expériences</div>
-      ${[['AAR Design — Auto-entrepreneur','2024–présent','Création graphique, DA, Web, Illustration'],
-         ['Clopinette / Arsène Valentin — CDI','2020–présent · Caen','DA, Packaging, Digital Painting'],
-         ['Creacom — CDD','2019 · Valence','Création graphique, communication'],
-         ['Optimind Winter — Stage','2017–2019 · Paris VIII','DA, Web design, Communication digitale']
-      ].map(([t,d,c])=>`<div class="cv-tl-item"><div class="cv-tl-dot"></div><div><div class="cv-tl-title">${t}</div><div class="cv-tl-sub">${d}</div><div class="cv-tl-desc">${c}</div></div></div>`).join('')}
-      <div class="cv-sec-title">Langues</div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        ${[['Français','Natif'],['Anglais','C1'],['Italien','A2'],['Japonais','A1']].map(([l,n])=>`
-        <div style="background:var(--icon-bg);border-radius:20px;padding:5px 12px;text-align:center">
-          <div style="font-size:.7rem;font-weight:700;color:var(--ink)">${l}</div>
-          <div style="font-size:.58rem;color:var(--mid)">${n}</div>
-        </div>`).join('')}
-      </div>`
+      body: buildCVBody()
     },
     contact:{
       title:'Contact',w:420,h:380,ico:icoContact,
-      body:`<div class="w-profile">
-        <div class="w-ava"><img src="assets/Logo-Aardesign-Court.png" alt=""></div>
-        <div><div class="w-name">Anthony Armand</div><div class="w-role">DA · Digital Painting · AAR Design</div></div>
-      </div>
-      <div class="w-row">
-        <div class="w-row-ico"><svg viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="1.8" width="18" height="18"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 7 8.5 6 8.5-6"/></svg></div>
-        <div class="w-row-info"><div class="w-row-lbl">Email</div><div class="w-row-val">aardesign14@gmail.com</div></div>
-        <div class="w-row-acts"><a class="w-btn pri" href="mailto:aardesign14@gmail.com">Écrire</a><button class="w-btn" data-copy="aardesign14@gmail.com">Copier</button></div>
-      </div>
-      <div class="w-row">
-        <div class="w-row-ico"><svg viewBox="0 0 24 24" fill="none" stroke="#30D158" stroke-width="1.8" width="18" height="18"><path d="M22 16.9v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.9z"/></svg></div>
-        <div class="w-row-info"><div class="w-row-lbl">Téléphone</div><div class="w-row-val">06 79 46 62 19</div></div>
-        <div class="w-row-acts"><a class="w-btn pri" href="tel:0679466219">Appeler</a><button class="w-btn" data-copy="0679466219">Copier</button></div>
-      </div>
-      <div class="w-row">
-        <div class="w-row-ico"><svg viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="1.8" width="18" height="18"><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></div>
-        <div class="w-row-info"><div class="w-row-lbl">Localisation</div><div class="w-row-val">Caen · France · Remote OK</div></div>
-      </div>`
+      body: buildContactBody()
     },
     mail:{
       title:'Écrire à Anthony',w:420,h:370,ico:icoMail,
@@ -772,18 +830,7 @@ function openApp(id){
     },
     about:{
       title:'À propos — AAR Design',w:400,h:380,ico:icoAbout,
-      body:`<div class="w-profile">
-        <div class="w-ava"><img src="assets/Logo-Aardesign-Court.png" alt=""></div>
-        <div><div class="w-name">Anthony Armand</div><div class="w-role">AAR Design · Caen</div></div>
-      </div>
-      <p style="font-size:.78rem;line-height:1.75;color:var(--mid);margin-bottom:14px">Designer pluridisciplinaire à l'intersection du <b style="color:var(--ink)">digital painting</b>, de l'illustration narrative et de la <b style="color:var(--ink)">direction artistique</b>. 5+ ans d'expérience en création graphique, packaging premium et communication visuelle.</p>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px">
-        ${[['5+','Années exp.'],['35+','Œuvres'],['8','Disciplines']].map(([n,l])=>`
-        <div class="ab-stat"><div class="ab-stat-n">${n}</div><div class="ab-stat-l">${l}</div></div>`).join('')}
-      </div>
-      <div style="display:flex;flex-wrap:wrap;gap:5px">
-        ${['🎨 Digital Painting','✏️ Illustration','📐 Direction Artistique','📦 Packaging','🌐 Web Design','📷 Photographie'].map(d=>`<span class="ab-tag">${d}</span>`).join('')}
-      </div>`
+      body: buildAboutBody()
     },
   };
 
