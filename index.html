@@ -122,7 +122,7 @@ body{background:var(--wall-a);color:var(--ink);transition:background .4s,color .
    TOP BAR
 ═══════════════════════════════════════ */
 #topbar{
-  position:fixed;top:0;left:0;right:0;height:44px;z-index:100;
+  position:fixed;top:0;left:0;right:0;height:64px;z-index:100;
   display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:0 10px;
   background:var(--bar-bg);
   border-bottom:1px solid var(--bar-border);
@@ -132,7 +132,7 @@ body{background:var(--wall-a);color:var(--ink);transition:background .4s,color .
 /* hamburger */
 #tb-burger{
   display:flex;align-items:center;justify-content:flex-start;
-  width:36px;height:36px;border-radius:8px;border:none;cursor:pointer;
+  width:44px;height:44px;border-radius:8px;border:none;cursor:pointer;
   background:none;color:var(--mid);flex-direction:column;gap:4px;padding:8px 7px;
   transition:background .15s,color .15s;
 }
@@ -142,7 +142,7 @@ body{background:var(--wall-a);color:var(--ink);transition:background .4s,color .
 #tb-logo-center{
   display:flex;align-items:center;justify-content:center;
 }
-#tb-logo-center img{max-height:32px;width:auto;opacity:.92;filter:brightness(0) invert(1)}
+#tb-logo-center img{max-height:44px;width:auto;opacity:.92;filter:brightness(0) invert(1)}
 /* droite */
 #tb-right{display:flex;align-items:center;justify-content:flex-end;gap:6px}
 .tb-ico-btn{
@@ -154,7 +154,7 @@ body{background:var(--wall-a);color:var(--ink);transition:background .4s,color .
 #tb-clock{font-size:.65rem;font-weight:600;color:var(--mid);letter-spacing:.04em;white-space:nowrap}
 /* drawer menu */
 #tb-drawer{
-  position:fixed;top:44px;left:0;bottom:0;width:240px;z-index:200;
+  position:fixed;top:64px;left:0;bottom:0;width:240px;z-index:200;
   background:var(--win-bg);border-right:1px solid var(--win-border);
   backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);
   display:flex;flex-direction:column;padding:8px;gap:2px;
@@ -163,7 +163,7 @@ body{background:var(--wall-a);color:var(--ink);transition:background .4s,color .
 }
 #tb-drawer.open{transform:translateX(0)}
 #tb-drawer-overlay{
-  position:fixed;inset:44px 0 0 0;z-index:199;
+  position:fixed;inset:64px 0 0 0;z-index:199;
   display:none;
 }
 #tb-drawer.open ~ #tb-drawer-overlay{display:block}
@@ -193,7 +193,7 @@ body{background:var(--wall-a);color:var(--ink);transition:background .4s,color .
    DESKTOP
 ═══════════════════════════════════════ */
 #desktop{
-  position:fixed;inset:44px 0 0 0;z-index:1;
+  position:fixed;inset:64px 0 0 0;z-index:1;
   display:flex;align-items:flex-start;
   pointer-events:none;
 }
@@ -424,7 +424,7 @@ body{background:var(--wall-a);color:var(--ink);transition:background .4s,color .
      LOCK SCREEN
 ══════════════════════════════════════════ -->
 <div id="lockscreen">
-  <div id="ls-logo"><img src="assets/Logo-Aardesign-Long.png" alt="AAR Design" style="width:min(20vw,280px);opacity:.88;filter:brightness(0) invert(1)"></div>
+  <div id="ls-logo"><img src="assets/Logo-Aardesign-Long.png" alt="AAR Design" style="width:clamp(160px,28vw,360px);opacity:.88;filter:brightness(0) invert(1)"></div>
   <div id="ls-time">00:00</div>
   <div id="ls-date">—</div>
   <div id="ls-name">Anthony Armand</div>
@@ -443,7 +443,7 @@ body{background:var(--wall-a);color:var(--ink);transition:background .4s,color .
 
   <!-- Logo centré -->
   <div id="tb-logo-center">
-    <img src="assets/Logo-Aardesign-Long.png" alt="AAR Design" style="width:min(18vw,260px);max-height:32px;opacity:.92;filter:brightness(0) invert(1)">
+    <img src="assets/Logo-Aardesign-Long.png" alt="AAR Design" style="width:clamp(140px,22vw,320px);max-height:44px;opacity:.92;filter:brightness(0) invert(1)">
   </div>
 
   <!-- Droite -->
