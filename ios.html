@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>iOS 27 — AAR Design</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+
+:root{
+  --sf:  -apple-system,'Helvetica Neue',Helvetica,Arial,sans-serif;
+  --blue:#007AFF; --blue2:#0A84FF;
+  --green:#30D158; --red:#FF3B30; --purple:#BF5AF2;
+  --pink:#FF2D55;  --orange:#FF9F0A; --teal:#5AC8F5;
+  --col:4; --icon:60px; --radius:14px;
+  --dock-pad:14px 20px;
+  --grid-pad:54px 10px 10px;
+  --label:0.6rem;
+  --di-h:36px; /* dynamic island height */
+}
+
+/* ── Tablet ── */
+@media(min-width:600px){
+  :root{ --col:5; --icon:68px; --radius:16px; --grid-pad:60px 16px 12px; --label:0.65rem; --di-h:0px; }
+}
+/* ── Desktop ── */
+@media(min-width:1024px){
+  :root{ --col:6; --icon:76px; --radius:18px; --grid-pad:70px 24px 14px; --label:0.68rem; }
+}
+
+html,body{
+  width:100%; height:100%; overflow:hidden;
+  font-family:var(--sf);
+  background:#000;
+  user-select:none;
+}
+
+/* ════════════════════════════════
+   WALLPAPER
+════════════════════════════════ */
+#ios-wall{
+  position:fixed; inset:0; z-index:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 10%,  rgba(120,50,220,.55) 0%, transparent 60%),
+    radial-gradient(ellipse 70% 50% at 85% 15%,  rgba(0,180,255,.45)  0%, transparent 55%),
+    radial-gradient(ellipse 90% 70% at 50% 50%,  rgba(30,10,80,.9)    0%, transparent 80%),
+    radial-gradient(ellipse 60% 50% at 10% 85%,  rgba(255,45,85,.35)  0%, transparent 55%),
+    radial-gradient(ellipse 80% 60% at 90% 90%,  rgba(100,210,100,.25) 0%, transparent 55%),
+    linear-gradient(160deg, #0a0018 0%, #10002e 35%, #001a40 65%, #000810 100%);
+  animation: wallshift 18s ease-in-out infinite alternate;
+}
+@keyframes wallshift{
+  0%  { filter:hue-rotate(0deg)   brightness(1); }
+  50% { filter:hue-rotate(15deg)  brightness(1.05); }
+  100%{ filter:hue-rotate(-10deg) brightness(.98); }
+}
+/* Grain subtil */
+#ios-wall::after{
+  content:''; position:absolute; inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity:.35; pointer-events:none;
+}
+
+/* ════════════════════════════════
+   STATUS BAR
+════════════════════════════════ */
+#ios-status{
+  position:fixed; top:0; left:0; right:0; z-index:500;
+  height:50px; display:flex; align-items:flex-end;
+  padding:0 22px 9px;
+  justify-content:space-between;
+  pointer-events:none;
+}
+#ios-status-time{
+  font-size:.82rem; font-weight:700; color:#fff; letter-spacing:-.01em;
+}
+.ios-status-icons{ display:flex; align-items:center; gap:7px; }
+.ios-sig{ display:flex; align-items:flex-end; gap:1.5px; }
+.ios-sig span{
+  width:3px; background:#fff; border-radius:1px;
+  display:block;
+}
+.ios-sig span:nth-child(1){ height:4px; }
+.ios-sig span:nth-child(2){ height:7px; }
+.ios-sig span:nth-child(3){ height:10px; }
+.ios-sig span:nth-child(4){ height:13px; opacity:.4; }
+.ios-wifi svg{ width:16px; height:12px; fill:white; }
+.ios-batt{
+  width:25px; height:12px; border-radius:3px;
+  border:1.5px solid rgba(255,255,255,.5); position:relative;
+  display:flex; align-items:center; padding:1.5px;
+}
+.ios-batt::after{
+  content:''; position:absolute; right:-4.5px; top:50%;
+  transform:translateY(-50%); width:2.5px; height:5px;
+  background:rgba(255,255,255,.45); border-radius:0 2px 2px 0;
+}
+.ios-batt-fill{
+  background:#fff; height:100%; border-radius:1.5px; width:78%;
+}
+
+/* ── Dynamic Island (mobile seulement) ── */
+#ios-di{
+  position:fixed; top:11px; left:50%; transform:translateX(-50%);
+  width:126px; height:var(--di-h); border-radius:20px;
+  background:#000; z-index:600;
+  transition:width .4s cubic-bezier(.4,0,.2,1), height .4s cubic-bezier(.4,0,.2,1);
+}
+@media(min-width:600px){ #ios-di{ display:none; } }
+
+/* ════════════════════════════════
+   HOME SCREEN CONTAINER
+════════════════════════════════ */
+#ios-home{
+  position:fixed; inset:0; z-index:1;
+  display:flex; flex-direction:column;
+  overflow:hidden;
+}
+
+/* ── Scrollable pages ── */
+#ios-pages{
+  flex:1; overflow-y:auto; scroll-snap-type:y mandatory;
+  -webkit-overflow-scrolling:touch; scrollbar-width:none;
+  padding:var(--grid-pad);
+  display:flex; flex-direction:column; gap:2rem;
+}
+#ios-pages::-webkit-scrollbar{ display:none; }
+
+/* Page */
+.ios-page{
+  scroll-snap-align:start; flex-shrink:0;
+}
+
+/* ── Icon grid ── */
+.ios-grid{
+  display:grid;
+  grid-template-columns:repeat(var(--col),1fr);
+  gap:.5rem 0;
+}
+
+/* ── App icon ── */
+.ios-icon{
+  display:flex; flex-direction:column; align-items:center;
+  gap:.35rem; cursor:pointer; position:relative;
+  padding:.2rem 0;
+}
+.ios-icon-face{
+  width:var(--icon); height:var(--icon);
+  border-radius:var(--radius);
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 3px 14px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.18);
+  transition:transform .14s cubic-bezier(.4,0,.2,1), box-shadow .14s;
+  overflow:hidden; position:relative; flex-shrink:0;
+}
+.ios-icon-face::after{
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(160deg, rgba(255,255,255,.18) 0%, transparent 60%);
+  border-radius:inherit; pointer-events:none;
+}
+.ios-icon:active .ios-icon-face{
+  transform:scale(.86);
+  box-shadow:0 1px 6px rgba(0,0,0,.3);
+}
+.ios-icon-face svg{ width:calc(var(--icon)*.5); height:calc(var(--icon)*.5); }
+.ios-icon-face img{ width:100%; height:100%; object-fit:cover; }
+.ios-icon-label{
+  font-size:var(--label); font-weight:400; color:#fff;
+  text-align:center; text-shadow:0 1px 4px rgba(0,0,0,.8);
+  max-width:calc(var(--icon)+10px);
+  overflow:hidden; white-space:nowrap; text-overflow:ellipsis;
+  line-height:1.2;
+}
+
+/* ── Page dots ── */
+#ios-dots{
+  display:flex; justify-content:center; gap:6px;
+  padding:6px 0 4px; z-index:2; flex-shrink:0;
+}
+.ios-dot{
+  width:7px; height:7px; border-radius:50%;
+  background:rgba(255,255,255,.35); transition:all .2s;
+}
+.ios-dot.active{ background:#fff; width:18px; border-radius:4px; }
+
+/* ════════════════════════════════
+   DOSSIER ICON
+════════════════════════════════ */
+.ios-folder-face{
+  width:var(--icon); height:var(--icon);
+  border-radius:var(--radius);
+  background:rgba(255,255,255,.2);
+  backdrop-filter:blur(20px) saturate(160%);
+  border:1px solid rgba(255,255,255,.25);
+  display:grid; grid-template-columns:1fr 1fr;
+  grid-template-rows:1fr 1fr; gap:3px; padding:8px;
+  box-shadow:0 3px 14px rgba(0,0,0,.4);
+  transition:transform .14s cubic-bezier(.4,0,.2,1);
+  flex-shrink:0; overflow:hidden; position:relative;
+}
+.ios-folder-face::after{
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(160deg, rgba(255,255,255,.18) 0%, transparent 60%);
+  border-radius:inherit; pointer-events:none;
+}
+.ios-icon:active .ios-folder-face{ transform:scale(.86); }
+.ios-fm{
+  border-radius:4px; display:flex; align-items:center; justify-content:center; overflow:hidden;
+}
+.ios-fm svg{ width:11px; height:11px; }
+
+/* ════════════════════════════════
+   DOCK
+════════════════════════════════ */
+#ios-dock{
+  flex-shrink:0; display:flex; justify-content:center;
+  padding:10px 16px 28px;
+}
+@media(min-width:600px){ #ios-dock{ padding:10px 20px 20px; } }
+.ios-dock-inner{
+  display:flex; gap:14px; align-items:flex-end;
+  background:rgba(255,255,255,.14);
+  backdrop-filter:blur(40px) saturate(180%);
+  border:1px solid rgba(255,255,255,.2);
+  border-radius:30px; padding:12px 18px;
+  box-shadow:0 8px 32px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.12);
+}
+@media(min-width:600px){ .ios-dock-inner{ gap:18px; padding:14px 24px; border-radius:36px; } }
+.ios-dock-inner .ios-icon-face{
+  width:calc(var(--icon)*1.05); height:calc(var(--icon)*1.05);
+}
+
+/* ════════════════════════════════
+   HOME INDICATOR
+════════════════════════════════ */
+#ios-hi{
+  position:fixed; bottom:8px; left:50%; transform:translateX(-50%);
+  width:135px; height:5px; background:rgba(255,255,255,.4);
+  border-radius:3px; z-index:600;
+}
+@media(min-width:600px){ #ios-hi{ display:none; } }
+
+/* ════════════════════════════════
+   FOLDER POPUP
+════════════════════════════════ */
+#ios-folder-popup{
+  position:fixed; inset:0; z-index:800;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  background:rgba(0,0,0,.55);
+  backdrop-filter:blur(28px) saturate(160%);
+  opacity:0; pointer-events:none;
+  transition:opacity .3s cubic-bezier(.4,0,.2,1);
+}
+#ios-folder-popup.open{
+  opacity:1; pointer-events:auto;
+}
+.ios-fp-card{
+  background:rgba(255,255,255,.18);
+  backdrop-filter:blur(40px) saturate(200%);
+  border:1px solid rgba(255,255,255,.28);
+  border-radius:24px; padding:20px;
+  width:min(300px, 90vw);
+  box-shadow:0 20px 60px rgba(0,0,0,.5);
+  transform:scale(.88) translateY(20px);
+  transition:transform .35s cubic-bezier(.34,1.56,.64,1);
+}
+#ios-folder-popup.open .ios-fp-card{
+  transform:scale(1) translateY(0);
+}
+.ios-fp-title{
+  color:#fff; font-size:.8rem; font-weight:600; text-align:center;
+  margin-bottom:14px; letter-spacing:.01em;
+}
+.ios-fp-grid{
+  display:grid; grid-template-columns:repeat(3,1fr); gap:10px;
+  justify-items:center;
+}
+.ios-fp-btn{
+  background:rgba(255,255,255,.18); border:none; color:#fff;
+  font-size:.82rem; font-weight:600; cursor:pointer;
+  width:46px; height:46px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  margin:14px auto 0; display:flex;
+  backdrop-filter:blur(12px);
+  transition:background .2s;
+}
+.ios-fp-btn:hover{ background:rgba(255,255,255,.28); }
+
+/* ════════════════════════════════
+   APP LAYER (fullscreen)
+════════════════════════════════ */
+#ios-app-layer{
+  position:fixed; inset:0; z-index:700;
+  display:flex; flex-direction:column;
+  transform:translateY(105%);
+  transition:transform .4s cubic-bezier(.4,0,.2,1);
+  background:#f2f2f7;
+  border-radius:0;
+}
+#ios-app-layer.open{
+  transform:translateY(0);
+  border-radius:0;
+}
+
+/* Barre de navigation app */
+.ios-app-topbar{
+  display:flex; align-items:flex-end; height:80px;
+  padding:0 16px 12px;
+  background:rgba(248,248,248,.95);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(0,0,0,.08);
+  flex-shrink:0; position:relative; z-index:2;
+}
+@media(min-width:600px){ .ios-app-topbar{ height:60px; padding:0 24px 10px; } }
+.ios-app-back{
+  display:flex; align-items:center; gap:3px;
+  background:none; border:none; color:var(--blue); cursor:pointer;
+  font:400 .9rem/1 var(--sf); padding:.2rem 0;
+}
+.ios-app-back svg{ width:20px; height:20px; }
+.ios-app-title{
+  position:absolute; left:0; right:0; bottom:12px;
+  text-align:center; font:.6rem/.9rem var(--sf);
+  font-size:.9rem; font-weight:600; color:#1a1a1a;
+  pointer-events:none;
+}
+.ios-app-scroll{
+  flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+}
+.ios-app-scroll::-webkit-scrollbar{ display:none; }
+
+/* ════════════════════════════════
+   BOUTON RETOUR ACCUEIL
+════════════════════════════════ */
+#ios-back-home{
+  position:fixed; bottom:40px; right:20px; z-index:900;
+  background:rgba(255,255,255,.18);
+  backdrop-filter:blur(20px) saturate(180%);
+  border:1px solid rgba(255,255,255,.3);
+  color:#fff; font:600 .72rem var(--sf);
+  padding:.55rem 1.1rem; border-radius:20px; cursor:pointer;
+  white-space:nowrap; box-shadow:0 4px 16px rgba(0,0,0,.3);
+  transition:background .2s, transform .15s;
+}
+#ios-back-home:active{ transform:scale(.95); }
+@media(min-width:600px){ #ios-back-home{ bottom:30px; right:32px; } }
+
+/* ════════════════════════════════
+   CONTENU DES APPS
+════════════════════════════════ */
+
+/* Common card */
+.ac{ background:#fff; border-radius:16px; margin:12px 16px; overflow:hidden; box-shadow:0 1px 4px rgba(0,0,0,.07); }
+@media(min-width:600px){ .ac{ margin:16px 24px; } }
+.ac-head{ padding:14px 16px 10px; font-size:.72rem; font-weight:600; color:#8e8e93; text-transform:uppercase; letter-spacing:.06em; }
+.ac-row{ display:flex; align-items:center; gap:12px; padding:12px 16px; border-top:1px solid #f2f2f7; }
+.ac-ico{ width:36px; height:36px; border-radius:9px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.ac-ico svg{ width:18px; height:18px; }
+.ac-info{ flex:1; }
+.ac-lbl{ font-size:.7rem; color:#8e8e93; }
+.ac-val{ font-size:.85rem; font-weight:500; color:#1c1c1e; }
+.ac-action{ font-size:.75rem; color:var(--blue); font-weight:500; cursor:pointer; white-space:nowrap; }
+.ac-action a{ color:var(--blue); text-decoration:none; }
+
+/* CV */
+.cv-hero{ background:linear-gradient(135deg,#1B3560,#29B8D9); padding:28px 20px; display:flex; align-items:center; gap:16px; }
+.cv-hero-ava{ width:72px; height:72px; border-radius:16px; overflow:hidden; border:2px solid rgba(255,255,255,.3); flex-shrink:0; }
+.cv-hero-ava img{ width:100%; height:100%; object-fit:cover; }
+.cv-hero-name{ font-size:1.2rem; font-weight:700; color:#fff; }
+.cv-hero-role{ font-size:.72rem; color:rgba(255,255,255,.8); margin-top:3px; }
+.cv-chips{ display:flex; flex-wrap:wrap; gap:6px; padding:12px 16px 6px; }
+.cv-chip{ background:#f2f2f7; border-radius:20px; padding:4px 10px; font-size:.65rem; color:#444; }
+.cv-section{ padding:0 16px 12px; }
+.cv-section-title{ font-size:.7rem; font-weight:700; color:#8e8e93; text-transform:uppercase; letter-spacing:.08em; padding:14px 0 8px; }
+.cv-skill{ display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+.cv-skill-name{ font-size:.72rem; width:110px; flex-shrink:0; color:#1c1c1e; }
+.cv-skill-bar{ flex:1; height:5px; background:#e5e5ea; border-radius:3px; overflow:hidden; }
+.cv-skill-fill{ height:100%; background:linear-gradient(90deg,#1B3560,#29B8D9); border-radius:3px; }
+.cv-skill-pct{ font-size:.62rem; color:#8e8e93; width:32px; text-align:right; }
+.cv-timeline-item{ display:flex; gap:12px; padding:8px 0; border-bottom:1px solid #f2f2f7; }
+.cv-tl-dot{ width:10px; height:10px; border-radius:50%; background:var(--blue); flex-shrink:0; margin-top:4px; }
+.cv-tl-title{ font-size:.78rem; font-weight:600; color:#1c1c1e; }
+.cv-tl-sub{ font-size:.65rem; color:var(--blue); font-weight:500; }
+.cv-tl-desc{ font-size:.65rem; color:#8e8e93; }
+.cv-lang-row{ display:flex; flex-wrap:wrap; gap:8px; }
+.cv-lang{ background:#f2f2f7; border-radius:12px; padding:6px 12px; text-align:center; }
+.cv-lang-name{ font-size:.72rem; font-weight:600; color:#1c1c1e; }
+.cv-lang-lvl{ font-size:.58rem; color:#8e8e93; }
+
+/* Atelier */
+.atl-header{ background:linear-gradient(135deg,#1B3560,#0097BA); padding:24px 20px; }
+.atl-header-title{ font-size:1.3rem; font-weight:800; color:#fff; }
+.atl-header-sub{ font-size:.72rem; color:rgba(255,255,255,.75); margin-top:4px; }
+.atl-grid{ display:grid; grid-template-columns:1fr 1fr; gap:8px; padding:12px 16px; }
+@media(min-width:600px){ .atl-grid{ grid-template-columns:repeat(3,1fr); } }
+.atl-img{ aspect-ratio:4/3; border-radius:12px; overflow:hidden; cursor:pointer; }
+.atl-img img{ width:100%; height:100%; object-fit:cover; transition:transform .3s; display:block; }
+.atl-img:active img{ transform:scale(.96); }
+
+/* Mail */
+.ml-compose{ padding:16px; }
+.ml-field{ margin-bottom:12px; }
+.ml-field label{ font-size:.65rem; font-weight:600; text-transform:uppercase; letter-spacing:.08em; color:#8e8e93; display:block; margin-bottom:4px; }
+.ml-field input,.ml-field textarea{
+  width:100%; border:1px solid #e5e5ea; border-radius:10px;
+  padding:10px 12px; font:400 .85rem var(--sf); color:#1c1c1e; background:#fff;
+  outline:none; transition:border-color .2s;
+}
+.ml-field textarea{ height:120px; resize:none; }
+.ml-field input:focus,.ml-field textarea:focus{ border-color:var(--blue); }
+.ml-send{
+  width:100%; padding:13px; border-radius:13px; border:none;
+  background:var(--blue); color:#fff; font:600 .9rem var(--sf);
+  cursor:pointer; transition:opacity .2s;
+}
+.ml-send:active{ opacity:.8; }
+
+/* About */
+.ab-hero{ background:linear-gradient(135deg,#1B3560,#8b5cf6); padding:28px 20px; text-align:center; }
+.ab-ava{ width:80px; height:80px; border-radius:20px; overflow:hidden; margin:0 auto 12px; border:2px solid rgba(255,255,255,.3); }
+.ab-ava img{ width:100%; height:100%; object-fit:cover; }
+.ab-name{ font-size:1.25rem; font-weight:700; color:#fff; }
+.ab-role{ font-size:.72rem; color:rgba(255,255,255,.8); margin-top:4px; }
+.ab-stats{ display:flex; gap:1px; background:rgba(255,255,255,.1); border-radius:16px; overflow:hidden; margin:16px 16px 0; }
+.ab-stat{ flex:1; padding:12px 8px; text-align:center; background:rgba(255,255,255,.06); }
+.ab-stat-n{ font-size:1.2rem; font-weight:700; color:#fff; }
+.ab-stat-l{ font-size:.58rem; color:rgba(255,255,255,.65); }
+.ab-text{ font-size:.82rem; line-height:1.7; color:#444; padding:16px 20px; }
+</style>
+</head>
+<body>
+
+<!-- WALLPAPER -->
+<div id="ios-wall"></div>
+
+<!-- DYNAMIC ISLAND (mobile) -->
+<div id="ios-di"></div>
+
+<!-- STATUS BAR -->
+<div id="ios-status">
+  <span id="ios-status-time">9:41</span>
+  <div class="ios-status-icons">
+    <div class="ios-sig">
+      <span></span><span></span><span></span><span></span>
+    </div>
+    <div class="ios-wifi">
+      <svg viewBox="0 0 24 18"><path d="M12 15a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm0-4.5a6 6 0 0 1 4.24 1.76l1.42-1.42A8 8 0 0 0 12 9a8 8 0 0 0-5.66 2.34l1.42 1.42A6 6 0 0 1 12 10.5zm0-4.5a10.5 10.5 0 0 1 7.42 3.08l1.42-1.42A12.5 12.5 0 0 0 12 4.5a12.5 12.5 0 0 0-8.84 3.66l1.42 1.42A10.5 10.5 0 0 1 12 6z"/></svg>
+    </div>
+    <div class="ios-batt"><div class="ios-batt-fill"></div></div>
+  </div>
+</div>
+
+<!-- HOME SCREEN -->
+<div id="ios-home">
+  <div id="ios-pages">
+
+    <!-- Page 1 — Apps principales -->
+    <div class="ios-page">
+      <div class="ios-grid" id="grid-p1">
+
+        <!-- Atelier -->
+        <div class="ios-icon" data-app="atelier">
+          <div class="ios-icon-face" style="background:linear-gradient(145deg,#1B3560,#0097BA)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+          </div>
+          <span class="ios-icon-label">Atelier</span>
+        </div>
+
+        <!-- CV -->
+        <div class="ios-icon" data-app="cv">
+          <div class="ios-icon-face" style="background:linear-gradient(145deg,#1d4520,#30D158)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M9 7h6M9 11h6M9 15h4" stroke-linecap="round"/></svg>
+          </div>
+          <span class="ios-icon-label">CV</span>
+        </div>
+
+        <!-- Mail -->
+        <div class="ios-icon" data-app="mail">
+          <div class="ios-icon-face" style="background:linear-gradient(145deg,#1565C0,#42A5F5)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 7 8.5 6 8.5-6" stroke-linecap="round"/></svg>
+          </div>
+          <span class="ios-icon-label">Mail</span>
+        </div>
+
+        <!-- Téléphone -->
+        <div class="ios-icon" data-app="tel">
+          <div class="ios-icon-face" style="background:linear-gradient(145deg,#1B5E20,#66BB6A)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6"><path d="M22 16.9v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.9z" stroke-linejoin="round"/></svg>
+          </div>
+          <span class="ios-icon-label">Téléphone</span>
+        </div>
+
+        <!-- À propos -->
+        <div class="ios-icon" data-app="about">
+          <div class="ios-icon-face" style="background:linear-gradient(145deg,#3730a3,#818cf8)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 20a8 8 0 0 1 16 0" stroke-linecap="round"/></svg>
+          </div>
+          <span class="ios-icon-label">À propos</span>
+        </div>
+
+        <!-- Instagram -->
+        <div class="ios-icon" data-ext="https://instagram.com">
+          <div class="ios-icon-face" style="background:radial-gradient(circle at 30% 107%,#fdf497 0%,#fdf497 5%,#fd5949 45%,#d6249f 60%,#285AEB 90%)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5.5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="white" stroke="none"/></svg>
+          </div>
+          <span class="ios-icon-label">Instagram</span>
+        </div>
+
+        <!-- Behance -->
+        <div class="ios-icon" data-ext="https://behance.net">
+          <div class="ios-icon-face" style="background:linear-gradient(145deg,#053eff,#4169e1)">
+            <span style="color:white;font-size:1.4rem;font-weight:900;font-family:Georgia,serif">Bē</span>
+          </div>
+          <span class="ios-icon-label">Behance</span>
+        </div>
+
+        <!-- Admin -->
+        <div class="ios-icon" data-app="admin">
+          <div class="ios-icon-face" style="background:linear-gradient(145deg,#263238,#546E7A)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+          </div>
+          <span class="ios-icon-label">Admin</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Page 2 — Dossiers Projets -->
+    <div class="ios-page">
+      <div class="ios-grid">
+
+        <!-- Arsène Valentin -->
+        <div class="ios-icon" data-folder="arsene">
+          <div class="ios-folder-face">
+            <div class="ios-fm" style="background:linear-gradient(135deg,#f59e0b,#d97706)"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg></div>
+            <div class="ios-fm" style="background:linear-gradient(135deg,#e67e22,#d35400)"><svg viewBox="0 0 24 24" fill="white"><circle cx="12" cy="12" r="7"/></svg></div>
+            <div class="ios-fm" style="background:linear-gradient(135deg,#fcd34d,#f59e0b)"><svg viewBox="0 0 24 24" fill="white"><rect x="3" y="3" width="8" height="8" rx="2"/></svg></div>
+            <div class="ios-fm" style="background:linear-gradient(135deg,#f59e0b,#b45309)"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+          </div>
+          <span class="ios-icon-label">Arsène Valentin</span>
+        </div>
+
+        <!-- Clopinette -->
+        <div class="ios-icon" data-folder="clopinette">
+          <div class="ios-folder-face">
+            <div class="ios-fm" style="background:linear-gradient(135deg,#ec4899,#be185d)"><svg viewBox="0 0 24 24" fill="white"><rect x="3" y="3" width="8" height="8" rx="2"/></svg></div>
+            <div class="ios-fm" style="background:linear-gradient(135deg,#f472b6,#ec4899)"><svg viewBox="0 0 24 24" fill="white"><circle cx="12" cy="12" r="7"/></svg></div>
+            <div class="ios-fm" style="background:linear-gradient(135deg,#db2777,#9d174d)"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+            <div class="ios-fm" style="background:linear-gradient(135deg,#9d174d,#ec4899)"><svg viewBox="0 0 24 24" fill="white"><rect x="3" y="3" width="8" height="8" rx="2"/></svg></div>
+          </div>
+          <span class="ios-icon-label">Clopinette</span>
+        </div>
+
+        <!-- Digital Painting -->
+        <div class="ios-icon" data-folder="digital">
+          <div class="ios-folder-face">
+            <div class="ios-fm" style="background:linear-gradient(135deg,#06b6d4,#0e7490)"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 20h9M16.5 3.5l4 4L7 21H3v-4z"/></svg></div>
+            <div class="ios-fm" style="background:linear-gradient(135deg,#0891b2,#06b6d4)"><svg viewBox="0 0 24 24" fill="white"><circle cx="12" cy="12" r="7"/></svg></div>
+            <div class="ios-fm" style="background:linear-gradient(135deg,#155e75,#0e7490)"><svg viewBox="0 0 24 24" fill="white"><rect x="3" y="3" width="8" height="8" rx="2"/></svg></div>
+            <div class="ios-fm" style="background:linear-gradient(135deg,#22d3ee,#0891b2)"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+          </div>
+          <span class="ios-icon-label">Digital Painting</span>
+        </div>
+
+        <!-- Logo -->
+        <div class="ios-icon" data-folder="logo">
+          <div class="ios-folder-face">
+            <div class="ios-fm" style="background:linear-gradient(135deg,#10b981,#065f46)"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+            <div class="ios-fm" style="background:linear-gradient(135deg,#34d399,#10b981)"><svg viewBox="0 0 24 24" fill="white"><rect x="3" y="3" width="8" height="8" rx="2"/></svg></div>
+            <div class="ios-fm" style="background:linear-gradient(135deg,#059669,#047857)"><svg viewBox="0 0 24 24" fill="white"><circle cx="12" cy="12" r="7"/></svg></div>
+            <div class="ios-fm" style="background:linear-gradient(135deg,#6ee7b7,#34d399)"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+          </div>
+          <span class="ios-icon-label">Logo</span>
+        </div>
+
+        <!-- Animation -->
+        <div class="ios-icon" data-folder="animation">
+          <div class="ios-folder-face">
+            <div class="ios-fm" style="background:linear-gradient(135deg,#f97316,#c2410c)"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+            <div class="ios-fm" style="background:linear-gradient(135deg,#fb923c,#f97316)"><svg viewBox="0 0 24 24" fill="white"><circle cx="12" cy="12" r="7"/></svg></div>
+            <div class="ios-fm" style="background:linear-gradient(135deg,#ea580c,#c2410c)"><svg viewBox="0 0 24 24" fill="white"><rect x="3" y="3" width="8" height="8" rx="2"/></svg></div>
+            <div class="ios-fm" style="background:linear-gradient(135deg,#fed7aa,#fb923c)"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+          </div>
+          <span class="ios-icon-label">Animation</span>
+        </div>
+
+        <!-- Perso -->
+        <div class="ios-icon" data-folder="perso">
+          <div class="ios-folder-face">
+            <div class="ios-fm" style="background:linear-gradient(135deg,#8b5cf6,#6d28d9)"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20a8 8 0 0 1 16 0"/></svg></div>
+            <div class="ios-fm" style="background:linear-gradient(135deg,#a78bfa,#8b5cf6)"><svg viewBox="0 0 24 24" fill="white"><circle cx="12" cy="12" r="7"/></svg></div>
+            <div class="ios-fm" style="background:linear-gradient(135deg,#7c3aed,#6d28d9)"><svg viewBox="0 0 24 24" fill="white"><rect x="3" y="3" width="8" height="8" rx="2"/></svg></div>
+            <div class="ios-fm" style="background:linear-gradient(135deg,#ddd6fe,#a78bfa)"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+          </div>
+          <span class="ios-icon-label">Perso</span>
+        </div>
+
+        <!-- Études -->
+        <div class="ios-icon" data-folder="etudes">
+          <div class="ios-folder-face">
+            <div class="ios-fm" style="background:linear-gradient(135deg,#3b82f6,#1d4ed8)"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+            <div class="ios-fm" style="background:linear-gradient(135deg,#60a5fa,#3b82f6)"><svg viewBox="0 0 24 24" fill="white"><circle cx="12" cy="12" r="7"/></svg></div>
+            <div class="ios-fm" style="background:linear-gradient(135deg,#1d4ed8,#1e3a8a)"><svg viewBox="0 0 24 24" fill="white"><rect x="3" y="3" width="8" height="8" rx="2"/></svg></div>
+            <div class="ios-fm" style="background:linear-gradient(135deg,#93c5fd,#60a5fa)"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+          </div>
+          <span class="ios-icon-label">Études</span>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Page dots -->
+  <div id="ios-dots">
+    <div class="ios-dot active" data-p="0"></div>
+    <div class="ios-dot" data-p="1"></div>
+  </div>
+
+  <!-- DOCK -->
+  <div id="ios-dock">
+    <div class="ios-dock-inner">
+      <div class="ios-icon" data-app="atelier">
+        <div class="ios-icon-face" style="background:linear-gradient(145deg,#1B3560,#0097BA)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+        </div>
+      </div>
+      <div class="ios-icon" data-app="mail">
+        <div class="ios-icon-face" style="background:linear-gradient(145deg,#1565C0,#42A5F5)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 7 8.5 6 8.5-6" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+      <div class="ios-icon" data-app="tel">
+        <div class="ios-icon-face" style="background:linear-gradient(145deg,#1B5E20,#66BB6A)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6"><path d="M22 16.9v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.9z" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+      <div class="ios-icon" data-app="cv">
+        <div class="ios-icon-face" style="background:linear-gradient(145deg,#1d4520,#30D158)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M9 7h6M9 11h6M9 15h4" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- #ios-home -->
+
+<!-- HOME INDICATOR -->
+<div id="ios-hi"></div>
+
+<!-- FOLDER POPUP -->
+<div id="ios-folder-popup">
+  <div class="ios-fp-card">
+    <div class="ios-fp-title" id="ios-fp-title">Dossier</div>
+    <div class="ios-fp-grid" id="ios-fp-grid"></div>
+    <button class="ios-fp-btn" id="ios-fp-close">&#x2715;</button>
+  </div>
+</div>
+
+<!-- APP LAYER -->
+<div id="ios-app-layer">
+  <div class="ios-app-topbar">
+    <button class="ios-app-back" id="ios-app-back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"/></svg>
+      Accueil
+    </button>
+    <div class="ios-app-title" id="ios-app-title"></div>
+  </div>
+  <div class="ios-app-scroll" id="ios-app-content"></div>
+</div>
+
+<!-- ADMIN LOGIN OVERLAY -->
+<div id="ios-admin-overlay" style="position:fixed;inset:0;z-index:750;display:none;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,.7);backdrop-filter:blur(30px)">
+  <div style="background:rgba(255,255,255,.15);backdrop-filter:blur(40px);border:1px solid rgba(255,255,255,.25);border-radius:24px;padding:32px 28px;width:min(320px,90vw);text-align:center">
+    <div style="font-size:2.5rem;margin-bottom:12px">🔐</div>
+    <div style="color:#fff;font-size:1rem;font-weight:600;margin-bottom:4px">Espace Admin</div>
+    <div style="color:rgba(255,255,255,.6);font-size:.75rem;margin-bottom:20px">Accès réservé · AAR Design</div>
+    <input type="password" id="ios-admin-pwd" placeholder="Mot de passe"
+      style="width:100%;border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:12px 14px;font-size:.9rem;background:rgba(255,255,255,.1);color:#fff;outline:none;margin-bottom:10px;font-family:var(--sf)"
+      autocomplete="current-password">
+    <div id="ios-admin-err" style="color:#FF3B30;font-size:.7rem;margin-bottom:10px;display:none">Mot de passe incorrect</div>
+    <button id="ios-admin-submit" style="width:100%;padding:13px;border-radius:12px;border:none;background:var(--blue);color:#fff;font:600 .9rem var(--sf);cursor:pointer">Déverrouiller</button>
+    <button id="ios-admin-cancel" style="background:none;border:none;color:rgba(255,255,255,.5);font:.85rem var(--sf);margin-top:14px;cursor:pointer">Annuler</button>
+  </div>
+</div>
+
+<!-- BOUTON RETOUR ACCUEIL -->
+<button id="ios-back-home" onclick="window.location.href='index.html'">⌂ Accueil</button>
+
+<script>
+/* ──────────────────────────────────────────
+   CLOCK
+────────────────────────────────────────── */
+function updateClock(){
+  const now=new Date();
+  const t=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
+  document.getElementById('ios-status-time').textContent=t;
+}
+updateClock(); setInterval(updateClock,10000);
+
+/* ──────────────────────────────────────────
+   PAGE DOTS
+────────────────────────────────────────── */
+const pages=document.getElementById('ios-pages');
+const dots=document.querySelectorAll('.ios-dot');
+pages.addEventListener('scroll',()=>{
+  const idx=Math.round(pages.scrollTop/pages.clientHeight);
+  dots.forEach((d,i)=>d.classList.toggle('active',i===idx));
+},{passive:true});
+dots.forEach(d=>d.addEventListener('click',()=>{
+  pages.scrollTo({top:+d.dataset.p*pages.clientHeight,behavior:'smooth'});
+}));
+
+/* ──────────────────────────────────────────
+   APP CONTENT BUILDERS
+────────────────────────────────────────── */
+const ADMIN_PWD='aardesign2026';
+
+const APPS={
+  atelier:{
+    title:"L'Atelier",
+    build(){
+      return `<div class="atl-header">
+        <div class="atl-header-title">L'Atelier</div>
+        <div class="atl-header-sub">Portfolio · Œuvres · Direction Artistique</div>
+      </div>
+      <div class="atl-grid">
+        ${['assets/voyages/cappadoce.jpg','assets/steam/mockup.jpg','assets/dark/red.jpg','assets/saveurs/hiver.jpg','assets/aristocrate/nanti.jpg','assets/pulse.jpg']
+          .map(s=>`<div class="atl-img"><img src="${s}" loading="lazy" alt=""></div>`).join('')}
+      </div>
+      <div class="ac"><div class="ac-head">Sur ce site</div>
+        <div class="ac-row">
+          <div class="ac-ico" style="background:#e8f4fe"><svg viewBox="0 0 24 24" fill="none" stroke="#007AFF" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></div>
+          <div class="ac-info"><div class="ac-val">Atelier infini</div><div class="ac-lbl">Explorer sur desktop</div></div>
+          <a class="ac-action" href="index.html">Ouvrir</a>
+        </div>
+      </div>`;
+    }
+  },
+  cv:{
+    title:'CV — Anthony Armand',
+    build(){
+      return `<div class="cv-hero">
+        <div class="cv-hero-ava"><img src="assets/Logo-Aardesign-Court.png" alt=""></div>
+        <div>
+          <div class="cv-hero-name">Anthony Armand</div>
+          <div class="cv-hero-role">Directeur Artistique · Graphiste · Designer</div>
+        </div>
+      </div>
+      <div class="cv-chips">
+        <span class="cv-chip">📧 aardesign14@gmail.com</span>
+        <span class="cv-chip">📱 06 79 46 62 19</span>
+        <span class="cv-chip">📍 Caen, Normandie</span>
+        <span class="cv-chip">🌐 aardesign.fr</span>
+        <span class="cv-chip">🪪 Permis B</span>
+      </div>
+      <div class="cv-section">
+        <div class="cv-section-title">Profil</div>
+        <p style="font-size:.82rem;line-height:1.7;color:#444">Designer pluridisciplinaire à l'intersection du <b>digital painting</b>, de l'illustration narrative et de la <b>direction artistique</b>. 5+ ans d'expérience en création graphique, packaging premium et communication visuelle.</p>
+      </div>
+      <div class="cv-section">
+        <div class="cv-section-title">Compétences</div>
+        ${[['Photoshop',95],['InDesign',92],['Illustrator',90],['Lightroom',88],['HTML/CSS',75],['WordPress',72],['Digital Painting',65]].map(([n,p])=>`
+        <div class="cv-skill">
+          <span class="cv-skill-name">${n}</span>
+          <div class="cv-skill-bar"><div class="cv-skill-fill" style="width:${p}%"></div></div>
+          <span class="cv-skill-pct">${p}%</span>
+        </div>`).join('')}
+      </div>
+      <div class="cv-section">
+        <div class="cv-section-title">Expériences</div>
+        ${[
+          ['AAR Design — Auto-entrepreneur','2024–présent','Création graphique, DA, Web, Illustration — France & Remote'],
+          ['Clopinette / Arsène Valentin — CDI','2020–présent · Caen','DA, Packaging, Digital Painting, Identité visuelle'],
+          ['Creacom — CDD','2019 · Valence','Création graphique, communication visuelle'],
+          ['Optimind Winter — Stage / Alternance','2017–2019 · Paris VIII','DA, Web design, Communication digitale'],
+          ['Euptech — Stage','2016 · Grenoble','Développement web & design'],
+        ].map(([t,d,c])=>`<div class="cv-timeline-item">
+          <div class="cv-tl-dot"></div>
+          <div><div class="cv-tl-title">${t}</div><div class="cv-tl-sub">${d}</div><div class="cv-tl-desc">${c}</div></div>
+        </div>`).join('')}
+      </div>
+      <div class="cv-section">
+        <div class="cv-section-title">Formations</div>
+        ${[["LIM'ART Paris — Bachelor & Mastère DA",'2016–2019'],['IUT1 Grenoble — DUT MMI + C2I','2014–2016'],['TOSA Photoshop Expert 879/1000','2024']].map(([t,d])=>`
+        <div class="cv-timeline-item">
+          <div class="cv-tl-dot" style="background:var(--purple)"></div>
+          <div><div class="cv-tl-title">${t}</div><div class="cv-tl-sub" style="color:var(--purple)">${d}</div></div>
+        </div>`).join('')}
+      </div>
+      <div class="cv-section">
+        <div class="cv-section-title">Langues</div>
+        <div class="cv-lang-row" style="padding-bottom:8px">
+          ${[['Français','Natif'],['Anglais','C1'],['Italien','A2'],['Japonais','A1']].map(([l,n])=>`
+          <div class="cv-lang"><div class="cv-lang-name">${l}</div><div class="cv-lang-lvl">${n}</div></div>`).join('')}
+        </div>
+      </div>`;
+    }
+  },
+  mail:{
+    title:'Nouveau message',
+    build(){
+      return `<div class="ml-compose">
+        <div class="ml-field"><label>À</label><input type="text" value="aardesign14@gmail.com" readonly></div>
+        <div class="ml-field"><label>Objet</label><input id="ml-subj" type="text" placeholder="Un projet à discuter…"></div>
+        <div class="ml-field"><label>Message</label><textarea id="ml-msg" placeholder="Bonjour Anthony, je vous contacte au sujet de…"></textarea></div>
+        <button class="ml-send" id="ml-send">Envoyer ✦</button>
+        <div id="ml-ok" style="display:none;margin-top:12px;text-align:center;color:var(--green);font-weight:600;font-size:.85rem">✓ Message envoyé !</div>
+      </div>`;
+    }
+  },
+  tel:{
+    title:'Téléphone',
+    build(){
+      return `<div class="ac" style="margin-top:16px">
+        <div class="ac-head">Contact direct</div>
+        <div class="ac-row">
+          <div class="ac-ico" style="background:#e8f8ef"><svg viewBox="0 0 24 24" fill="none" stroke="#30D158" stroke-width="1.8"><path d="M22 16.9v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.9z"/></svg></div>
+          <div class="ac-info"><div class="ac-val">06 79 46 62 19</div><div class="ac-lbl">Mobile</div></div>
+          <a class="ac-action" href="tel:0679466219">Appeler</a>
+        </div>
+        <div class="ac-row">
+          <div class="ac-ico" style="background:#e8f4fe"><svg viewBox="0 0 24 24" fill="none" stroke="#007AFF" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 7 8.5 6 8.5-6"/></svg></div>
+          <div class="ac-info"><div class="ac-val">aardesign14@gmail.com</div><div class="ac-lbl">Email</div></div>
+          <a class="ac-action" href="mailto:aardesign14@gmail.com">Écrire</a>
+        </div>
+        <div class="ac-row">
+          <div class="ac-ico" style="background:#f0e8ff"><svg viewBox="0 0 24 24" fill="none" stroke="#BF5AF2" stroke-width="1.8"><path d="M21 2H3v16h5l4 4 4-4h5z"/></svg></div>
+          <div class="ac-info"><div class="ac-val">France · Remote</div><div class="ac-lbl">Localisation</div></div>
+        </div>
+      </div>
+      <div class="ac">
+        <div class="ac-head">Réseaux</div>
+        <div class="ac-row">
+          <div class="ac-ico" style="background:radial-gradient(circle at 30% 107%,#fdf49744 0%,#fd594944 50%,#285AEB44 90%)"><svg viewBox="0 0 24 24" fill="none" stroke="#d6249f" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5.5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="#d6249f" stroke="none"/></svg></div>
+          <div class="ac-info"><div class="ac-val">Instagram</div><div class="ac-lbl">@aardesign</div></div>
+          <a class="ac-action" href="https://instagram.com" target="_blank">Voir</a>
+        </div>
+        <div class="ac-row">
+          <div class="ac-ico" style="background:#e8edff"><svg viewBox="0 0 24 24" fill="none"><text x="3" y="17" font-size="14" font-weight="900" fill="#053eff" font-family="Georgia">Bē</text></svg></div>
+          <div class="ac-info"><div class="ac-val">Behance</div><div class="ac-lbl">Portfolio en ligne</div></div>
+          <a class="ac-action" href="https://behance.net" target="_blank">Voir</a>
+        </div>
+      </div>`;
+    }
+  },
+  about:{
+    title:'À propos',
+    build(){
+      return `<div class="ab-hero">
+        <div class="ab-ava"><img src="assets/Logo-Aardesign-Court.png" alt=""></div>
+        <div class="ab-name">Anthony Armand</div>
+        <div class="ab-role">AAR Design — Digital Art &amp; Direction Artistique</div>
+      </div>
+      <div class="ab-stats">
+        <div class="ab-stat"><div class="ab-stat-n">5+</div><div class="ab-stat-l">Années</div></div>
+        <div class="ab-stat"><div class="ab-stat-n">35+</div><div class="ab-stat-l">Œuvres</div></div>
+        <div class="ab-stat"><div class="ab-stat-n">8</div><div class="ab-stat-l">Disciplines</div></div>
+        <div class="ab-stat"><div class="ab-stat-n">🏆</div><div class="ab-stat-l">TOSA Expert</div></div>
+      </div>
+      <p class="ab-text">Designer pluridisciplinaire basé en France, à l'intersection du <b>digital painting</b>, de l'illustration narrative et de la direction artistique. Du packaging premium aux créations personnelles, chaque projet construit un univers visuel unique, cohérent et mémorable.</p>
+      <div class="ac">
+        <div class="ac-head">Disciplines</div>
+        ${['🎨 Digital Painting','✏️ Illustration','📐 Direction Artistique','📦 Packaging','🌐 Web Design','📷 Photographie','🎬 Motion Design','🔤 Typographie'].map(d=>`
+        <div class="ac-row" style="border-top:1px solid #f2f2f7;padding:9px 16px">
+          <span style="font-size:.82rem;color:#1c1c1e">${d}</span>
+        </div>`).join('')}
+      </div>`;
+    }
+  }
+};
+
+const FOLDERS={
+  arsene:{ title:'Arsène Valentin', items:[
+    {label:'Identité',bg:'linear-gradient(135deg,#f59e0b,#d97706)',app:'atelier'},
+    {label:'Packaging',bg:'linear-gradient(135deg,#e67e22,#d35400)',app:'atelier'},
+    {label:'Social',bg:'linear-gradient(135deg,#fcd34d,#f59e0b)',app:'atelier'},
+  ]},
+  clopinette:{ title:'Clopinette', items:[
+    {label:'Branding',bg:'linear-gradient(135deg,#ec4899,#be185d)',app:'atelier'},
+    {label:'Affiches',bg:'linear-gradient(135deg,#f472b6,#ec4899)',app:'atelier'},
+    {label:'Social',bg:'linear-gradient(135deg,#db2777,#9d174d)',app:'atelier'},
+  ]},
+  digital:{ title:'Digital Painting', items:[
+    {label:'2024',bg:'linear-gradient(135deg,#06b6d4,#0e7490)',app:'atelier'},
+    {label:'2023',bg:'linear-gradient(135deg,#0891b2,#06b6d4)',app:'atelier'},
+    {label:'WIP',bg:'linear-gradient(135deg,#22d3ee,#0891b2)',app:'atelier'},
+  ]},
+  logo:{ title:'Logo', items:[
+    {label:'AAR Design',bg:'linear-gradient(135deg,#10b981,#065f46)',app:'atelier'},
+    {label:'Clients',bg:'linear-gradient(135deg,#059669,#047857)',app:'atelier'},
+    {label:'Études',bg:'linear-gradient(135deg,#34d399,#10b981)',app:'atelier'},
+  ]},
+  animation:{ title:'Animation', items:[
+    {label:'Motion',bg:'linear-gradient(135deg,#f97316,#c2410c)',app:'atelier'},
+    {label:'AE',bg:'linear-gradient(135deg,#fb923c,#f97316)',app:'atelier'},
+    {label:'Exports',bg:'linear-gradient(135deg,#ea580c,#c2410c)',app:'atelier'},
+  ]},
+  perso:{ title:'Perso', items:[
+    {label:'Croquis',bg:'linear-gradient(135deg,#8b5cf6,#6d28d9)',app:'atelier'},
+    {label:'Photos',bg:'linear-gradient(135deg,#a78bfa,#8b5cf6)',app:'atelier'},
+    {label:'Portfolio',bg:'linear-gradient(135deg,#7c3aed,#6d28d9)',app:'atelier'},
+  ]},
+  etudes:{ title:'Études', items:[
+    {label:"LIM'ART",bg:'linear-gradient(135deg,#3b82f6,#1d4ed8)',app:'about'},
+    {label:'IUT1',bg:'linear-gradient(135deg,#60a5fa,#3b82f6)',app:'about'},
+    {label:'TOSA',bg:'linear-gradient(135deg,#1d4ed8,#1e3a8a)',app:'cv'},
+  ]},
+};
+
+/* ──────────────────────────────────────────
+   APP OPEN / CLOSE
+────────────────────────────────────────── */
+const appLayer=document.getElementById('ios-app-layer');
+const appContent=document.getElementById('ios-app-content');
+const appTitle=document.getElementById('ios-app-title');
+
+function openApp(id){
+  const app=APPS[id]; if(!app) return;
+  appTitle.textContent=app.title;
+  appContent.innerHTML=app.build();
+  appLayer.classList.add('open');
+  // Wire mail form
+  const btn=document.getElementById('ml-send');
+  if(btn) btn.addEventListener('click',()=>{
+    document.getElementById('ml-ok').style.display='block';
+    btn.style.display='none';
+  });
+}
+
+document.getElementById('ios-app-back').addEventListener('click',()=>{
+  appLayer.classList.remove('open');
+  setTimeout(()=>{ appContent.innerHTML=''; },420);
+});
+
+/* ──────────────────────────────────────────
+   ICON CLICKS
+────────────────────────────────────────── */
+document.querySelectorAll('.ios-icon[data-app]').forEach(el=>{
+  el.addEventListener('click',()=> openApp(el.dataset.app));
+});
+document.querySelectorAll('.ios-icon[data-ext]').forEach(el=>{
+  el.addEventListener('click',()=> window.open(el.dataset.ext,'_blank'));
+});
+
+/* ──────────────────────────────────────────
+   FOLDER POPUP
+────────────────────────────────────────── */
+const folderPopup=document.getElementById('ios-folder-popup');
+const fpTitle=document.getElementById('ios-fp-title');
+const fpGrid=document.getElementById('ios-fp-grid');
+
+document.querySelectorAll('.ios-icon[data-folder]').forEach(el=>{
+  el.addEventListener('click',()=>{
+    const fd=FOLDERS[el.dataset.folder]; if(!fd) return;
+    fpTitle.textContent=fd.title;
+    fpGrid.innerHTML=fd.items.map(it=>`
+      <div class="ios-icon" style="cursor:pointer" data-fp-app="${it.app}">
+        <div class="ios-icon-face" style="background:${it.bg};width:52px;height:52px;border-radius:12px">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" width="22" height="22"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+        </div>
+        <span class="ios-icon-label" style="font-size:.58rem">${it.label}</span>
+      </div>`).join('');
+    folderPopup.classList.add('open');
+    folderPopup.querySelectorAll('[data-fp-app]').forEach(b=>{
+      b.addEventListener('click',()=>{ folderPopup.classList.remove('open'); setTimeout(()=>openApp(b.dataset.fpApp),150); });
+    });
+  });
+});
+
+document.getElementById('ios-fp-close').addEventListener('click',()=> folderPopup.classList.remove('open'));
+folderPopup.addEventListener('click',e=>{ if(e.target===folderPopup) folderPopup.classList.remove('open'); });
+
+/* ──────────────────────────────────────────
+   ADMIN
+────────────────────────────────────────── */
+const adminOverlay=document.getElementById('ios-admin-overlay');
+document.querySelectorAll('[data-app="admin"]').forEach(el=>{
+  el.addEventListener('click',()=>{ adminOverlay.style.display='flex'; });
+});
+document.getElementById('ios-admin-cancel').addEventListener('click',()=>{ adminOverlay.style.display='none'; });
+document.getElementById('ios-admin-submit').addEventListener('click',()=>{
+  const v=document.getElementById('ios-admin-pwd').value;
+  if(v===ADMIN_PWD){ sessionStorage.setItem('aar-auth','1'); window.location.href='admin.html'; }
+  else{ document.getElementById('ios-admin-err').style.display='block'; }
+});
+document.getElementById('ios-admin-pwd').addEventListener('keydown',e=>{
+  if(e.key==='Enter') document.getElementById('ios-admin-submit').click();
+});
+</script>
+</body>
+</html>
