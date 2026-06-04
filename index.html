@@ -1074,8 +1074,8 @@ function buildContactBody(){
   const ct = JSON.parse(localStorage.getItem('aar_sec_contact')||'null');
   const email = ct?.email||'aardesign14@gmail.com';
   const phone = ct?.phone||'06 79 46 62 19';
-  const ig = ct?.ig||'https://instagram.com/aardesign';
-  const be = ct?.be||'https://behance.net/anthonyarmand';
+  const ig = ct?.ig||'';
+  const be = ct?.be||'';
   const hero = JSON.parse(localStorage.getItem('aar_sec_hero')||'null');
   const role = hero ? ((hero.t1||'DA')+(hero.t2?' · '+hero.t2:'')) : 'DA · Digital Painting · aardesign';
   return `<div class="w-profile">
