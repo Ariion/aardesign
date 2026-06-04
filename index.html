@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>AAR Design — Anthony Armand</title>
+<title>aardesign — Anthony Armand</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
@@ -52,9 +52,10 @@ body{background:var(--wall-a);color:var(--ink);transition:background .4s,color .
   position:fixed;inset:0;z-index:0;
   background:
     var(--desk-img, none),
-    radial-gradient(ellipse 80% 60% at 15% 90%, rgba(0,151,186,.25) 0%, transparent 55%),
-    radial-gradient(ellipse 60% 50% at 85% 10%, rgba(27,53,96,.6) 0%, transparent 50%),
-    radial-gradient(ellipse 100% 80% at 50% 50%, rgba(10,20,60,.4) 0%, transparent 70%),
+    radial-gradient(ellipse 55% 45% at 10% 85%, rgba(0,151,186,.22) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 90% 10%, rgba(27,53,96,.55) 0%, transparent 55%),
+    radial-gradient(ellipse 70% 60% at 55% 45%, rgba(8,18,50,.45) 0%, transparent 65%),
+    radial-gradient(ellipse 35% 30% at 75% 80%, rgba(41,184,217,.08) 0%, transparent 50%),
     linear-gradient(160deg, var(--wall-a) 0%, var(--wall-b) 100%);
   background-size:cover;
   transition:background .4s;
@@ -66,20 +67,69 @@ body{background:var(--wall-a);color:var(--ink);transition:background .4s,color .
     repeating-linear-gradient(90deg, var(--line) 0 1px, transparent 1px 44px);
   transition:background .4s;
 }
-/* Particules lumineuses (dark uniquement) */
+/* Formes géométriques artistiques (dark) */
 #wall::after{
-  content:'';position:absolute;inset:0;
+  content:'';position:absolute;inset:0;pointer-events:none;
   background-image:
-    radial-gradient(1px 1px at 12% 20%,rgba(41,184,217,.7) 0%,transparent 100%),
-    radial-gradient(1px 1px at 38% 8%, rgba(41,184,217,.5) 0%,transparent 100%),
-    radial-gradient(1px 1px at 70% 25%,rgba(255,255,255,.4) 0%,transparent 100%),
-    radial-gradient(1px 1px at 88% 60%,rgba(41,184,217,.4) 0%,transparent 100%),
-    radial-gradient(1px 1px at 55% 75%,rgba(255,255,255,.3) 0%,transparent 100%),
-    radial-gradient(2px 2px at 92% 15%,rgba(41,184,217,.6) 0%,transparent 100%),
-    radial-gradient(1px 1px at 25% 88%,rgba(41,184,217,.3) 0%,transparent 100%);
+    /* Particules lumineuses */
+    radial-gradient(1px 1px at 12% 20%,rgba(41,184,217,.8) 0%,transparent 100%),
+    radial-gradient(1px 1px at 38% 8%, rgba(41,184,217,.6) 0%,transparent 100%),
+    radial-gradient(1px 1px at 70% 25%,rgba(255,255,255,.5) 0%,transparent 100%),
+    radial-gradient(1px 1px at 88% 60%,rgba(41,184,217,.5) 0%,transparent 100%),
+    radial-gradient(1px 1px at 55% 75%,rgba(255,255,255,.35) 0%,transparent 100%),
+    radial-gradient(2px 2px at 92% 15%,rgba(41,184,217,.7) 0%,transparent 100%),
+    radial-gradient(1px 1px at 25% 88%,rgba(41,184,217,.4) 0%,transparent 100%),
+    radial-gradient(1px 1px at 60% 45%,rgba(255,255,255,.3) 0%,transparent 100%),
+    radial-gradient(1px 1px at 82% 38%,rgba(41,184,217,.4) 0%,transparent 100%),
+    /* Halos géométriques style DA */
+    radial-gradient(ellipse 180px 180px at 8% 92%,rgba(41,184,217,.06) 0%,transparent 70%),
+    radial-gradient(ellipse 260px 260px at 96% 4%,rgba(41,184,217,.05) 0%,transparent 70%),
+    radial-gradient(ellipse 120px 120px at 50% 50%,rgba(27,53,96,.04) 0%,transparent 70%);
   opacity:1;transition:opacity .4s;
 }
 [data-theme="light"] #wall::after{opacity:0}
+[data-theme="light"] #wall-art,[data-theme="light"] #wall-diag{opacity:0}
+
+/* Cercles et lignes artistiques DA */
+#wall-art{
+  position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;
+}
+#wall-art::before{
+  content:'';position:absolute;
+  width:1100px;height:1100px;
+  top:-350px;right:-280px;
+  border-radius:50%;
+  border:1px solid rgba(41,184,217,.055);
+  box-shadow:0 0 0 80px rgba(41,184,217,.012),0 0 0 200px rgba(41,184,217,.007);
+}
+#wall-art::after{
+  content:'';position:absolute;
+  width:700px;height:700px;
+  bottom:-220px;left:-140px;
+  border-radius:50%;
+  border:1px solid rgba(41,184,217,.04);
+  box-shadow:0 0 0 60px rgba(41,184,217,.01);
+}
+/* Ligne diagonale signature */
+#wall-diag{
+  position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;
+}
+#wall-diag::before{
+  content:'';position:absolute;
+  width:2px;height:140%;
+  top:-20%;left:38%;
+  background:linear-gradient(180deg,transparent 0%,rgba(41,184,217,.04) 30%,rgba(41,184,217,.07) 50%,rgba(41,184,217,.04) 70%,transparent 100%);
+  transform:rotate(-18deg);
+  transform-origin:center;
+}
+#wall-diag::after{
+  content:'';position:absolute;
+  width:1px;height:140%;
+  top:-20%;left:62%;
+  background:linear-gradient(180deg,transparent 0%,rgba(41,184,217,.03) 30%,rgba(41,184,217,.05) 50%,rgba(41,184,217,.03) 70%,transparent 100%);
+  transform:rotate(-18deg);
+  transform-origin:center;
+}
 
 /* ═══════════════════════════════════════
    LOCK SCREEN
@@ -142,7 +192,7 @@ body{background:var(--wall-a);color:var(--ink);transition:background .4s,color .
 #tb-logo-center{
   display:flex;align-items:center;justify-content:center;
 }
-#tb-logo-center img{max-height:44px;width:auto;opacity:.92;filter:brightness(0) invert(1)}
+#tb-logo-center img{height:38px;width:auto;max-width:280px;opacity:.92;filter:brightness(0) invert(1)}
 /* droite */
 #tb-right{display:flex;align-items:center;justify-content:flex-end;gap:6px}
 .tb-ico-btn{
@@ -423,12 +473,14 @@ body{background:var(--wall-a);color:var(--ink);transition:background .4s,color .
 <!-- ══════════════════════════════════════════
      LOCK SCREEN
 ══════════════════════════════════════════ -->
+<div id="wall-art"></div>
+<div id="wall-diag"></div>
 <div id="lockscreen">
-  <div id="ls-logo"><img src="assets/Logo-Aardesign-Long.png" alt="AAR Design" style="width:clamp(160px,28vw,360px);opacity:.88;filter:brightness(0) invert(1)"></div>
+  <div id="ls-logo"><img src="assets/Logo-Aardesign-Long.png" alt="aardesign" style="width:clamp(160px,28vw,360px);opacity:.88;filter:brightness(0) invert(1)"></div>
   <div id="ls-time">00:00</div>
   <div id="ls-date">—</div>
   <div id="ls-name">Anthony Armand</div>
-  <div id="ls-role">Directeur Artistique · AAR Design</div>
+  <div id="ls-role">Directeur Artistique · aardesign</div>
   <div id="ls-hint">Cliquer pour entrer</div>
 </div>
 
@@ -443,7 +495,7 @@ body{background:var(--wall-a);color:var(--ink);transition:background .4s,color .
 
   <!-- Logo centré -->
   <div id="tb-logo-center">
-    <img src="assets/Logo-Aardesign-Long.png" alt="AAR Design" style="width:clamp(140px,22vw,320px);max-height:44px;opacity:.92;filter:brightness(0) invert(1)">
+    <img src="assets/Logo-Aardesign-Long.png" alt="aardesign">
   </div>
 
   <!-- Droite -->
@@ -456,10 +508,6 @@ body{background:var(--wall-a);color:var(--ink);transition:background .4s,color .
 <!-- Drawer menu -->
 <div id="tb-drawer">
   <div class="tm-label">Navigation</div>
-  <button class="tm-item" onclick="openApp('atelier');closeDrawer()">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
-    Atelier
-  </button>
   <button class="tm-item" onclick="openApp('cv');closeDrawer()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M9 7h6M9 11h6M9 15h4" stroke-linecap="round"/></svg>
     Mon CV
@@ -556,7 +604,7 @@ body{background:var(--wall-a);color:var(--ink);transition:background .4s,color .
 <!-- Identity -->
 <div id="desk-identity">
   <div>ANTHONY ARMAND</div>
-  <div>Directeur Artistique · AAR Design · Caen</div>
+  <div>Directeur Artistique · aardesign · Caen</div>
 </div>
 
 <!-- Windows layer -->
@@ -567,7 +615,7 @@ body{background:var(--wall-a);color:var(--ink);transition:background .4s,color .
   <div class="admin-card">
     <div class="admin-card-ico">🔐</div>
     <h3>Espace Admin</h3>
-    <p>Accès réservé · AAR Design</p>
+    <p>Accès réservé · aardesign</p>
     <input type="password" id="admin-pwd" placeholder="Mot de passe" autocomplete="current-password">
     <div id="admin-err">Mot de passe incorrect</div>
     <button id="admin-submit">Déverrouiller</button>
@@ -783,11 +831,11 @@ function buildContactChips(){
 }
 
 function buildCVBody(){
-  const DEF_CV_DATA={skills:[['Photoshop',95],['InDesign',92],['Illustrator',90],['Lightroom',88],['HTML/CSS',75],['Digital Painting',65]],experiences:[['AAR Design — Auto-entrepreneur','2024–présent','Création graphique, DA, Web, Illustration'],['Clopinette / Arsène Valentin — CDI','2020–présent · Caen','DA, Packaging, Digital Painting'],['Creacom — CDD','2019 · Valence','Création graphique, communication'],['Optimind Winter — Stage','2017–2019 · Paris VIII','DA, Web design, Communication digitale']],languages:[['Français','Natif'],['Anglais','C1'],['Italien','A2'],['Japonais','A1']]};
+  const DEF_CV_DATA={skills:[['Photoshop',95],['InDesign',92],['Illustrator',90],['Lightroom',88],['HTML/CSS',75],['Digital Painting',65]],experiences:[['aardesign — Auto-entrepreneur','2024–présent','Création graphique, DA, Web, Illustration'],['Clopinette / Arsène Valentin — CDI','2020–présent · Caen','DA, Packaging, Digital Painting'],['Creacom — CDD','2019 · Valence','Création graphique, communication'],['Optimind Winter — Stage','2017–2019 · Paris VIII','DA, Web design, Communication digitale']],languages:[['Français','Natif'],['Anglais','C1'],['Italien','A2'],['Japonais','A1']]};
   const cv = JSON.parse(localStorage.getItem('aar_cv')||'null');
   const hero = JSON.parse(localStorage.getItem('aar_sec_hero')||'null');
   const name = hero ? (hero.intro||'Anthony Armand') : 'Anthony Armand';
-  const role = hero ? ((hero.t1||'')+(hero.t2?' · '+hero.t2:'')) : 'Directeur Artistique · AAR Design';
+  const role = hero ? ((hero.t1||'')+(hero.t2?' · '+hero.t2:'')) : 'Directeur Artistique · aardesign';
   const skills = cv ? cv.skills.map(s=>[s.n,s.p]) : DEF_CV_DATA.skills;
   const exps = cv ? cv.experiences.map(e=>[e.t,e.d,e.c]) : DEF_CV_DATA.experiences;
   const langs = cv ? cv.languages.map(l=>[l.l,l.n]) : DEF_CV_DATA.languages;
@@ -815,7 +863,7 @@ function buildContactBody(){
   const ig = ct?.ig||'https://instagram.com/aardesign';
   const be = ct?.be||'https://behance.net/anthonyarmand';
   const hero = JSON.parse(localStorage.getItem('aar_sec_hero')||'null');
-  const role = hero ? ((hero.t1||'DA')+(hero.t2?' · '+hero.t2:'')) : 'DA · Digital Painting · AAR Design';
+  const role = hero ? ((hero.t1||'DA')+(hero.t2?' · '+hero.t2:'')) : 'DA · Digital Painting · aardesign';
   return `<div class="w-profile">
     <div class="w-ava"><img src="assets/Logo-Aardesign-Court.png" alt=""></div>
     <div><div class="w-name">Anthony Armand</div><div class="w-role">${role}</div></div>
@@ -844,7 +892,7 @@ function buildAboutBody(){
   const stats = ab?.stats || [{n:'5+',l:'Années exp.'},{n:'35+',l:'Œuvres'},{n:'8',l:'Disciplines'}];
   return `<div class="w-profile">
     <div class="w-ava"><img src="assets/Logo-Aardesign-Court.png" alt=""></div>
-    <div><div class="w-name">Anthony Armand</div><div class="w-role">AAR Design · Caen</div></div>
+    <div><div class="w-name">Anthony Armand</div><div class="w-role">aardesign · Caen</div></div>
   </div>
   <p style="font-size:.78rem;line-height:1.75;color:var(--mid);margin-bottom:14px">${text}</p>
   <div style="display:grid;grid-template-columns:repeat(${Math.min(stats.length,4)},1fr);gap:8px;margin-bottom:14px">
@@ -870,7 +918,7 @@ function openApp(id){
 
   const configs={
     atelier:{
-      title:'Atelier AAR Design',w:700,h:520,ico:icoAtelier,
+      title:'Atelier aardesign',w:700,h:520,ico:icoAtelier,
       body:`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px">
         ${['assets/voyages/cappadoce.jpg','assets/steam/mockup.jpg','assets/dark/red.jpg','assets/saveurs/hiver.jpg','assets/aristocrate/nanti.jpg','assets/pulse.jpg']
           .map(s=>`<div style="border-radius:8px;overflow:hidden;aspect-ratio:4/3;cursor:pointer;background:#0a0f1e">
@@ -897,7 +945,7 @@ function openApp(id){
       <div id="wm-ok" style="display:none;margin-top:10px;text-align:center;color:var(--cyan);font-weight:600;font-size:.8rem">✓ Message envoyé !</div>`
     },
     about:{
-      title:'À propos — AAR Design',w:400,h:380,ico:icoAbout,
+      title:'À propos — aardesign',w:400,h:380,ico:icoAbout,
       body: buildAboutBody()
     },
   };
