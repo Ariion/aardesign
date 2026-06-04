@@ -923,28 +923,61 @@ function buildContactChips(){
 }
 
 function buildCVBody(){
-  const DEF_CV_DATA={skills:[['Photoshop',95],['InDesign',92],['Illustrator',90],['Lightroom',88],['HTML/CSS',75],['Digital Painting',65]],experiences:[['aardesign — Auto-entrepreneur','2024–présent','Création graphique, DA, Web, Illustration'],['Clopinette / Arsène Valentin — CDI','2020–présent · Caen','DA, Packaging, Digital Painting'],['Creacom — CDD','2019 · Valence','Création graphique, communication'],['Optimind Winter — Stage','2017–2019 · Paris VIII','DA, Web design, Communication digitale']],languages:[['Français','Natif'],['Anglais','C1'],['Italien','A2'],['Japonais','A1']]};
+  const DEF_CV_DATA={
+    skills:[['Photoshop',95],['InDesign',92],['Illustrator',90],['Lightroom',88],['HTML/CSS',75],['Digital Painting',65]],
+    experiences:[
+      ['aardesign — Auto-entrepreneur','2024–présent','Création graphique, DA, Web, Illustration'],
+      ['Clopinette / Arsène Valentin — CDI','2020–présent · Caen','DA, Packaging, Digital Painting'],
+      ['Creacom — CDD','2019 · Valence','Création graphique, communication'],
+      ['Optimind Winter — Stage','2017–2019 · Paris VIII','DA, Web design, Communication digitale']
+    ],
+    languages:[['Français','Natif'],['Anglais','C1'],['Italien','A2'],['Japonais','A1']]
+  };
   const cv = JSON.parse(localStorage.getItem('aar_cv')||'null');
   const hero = JSON.parse(localStorage.getItem('aar_sec_hero')||'null');
+  const ct = JSON.parse(localStorage.getItem('aar_sec_contact')||'null');
   const name = hero ? (hero.intro||'Anthony Armand') : 'Anthony Armand';
   const role = hero ? ((hero.t1||'')+(hero.t2?' · '+hero.t2:'')) : 'Directeur Artistique · aardesign';
+  const email = ct?.email||'aardesign14@gmail.com';
+  const phone = ct?.phone||'06 79 46 62 19';
   const skills = cv ? cv.skills.map(s=>[s.n,s.p]) : DEF_CV_DATA.skills;
   const exps = cv ? cv.experiences.map(e=>[e.t,e.d,e.c]) : DEF_CV_DATA.experiences;
   const langs = cv ? cv.languages.map(l=>[l.l,l.n]) : DEF_CV_DATA.languages;
-  return `<div class="cv-header">
-    <div class="cv-avatar"><img src="assets/photo.png" alt="" onerror="this.src='assets/Logo-Aardesign-Court.png'"></div>
-    <div><div class="cv-h-name">${name}</div><div class="cv-h-role">${role}</div></div>
-  </div>
-  <div class="cv-chips">
-    ${buildContactChips()}
-  </div>
-  <div class="cv-sec-title">Compétences</div>
-  ${skills.map(([n,p])=>`<div class="cv-skill"><span class="cv-skill-name">${n}</span><div class="cv-skill-bar"><div class="cv-skill-fill" style="width:${p}%"></div></div><span class="cv-skill-pct">${p}%</span></div>`).join('')}
-  <div class="cv-sec-title">Expériences</div>
-  ${exps.map(([t,d,c])=>`<div class="cv-tl-item"><div class="cv-tl-dot"></div><div><div class="cv-tl-title">${t}</div><div class="cv-tl-sub">${d}</div><div class="cv-tl-desc">${c}</div></div></div>`).join('')}
-  <div class="cv-sec-title">Langues</div>
-  <div style="display:flex;gap:8px;flex-wrap:wrap">
-    ${langs.map(([l,n])=>`<div style="background:var(--icon-bg);border-radius:20px;padding:5px 12px;text-align:center"><div style="font-size:.7rem;font-weight:700;color:var(--ink)">${l}</div><div style="font-size:.58rem;color:var(--mid)">${n}</div></div>`).join('')}
+  const cvUrl = localStorage.getItem('aar_cv_url')||'#';
+  return `<div class="cv-wrap">
+    <div class="cv-sidebar">
+      <div class="cv-avatar"><img src="assets/photo.png" alt="" onerror="this.src='assets/Logo-Aardesign-Court.png'"></div>
+      <div class="cv-s-name">${name}</div>
+      <div class="cv-s-role">${role}</div>
+      <div class="cv-s-divider"></div>
+      <div class="cv-s-contact">
+        <div class="cv-s-row"><span class="cv-s-ico">✉</span><span class="cv-s-val">${email}</span></div>
+        <div class="cv-s-row"><span class="cv-s-ico">📱</span><span class="cv-s-val">${phone}</span></div>
+        <div class="cv-s-row"><span class="cv-s-ico">📍</span><span class="cv-s-val">Caen, Normandie</span></div>
+        <div class="cv-s-row"><span class="cv-s-ico">🌐</span><span class="cv-s-val">aardesign.fr</span></div>
+        <div class="cv-s-row"><span class="cv-s-ico">🪪</span><span class="cv-s-val">Permis B</span></div>
+      </div>
+      <div class="cv-s-divider"></div>
+      <div class="cv-s-section">Compétences</div>
+      ${skills.map(([n,p])=>`<div class="cv-s-skill">
+        <div class="cv-s-skill-name">${n}<span>${p}%</span></div>
+        <div class="cv-s-skill-bar"><div class="cv-s-skill-fill" style="width:${p}%"></div></div>
+      </div>`).join('')}
+      <a class="cv-pdf-btn" href="${cvUrl}" download target="_blank">
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Télécharger le CV
+      </a>
+    </div>
+    <div class="cv-main">
+      <div>
+        <div class="cv-m-section">Expériences</div>
+        ${exps.map(([t,d,c])=>`<div class="cv-tl-item"><div class="cv-tl-dot"></div><div><div class="cv-tl-title">${t}</div><div class="cv-tl-sub">${d}</div><div class="cv-tl-desc">${c}</div></div></div>`).join('')}
+      </div>
+      <div>
+        <div class="cv-m-section">Langues</div>
+        <div class="cv-langs">${langs.map(([l,n])=>`<div class="cv-lang-pill"><div>${l}</div><div>${n}</div></div>`).join('')}</div>
+      </div>
+    </div>
   </div>`;
 }
 
@@ -1021,7 +1054,7 @@ function openApp(id){
       </div>`
     },
     cv:{
-      title:'CV — Anthony Armand',w:660,h:560,ico:icoCV,
+      title:'CV — Anthony Armand',w:820,h:520,ico:icoCV,
       body: buildCVBody()
     },
     contact:{
@@ -1044,6 +1077,13 @@ function openApp(id){
 
   const c=configs[id]; if(!c) return;
   createWin(id,c.title,c.ico,c.body,c.w,c.h);
+
+  if(id==='cv'){
+    const wv=window.innerWidth, wh=window.innerHeight;
+    const fw=Math.min(820,wv-20), fh=Math.min(520,wh-80);
+    const ww=openWins['cv'];
+    if(ww){ ww.style.width=fw+'px'; ww.style.height=fh+'px'; ww.style.left=Math.max(10,(wv-fw)/2)+'px'; ww.style.top=Math.max(70,(wh-fh)/2)+'px'; }
+  }
 
   setTimeout(()=>{
     const btn=document.getElementById('wm-send');
