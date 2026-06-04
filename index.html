@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>aardesign — Anthony Armand</title>
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
@@ -193,6 +195,7 @@ body{background:var(--wall-a);color:var(--ink);transition:background .4s,color .
   display:flex;align-items:center;justify-content:center;
 }
 #tb-logo-center img{height:38px;width:auto;max-width:280px;opacity:.92;filter:brightness(0) invert(1)}
+[data-theme="light"] #tb-logo-center img{filter:none;opacity:.95}
 /* droite */
 #tb-right{display:flex;align-items:center;justify-content:flex-end;gap:6px}
 .tb-ico-btn{
@@ -261,10 +264,10 @@ body{background:var(--wall-a);color:var(--ink);transition:background .4s,color .
 .d-icon:hover{background:var(--icon-hover);border-color:var(--bar-border);transform:translateY(-2px)}
 .d-icon:active{transform:scale(.95)}
 .d-icon-face{
-  width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;
+  width:52px;height:52px;border-radius:13px;display:flex;align-items:center;justify-content:center;
   overflow:hidden;
 }
-.d-icon-label{font-size:.52rem;font-weight:600;color:var(--ink);text-align:center;line-height:1.2;letter-spacing:.01em}
+.d-icon-label{font-size:.62rem;font-weight:600;color:var(--ink);text-align:center;line-height:1.2;letter-spacing:.01em}
 
 /* Project folders — center */
 #desk-folders{
@@ -359,8 +362,8 @@ body{background:var(--wall-a);color:var(--ink);transition:background .4s,color .
 
 /* ── CV ── */
 .cv-header{display:flex;align-items:center;gap:12px;padding-bottom:12px;border-bottom:1px solid var(--line);margin-bottom:12px}
-.cv-avatar{width:44px;height:44px;border-radius:10px;overflow:hidden;background:var(--icon-bg);flex-shrink:0}
-.cv-avatar img{width:100%;height:100%;object-fit:contain}
+.cv-avatar{width:52px;height:52px;border-radius:50%;overflow:hidden;background:var(--icon-bg);flex-shrink:0;border:2px solid var(--cyan)}
+.cv-avatar img{width:100%;height:100%;object-fit:cover;object-position:top center}
 .cv-h-name{font-size:.95rem;font-weight:800;color:var(--ink);letter-spacing:-.01em}
 .cv-h-role{font-size:.62rem;color:var(--mid);margin-top:2px}
 .cv-chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}
@@ -379,8 +382,8 @@ body{background:var(--wall-a);color:var(--ink);transition:background .4s,color .
 
 /* ── CONTACT / PROFILE ── */
 .w-profile{display:flex;align-items:center;gap:12px;padding-bottom:12px;border-bottom:1px solid var(--line);margin-bottom:12px}
-.w-ava{width:44px;height:44px;border-radius:10px;overflow:hidden;background:var(--icon-bg);flex-shrink:0}
-.w-ava img{width:100%;height:100%;object-fit:contain}
+.w-ava{width:52px;height:52px;border-radius:50%;overflow:hidden;background:var(--icon-bg);flex-shrink:0;border:2px solid var(--cyan)}
+.w-ava img{width:100%;height:100%;object-fit:cover;object-position:top center}
 .w-name{font-size:.95rem;font-weight:800;color:var(--ink)}
 .w-role{font-size:.62rem;color:var(--mid);margin-top:2px}
 .w-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
@@ -544,25 +547,25 @@ body{background:var(--wall-a);color:var(--ink);transition:background .4s,color .
   <div id="desk-apps">
     <div class="d-icon" onclick="openApp('cv')">
       <div class="d-icon-face" style="background:linear-gradient(145deg,#1d4520,#30D158)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.7" width="22" height="22"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M9 7h6M9 11h6M9 15h4" stroke-linecap="round"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6" width="26" height="26"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M9 7h6M9 11h6M9 15h4" stroke-linecap="round"/></svg>
       </div>
       <span class="d-icon-label">CV</span>
     </div>
     <div class="d-icon" onclick="openApp('contact')">
       <div class="d-icon-face" style="background:linear-gradient(145deg,#1565C0,#29B8D9)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.7" width="22" height="22"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 7 8.5 6 8.5-6"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6" width="26" height="26"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 7 8.5 6 8.5-6"/></svg>
       </div>
       <span class="d-icon-label">Contact</span>
     </div>
     <div class="d-icon" onclick="openApp('mail')">
       <div class="d-icon-face" style="background:linear-gradient(145deg,#0097BA,#29B8D9)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.7" width="22" height="22"><path d="M22 16.9v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.9z"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6" width="26" height="26"><path d="M22 16.9v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.9z"/></svg>
       </div>
       <span class="d-icon-label">Écrire</span>
     </div>
     <div class="d-icon" onclick="openApp('about')">
       <div class="d-icon-face" style="background:linear-gradient(145deg,#3730a3,#818cf8)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.7" width="22" height="22"><circle cx="12" cy="8" r="4"/><path d="M4 20a8 8 0 0 1 16 0"/><path d="M12 12v3" stroke-linecap="round"/><circle cx="12" cy="17" r="1" fill="white" stroke="none"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6" width="26" height="26"><circle cx="12" cy="8" r="4"/><path d="M4 20a8 8 0 0 1 16 0"/><path d="M12 12v3" stroke-linecap="round"/><circle cx="12" cy="17" r="1" fill="white" stroke="none"/></svg>
       </div>
       <span class="d-icon-label">À propos</span>
     </div>
@@ -840,7 +843,7 @@ function buildCVBody(){
   const exps = cv ? cv.experiences.map(e=>[e.t,e.d,e.c]) : DEF_CV_DATA.experiences;
   const langs = cv ? cv.languages.map(l=>[l.l,l.n]) : DEF_CV_DATA.languages;
   return `<div class="cv-header">
-    <div class="cv-avatar"><img src="assets/Logo-Aardesign-Court.png" alt=""></div>
+    <div class="cv-avatar"><img src="assets/photo.png" alt="" onerror="this.src='assets/Logo-Aardesign-Court.png'"></div>
     <div><div class="cv-h-name">${name}</div><div class="cv-h-role">${role}</div></div>
   </div>
   <div class="cv-chips">
@@ -865,7 +868,7 @@ function buildContactBody(){
   const hero = JSON.parse(localStorage.getItem('aar_sec_hero')||'null');
   const role = hero ? ((hero.t1||'DA')+(hero.t2?' · '+hero.t2:'')) : 'DA · Digital Painting · aardesign';
   return `<div class="w-profile">
-    <div class="w-ava"><img src="assets/Logo-Aardesign-Court.png" alt=""></div>
+    <div class="w-ava"><img src="assets/photo.png" alt="" onerror="this.src='assets/Logo-Aardesign-Court.png'"></div>
     <div><div class="w-name">Anthony Armand</div><div class="w-role">${role}</div></div>
   </div>
   <div class="w-row">
@@ -891,7 +894,7 @@ function buildAboutBody(){
   const text = ab ? (ab.p1||'')+' '+(ab.p2||'') : 'Designer pluridisciplinaire à l\'intersection du digital painting, de l\'illustration narrative et de la direction artistique. 5+ ans d\'expérience en création graphique, packaging premium et communication visuelle.';
   const stats = ab?.stats || [{n:'5+',l:'Années exp.'},{n:'35+',l:'Œuvres'},{n:'8',l:'Disciplines'}];
   return `<div class="w-profile">
-    <div class="w-ava"><img src="assets/Logo-Aardesign-Court.png" alt=""></div>
+    <div class="w-ava"><img src="assets/photo.png" alt="" onerror="this.src='assets/Logo-Aardesign-Court.png'"></div>
     <div><div class="w-name">Anthony Armand</div><div class="w-role">aardesign · Caen</div></div>
   </div>
   <p style="font-size:.78rem;line-height:1.75;color:var(--mid);margin-bottom:14px">${text}</p>

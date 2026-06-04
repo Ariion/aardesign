@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Navy A shape (left) -->
+  <polygon points="38,8 8,88 30,88 38,70 46,88 68,88" fill="#1B3560"/>
+  <!-- Cyan A shape (right, offset) -->
+  <polygon points="62,8 32,88 54,88 62,70 70,88 92,88" fill="#29B8D9"/>
+  <!-- White gap between them at base -->
+  <polygon points="54,88 62,70 70,88" fill="white"/>
+  <!-- Overlap blend: where cyan covers navy center -->
+  <polygon points="62,8 50,35 74,35" fill="#29B8D9"/>
+  <!-- White cutout inner left A -->
+  <polygon points="38,28 26,72 50,72" fill="white"/>
+  <!-- White cutout inner right A -->
+  <polygon points="62,28 50,72 74,72" fill="white"/>
+  <!-- Bottom gap left -->
+  <polygon points="30,88 38,70 46,88" fill="white"/>
+</svg>
