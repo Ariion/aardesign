@@ -436,6 +436,28 @@ tr:hover td{background:rgba(41,184,217,.03);}
 .pf-lib-item.sel::after{content:'✓';position:absolute;top:4px;right:4px;background:var(--cyan);color:#fff;font-size:.52rem;width:16px;height:16px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-weight:700;}
 .pf-lib-check{display:none;}
 
+/* ── Bureau OS ── */
+.bureau-section-block{background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:1rem;margin-bottom:1rem;}
+.bureau-sec-hd{display:flex;align-items:center;gap:.6rem;margin-bottom:.8rem;}
+.bureau-sec-title{font-size:.72rem;font-weight:800;color:var(--ink);letter-spacing:.04em;}
+.bureau-sec-del{margin-left:auto;background:none;border:none;color:var(--mid);cursor:pointer;font-size:.75rem;padding:2px 6px;border-radius:4px;transition:color .15s,background .15s;}
+.bureau-sec-del:hover{color:#ef4444;background:rgba(239,68,68,.1);}
+.bureau-folder-list{display:flex;flex-wrap:wrap;gap:.55rem;}
+.bureau-folder-card{display:flex;align-items:center;gap:.6rem;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:.45rem .7rem;cursor:grab;transition:box-shadow .15s,border-color .15s;}
+.bureau-folder-card:hover{border-color:var(--cyan);box-shadow:0 2px 8px rgba(41,184,217,.12);}
+.bureau-folder-card.dragging{opacity:.4;cursor:grabbing;}
+.bureau-folder-card.drag-over{border-color:var(--cyan);box-shadow:0 0 0 2px rgba(41,184,217,.3);}
+.bfc-ico{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.bfc-name{font-size:.62rem;font-weight:700;color:var(--ink);}
+.bfc-btns{display:flex;gap:.3rem;margin-left:.3rem;}
+.bfc-btn{background:none;border:none;color:var(--mid);cursor:pointer;padding:3px;border-radius:4px;font-size:.65rem;transition:color .15s,background .15s;line-height:1;}
+.bfc-btn:hover{color:var(--ink);background:var(--bg2);}
+.bfc-btn.del:hover{color:#ef4444;background:rgba(239,68,68,.1);}
+.bureau-icon-picker{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.35rem;max-width:320px;}
+.bip-btn{width:30px;height:30px;background:var(--bg2);border:1px solid var(--line);border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .15s,background .15s;padding:0;}
+.bip-btn:hover,.bip-btn.sel{border-color:var(--cyan);background:rgba(41,184,217,.1);}
+.bip-btn svg{pointer-events:none;}
+
 </style>
 </head>
 <body>
@@ -469,6 +491,7 @@ tr:hover td{background:rgba(41,184,217,.03);}
     <div class="sb-group-label">Médias</div>
     <div class="ni" onclick="nav('library',this)"><span class="ni-ico">⊞</span>Bibliothèque</div>
     <div class="ni" onclick="nav('portfolio',this)"><span class="ni-ico">🖼</span>Portfolio OS</div>
+    <div class="ni" onclick="nav('bureau',this)"><span class="ni-ico">⊟</span>Bureau OS</div>
   </div>
 
   <div class="sb-group">
@@ -989,6 +1012,83 @@ tr:hover td{background:rgba(41,184,217,.03);}
       </div>
     </div>
 
+    <!-- ══ BUREAU OS ══ -->
+    <div class="panel" id="panel-bureau">
+      <div class="ph">
+        <div><h1>Bureau <em>OS</em></h1><p>Gérez les dossiers, icônes et sections affichés sur le bureau.</p></div>
+        <button class="btn btn-gold" onclick="bureauSave()">💾 Appliquer</button>
+      </div>
+
+      <!-- Sections & dossiers -->
+      <div id="bureau-sections"></div>
+
+      <!-- Ajouter une section -->
+      <div style="margin-top:1.2rem;display:flex;gap:.8rem;align-items:center">
+        <input id="bureau-new-sec" class="inp" placeholder="Nom de la section..." style="flex:1;max-width:260px">
+        <button class="btn btn-out" onclick="bureauAddSection()">+ Section</button>
+      </div>
+
+      <!-- Ajouter un dossier -->
+      <div style="margin-top:2rem">
+        <div class="card-label" style="margin-bottom:.8rem">Ajouter un dossier</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:.7rem;align-items:end">
+          <div>
+            <label class="lbl">Nom</label>
+            <input id="bfr-label" class="inp" placeholder="Ex : Motion Design">
+          </div>
+          <div>
+            <label class="lbl">Section</label>
+            <select id="bfr-section" class="inp"></select>
+          </div>
+          <div>
+            <label class="lbl">Picto</label>
+            <div id="bfr-icon-picker" class="bureau-icon-picker"></div>
+            <input type="hidden" id="bfr-icon-val" value="grid">
+          </div>
+          <button class="btn btn-gold" onclick="bureauAddFolder()" style="height:36px">+ Ajouter</button>
+        </div>
+        <!-- Couleurs dégradé -->
+        <div style="display:flex;gap:.7rem;margin-top:.7rem;align-items:center">
+          <label class="lbl" style="margin:0;white-space:nowrap">Couleur dégradé :</label>
+          <input type="color" id="bfr-c1" value="#0e5e7a" style="width:36px;height:28px;padding:2px;border-radius:6px;border:1px solid var(--border);background:none;cursor:pointer">
+          <span style="color:var(--mid);font-size:.7rem">→</span>
+          <input type="color" id="bfr-c2" value="#29B8D9" style="width:36px;height:28px;padding:2px;border-radius:6px;border:1px solid var(--border);background:none;cursor:pointer">
+          <div id="bfr-preview" style="width:42px;height:42px;border-radius:12px;margin-left:.4rem;display:flex;align-items:center;justify-content:center;transition:.2s">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6" width="22" height="22" id="bfr-preview-svg"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit folder modal -->
+    <div class="modal-bd" id="m-bureau-edit">
+      <div class="modal" style="max-width:480px">
+        <div class="modal-hd">
+          <div class="modal-title">Modifier le dossier</div>
+          <button class="modal-x" onclick="closeM('m-bureau-edit')">✕</button>
+        </div>
+        <div class="modal-body" style="display:flex;flex-direction:column;gap:.9rem">
+          <input type="hidden" id="bed-idx">
+          <div><label class="lbl">Nom</label><input id="bed-label" class="inp"></div>
+          <div><label class="lbl">Section</label><select id="bed-section" class="inp"></select></div>
+          <div><label class="lbl">Picto</label><div id="bed-icon-picker" class="bureau-icon-picker"></div><input type="hidden" id="bed-icon-val" value="grid"></div>
+          <div style="display:flex;gap:.7rem;align-items:center">
+            <label class="lbl" style="margin:0;white-space:nowrap">Dégradé :</label>
+            <input type="color" id="bed-c1" style="width:36px;height:28px;padding:2px;border-radius:6px;border:1px solid var(--border);background:none;cursor:pointer">
+            <span style="color:var(--mid);font-size:.7rem">→</span>
+            <input type="color" id="bed-c2" style="width:36px;height:28px;padding:2px;border-radius:6px;border:1px solid var(--border);background:none;cursor:pointer">
+            <div id="bed-preview" style="width:42px;height:42px;border-radius:12px;margin-left:.4rem;display:flex;align-items:center;justify-content:center;transition:.2s">
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6" width="22" height="22" id="bed-preview-svg"></svg>
+            </div>
+          </div>
+        </div>
+        <div class="modal-ft">
+          <button class="btn btn-out" onclick="closeM('m-bureau-edit')">Annuler</button>
+          <button class="btn btn-gold" onclick="bureauEditSave()">Enregistrer</button>
+        </div>
+      </div>
+    </div>
+
     <!-- ══ MESSAGES ══ -->
     <div class="panel" id="panel-messages">
       <div class="ph">
@@ -1234,7 +1334,7 @@ const TITLES = {
   projects:['Projets','Gestion des projets'],about:['À propos','Section À propos'],
   contact:['Contact','Section Contact'],cv:['CV','Compétences & Expériences'],nav:['Navigation','Barre de navigation'],
   marquee:['Marquee','Bandeaux défilants'],design:['Design','Couleurs & Typographie'],
-  library:['Bibliothèque','Gestion des images'],messages:['Messages','Boîte de réception'],
+  library:['Bibliothèque','Gestion des images'],bureau:['Bureau OS','Dossiers & disposition du bureau'],messages:['Messages','Boîte de réception'],
   settings:['Paramètres','Configuration système']
 }
 function nav(name, el) {
@@ -1245,6 +1345,7 @@ function nav(name, el) {
   const t = TITLES[name] || [name, '']
   document.getElementById('pageTitle').textContent = t[0]
   document.getElementById('pageSub').textContent = t[1]
+  if (name === 'bureau')   bureauRender()
   if (name === 'library')  loadLib()
   if (name === 'messages') loadMsgs()
   if (name === 'dashboard') loadDashboard()
@@ -1968,6 +2069,248 @@ function toggleSec(hd) {
   const body = hd.nextElementSibling
   const open = body.classList.toggle('open')
   hd.classList.toggle('open', open)
+}
+
+// ═══════════════════════════════
+//  BUREAU OS
+// ═══════════════════════════════
+const BUREAU_ICONS={
+  grid:'<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
+  layers:'<path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>',
+  brush:'<path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><circle cx="11" cy="11" r="2"/>',
+  play:'<polygon points="5 3 19 12 5 21 5 3" fill="rgba(255,255,255,.25)"/>',
+  globe:'<circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>',
+  heart:'<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" fill="rgba(255,255,255,.18)"/>',
+  book:'<path d="M22 10v6M2 10l10-5 10 5-10 5-10-5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>',
+  star:'<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" fill="rgba(255,255,255,.18)"/>',
+  palette:'<circle cx="12" cy="12" r="10"/><circle cx="8.5" cy="14.5" r="1.5" fill="white" stroke="none"/><circle cx="15.5" cy="14.5" r="1.5" fill="white" stroke="none"/><circle cx="12" cy="9" r="1.5" fill="white" stroke="none"/>',
+  camera:'<path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/>',
+  code:'<polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>',
+  film:'<rect x="2" y="2" width="20" height="20" rx="2"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/>',
+  diamond:'<path d="M2.7 10.3a2.41 2.41 0 0 0 0 3.41l7.59 7.59a2.41 2.41 0 0 0 3.41 0l7.59-7.59a2.41 2.41 0 0 0 0-3.41l-7.59-7.59a2.41 2.41 0 0 0-3.41 0z" fill="rgba(255,255,255,.18)"/>',
+  lightning:'<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" fill="rgba(255,255,255,.18)"/>',
+  image:'<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5" fill="white" stroke="none"/><polyline points="21 15 16 10 5 21"/>',
+  type:'<polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/>',
+  monitor:'<rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>',
+  eye:'<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>',
+  pen:'<path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>'
+};
+const BUREAU_DEFAULT={
+  sections:['Portfolio','Créations personnelles'],
+  folders:[
+    {id:'pro',     label:'Portfolio pro',      action:'category:pro', icon:'grid',   c1:'#0e5e7a',c2:'#29B8D9',section:'Portfolio'},
+    {id:'logo',    label:'Identités visuelles', action:'folder:logo',  icon:'layers', c1:'#065f46',c2:'#10b981',section:'Portfolio'},
+    {id:'digital', label:'Digital Painting',   action:'folder:digital',icon:'brush', c1:'#0e7490',c2:'#06b6d4',section:'Portfolio'},
+    {id:'animation',label:'Animation',         action:'folder:animation',icon:'play',c1:'#c2410c',c2:'#f97316',section:'Portfolio'},
+    {id:'sites',   label:'Sites internet',     action:'folder:sites', icon:'globe',  c1:'#1d4ed8',c2:'#60a5fa',section:'Portfolio'},
+    {id:'perso',   label:'Perso',              action:'folder:perso', icon:'heart',  c1:'#6d28d9',c2:'#8b5cf6',section:'Créations personnelles'},
+    {id:'etudes',  label:'Études',             action:'folder:etudes',icon:'book',   c1:'#1d4ed8',c2:'#3b82f6',section:'Créations personnelles'},
+  ]
+};
+
+function bureauLoad(){
+  try{ return JSON.parse(localStorage.getItem('aar_desk')||'null')||JSON.parse(JSON.stringify(BUREAU_DEFAULT)); }
+  catch(_){ return JSON.parse(JSON.stringify(BUREAU_DEFAULT)); }
+}
+function bureauSave(){
+  // save current UI state to localStorage
+  const data=bureauLoad();
+  // read ordering from DOM
+  const newFolders=[];
+  document.querySelectorAll('.bureau-section-block').forEach(block=>{
+    const sec=block.dataset.sec;
+    block.querySelectorAll('.bureau-folder-card').forEach(card=>{
+      const idx=parseInt(card.dataset.idx);
+      const f=data.folders[idx];
+      if(f){ newFolders.push({...f,section:sec}); }
+    });
+  });
+  data.folders=newFolders;
+  localStorage.setItem('aar_desk',JSON.stringify(data));
+  toast('✓ Bureau mis à jour !');
+}
+
+let _dragSrc=null;
+function bureauRender(){
+  const data=bureauLoad();
+  const cont=document.getElementById('bureau-sections');
+  const bySection={};
+  data.sections.forEach(s=>{bySection[s]=[];});
+  data.folders.forEach((f,i)=>{
+    if(!bySection[f.section]) bySection[f.section]=[];
+    bySection[f.section].push({...f,_idx:i});
+  });
+
+  cont.innerHTML=data.sections.map(sec=>`
+    <div class="bureau-section-block" data-sec="${sec}" ondragover="event.preventDefault()" ondrop="bureauDrop(event,this)">
+      <div class="bureau-sec-hd">
+        <span class="bureau-sec-title">📁 ${sec}</span>
+        <button class="bureau-sec-del" onclick="bureauDelSection('${sec}')" title="Supprimer la section">✕</button>
+      </div>
+      <div class="bureau-folder-list">
+        ${(bySection[sec]||[]).map(f=>`
+          <div class="bureau-folder-card" draggable="true" data-idx="${f._idx}"
+            ondragstart="bureauDragStart(event,this)"
+            ondragend="bureauDragEnd(event,this)"
+            ondragover="event.preventDefault();this.classList.add('drag-over')"
+            ondragleave="this.classList.remove('drag-over')">
+            <div class="bfc-ico" style="background:linear-gradient(135deg,${f.c1},${f.c2})">
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6" width="16" height="16">${BUREAU_ICONS[f.icon]||BUREAU_ICONS.grid}</svg>
+            </div>
+            <span class="bfc-name">${f.label}</span>
+            <div class="bfc-btns">
+              <button class="bfc-btn" onclick="bureauEditOpen(${f._idx})" title="Modifier">✎</button>
+              <button class="bfc-btn del" onclick="bureauDelFolder(${f._idx})" title="Supprimer">✕</button>
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>`).join('');
+
+  bureauFillIconPicker('bfr-icon-picker','bfr-icon-val','bfr-preview-svg',updateBfrPreview);
+  bureauFillSectionSelect('bfr-section',data.sections);
+  updateBfrPreview();
+}
+
+function bureauFillIconPicker(pickerId,valId,previewId,onChange){
+  const picker=document.getElementById(pickerId);
+  if(!picker) return;
+  const cur=document.getElementById(valId)?.value||'grid';
+  picker.innerHTML=Object.keys(BUREAU_ICONS).map(k=>`
+    <button class="bip-btn ${k===cur?'sel':''}" data-ico="${k}" title="${k}"
+      onclick="document.getElementById('${valId}').value='${k}';this.closest('.bureau-icon-picker').querySelectorAll('.bip-btn').forEach(b=>b.classList.toggle('sel',b.dataset.ico==='${k}'));if(typeof ${onChange.name}==='function')${onChange.name}()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="14" height="14">${BUREAU_ICONS[k]}</svg>
+    </button>`).join('');
+}
+
+function bureauFillSectionSelect(selId,sections){
+  const sel=document.getElementById(selId);
+  if(!sel) return;
+  sel.innerHTML=sections.map(s=>`<option value="${s}">${s}</option>`).join('');
+}
+
+function updateBfrPreview(){
+  const c1=document.getElementById('bfr-c1')?.value||'#0e5e7a';
+  const c2=document.getElementById('bfr-c2')?.value||'#29B8D9';
+  const ico=document.getElementById('bfr-icon-val')?.value||'grid';
+  const prev=document.getElementById('bfr-preview');
+  const svg=document.getElementById('bfr-preview-svg');
+  if(prev) prev.style.background=`linear-gradient(135deg,${c1},${c2})`;
+  if(svg) svg.innerHTML=BUREAU_ICONS[ico]||BUREAU_ICONS.grid;
+}
+function updateBedPreview(){
+  const c1=document.getElementById('bed-c1')?.value||'#0e5e7a';
+  const c2=document.getElementById('bed-c2')?.value||'#29B8D9';
+  const ico=document.getElementById('bed-icon-val')?.value||'grid';
+  const prev=document.getElementById('bed-preview');
+  const svg=document.getElementById('bed-preview-svg');
+  if(prev) prev.style.background=`linear-gradient(135deg,${c1},${c2})`;
+  if(svg) svg.innerHTML=BUREAU_ICONS[ico]||BUREAU_ICONS.grid;
+}
+['bfr-c1','bfr-c2'].forEach(id=>{ const el=document.getElementById(id); if(el) el.addEventListener('input',updateBfrPreview); });
+
+function bureauAddFolder(){
+  const label=document.getElementById('bfr-label')?.value.trim();
+  if(!label){ toast('Nom requis','err'); return; }
+  const section=document.getElementById('bfr-section')?.value||'Portfolio';
+  const icon=document.getElementById('bfr-icon-val')?.value||'grid';
+  const c1=document.getElementById('bfr-c1')?.value||'#0e5e7a';
+  const c2=document.getElementById('bfr-c2')?.value||'#29B8D9';
+  const id=label.toLowerCase().replace(/[^a-z0-9]/g,'_').replace(/_+/g,'_').replace(/^_|_$/g,'').substring(0,20)||('f'+Date.now());
+  const data=bureauLoad();
+  data.folders.push({id,label,action:'folder:'+id,icon,c1,c2,section});
+  localStorage.setItem('aar_desk',JSON.stringify(data));
+  document.getElementById('bfr-label').value='';
+  bureauRender();
+  toast('✓ Dossier "'+label+'" ajouté !');
+}
+
+function bureauAddSection(){
+  const label=document.getElementById('bureau-new-sec')?.value.trim();
+  if(!label){ toast('Nom de section requis','err'); return; }
+  const data=bureauLoad();
+  if(data.sections.includes(label)){ toast('Section déjà existante','err'); return; }
+  data.sections.push(label);
+  localStorage.setItem('aar_desk',JSON.stringify(data));
+  document.getElementById('bureau-new-sec').value='';
+  bureauRender();
+  toast('✓ Section "'+label+'" créée !');
+}
+
+function bureauDelSection(sec){
+  const data=bureauLoad();
+  if(!confirm(`Supprimer la section "${sec}" ? (les dossiers seront aussi supprimés)`)) return;
+  data.sections=data.sections.filter(s=>s!==sec);
+  data.folders=data.folders.filter(f=>f.section!==sec);
+  localStorage.setItem('aar_desk',JSON.stringify(data));
+  bureauRender();
+  toast('✓ Section supprimée');
+}
+
+function bureauDelFolder(idx){
+  const data=bureauLoad();
+  data.folders.splice(idx,1);
+  localStorage.setItem('aar_desk',JSON.stringify(data));
+  bureauRender();
+  toast('✓ Dossier supprimé');
+}
+
+function bureauEditOpen(idx){
+  const data=bureauLoad();
+  const f=data.folders[idx];
+  if(!f) return;
+  document.getElementById('bed-idx').value=idx;
+  document.getElementById('bed-label').value=f.label;
+  document.getElementById('bed-icon-val').value=f.icon||'grid';
+  document.getElementById('bed-c1').value=f.c1||'#0e5e7a';
+  document.getElementById('bed-c2').value=f.c2||'#29B8D9';
+  bureauFillSectionSelect('bed-section',data.sections);
+  document.getElementById('bed-section').value=f.section;
+  bureauFillIconPicker('bed-icon-picker','bed-icon-val','bed-preview-svg',updateBedPreview);
+  updateBedPreview();
+  ['bed-c1','bed-c2'].forEach(id=>{ const el=document.getElementById(id); if(el){ el.oninput=updateBedPreview; } });
+  openM('m-bureau-edit');
+}
+
+function bureauEditSave(){
+  const idx=parseInt(document.getElementById('bed-idx').value);
+  const data=bureauLoad();
+  if(!data.folders[idx]) return;
+  data.folders[idx].label=document.getElementById('bed-label').value.trim()||data.folders[idx].label;
+  data.folders[idx].section=document.getElementById('bed-section').value;
+  data.folders[idx].icon=document.getElementById('bed-icon-val').value;
+  data.folders[idx].c1=document.getElementById('bed-c1').value;
+  data.folders[idx].c2=document.getElementById('bed-c2').value;
+  localStorage.setItem('aar_desk',JSON.stringify(data));
+  closeM('m-bureau-edit');
+  bureauRender();
+  toast('✓ Dossier modifié');
+}
+
+function bureauDragStart(e,el){
+  _dragSrc=el;
+  el.classList.add('dragging');
+  e.dataTransfer.effectAllowed='move';
+}
+function bureauDragEnd(e,el){
+  el.classList.remove('dragging');
+  document.querySelectorAll('.bureau-folder-card').forEach(c=>c.classList.remove('drag-over'));
+  bureauSave();
+}
+function bureauDrop(e,block){
+  e.preventDefault();
+  if(!_dragSrc) return;
+  const list=block.querySelector('.bureau-folder-list');
+  const target=e.target.closest('.bureau-folder-card');
+  if(target && target!==_dragSrc){
+    const all=[..._dragSrc.parentNode.children];
+    const srcI=all.indexOf(_dragSrc);
+    const tgtI=[...list.children].indexOf(target);
+    if(srcI<tgtI) list.insertBefore(_dragSrc,target.nextSibling);
+    else list.insertBefore(_dragSrc,target);
+  } else if(!target){
+    list.appendChild(_dragSrc);
+  }
+  block.querySelectorAll('.bureau-folder-card').forEach(c=>c.classList.remove('drag-over'));
 }
 
 function openM(id) { document.getElementById(id).classList.add('open') }

@@ -64,85 +64,114 @@ body{background:var(--wall-a);color:var(--ink);transition:background var(--theme
 ::-webkit-scrollbar-thumb{background:var(--scroll-thumb);border-radius:4px}
 
 /* ═══════════════════════════════════════
-   WALLPAPER
+   WALLPAPER ANIMÉ
 ═══════════════════════════════════════ */
+:root{ --wall-a:#060d1f; --wall-b:#040914; }
+[data-theme="light"]{ --wall-a:#f0f4ff; --wall-b:#e4ecfb; }
+
 #wall{
   position:fixed;inset:0;z-index:0;
-  background:var(--desk-img, none),
-    var(--wall-blobs),
-    linear-gradient(160deg, var(--wall-a) 0%, var(--wall-b) 100%);
-  background-size:cover;
+  background:linear-gradient(160deg, var(--wall-a) 0%, var(--wall-b) 100%);
   transition:background var(--theme-transition);
-}
-:root{
-  --wall-a:#060d1f; --wall-b:#040914;
-  --wall-blobs:
-    /* Grande tache chaude bas gauche */
-    radial-gradient(ellipse 80% 60% at -10% 100%, rgba(0,151,186,.28) 0%, transparent 55%),
-    /* Halo cyan haut droite */
-    radial-gradient(ellipse 65% 55% at 105% -5%,  rgba(41,184,217,.2)  0%, transparent 50%),
-    /* Nébuleuse centrale douce */
-    radial-gradient(ellipse 90% 70% at 50% 60%,   rgba(27,53,96,.6)    0%, transparent 70%),
-    /* Lueur navy profond */
-    radial-gradient(ellipse 60% 50% at 20% 10%,   rgba(14,30,72,.9)    0%, transparent 65%),
-    /* Touche chaude ambrée subtile */
-    radial-gradient(ellipse 40% 30% at 85% 80%,   rgba(180,100,20,.07) 0%, transparent 55%),
-    /* Accent cyan droit */
-    radial-gradient(ellipse 30% 40% at 98% 50%,   rgba(41,184,217,.08) 0%, transparent 55%);
-}
-[data-theme="light"]{
-  --wall-a:#f0f4ff; --wall-b:#e4ecfb;
-  --wall-blobs:
-    radial-gradient(ellipse 70% 55% at -5% 100%,  rgba(41,184,217,.14) 0%, transparent 55%),
-    radial-gradient(ellipse 60% 50% at 108% -5%,  rgba(27,53,96,.08)   0%, transparent 55%),
-    radial-gradient(ellipse 80% 65% at 50% 55%,   rgba(200,220,255,.5) 0%, transparent 70%),
-    radial-gradient(ellipse 45% 35% at 80% 85%,   rgba(41,184,217,.08) 0%, transparent 55%);
+  overflow:hidden;
 }
 
-/* Effet grain / texture organique */
+/* Blobs animés */
+.wb{position:absolute;border-radius:50%;filter:blur(90px);will-change:transform,opacity;}
+
+/* Blob 1 — grand cyan bas-gauche */
+.wb1{width:80vw;height:70vh;left:-25vw;bottom:-20vh;
+  background:radial-gradient(circle,rgba(0,151,186,.32) 0%,transparent 70%);
+  animation:wb1 14s ease-in-out infinite;}
+@keyframes wb1{
+  0%,100%{transform:translate(0,0) scale(1);}
+  33%{transform:translate(6vw,-8vh) scale(1.08);}
+  66%{transform:translate(-4vw,5vh) scale(.95);}
+}
+
+/* Blob 2 — navy haut-droite */
+.wb2{width:70vw;height:65vh;right:-20vw;top:-15vh;
+  background:radial-gradient(circle,rgba(41,184,217,.18) 0%,transparent 70%);
+  animation:wb2 18s ease-in-out infinite;}
+@keyframes wb2{
+  0%,100%{transform:translate(0,0) scale(1);}
+  40%{transform:translate(-8vw,10vh) scale(1.06);}
+  70%{transform:translate(4vw,-5vh) scale(.93);}
+}
+
+/* Blob 3 — navy centre profond */
+.wb3{width:90vw;height:80vh;left:5vw;top:10vh;
+  background:radial-gradient(circle,rgba(27,53,96,.55) 0%,transparent 65%);
+  animation:wb3 22s ease-in-out infinite;}
+@keyframes wb3{
+  0%,100%{transform:translate(0,0) scale(1);}
+  50%{transform:translate(5vw,6vh) scale(1.04);}
+}
+
+/* Blob 4 — accent chaud discret */
+.wb4{width:40vw;height:40vh;right:5vw;bottom:10vh;
+  background:radial-gradient(circle,rgba(0,151,186,.1) 0%,transparent 70%);
+  animation:wb4 16s ease-in-out infinite 3s;}
+@keyframes wb4{
+  0%,100%{transform:translate(0,0) scale(1);}
+  45%{transform:translate(-6vw,-10vh) scale(1.12);}
+}
+
+/* Grain texture organique */
 #wall::before{
-  content:'';position:absolute;inset:0;pointer-events:none;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
-  background-size:200px 200px;
-  opacity:.018;
-  transition:opacity .4s;
+  content:'';position:absolute;inset:0;pointer-events:none;z-index:2;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:180px 180px;
+  opacity:.022;
+  mix-blend-mode:overlay;
 }
-[data-theme="light"] #wall::before{opacity:.03}
+[data-theme="light"] #wall::before{opacity:.04}
 
-/* Particules lumineuses flottantes */
+/* Particules lumineuses */
 #wall::after{
-  content:'';position:absolute;inset:0;pointer-events:none;
+  content:'';position:absolute;inset:0;pointer-events:none;z-index:2;
   background-image:
     radial-gradient(1.5px 1.5px at 8%  15%, rgba(41,184,217,.9)  0%,transparent 100%),
-    radial-gradient(1px   1px   at 23% 72%, rgba(41,184,217,.55) 0%,transparent 100%),
-    radial-gradient(1px   1px   at 46% 38%, rgba(255,255,255,.4) 0%,transparent 100%),
-    radial-gradient(2px   2px   at 72% 18%, rgba(41,184,217,.75) 0%,transparent 100%),
-    radial-gradient(1px   1px   at 91% 55%, rgba(255,255,255,.35)0%,transparent 100%),
-    radial-gradient(1.5px 1.5px at 58% 83%, rgba(41,184,217,.5) 0%,transparent 100%),
-    radial-gradient(1px   1px   at 35% 5%,  rgba(255,255,255,.5) 0%,transparent 100%),
-    radial-gradient(1px   1px   at 82% 90%, rgba(41,184,217,.4) 0%,transparent 100%);
+    radial-gradient(1px   1px   at 23% 72%, rgba(41,184,217,.6)  0%,transparent 100%),
+    radial-gradient(1px   1px   at 46% 38%, rgba(255,255,255,.5) 0%,transparent 100%),
+    radial-gradient(2px   2px   at 72% 18%, rgba(41,184,217,.8)  0%,transparent 100%),
+    radial-gradient(1px   1px   at 91% 55%, rgba(255,255,255,.4) 0%,transparent 100%),
+    radial-gradient(1.5px 1.5px at 58% 83%, rgba(41,184,217,.55) 0%,transparent 100%),
+    radial-gradient(1px   1px   at 35% 5%,  rgba(255,255,255,.6) 0%,transparent 100%),
+    radial-gradient(1px   1px   at 82% 90%, rgba(41,184,217,.45) 0%,transparent 100%),
+    radial-gradient(1px   1px   at 15% 50%, rgba(255,255,255,.3) 0%,transparent 100%),
+    radial-gradient(2px   2px   at 50% 25%, rgba(41,184,217,.5)  0%,transparent 100%);
+  animation:starTwinkle 8s ease-in-out infinite;
   opacity:1;transition:opacity .4s;
+}
+@keyframes starTwinkle{
+  0%,100%{opacity:1;} 50%{opacity:.6;}
 }
 [data-theme="light"] #wall::after{opacity:0}
 
-/* Cercles artistiques subtils */
+/* Cercle artistique signature */
 #wall-art{
-  position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;
+  position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden;
 }
 #wall-art::before{
   content:'';position:absolute;
-  width:900px;height:900px;
-  top:-300px;right:-250px;
+  width:min(900px,90vw);height:min(900px,90vw);
+  top:-30%;right:-20%;
   border-radius:50%;
-  border:1px solid rgba(41,184,217,.06);
-  box-shadow:inset 0 0 120px rgba(41,184,217,.02);
+  border:1px solid rgba(41,184,217,.07);
+  animation:circleBreath 20s ease-in-out infinite;
 }
 #wall-art::after{
   content:'';position:absolute;
-  width:600px;height:600px;
-  bottom:-180px;left:-120px;
+  width:min(600px,65vw);height:min(600px,65vw);
+  bottom:-20%;left:-15%;
   border-radius:50%;
-  border:1px solid rgba(41,184,217,.04);
+  border:1px solid rgba(41,184,217,.05);
+  animation:circleBreath 25s ease-in-out infinite reverse;
+}
+@keyframes circleBreath{
+  0%,100%{transform:scale(1);opacity:.7;}
+  50%{transform:scale(1.06);opacity:1;}
 }
 [data-theme="light"] #wall-art{opacity:0}
 #wall-diag{display:none}
@@ -592,7 +621,12 @@ body{background:var(--wall-a);color:var(--ink);transition:background var(--theme
 <body>
 
 <!-- WALLPAPER -->
-<div id="wall"></div>
+<div id="wall">
+  <div class="wb wb1"></div>
+  <div class="wb wb2"></div>
+  <div class="wb wb3"></div>
+  <div class="wb wb4"></div>
+</div>
 
 <!-- ══════════════════════════════════════════
      LOCK SCREEN
@@ -710,61 +744,8 @@ body{background:var(--wall-a);color:var(--ink);transition:background var(--theme
       <div>Directeur Artistique · Caen · Normandie · Remote · Aardesign</div>
     </div>
 
-    <!-- Portfolio professionnel -->
-    <div class="desk-section">
-      <div class="desk-section-label">Portfolio</div>
-      <div class="desk-folders-row">
-        <div class="d-folder" onclick="openCategory('pro')">
-          <div class="d-folder-ico" style="background:linear-gradient(145deg,#0e5e7a,#29B8D9);border-radius:14px;width:54px;height:54px;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6" width="28" height="28"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
-          </div>
-          <span class="d-folder-label">Portfolio pro</span>
-        </div>
-        <div class="d-folder" onclick="openFolder('logo')">
-          <div class="d-folder-ico" style="background:linear-gradient(145deg,#065f46,#10b981);border-radius:14px;width:54px;height:54px;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6" width="28" height="28"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-          </div>
-          <span class="d-folder-label">Identités visuelles</span>
-        </div>
-        <div class="d-folder" onclick="openFolder('digital')">
-          <div class="d-folder-ico" style="background:linear-gradient(145deg,#0e7490,#06b6d4);border-radius:14px;width:54px;height:54px;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6" width="28" height="28"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
-          </div>
-          <span class="d-folder-label">Digital Painting</span>
-        </div>
-        <div class="d-folder" onclick="openFolder('animation')">
-          <div class="d-folder-ico" style="background:linear-gradient(145deg,#c2410c,#f97316);border-radius:14px;width:54px;height:54px;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6" width="28" height="28"><polygon points="5 3 19 12 5 21 5 3" fill="rgba(255,255,255,.25)"/></svg>
-          </div>
-          <span class="d-folder-label">Animation</span>
-        </div>
-        <div class="d-folder" onclick="openFolder('sites')">
-          <div class="d-folder-ico" style="background:linear-gradient(145deg,#1d4ed8,#60a5fa);border-radius:14px;width:54px;height:54px;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6" width="28" height="28"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-          </div>
-          <span class="d-folder-label">Sites internet</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Créations personnelles -->
-    <div class="desk-section">
-      <div class="desk-section-label sec-perso">Créations personnelles</div>
-      <div class="desk-folders-row">
-        <div class="d-folder" onclick="openFolder('perso')">
-          <div class="d-folder-ico" style="background:linear-gradient(145deg,#6d28d9,#8b5cf6);border-radius:14px;width:54px;height:54px;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6" width="28" height="28"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" fill="rgba(255,255,255,.2)"/></svg>
-          </div>
-          <span class="d-folder-label">Perso</span>
-        </div>
-        <div class="d-folder" onclick="openFolder('etudes')">
-          <div class="d-folder-ico" style="background:linear-gradient(145deg,#1d4ed8,#3b82f6);border-radius:14px;width:54px;height:54px;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6" width="28" height="28"><path d="M22 10v6M2 10l10-5 10 5-10 5-10-5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
-          </div>
-          <span class="d-folder-label">Études</span>
-        </div>
-      </div>
-    </div>
+    <!-- Dossiers bureau (rendu dynamique) -->
+    <div id="desk-dynamic-folders"></div>
 
   </div>
 </div>
@@ -1360,6 +1341,88 @@ function openLightbox(imgs,startIdx){
   });
   if(imgs.length<=1){ lb.querySelector('#lb-prev').style.display='none'; lb.querySelector('#lb-next').style.display='none'; }
 }
+
+/* ═══════════════════════════════════════
+   BUREAU — DOSSIERS DYNAMIQUES
+═══════════════════════════════════════ */
+const DESK_ICONS={
+  grid:'<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
+  layers:'<path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>',
+  brush:'<path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><circle cx="11" cy="11" r="2"/>',
+  play:'<polygon points="5 3 19 12 5 21 5 3" fill="rgba(255,255,255,.25)"/>',
+  globe:'<circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>',
+  heart:'<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" fill="rgba(255,255,255,.18)"/>',
+  book:'<path d="M22 10v6M2 10l10-5 10 5-10 5-10-5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>',
+  star:'<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" fill="rgba(255,255,255,.18)"/>',
+  palette:'<circle cx="12" cy="12" r="10"/><circle cx="8.5" cy="14.5" r="1.5" fill="white" stroke="none"/><circle cx="15.5" cy="14.5" r="1.5" fill="white" stroke="none"/><circle cx="12" cy="9" r="1.5" fill="white" stroke="none"/>',
+  camera:'<path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/>',
+  code:'<polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>',
+  film:'<rect x="2" y="2" width="20" height="20" rx="2"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="7" x2="7" y2="7"/><line x1="17" y1="7" x2="22" y2="7"/>',
+  diamond:'<path d="M2.7 10.3a2.41 2.41 0 0 0 0 3.41l7.59 7.59a2.41 2.41 0 0 0 3.41 0l7.59-7.59a2.41 2.41 0 0 0 0-3.41l-7.59-7.59a2.41 2.41 0 0 0-3.41 0z" fill="rgba(255,255,255,.18)"/>',
+  lightning:'<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" fill="rgba(255,255,255,.18)"/>',
+  image:'<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5" fill="white" stroke="none"/><polyline points="21 15 16 10 5 21"/>',
+  type:'<polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/>',
+  monitor:'<rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>',
+  eye:'<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>',
+  pen:'<path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>'
+};
+
+const DEFAULT_DESK_DATA={
+  sections:['Portfolio','Créations personnelles'],
+  folders:[
+    {id:'pro',     label:'Portfolio pro',      action:'category:pro', icon:'grid',      c1:'#0e5e7a',c2:'#29B8D9',section:'Portfolio'},
+    {id:'logo',    label:'Identités visuelles', action:'folder:logo',  icon:'layers',    c1:'#065f46',c2:'#10b981',section:'Portfolio'},
+    {id:'digital', label:'Digital Painting',    action:'folder:digital',icon:'brush',   c1:'#0e7490',c2:'#06b6d4',section:'Portfolio'},
+    {id:'animation',label:'Animation',          action:'folder:animation',icon:'play',  c1:'#c2410c',c2:'#f97316',section:'Portfolio'},
+    {id:'sites',   label:'Sites internet',      action:'folder:sites', icon:'globe',     c1:'#1d4ed8',c2:'#60a5fa',section:'Portfolio'},
+    {id:'perso',   label:'Perso',               action:'folder:perso', icon:'heart',     c1:'#6d28d9',c2:'#8b5cf6',section:'Créations personnelles'},
+    {id:'etudes',  label:'Études',              action:'folder:etudes',icon:'book',      c1:'#1d4ed8',c2:'#3b82f6',section:'Créations personnelles'},
+  ]
+};
+
+function getDeskData(){
+  try{ return JSON.parse(localStorage.getItem('aar_desk')||'null')||DEFAULT_DESK_DATA; }
+  catch(_){ return DEFAULT_DESK_DATA; }
+}
+
+function deskFolderSvg(ico){
+  return DESK_ICONS[ico]||DESK_ICONS.grid;
+}
+
+function deskFolderAction(action){
+  if(!action) return '';
+  const [type,id]=action.split(':');
+  if(type==='category') return `openCategory('${id}')`;
+  return `openFolder('${id}')`;
+}
+
+function renderDesktopFolders(){
+  const data=getDeskData();
+  const container=document.getElementById('desk-dynamic-folders');
+  if(!container) return;
+  const bySection={};
+  data.sections.forEach(s=>{ bySection[s]=[]; });
+  data.folders.forEach(f=>{
+    if(!bySection[f.section]) bySection[f.section]=[];
+    bySection[f.section].push(f);
+  });
+  container.innerHTML=data.sections.map(sec=>{
+    const folders=bySection[sec]||[];
+    if(!folders.length) return '';
+    return `<div class="desk-section">
+      <div class="desk-section-label">${sec}</div>
+      <div class="desk-folders-row">
+        ${folders.map(f=>`<div class="d-folder" onclick="${deskFolderAction(f.action)}">
+          <div class="d-folder-ico" style="background:linear-gradient(145deg,${f.c1},${f.c2});border-radius:14px;width:54px;height:54px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6" width="28" height="28">${deskFolderSvg(f.icon)}</svg>
+          </div>
+          <span class="d-folder-label">${f.label}</span>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+renderDesktopFolders();
 
 /* ═══════════════════════════════════════
    ADMIN
