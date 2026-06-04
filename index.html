@@ -235,7 +235,7 @@ body{background:var(--wall-a);color:var(--ink);transition:background var(--theme
 #tb-logo-center{
   display:flex;align-items:center;justify-content:center;
 }
-#tb-logo-center img{height:38px;width:auto;max-width:280px;opacity:.92;filter:brightness(0) invert(1)}
+#tb-logo-center img{height:46px;width:auto;max-width:340px;opacity:.92;filter:brightness(0) invert(1)}
 [data-theme="light"] #tb-logo-center img{filter:none;opacity:.95}
 /* droite */
 #tb-right{display:flex;align-items:center;justify-content:flex-end;gap:6px}
@@ -289,21 +289,71 @@ body{background:var(--wall-a);color:var(--ink);transition:background var(--theme
 ═══════════════════════════════════════ */
 #desktop{
   position:fixed;inset:64px 0 0 0;z-index:1;
-  display:flex;align-items:flex-start;
+  display:flex;align-items:center;justify-content:center;
   pointer-events:none;
 }
 
-/* App icons — left column */
+/* Centered island */
+#desk-center{
+  display:flex;flex-direction:column;align-items:center;gap:0;
+  pointer-events:all;
+  padding:20px;
+}
+
+/* Quick-access app icons row */
 #desk-apps{
-  display:flex;flex-direction:column;gap:4px;padding:16px 10px;pointer-events:all;
+  display:flex;flex-direction:row;gap:8px;margin-bottom:28px;
 }
 .d-icon{
-  width:72px;display:flex;flex-direction:column;align-items:center;gap:5px;
-  padding:10px 6px;border-radius:10px;cursor:pointer;
+  width:80px;display:flex;flex-direction:column;align-items:center;gap:6px;
+  padding:12px 6px;border-radius:14px;cursor:pointer;
   background:var(--icon-bg);border:1px solid transparent;
   transition:background var(--theme-transition),border-color .15s,transform .15s;
 }
-.d-icon:hover{background:var(--icon-hover);border-color:var(--bar-border);transform:translateY(-2px)}
+.d-icon:hover{background:var(--icon-hover);border-color:var(--bar-border);transform:translateY(-3px)}
+.d-icon:active{transform:scale(.95)}
+.d-icon-face{
+  width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;
+  overflow:hidden;box-shadow:0 4px 14px rgba(0,0,0,.25);
+}
+.d-icon-label{font-size:.66rem;font-weight:600;color:var(--ink);text-align:center;line-height:1.2;letter-spacing:.01em}
+
+/* Folder rows */
+.desk-section{display:flex;flex-direction:column;align-items:center;gap:6px;margin-bottom:10px;width:100%}
+.desk-section-label{
+  font-size:.46rem;font-weight:800;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--cyan);opacity:.55;margin-bottom:2px;
+}
+.desk-section-label.sec-perso{color:var(--mid)}
+.desk-folders-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+.d-folder{
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  width:88px;cursor:pointer;padding:10px 4px;border-radius:12px;
+  border:1px solid transparent;transition:background .15s,border-color .15s,transform .15s;
+}
+.d-folder:hover{background:var(--folder-hover);border-color:var(--bar-border);transform:translateY(-3px)}
+.d-folder:active{transform:scale(.95)}
+.d-folder-ico{width:58px;height:48px;display:flex;align-items:center;justify-content:center}
+.d-folder-label{font-size:.57rem;font-weight:600;color:var(--ink);text-align:center;line-height:1.3}
+
+/* Category sub-folder grid inside windows */
+.cat-grid{display:flex;flex-wrap:wrap;gap:8px;padding:14px;align-content:flex-start}
+.cat-item{
+  display:flex;flex-direction:column;align-items:center;gap:5px;
+  width:80px;cursor:pointer;padding:8px 4px;border-radius:10px;
+  border:1px solid transparent;transition:background .15s,border-color .15s,transform .15s;
+}
+.cat-item:hover{background:var(--folder-hover);border-color:var(--bar-border);transform:translateY(-2px)}
+.cat-item-ico{width:54px;height:44px;display:flex;align-items:center;justify-content:center}
+.cat-item-lbl{font-size:.55rem;font-weight:600;color:var(--ink);text-align:center;line-height:1.3}
+
+/* Identity hint */
+#desk-identity{
+  position:fixed;bottom:12px;left:14px;z-index:5;pointer-events:none;
+}
+#desk-identity div:first-child{font-size:.6rem;font-weight:800;letter-spacing:.09em;color:rgba(41,184,217,.7);text-transform:uppercase}
+#desk-identity div:last-child{font-size:.52rem;color:var(--mid);margin-top:1px;letter-spacing:.04em}
 .d-icon:active{transform:scale(.95)}
 .d-icon-face{
   width:52px;height:52px;border-radius:13px;display:flex;align-items:center;justify-content:center;
@@ -311,20 +361,6 @@ body{background:var(--wall-a);color:var(--ink);transition:background var(--theme
 }
 .d-icon-label{font-size:.62rem;font-weight:600;color:var(--ink);text-align:center;line-height:1.2;letter-spacing:.01em}
 
-/* Project folders — center */
-#desk-folders{
-  position:absolute;top:50%;left:50%;
-  transform:translate(-50%,-55%);
-  display:flex;flex-direction:column;align-items:center;gap:6px;
-  pointer-events:all;
-}
-.d-folders-row{display:flex;gap:10px 14px;justify-content:center;flex-wrap:wrap}
-.d-row-label{
-  font-size:.48rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;
-  color:var(--cyan);opacity:.6;margin-top:10px;margin-bottom:2px;
-  width:100%;text-align:center;
-}
-.d-row-label.perso{color:var(--mid)}
 .d-folder{
   display:flex;flex-direction:column;align-items:center;gap:6px;
   width:80px;cursor:pointer;padding:8px 4px;border-radius:10px;
@@ -379,12 +415,16 @@ body{background:var(--wall-a);color:var(--ink);transition:background var(--theme
   .win-btn.close-mobile svg{opacity:1;width:14px;height:14px;color:rgba(255,255,255,.85)}
   .win-resize{display:none}
   .win-body{-webkit-overflow-scrolling:touch}
-  #desk-apps{display:flex}
+  #desk-apps{display:flex;gap:4px}
   #mob-home{display:flex}
-  #desk-projects{padding:8px;gap:8px}
-  .d-folder{width:80px}
-  .d-folder-ico{width:52px;height:40px}
-  .d-folder-label{font-size:.55rem}
+  .d-icon{width:68px;padding:8px 4px}
+  .d-icon-face{width:48px;height:48px;border-radius:12px}
+  .d-folder{width:72px;padding:6px 2px}
+  .d-folder-ico{width:46px;height:38px}
+  .d-folder-label{font-size:.52rem}
+  #desk-center{padding:12px 8px;gap:0}
+  #desk-apps{margin-bottom:18px}
+  .desk-section{margin-bottom:6px}
   #id-badge{font-size:.55rem;bottom:8px;left:8px}
 }
 .win-bar{
@@ -558,7 +598,7 @@ body{background:var(--wall-a);color:var(--ink);transition:background var(--theme
 <div id="wall-art"></div>
 <div id="wall-diag"></div>
 <div id="lockscreen">
-  <div id="ls-logo"><img src="assets/Logo-Aardesign-Long.png" alt="aardesign" style="width:clamp(160px,28vw,360px)"></div>
+  <div id="ls-logo"><img src="assets/Logo-Aardesign-Long.png" alt="aardesign" style="width:clamp(220px,36vw,480px)"></div>
   <div id="ls-time">00:00</div>
   <div id="ls-date">—</div>
   <div id="ls-name">Anthony Armand</div>
@@ -625,70 +665,74 @@ body{background:var(--wall-a);color:var(--ink);transition:background var(--theme
      DESKTOP
 ══════════════════════════════════════════ -->
 <div id="desktop">
-  <!-- Left app icons — CV · Contact · Écrire · À propos -->
-  <div id="desk-apps">
-    <div class="d-icon" onclick="openApp('cv')">
-      <div class="d-icon-face" style="background:linear-gradient(145deg,#1d4520,#30D158)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6" width="26" height="26"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M9 7h6M9 11h6M9 15h4" stroke-linecap="round"/></svg>
-      </div>
-      <span class="d-icon-label">CV</span>
-    </div>
-    <div class="d-icon" onclick="openApp('contact')">
-      <div class="d-icon-face" style="background:linear-gradient(145deg,#1565C0,#29B8D9)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6" width="26" height="26"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 7 8.5 6 8.5-6"/></svg>
-      </div>
-      <span class="d-icon-label">Contact</span>
-    </div>
-    <div class="d-icon" onclick="openApp('mail')">
-      <div class="d-icon-face" style="background:linear-gradient(145deg,#0097BA,#29B8D9)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6" width="26" height="26"><path d="M22 16.9v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.9z"/></svg>
-      </div>
-      <span class="d-icon-label">Message</span>
-    </div>
-    <div class="d-icon" onclick="openApp('about')">
-      <div class="d-icon-face" style="background:linear-gradient(145deg,#3730a3,#818cf8)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6" width="26" height="26"><circle cx="12" cy="8" r="4"/><path d="M4 20a8 8 0 0 1 16 0"/><path d="M12 12v3" stroke-linecap="round"/><circle cx="12" cy="17" r="1" fill="white" stroke="none"/></svg>
-      </div>
-      <span class="d-icon-label">À propos</span>
-    </div>
-  </div>
+  <div id="desk-center">
 
-  <!-- Project folders -->
-  <div id="desk-folders">
-    <div class="d-row-label">Projets professionnels</div>
-    <div class="d-folders-row">
-      <div class="d-folder" onclick="openFolder('arsene')">
-        <div class="d-folder-ico"><svg viewBox="0 0 54 46" fill="none"><path d="M2 10a3 3 0 0 1 3-3h10l4 4h30a3 3 0 0 1 3 3v24a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#d97706" opacity=".7"/><path d="M2 17a3 3 0 0 1 3-3h44a3 3 0 0 1 3 3v20a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#fbbf24"/></svg></div>
-        <span class="d-folder-label">Arsène Valentin</span>
+    <!-- Quick-access app icons -->
+    <div id="desk-apps">
+      <div class="d-icon" onclick="openApp('cv')">
+        <div class="d-icon-face" style="background:linear-gradient(145deg,#1d4520,#30D158)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6" width="28" height="28"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M9 7h6M9 11h6M9 15h4" stroke-linecap="round"/></svg>
+        </div>
+        <span class="d-icon-label">CV</span>
       </div>
-      <div class="d-folder" onclick="openFolder('clopinette')">
-        <div class="d-folder-ico"><svg viewBox="0 0 54 46" fill="none"><path d="M2 10a3 3 0 0 1 3-3h10l4 4h30a3 3 0 0 1 3 3v24a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#be185d" opacity=".7"/><path d="M2 17a3 3 0 0 1 3-3h44a3 3 0 0 1 3 3v20a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#ec4899"/></svg></div>
-        <span class="d-folder-label">Clopinette</span>
+      <div class="d-icon" onclick="openApp('contact')">
+        <div class="d-icon-face" style="background:linear-gradient(145deg,#1565C0,#29B8D9)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6" width="28" height="28"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 7 8.5 6 8.5-6"/></svg>
+        </div>
+        <span class="d-icon-label">Contact</span>
       </div>
-      <div class="d-folder" onclick="openFolder('digital')">
-        <div class="d-folder-ico"><svg viewBox="0 0 54 46" fill="none"><path d="M2 10a3 3 0 0 1 3-3h10l4 4h30a3 3 0 0 1 3 3v24a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#0e7490" opacity=".7"/><path d="M2 17a3 3 0 0 1 3-3h44a3 3 0 0 1 3 3v20a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#06b6d4"/></svg></div>
-        <span class="d-folder-label">Digital Painting</span>
+      <div class="d-icon" onclick="openApp('mail')">
+        <div class="d-icon-face" style="background:linear-gradient(145deg,#0097BA,#29B8D9)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6" width="28" height="28"><path d="M22 16.9v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.9z"/></svg>
+        </div>
+        <span class="d-icon-label">Message</span>
       </div>
-      <div class="d-folder" onclick="openFolder('logo')">
-        <div class="d-folder-ico"><svg viewBox="0 0 54 46" fill="none"><path d="M2 10a3 3 0 0 1 3-3h10l4 4h30a3 3 0 0 1 3 3v24a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#065f46" opacity=".7"/><path d="M2 17a3 3 0 0 1 3-3h44a3 3 0 0 1 3 3v20a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#10b981"/></svg></div>
-        <span class="d-folder-label">Logo</span>
-      </div>
-      <div class="d-folder" onclick="openFolder('animation')">
-        <div class="d-folder-ico"><svg viewBox="0 0 54 46" fill="none"><path d="M2 10a3 3 0 0 1 3-3h10l4 4h30a3 3 0 0 1 3 3v24a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#c2410c" opacity=".7"/><path d="M2 17a3 3 0 0 1 3-3h44a3 3 0 0 1 3 3v20a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#f97316"/></svg></div>
-        <span class="d-folder-label">Animation</span>
-      </div>
-    </div>
-    <div class="d-row-label perso">Créations personnelles</div>
-    <div class="d-folders-row">
-      <div class="d-folder" onclick="openFolder('perso')">
-        <div class="d-folder-ico"><svg viewBox="0 0 54 46" fill="none"><path d="M2 10a3 3 0 0 1 3-3h10l4 4h30a3 3 0 0 1 3 3v24a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#6d28d9" opacity=".7"/><path d="M2 17a3 3 0 0 1 3-3h44a3 3 0 0 1 3 3v20a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#8b5cf6"/></svg></div>
-        <span class="d-folder-label">Perso</span>
-      </div>
-      <div class="d-folder" onclick="openFolder('etudes')">
-        <div class="d-folder-ico"><svg viewBox="0 0 54 46" fill="none"><path d="M2 10a3 3 0 0 1 3-3h10l4 4h30a3 3 0 0 1 3 3v24a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#1d4ed8" opacity=".7"/><path d="M2 17a3 3 0 0 1 3-3h44a3 3 0 0 1 3 3v20a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#3b82f6"/></svg></div>
-        <span class="d-folder-label">Études</span>
+      <div class="d-icon" onclick="openApp('about')">
+        <div class="d-icon-face" style="background:linear-gradient(145deg,#3730a3,#818cf8)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6" width="28" height="28"><circle cx="12" cy="8" r="4"/><path d="M4 20a8 8 0 0 1 16 0"/></svg>
+        </div>
+        <span class="d-icon-label">À propos</span>
       </div>
     </div>
+
+    <!-- Portfolio professionnel -->
+    <div class="desk-section">
+      <div class="desk-section-label">Portfolio</div>
+      <div class="desk-folders-row">
+        <div class="d-folder" onclick="openCategory('pro')">
+          <div class="d-folder-ico"><svg viewBox="0 0 54 46" fill="none"><path d="M2 10a3 3 0 0 1 3-3h10l4 4h30a3 3 0 0 1 3 3v24a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#0e5e7a" opacity=".8"/><path d="M2 17a3 3 0 0 1 3-3h44a3 3 0 0 1 3 3v20a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#29B8D9"/></svg></div>
+          <span class="d-folder-label">Portfolio pro</span>
+        </div>
+        <div class="d-folder" onclick="openCategory('identites')">
+          <div class="d-folder-ico"><svg viewBox="0 0 54 46" fill="none"><path d="M2 10a3 3 0 0 1 3-3h10l4 4h30a3 3 0 0 1 3 3v24a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#065f46" opacity=".8"/><path d="M2 17a3 3 0 0 1 3-3h44a3 3 0 0 1 3 3v20a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#10b981"/></svg></div>
+          <span class="d-folder-label">Identités visuelles</span>
+        </div>
+        <div class="d-folder" onclick="openFolder('digital')">
+          <div class="d-folder-ico"><svg viewBox="0 0 54 46" fill="none"><path d="M2 10a3 3 0 0 1 3-3h10l4 4h30a3 3 0 0 1 3 3v24a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#0e7490" opacity=".7"/><path d="M2 17a3 3 0 0 1 3-3h44a3 3 0 0 1 3 3v20a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#06b6d4"/></svg></div>
+          <span class="d-folder-label">Digital Painting</span>
+        </div>
+        <div class="d-folder" onclick="openFolder('animation')">
+          <div class="d-folder-ico"><svg viewBox="0 0 54 46" fill="none"><path d="M2 10a3 3 0 0 1 3-3h10l4 4h30a3 3 0 0 1 3 3v24a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#c2410c" opacity=".7"/><path d="M2 17a3 3 0 0 1 3-3h44a3 3 0 0 1 3 3v20a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#f97316"/></svg></div>
+          <span class="d-folder-label">Animation</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Créations personnelles -->
+    <div class="desk-section">
+      <div class="desk-section-label sec-perso">Créations personnelles</div>
+      <div class="desk-folders-row">
+        <div class="d-folder" onclick="openFolder('perso')">
+          <div class="d-folder-ico"><svg viewBox="0 0 54 46" fill="none"><path d="M2 10a3 3 0 0 1 3-3h10l4 4h30a3 3 0 0 1 3 3v24a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#6d28d9" opacity=".7"/><path d="M2 17a3 3 0 0 1 3-3h44a3 3 0 0 1 3 3v20a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#8b5cf6"/></svg></div>
+          <span class="d-folder-label">Perso</span>
+        </div>
+        <div class="d-folder" onclick="openFolder('etudes')">
+          <div class="d-folder-ico"><svg viewBox="0 0 54 46" fill="none"><path d="M2 10a3 3 0 0 1 3-3h10l4 4h30a3 3 0 0 1 3 3v24a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#1d4ed8" opacity=".7"/><path d="M2 17a3 3 0 0 1 3-3h44a3 3 0 0 1 3 3v20a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#3b82f6"/></svg></div>
+          <span class="d-folder-label">Études</span>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -1159,6 +1203,40 @@ const FOLDERS={
   perso:{label:'Perso',color:'#8b5cf6'},
   etudes:{label:'Études',color:'#3b82f6'},
 };
+
+/* ── Category folders (open sub-folder window) ── */
+const CATEGORIES={
+  pro:{
+    label:'Portfolio professionnel',color:'#29B8D9',
+    items:[
+      {id:'arsene',  label:'Arsène Valentin', c1:'#d97706',c2:'#fbbf24'},
+      {id:'clopinette',label:'Clopinette',    c1:'#be185d',c2:'#ec4899'},
+    ]
+  },
+  identites:{
+    label:'Identités visuelles',color:'#10b981',
+    items:[
+      {id:'logo', label:'Logo & Identité', c1:'#065f46',c2:'#10b981'},
+    ]
+  }
+};
+
+function folderSvg(c1,c2){
+  return `<svg viewBox="0 0 54 46" fill="none"><path d="M2 10a3 3 0 0 1 3-3h10l4 4h30a3 3 0 0 1 3 3v24a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="${c1}" opacity=".8"/><path d="M2 17a3 3 0 0 1 3-3h44a3 3 0 0 1 3 3v20a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="${c2}"/></svg>`;
+}
+
+function openCategory(catId){
+  const cat=CATEGORIES[catId]; if(!cat) return;
+  const winId='cat-'+catId;
+  if(openWins[winId]){ bringFront(openWins[winId]); return; }
+  const ico=`<svg viewBox="0 0 16 16" fill="none"><path d="M1 5a1.5 1.5 0 0 1 1.5-1.5H6l2 2h6.5A1.5 1.5 0 0 1 16 7v6.5A1.5 1.5 0 0 1 14.5 15h-13A1.5 1.5 0 0 1 1 13.5z" fill="${cat.color}"/></svg>`;
+  const body=`<div class="cat-grid">${cat.items.map(it=>`
+    <div class="cat-item" onclick="openFolder('${it.id}')">
+      <div class="cat-item-ico">${folderSvg(it.c1,it.c2)}</div>
+      <span class="cat-item-lbl">${it.label}</span>
+    </div>`).join('')}</div>`;
+  createWin(winId,cat.label,ico,body,Math.max(300,cat.items.length*120+40),200);
+}
 
 function openFolder(fid){
   const fd=FOLDERS[fid]; if(!fd) return;
