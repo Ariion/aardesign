@@ -314,10 +314,17 @@ body{background:var(--wall-a);color:var(--ink);transition:background var(--theme
 /* Project folders — center */
 #desk-folders{
   position:absolute;top:50%;left:50%;
-  transform:translate(-50%,-50%);
-  display:flex;flex-wrap:wrap;gap:10px 14px;justify-content:center;
-  max-width:600px;pointer-events:all;
+  transform:translate(-50%,-55%);
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  pointer-events:all;
 }
+.d-folders-row{display:flex;gap:10px 14px;justify-content:center;flex-wrap:wrap}
+.d-row-label{
+  font-size:.48rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--cyan);opacity:.6;margin-top:10px;margin-bottom:2px;
+  width:100%;text-align:center;
+}
+.d-row-label.perso{color:var(--mid)}
 .d-folder{
   display:flex;flex-direction:column;align-items:center;gap:6px;
   width:80px;cursor:pointer;padding:8px 4px;border-radius:10px;
@@ -406,24 +413,51 @@ body{background:var(--wall-a);color:var(--ink);transition:background var(--theme
 .w-toast.show{opacity:1}
 
 /* ── CV ── */
-.cv-header{display:flex;align-items:center;gap:12px;padding-bottom:12px;border-bottom:1px solid var(--line);margin-bottom:12px}
-.cv-avatar{width:52px;height:52px;border-radius:50%;overflow:hidden;background:var(--icon-bg);flex-shrink:0;border:2px solid var(--cyan)}
+.cv-wrap{display:grid;grid-template-columns:200px 1fr;min-height:100%;gap:0}
+.cv-sidebar{
+  background:linear-gradient(170deg,var(--navy) 0%,rgba(27,53,96,.85) 100%);
+  padding:20px 16px 16px;display:flex;flex-direction:column;align-items:center;
+  border-radius:0 0 0 10px;
+}
+[data-theme="light"] .cv-sidebar{background:linear-gradient(170deg,#1B3560 0%,#244a8c 100%)}
+.cv-main{padding:20px 18px;overflow-y:auto;display:flex;flex-direction:column;gap:16px}
+.cv-avatar{width:80px;height:80px;border-radius:50%;overflow:hidden;flex-shrink:0;border:3px solid rgba(41,184,217,.6);margin-bottom:10px}
 .cv-avatar img{width:100%;height:100%;object-fit:cover;object-position:top center}
-.cv-h-name{font-size:.95rem;font-weight:800;color:var(--ink);letter-spacing:-.01em}
-.cv-h-role{font-size:.62rem;color:var(--mid);margin-top:2px}
-.cv-chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}
-.cv-chip{background:var(--chip-bg);color:var(--chip-c);font-size:.58rem;font-weight:600;padding:3px 8px;border-radius:20px;letter-spacing:.02em}
-.cv-sec-title{font-size:.62rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--cyan);margin:12px 0 8px}
-.cv-skill{display:flex;align-items:center;gap:8px;margin-bottom:6px}
-.cv-skill-name{font-size:.65rem;font-weight:600;width:96px;color:var(--ink);flex-shrink:0}
-.cv-skill-bar{flex:1;height:4px;background:var(--skill-bg);border-radius:2px;overflow:hidden}
-.cv-skill-fill{height:100%;background:var(--skill-fill);border-radius:2px;transition:background var(--theme-transition)}
-.cv-skill-pct{font-size:.58rem;color:var(--mid);width:28px;text-align:right;flex-shrink:0}
+.cv-s-name{font-size:.88rem;font-weight:800;color:#fff;text-align:center;letter-spacing:-.01em;line-height:1.2}
+.cv-s-role{font-size:.56rem;color:rgba(41,184,217,.8);text-align:center;margin-top:4px;letter-spacing:.04em;font-weight:600;text-transform:uppercase}
+.cv-s-divider{width:32px;height:1px;background:rgba(255,255,255,.15);margin:12px auto}
+.cv-s-contact{width:100%;display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.cv-s-row{display:flex;align-items:center;gap:7px}
+.cv-s-ico{font-size:.75rem;opacity:.7;flex-shrink:0;width:14px;text-align:center}
+.cv-s-val{font-size:.58rem;color:rgba(255,255,255,.75);font-weight:500;line-height:1.3;word-break:break-all}
+.cv-s-section{font-size:.44rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:rgba(41,184,217,.6);margin:10px 0 6px;width:100%;text-align:left}
+.cv-s-skill{margin-bottom:7px;width:100%}
+.cv-s-skill-name{font-size:.6rem;font-weight:600;color:rgba(255,255,255,.8);display:flex;justify-content:space-between;margin-bottom:3px}
+.cv-s-skill-name span{color:rgba(41,184,217,.7);font-size:.55rem}
+.cv-s-skill-bar{height:3px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden}
+.cv-s-skill-fill{height:100%;background:linear-gradient(90deg,var(--cyan2),var(--cyan));border-radius:2px}
+.cv-pdf-btn{
+  margin-top:auto;padding-top:14px;width:100%;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  background:rgba(41,184,217,.15);border:1px solid rgba(41,184,217,.3);
+  color:rgba(255,255,255,.85);border-radius:8px;padding:9px 12px;
+  font:.68rem 'Montserrat',sans-serif;font-weight:700;cursor:pointer;
+  text-decoration:none;letter-spacing:.04em;
+  transition:background .15s,border-color .15s;
+}
+.cv-pdf-btn:hover{background:rgba(41,184,217,.28);border-color:rgba(41,184,217,.5)}
+.cv-pdf-btn svg{flex-shrink:0}
+.cv-m-section{font-size:.6rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--cyan);padding-bottom:6px;border-bottom:1px solid var(--line);margin-bottom:8px}
 .cv-tl-item{display:flex;gap:10px;margin-bottom:10px;align-items:flex-start}
-.cv-tl-dot{width:8px;height:8px;border-radius:50%;background:var(--cyan);flex-shrink:0;margin-top:3px}
-.cv-tl-title{font-size:.68rem;font-weight:700;color:var(--ink)}
-.cv-tl-sub{font-size:.6rem;color:var(--cyan);margin-top:1px}
-.cv-tl-desc{font-size:.6rem;color:var(--mid);margin-top:2px}
+.cv-tl-dot{width:8px;height:8px;border-radius:50%;background:var(--cyan);flex-shrink:0;margin-top:3px;box-shadow:0 0 6px rgba(41,184,217,.4)}
+.cv-tl-title{font-size:.7rem;font-weight:700;color:var(--ink);line-height:1.3}
+.cv-tl-sub{font-size:.6rem;color:var(--cyan);margin-top:1px;font-weight:600}
+.cv-tl-desc{font-size:.6rem;color:var(--mid);margin-top:2px;line-height:1.5}
+.cv-langs{display:flex;gap:6px;flex-wrap:wrap}
+.cv-lang-pill{background:var(--icon-bg);border:1px solid var(--line);border-radius:20px;padding:4px 12px;text-align:center}
+.cv-lang-pill div:first-child{font-size:.68rem;font-weight:700;color:var(--ink)}
+.cv-lang-pill div:last-child{font-size:.55rem;color:var(--mid)}
+.win-body:has(.cv-wrap){padding:0;overflow:hidden}
 
 /* ── CONTACT / PROFILE ── */
 .w-profile{display:flex;align-items:center;gap:12px;padding-bottom:12px;border-bottom:1px solid var(--line);margin-bottom:12px}
@@ -569,7 +603,7 @@ body{background:var(--wall-a);color:var(--ink);transition:background var(--theme
   </button>
   <button class="tm-item" onclick="openApp('mail');closeDrawer()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><path d="M22 16.9v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.9z"/></svg>
-    Écrire
+    Message
   </button>
   <button class="tm-item" onclick="openApp('about');closeDrawer()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><circle cx="12" cy="8" r="4"/><path d="M4 20a8 8 0 0 1 16 0"/></svg>
@@ -579,7 +613,7 @@ body{background:var(--wall-a);color:var(--ink);transition:background var(--theme
   <div class="tm-label">Système</div>
   <button class="tm-item" onclick="document.getElementById('win-admin-overlay').style.display='flex';closeDrawer()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
-    Admin
+    Archives
   </button>
 </div>
 <div id="tb-drawer-overlay" onclick="closeDrawer()"></div>
@@ -609,7 +643,7 @@ body{background:var(--wall-a);color:var(--ink);transition:background var(--theme
       <div class="d-icon-face" style="background:linear-gradient(145deg,#0097BA,#29B8D9)">
         <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6" width="26" height="26"><path d="M22 16.9v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.9z"/></svg>
       </div>
-      <span class="d-icon-label">Écrire</span>
+      <span class="d-icon-label">Message</span>
     </div>
     <div class="d-icon" onclick="openApp('about')">
       <div class="d-icon-face" style="background:linear-gradient(145deg,#3730a3,#818cf8)">
@@ -621,33 +655,39 @@ body{background:var(--wall-a);color:var(--ink);transition:background var(--theme
 
   <!-- Project folders -->
   <div id="desk-folders">
-    <div class="d-folder" onclick="openFolder('arsene')">
-      <div class="d-folder-ico"><svg viewBox="0 0 54 46" fill="none"><path d="M2 10a3 3 0 0 1 3-3h10l4 4h30a3 3 0 0 1 3 3v24a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#d97706" opacity=".7"/><path d="M2 17a3 3 0 0 1 3-3h44a3 3 0 0 1 3 3v20a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#fbbf24"/></svg></div>
-      <span class="d-folder-label">Arsène Valentin</span>
+    <div class="d-row-label">Projets professionnels</div>
+    <div class="d-folders-row">
+      <div class="d-folder" onclick="openFolder('arsene')">
+        <div class="d-folder-ico"><svg viewBox="0 0 54 46" fill="none"><path d="M2 10a3 3 0 0 1 3-3h10l4 4h30a3 3 0 0 1 3 3v24a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#d97706" opacity=".7"/><path d="M2 17a3 3 0 0 1 3-3h44a3 3 0 0 1 3 3v20a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#fbbf24"/></svg></div>
+        <span class="d-folder-label">Arsène Valentin</span>
+      </div>
+      <div class="d-folder" onclick="openFolder('clopinette')">
+        <div class="d-folder-ico"><svg viewBox="0 0 54 46" fill="none"><path d="M2 10a3 3 0 0 1 3-3h10l4 4h30a3 3 0 0 1 3 3v24a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#be185d" opacity=".7"/><path d="M2 17a3 3 0 0 1 3-3h44a3 3 0 0 1 3 3v20a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#ec4899"/></svg></div>
+        <span class="d-folder-label">Clopinette</span>
+      </div>
+      <div class="d-folder" onclick="openFolder('digital')">
+        <div class="d-folder-ico"><svg viewBox="0 0 54 46" fill="none"><path d="M2 10a3 3 0 0 1 3-3h10l4 4h30a3 3 0 0 1 3 3v24a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#0e7490" opacity=".7"/><path d="M2 17a3 3 0 0 1 3-3h44a3 3 0 0 1 3 3v20a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#06b6d4"/></svg></div>
+        <span class="d-folder-label">Digital Painting</span>
+      </div>
+      <div class="d-folder" onclick="openFolder('logo')">
+        <div class="d-folder-ico"><svg viewBox="0 0 54 46" fill="none"><path d="M2 10a3 3 0 0 1 3-3h10l4 4h30a3 3 0 0 1 3 3v24a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#065f46" opacity=".7"/><path d="M2 17a3 3 0 0 1 3-3h44a3 3 0 0 1 3 3v20a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#10b981"/></svg></div>
+        <span class="d-folder-label">Logo</span>
+      </div>
+      <div class="d-folder" onclick="openFolder('animation')">
+        <div class="d-folder-ico"><svg viewBox="0 0 54 46" fill="none"><path d="M2 10a3 3 0 0 1 3-3h10l4 4h30a3 3 0 0 1 3 3v24a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#c2410c" opacity=".7"/><path d="M2 17a3 3 0 0 1 3-3h44a3 3 0 0 1 3 3v20a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#f97316"/></svg></div>
+        <span class="d-folder-label">Animation</span>
+      </div>
     </div>
-    <div class="d-folder" onclick="openFolder('clopinette')">
-      <div class="d-folder-ico"><svg viewBox="0 0 54 46" fill="none"><path d="M2 10a3 3 0 0 1 3-3h10l4 4h30a3 3 0 0 1 3 3v24a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#be185d" opacity=".7"/><path d="M2 17a3 3 0 0 1 3-3h44a3 3 0 0 1 3 3v20a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#ec4899"/></svg></div>
-      <span class="d-folder-label">Clopinette</span>
-    </div>
-    <div class="d-folder" onclick="openFolder('digital')">
-      <div class="d-folder-ico"><svg viewBox="0 0 54 46" fill="none"><path d="M2 10a3 3 0 0 1 3-3h10l4 4h30a3 3 0 0 1 3 3v24a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#0e7490" opacity=".7"/><path d="M2 17a3 3 0 0 1 3-3h44a3 3 0 0 1 3 3v20a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#06b6d4"/></svg></div>
-      <span class="d-folder-label">Digital Painting</span>
-    </div>
-    <div class="d-folder" onclick="openFolder('logo')">
-      <div class="d-folder-ico"><svg viewBox="0 0 54 46" fill="none"><path d="M2 10a3 3 0 0 1 3-3h10l4 4h30a3 3 0 0 1 3 3v24a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#065f46" opacity=".7"/><path d="M2 17a3 3 0 0 1 3-3h44a3 3 0 0 1 3 3v20a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#10b981"/></svg></div>
-      <span class="d-folder-label">Logo</span>
-    </div>
-    <div class="d-folder" onclick="openFolder('animation')">
-      <div class="d-folder-ico"><svg viewBox="0 0 54 46" fill="none"><path d="M2 10a3 3 0 0 1 3-3h10l4 4h30a3 3 0 0 1 3 3v24a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#c2410c" opacity=".7"/><path d="M2 17a3 3 0 0 1 3-3h44a3 3 0 0 1 3 3v20a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#f97316"/></svg></div>
-      <span class="d-folder-label">Animation</span>
-    </div>
-    <div class="d-folder" onclick="openFolder('perso')">
-      <div class="d-folder-ico"><svg viewBox="0 0 54 46" fill="none"><path d="M2 10a3 3 0 0 1 3-3h10l4 4h30a3 3 0 0 1 3 3v24a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#6d28d9" opacity=".7"/><path d="M2 17a3 3 0 0 1 3-3h44a3 3 0 0 1 3 3v20a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#8b5cf6"/></svg></div>
-      <span class="d-folder-label">Perso</span>
-    </div>
-    <div class="d-folder" onclick="openFolder('etudes')">
-      <div class="d-folder-ico"><svg viewBox="0 0 54 46" fill="none"><path d="M2 10a3 3 0 0 1 3-3h10l4 4h30a3 3 0 0 1 3 3v24a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#1d4ed8" opacity=".7"/><path d="M2 17a3 3 0 0 1 3-3h44a3 3 0 0 1 3 3v20a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#3b82f6"/></svg></div>
-      <span class="d-folder-label">Études</span>
+    <div class="d-row-label perso">Créations personnelles</div>
+    <div class="d-folders-row">
+      <div class="d-folder" onclick="openFolder('perso')">
+        <div class="d-folder-ico"><svg viewBox="0 0 54 46" fill="none"><path d="M2 10a3 3 0 0 1 3-3h10l4 4h30a3 3 0 0 1 3 3v24a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#6d28d9" opacity=".7"/><path d="M2 17a3 3 0 0 1 3-3h44a3 3 0 0 1 3 3v20a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#8b5cf6"/></svg></div>
+        <span class="d-folder-label">Perso</span>
+      </div>
+      <div class="d-folder" onclick="openFolder('etudes')">
+        <div class="d-folder-ico"><svg viewBox="0 0 54 46" fill="none"><path d="M2 10a3 3 0 0 1 3-3h10l4 4h30a3 3 0 0 1 3 3v24a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#1d4ed8" opacity=".7"/><path d="M2 17a3 3 0 0 1 3-3h44a3 3 0 0 1 3 3v20a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#3b82f6"/></svg></div>
+        <span class="d-folder-label">Études</span>
+      </div>
     </div>
   </div>
 </div>
