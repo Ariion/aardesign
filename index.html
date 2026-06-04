@@ -788,6 +788,21 @@ body{background:var(--wall-a);color:var(--ink);transition:background var(--theme
 <script>
 const ADMIN_PWD='aardesign2026';
 
+/* Fix legacy localStorage values */
+(function migrateData(){
+  try {
+    ['aar_sec_hero','aar_sec_contact'].forEach(k=>{
+      const d=JSON.parse(localStorage.getItem(k)||'null');
+      if(!d) return;
+      let changed=false;
+      ['t2','copy'].forEach(f=>{
+        if(d[f] && /AAR\s*Design/i.test(d[f])){ d[f]=d[f].replace(/AAR\s*Design/gi,'Aardesign'); changed=true; }
+      });
+      if(changed) localStorage.setItem(k,JSON.stringify(d));
+    });
+  } catch(_){}
+})();
+
 /* Apply custom theme from admin if saved */
 (function applyTheme(){
   try {
