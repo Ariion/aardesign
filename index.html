@@ -272,6 +272,21 @@ body{background:var(--wall-a);color:var(--ink);transition:background var(--theme
 .tm-sep{height:1px;background:var(--line);margin:4px 0}
 .tm-label{font-size:.5rem;letter-spacing:.2em;text-transform:uppercase;color:var(--mid);padding:8px 12px 2px;font-weight:700;opacity:.6}
 /* mobile home button */
+/* Floating theme toggle — bottom center */
+#theme-float{
+  position:fixed;bottom:18px;right:20px;z-index:9990;
+  display:flex;align-items:center;gap:6px;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  color:var(--mid);padding:7px 14px;border-radius:30px;
+  font:.6rem 'Montserrat',sans-serif;font-weight:600;letter-spacing:.06em;
+  cursor:pointer;border:none;opacity:.5;
+  transition:opacity .2s,background .2s;
+}
+#theme-float:hover{opacity:1;background:rgba(255,255,255,.12)}
+[data-theme="light"] #theme-float{
+  background:rgba(27,53,96,.06);border:1px solid rgba(27,53,96,.12);color:var(--mid);
+}
 #mob-home{
   display:none;
   position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:9998;
@@ -453,14 +468,14 @@ body{background:var(--wall-a);color:var(--ink);transition:background var(--theme
 .w-toast.show{opacity:1}
 
 /* ── CV ── */
-.cv-wrap{display:grid;grid-template-columns:200px 1fr;min-height:100%;gap:0}
+.cv-wrap{display:grid;grid-template-columns:200px 1fr;height:100%;gap:0;overflow:hidden}
 .cv-sidebar{
   background:linear-gradient(170deg,var(--navy) 0%,rgba(27,53,96,.85) 100%);
   padding:20px 16px 16px;display:flex;flex-direction:column;align-items:center;
   border-radius:0 0 0 10px;
 }
 [data-theme="light"] .cv-sidebar{background:linear-gradient(170deg,#1B3560 0%,#244a8c 100%)}
-.cv-main{padding:20px 18px;overflow-y:auto;display:flex;flex-direction:column;gap:16px}
+.cv-main{padding:20px 18px;overflow-y:auto;display:flex;flex-direction:column;gap:16px;height:100%}
 .cv-avatar{width:80px;height:80px;border-radius:50%;overflow:hidden;flex-shrink:0;border:3px solid rgba(41,184,217,.6);margin-bottom:10px}
 .cv-avatar img{width:100%;height:100%;object-fit:cover;object-position:top center}
 .cv-s-name{font-size:.88rem;font-weight:800;color:#fff;text-align:center;letter-spacing:-.01em;line-height:1.2}
@@ -497,7 +512,7 @@ body{background:var(--wall-a);color:var(--ink);transition:background var(--theme
 .cv-lang-pill{background:var(--icon-bg);border:1px solid var(--line);border-radius:20px;padding:4px 12px;text-align:center}
 .cv-lang-pill div:first-child{font-size:.68rem;font-weight:700;color:var(--ink)}
 .cv-lang-pill div:last-child{font-size:.55rem;color:var(--mid)}
-.win-body:has(.cv-wrap){padding:0;overflow:hidden}
+.win-body:has(.cv-wrap){padding:0;overflow:hidden;display:flex;flex-direction:column;height:calc(100% - 38px)}
 
 /* ── CONTACT / PROFILE ── */
 .w-profile{display:flex;align-items:center;gap:12px;padding-bottom:12px;border-bottom:1px solid var(--line);margin-bottom:12px}
@@ -661,6 +676,13 @@ body{background:var(--wall-a);color:var(--ink);transition:background var(--theme
 <!-- Bouton retour bureau (mobile, visible quand fenêtre ouverte) -->
 <button id="mob-home" onclick="closeAllWins()">⌂ Bureau</button>
 
+<!-- Floating theme toggle -->
+<button id="theme-float" onclick="toggleTheme()" aria-label="Basculer le thème">
+  <svg id="tf-moon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+  <svg id="tf-sun"  viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg>
+  Mode clair
+</button>
+
 <!-- ══════════════════════════════════════════
      DESKTOP
 ══════════════════════════════════════════ -->
@@ -714,6 +736,10 @@ body{background:var(--wall-a);color:var(--ink);transition:background var(--theme
         <div class="d-folder" onclick="openFolder('animation')">
           <div class="d-folder-ico"><svg viewBox="0 0 54 46" fill="none"><path d="M2 10a3 3 0 0 1 3-3h10l4 4h30a3 3 0 0 1 3 3v24a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#c2410c" opacity=".7"/><path d="M2 17a3 3 0 0 1 3-3h44a3 3 0 0 1 3 3v20a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#f97316"/></svg></div>
           <span class="d-folder-label">Animation</span>
+        </div>
+        <div class="d-folder" onclick="openFolder('sites')">
+          <div class="d-folder-ico"><svg viewBox="0 0 54 46" fill="none"><path d="M2 10a3 3 0 0 1 3-3h10l4 4h30a3 3 0 0 1 3 3v24a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#1d4ed8" opacity=".7"/><path d="M2 17a3 3 0 0 1 3-3h44a3 3 0 0 1 3 3v20a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3z" fill="#60a5fa"/></svg></div>
+          <span class="d-folder-label">Sites internet</span>
         </div>
       </div>
     </div>
@@ -813,6 +839,9 @@ function toggleTheme(){
   html.dataset.theme=dark?'light':'dark';
   document.getElementById('theme-ico-moon').style.display=dark?'none':'block';
   document.getElementById('theme-ico-sun').style.display=dark?'block':'none';
+  document.getElementById('tf-moon').style.display=dark?'none':'block';
+  document.getElementById('tf-sun').style.display=dark?'block':'none';
+  document.getElementById('theme-float').lastChild.textContent=dark?'Mode sombre':' Mode clair';
 }
 
 /* ═══════════════════════════════════════
@@ -968,12 +997,22 @@ function buildContactChips(){
 
 function buildCVBody(){
   const DEF_CV_DATA={
-    skills:[['Photoshop',95],['InDesign',92],['Illustrator',90],['Lightroom',88],['HTML/CSS',75],['Digital Painting',65]],
+    skills:[
+      ['Photoshop',95],['InDesign',92],['Illustrator',92],['Lightroom',90],
+      ['Digital Painting',90],['Photographie produit',78],['HTML/CSS',78],['Wordpress/Wix',72]
+    ],
     experiences:[
-      ['aardesign — Auto-entrepreneur','2024–présent','Création graphique, DA, Web, Illustration'],
-      ['Clopinette / Arsène Valentin — CDI','2020–présent · Caen','DA, Packaging, Digital Painting'],
-      ['Creacom — CDD','2019 · Valence','Création graphique, communication'],
-      ['Optimind Winter — Stage','2017–2019 · Paris VIII','DA, Web design, Communication digitale']
+      ['aardesign — Auto-entrepreneur','2024–présent · Sassy (14170)','Identité visuelle, Logo, Affiches, Flyers, Web, Digital painting, Retouche photo, Wordpress'],
+      ['Clopinette / Arsène Valentin — CDI','2020–présent · Caen','Infographiste · Supports de communication, étiquettes e-liquide, flyers, photographie, retouche, digital painting'],
+      ['Creacom — CDD','2019 · Valence','Infographiste · Supports de communication, guide pratique'],
+      ['Optimind — Stage & Alternance','2017–2019 · Paris VIII','Graphiste · Supports de communication, motion design, flyers, Wix/Wordpress, photographie'],
+      ['Euptech — Stage','2016 · Grenoble','Graphiste · Site internet Wordpress, flyers, brochure d\'entreprise']
+    ],
+    formations:[
+      ['Certification Photoshop EXPERT','2024 · TOSA Paris','879/1000'],
+      ['Formation Digital Painting','2024–2025 · TUTO.com','Mention très bien'],
+      ['Bachelor & Mastère Direction Artistique','2016–2019 · LIM\'ART Paris','Infographie, Animation 2D/3D, Management, Web Marketing'],
+      ['DUT MMI — Métiers du Multimédia','2014–2016 · IUT 1 Grenoble','Infographie, HTML/CSS/JS, Communication visuelle']
     ],
     languages:[['Français','Natif'],['Anglais','C1'],['Italien','A2'],['Japonais','A1']]
   };
@@ -982,12 +1021,13 @@ function buildCVBody(){
   const ct = JSON.parse(localStorage.getItem('aar_sec_contact')||'null');
   const name = hero ? (hero.intro||'Anthony Armand') : 'Anthony Armand';
   const role = hero ? ((hero.t1||'')+(hero.t2?' · '+hero.t2:'')) : 'Directeur Artistique · aardesign';
-  const email = ct?.email||'aardesign14@gmail.com';
+  const email = ct?.email||'anthony.armand07@gmail.com';
   const phone = ct?.phone||'06 79 46 62 19';
   const skills = cv ? cv.skills.map(s=>[s.n,s.p]) : DEF_CV_DATA.skills;
   const exps = cv ? cv.experiences.map(e=>[e.t,e.d,e.c]) : DEF_CV_DATA.experiences;
+  const formations = DEF_CV_DATA.formations;
   const langs = cv ? cv.languages.map(l=>[l.l,l.n]) : DEF_CV_DATA.languages;
-  const cvUrl = localStorage.getItem('aar_cv_url')||'#';
+  const cvUrl = localStorage.getItem('aar_cv_url')||'assets/cv-anthony-armand.pdf';
   return `<div class="cv-wrap">
     <div class="cv-sidebar">
       <div class="cv-avatar"><img src="assets/photo.png" alt="" onerror="this.src='assets/Logo-Aardesign-Court.png'"></div>
@@ -997,7 +1037,7 @@ function buildCVBody(){
       <div class="cv-s-contact">
         <div class="cv-s-row"><span class="cv-s-ico">✉</span><span class="cv-s-val">${email}</span></div>
         <div class="cv-s-row"><span class="cv-s-ico">📱</span><span class="cv-s-val">${phone}</span></div>
-        <div class="cv-s-row"><span class="cv-s-ico">📍</span><span class="cv-s-val">Caen, Normandie</span></div>
+        <div class="cv-s-row"><span class="cv-s-ico">📍</span><span class="cv-s-val">Sassy · Caen (14)</span></div>
         <div class="cv-s-row"><span class="cv-s-ico">🌐</span><span class="cv-s-val">aardesign.fr</span></div>
         <div class="cv-s-row"><span class="cv-s-ico">🪪</span><span class="cv-s-val">Permis B</span></div>
       </div>
@@ -1007,6 +1047,7 @@ function buildCVBody(){
         <div class="cv-s-skill-name">${n}<span>${p}%</span></div>
         <div class="cv-s-skill-bar"><div class="cv-s-skill-fill" style="width:${p}%"></div></div>
       </div>`).join('')}
+      <div class="cv-s-divider" style="margin-top:auto"></div>
       <a class="cv-pdf-btn" href="${cvUrl}" download target="_blank">
         <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         Télécharger le CV
@@ -1014,8 +1055,12 @@ function buildCVBody(){
     </div>
     <div class="cv-main">
       <div>
-        <div class="cv-m-section">Expériences</div>
+        <div class="cv-m-section">Expériences professionnelles</div>
         ${exps.map(([t,d,c])=>`<div class="cv-tl-item"><div class="cv-tl-dot"></div><div><div class="cv-tl-title">${t}</div><div class="cv-tl-sub">${d}</div><div class="cv-tl-desc">${c}</div></div></div>`).join('')}
+      </div>
+      <div>
+        <div class="cv-m-section">Diplômes &amp; Formations</div>
+        ${formations.map(([t,d,c])=>`<div class="cv-tl-item"><div class="cv-tl-dot" style="background:var(--cyan2)"></div><div><div class="cv-tl-title">${t}</div><div class="cv-tl-sub">${d}</div><div class="cv-tl-desc">${c}</div></div></div>`).join('')}
       </div>
       <div>
         <div class="cv-m-section">Langues</div>
@@ -1184,6 +1229,9 @@ const DEFAULT_PORTFOLIO={
     {src:'assets/voyages/canada.jpg',title:'Canada'},
     {src:'assets/voyages/pacifique.jpg',title:'Pacifique'},
   ],
+  sites:[
+    {src:'assets/pulse.jpg',title:'aardesign.fr — Portfolio'},
+  ],
   etudes:[
     {src:'assets/formation/foret.jpg',title:''},
     {src:'assets/formation/cathedrale.jpg',title:''},
@@ -1200,6 +1248,7 @@ const FOLDERS={
   digital:{label:'Digital Painting',color:'#06b6d4'},
   logo:{label:'Logo',color:'#10b981'},
   animation:{label:'Animation',color:'#f97316'},
+  sites:{label:'Sites internet',color:'#60a5fa'},
   perso:{label:'Perso',color:'#8b5cf6'},
   etudes:{label:'Études',color:'#3b82f6'},
 };
