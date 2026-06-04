@@ -291,7 +291,7 @@ body{background:var(--wall-a);color:var(--ink);transition:background var(--theme
 /* Floating theme toggle — bottom center */
 #theme-float{
   position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:9990;
-  display:flex;align-items:center;gap:6px;
+  display:none;align-items:center;gap:6px;
   background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
   backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
   color:var(--mid);padding:7px 14px;border-radius:30px;
@@ -849,7 +849,7 @@ lsClock(); setInterval(lsClock,10000);
 document.getElementById('lockscreen').addEventListener('click',()=>{
   const ls=document.getElementById('lockscreen');
   ls.classList.add('unlocking');
-  setTimeout(()=>ls.style.display='none',620);
+  setTimeout(()=>{ ls.style.display='none'; document.getElementById('theme-float').style.display='flex'; },620);
 });
 
 /* ═══════════════════════════════════════
