@@ -271,7 +271,68 @@
       }
     ]
   },
-  "aar_desk": null,
+  "aar_desk": {
+    "sections": [
+      "Portfolio",
+      "Créations personnelles"
+    ],
+    "folders": [
+      {
+        "id": "pro",
+        "label": "Portfolio pro",
+        "action": "category:pro",
+        "icon": "grid",
+        "c1": "#0e5e7a",
+        "c2": "#29B8D9",
+        "section": "Portfolio"
+      },
+      {
+        "id": "logo",
+        "label": "Identités visuelles",
+        "action": "folder:logo",
+        "icon": "layers",
+        "c1": "#065f46",
+        "c2": "#10b981",
+        "section": "Portfolio"
+      },
+      {
+        "id": "digital",
+        "label": "Digital Painting",
+        "action": "folder:digital",
+        "icon": "brush",
+        "c1": "#0e7490",
+        "c2": "#06b6d4",
+        "section": "Portfolio"
+      },
+      {
+        "id": "animation",
+        "label": "Animation",
+        "action": "folder:animation",
+        "icon": "play",
+        "c1": "#c2410c",
+        "c2": "#f97316",
+        "section": "Portfolio"
+      },
+      {
+        "id": "sites",
+        "label": "Sites internet",
+        "action": "folder:sites",
+        "icon": "globe",
+        "c1": "#1d4ed8",
+        "c2": "#60a5fa",
+        "section": "Portfolio"
+      },
+      {
+        "id": "etudes",
+        "label": "Projet personnels",
+        "action": "folder:etudes",
+        "icon": "book",
+        "c1": "#1d4ed8",
+        "c2": "#3b82f6",
+        "section": "Créations personnelles"
+      }
+    ]
+  },
   "aar_sec_hero": null,
   "aar_sec_contact": null,
   "aar_sec_about": null,
