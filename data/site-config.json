@@ -324,7 +324,7 @@
       },
       {
         "id": "etudes",
-        "label": "Projet personnels",
+        "label": "Projets personnels",
         "action": "folder:etudes",
         "icon": "book",
         "c1": "#1d4ed8",
@@ -443,5 +443,26 @@
       }
     ]
   },
-  "aar_theme": null
+  "aar_theme": null,
+  "aar_sec_marquee": {
+    "mq1": [
+      "Digital Painting",
+      "Direction Artistique",
+      "Illustration",
+      "Packaging",
+      "Character Design",
+      "Steampunk",
+      "Dark Fantasy",
+      "Aquarelle Digitale"
+    ],
+    "mq2": [
+      "Arsène Valentin",
+      "Clopinette",
+      "Projets personnels",
+      "Procomsolution",
+      "TD Homes",
+      "Patrimoine de Sassy",
+      "GRANE-INITIATIVES"
+    ]
+  }
 }
