@@ -810,6 +810,25 @@ body{background:var(--wall-a);color:var(--ink);transition:background var(--theme
 
 <script>
 const ADMIN_PWD='aardesign2026';
+const GH_CONFIG_URL='https://raw.githubusercontent.com/ariion/aardesign/main/data/site-config.json';
+const AAR_CFG_KEYS=['aar_portfolio','aar_desk','aar_sec_hero','aar_sec_contact','aar_sec_about','aar_cv','aar_theme'];
+
+/* Charge la config depuis GitHub (non-bloquant) */
+(async function loadRemoteConfig(){
+  try{
+    const res=await fetch(GH_CONFIG_URL+'?_='+Date.now(),{cache:'no-store'});
+    if(!res.ok) return;
+    const cfg=await res.json();
+    let changed=false;
+    AAR_CFG_KEYS.forEach(k=>{
+      if(cfg[k]!==undefined && cfg[k]!==null){
+        const val=JSON.stringify(cfg[k]);
+        if(localStorage.getItem(k)!==val){ localStorage.setItem(k,val); changed=true; }
+      }
+    });
+    if(changed) renderDesktopFolders();
+  }catch(_){}
+})();
 
 /* Fix legacy localStorage values */
 (function migrateData(){

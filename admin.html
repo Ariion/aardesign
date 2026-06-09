@@ -1101,6 +1101,22 @@ tr:hover td{background:rgba(41,184,217,.03);}
     <!-- ══ SETTINGS ══ -->
     <div class="panel" id="panel-settings">
       <div class="ph"><div><h1>Paramètres</h1><p>Configuration système.</p></div></div>
+      <!-- Token GitHub -->
+      <div class="card" style="margin-bottom:1.5rem;border-color:rgba(41,184,217,.25)">
+        <div class="card-label" style="color:var(--cyan)">🔑 Connexion GitHub — Sauvegarde permanente</div>
+        <p style="font-size:.7rem;color:var(--mid);line-height:1.7;margin-bottom:.9rem">
+          Sans token : données perdues si le cache est vidé.<br>
+          <strong style="color:var(--ink)">Avec token : chaque sauvegarde est commitée sur GitHub → permanent sur tous les appareils.</strong><br><br>
+          Créer un token sur <a href="https://github.com/settings/tokens/new?description=aardesign-admin&scopes=repo" target="_blank" style="color:var(--cyan)">github.com/settings/tokens</a> → cocher <strong>repo</strong> → copier le token ici.
+        </p>
+        <div style="display:flex;gap:.6rem;align-items:center">
+          <input type="password" id="gh-token-inp" class="inp" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" style="flex:1;font-family:monospace;font-size:.72rem">
+          <button class="btn btn-gold" onclick="saveGhToken()">Enregistrer</button>
+          <button class="btn btn-out" onclick="testGhToken()" id="gh-test-btn">Tester</button>
+        </div>
+        <div id="gh-token-status" style="font-size:.65rem;margin-top:.5rem;color:var(--mid)"></div>
+      </div>
+
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
         <div class="card">
           <div class="card-label">🔒 Mot de passe</div>
@@ -1352,6 +1368,7 @@ function nav(name, el) {
   document.getElementById('pageTitle').textContent = t[0]
   document.getElementById('pageSub').textContent = t[1]
   if (name === 'bureau')   bureauRender()
+  if (name === 'settings') loadSettingsPanel()
   if (name === 'library')  loadLib()
   if (name === 'messages') loadMsgs()
   if (name === 'dashboard') loadDashboard()
@@ -1536,6 +1553,7 @@ async function saveSection(sec) {
   markClean(sec)
   document.getElementById('publishBtn').style.display = ''
   toast('✓ ' + sec.charAt(0).toUpperCase()+sec.slice(1) + ' sauvegardé !')
+  ghSaveWithFeedback(sec)
 }
 function v(id) { const el = document.getElementById(id); return el ? el.value : '' }
 
@@ -1842,6 +1860,7 @@ function saveCV() {
   _ls.set('cv', {skills,experiences,languages});
   markClean('cv');
   toast('✓ CV sauvegardé !');
+  ghSaveWithFeedback('CV');
 }
 
 function cvAddSkill(){ const d=_ls.get('cv')||DEF_CV; d.skills.push({n:'',p:80}); _ls.set('cv',d); loadCV(); markDirty('cv'); }
@@ -1865,6 +1884,91 @@ function changePwd() {
 }
 
 function doLogout() { sessionStorage.removeItem('aar-auth'); window.location.href = '/' }
+
+// ══════════════════════════════════════
+//  SAUVEGARDE GITHUB (persistance réelle)
+// ══════════════════════════════════════
+const GH_REPO='ariion/aardesign';
+const GH_FILE='data/site-config.json';
+const AAR_CFG_KEYS=['aar_portfolio','aar_desk','aar_sec_hero','aar_sec_contact','aar_sec_about','aar_cv','aar_theme'];
+
+function getGhToken(){ return localStorage.getItem('aar_gh_token')||''; }
+
+async function saveToGitHub(){
+  const token=getGhToken();
+  if(!token){ toast('⚠ Token GitHub non configuré (Paramètres)','err'); return false; }
+  try{
+    // Construire la config
+    const cfg={_info:'aardesign config — ne pas modifier manuellement'};
+    AAR_CFG_KEYS.forEach(k=>{
+      const v=localStorage.getItem(k);
+      cfg[k]=v?JSON.parse(v):null;
+    });
+    const content=btoa(unescape(encodeURIComponent(JSON.stringify(cfg,null,2))));
+
+    // Récupérer le SHA actuel du fichier
+    const headers={'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'};
+    let sha='';
+    try{
+      const r=await fetch('https://api.github.com/repos/'+GH_REPO+'/contents/'+GH_FILE,{headers});
+      if(r.ok){ const d=await r.json(); sha=d.sha||''; }
+    }catch(_){}
+
+    // Committer le fichier
+    const body={message:'Update site config via admin',content};
+    if(sha) body.sha=sha;
+    const res=await fetch('https://api.github.com/repos/'+GH_REPO+'/contents/'+GH_FILE,{
+      method:'PUT',headers,body:JSON.stringify(body)
+    });
+    if(!res.ok){ const e=await res.json(); throw new Error(e.message||res.status); }
+    return true;
+  }catch(e){
+    toast('Erreur GitHub : '+e.message,'err');
+    return false;
+  }
+}
+
+async function ghSaveWithFeedback(label){
+  const ok=await saveToGitHub();
+  if(ok) toast('✓ '+label+' sauvegardé sur GitHub !');
+}
+
+function saveGhToken(){
+  const t=document.getElementById('gh-token-inp').value.trim();
+  if(!t){ toast('Token vide','err'); return; }
+  localStorage.setItem('aar_gh_token',t);
+  document.getElementById('gh-token-inp').value='';
+  document.getElementById('gh-token-status').textContent='Token enregistré. Cliquez Tester pour vérifier.';
+  toast('✓ Token GitHub enregistré');
+}
+
+async function testGhToken(){
+  const token=getGhToken();
+  const btn=document.getElementById('gh-test-btn');
+  const status=document.getElementById('gh-token-status');
+  if(!token){ status.textContent='❌ Aucun token configuré.'; return; }
+  btn.textContent='...'; btn.disabled=true;
+  try{
+    const res=await fetch('https://api.github.com/repos/'+GH_REPO,{
+      headers:{'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json'}
+    });
+    if(res.ok){
+      status.innerHTML='✅ <strong style="color:#10b981">Token valide</strong> — la sauvegarde GitHub est active.';
+      toast('✓ Token GitHub valide !');
+    } else {
+      status.innerHTML='❌ <strong style="color:#ef4444">Token invalide</strong> ('+res.status+'). Vérifiez et recommencez.';
+      toast('Token invalide','err');
+    }
+  }catch(e){ status.textContent='❌ Erreur réseau : '+e.message; }
+  btn.textContent='Tester'; btn.disabled=false;
+}
+
+// Afficher le statut au chargement des paramètres
+function loadSettingsPanel(){
+  const token=getGhToken();
+  const status=document.getElementById('gh-token-status');
+  if(status) status.textContent=token ? '✅ Token configuré ('+token.substring(0,8)+'...)' : '⚠ Aucun token — sauvegardes locales uniquement.';
+}
 
 // ── Export / Import / Reset ──
 const AAR_KEYS=['aar_portfolio','aar_desk','aar_cv','aar_sec_hero','aar_sec_contact','aar_sec_about','aar_theme','aar_images','aar_cv_url'];
@@ -2094,7 +2198,8 @@ function pfDelete(fid,idx){
 }
 
 function pfSave(){
-  toast('✓ Portfolio mis à jour sur l\'OS !');
+  toast('✓ Portfolio mis à jour !');
+  ghSaveWithFeedback('Portfolio');
 }
 
 // init portfolio when navigating to it
@@ -2170,6 +2275,7 @@ function bureauSave(){
   data.folders=newFolders;
   localStorage.setItem('aar_desk',JSON.stringify(data));
   toast('✓ Bureau mis à jour !');
+  ghSaveWithFeedback('Bureau');
 }
 
 let _dragSrc=null;
