@@ -1366,12 +1366,14 @@ let idx=startIdx;
 document.getElementById('w-lightbox')?.remove();
 const lb=document.createElement('div');
 lb.id='w-lightbox';
-const imgWrapStyle=isLogo?'background:#fff;border-radius:10px;padding:24px;box-shadow:0 20px 80px rgba(0,0,0,.6)':'';
-lb.innerHTML=`<div class="lb-bg"></div>
+const imgWrapStyle=isLogo?'background:#fff;border-radius:8px;padding:32px 40px;':'';
+const imgStyle=isLogo?'object-fit:contain;max-height:75vh;max-width:85vw;':'';
+
+lb.innerHTML=`<div class="lb-bg" style="${isLogo?'background:rgba(0,0,0,.7)':''}"></div>
 <button class="lb-close" onclick="document.getElementById('w-lightbox').remove()">✕</button>
 <button class="lb-nav lb-prev" id="lb-prev">‹</button>
 <div class="lb-img-wrap" style="${imgWrapStyle}">
-<img id="lb-img" src="${imgs[idx].src}" alt="" style="${isLogo?'object-fit:contain;max-height:70vh':''}">
+<img id="lb-img" src="${imgs[idx].src}" alt="" style="${imgStyle}">
 <div class="lb-caption" id="lb-cap">${imgs[idx].title||''}</div>
 </div>
 <button class="lb-nav lb-next" id="lb-next">›</button>
