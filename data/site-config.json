@@ -323,8 +323,17 @@
         "section": "Portfolio"
       },
       {
+        "id": "perso",
+        "label": "Perso",
+        "action": "folder:perso",
+        "icon": "heart",
+        "c1": "#6d28d9",
+        "c2": "#8b5cf6",
+        "section": "Créations personnelles"
+      },
+      {
         "id": "etudes",
-        "label": "Projets",
+        "label": "Études",
         "action": "folder:etudes",
         "icon": "book",
         "c1": "#1d4ed8",
