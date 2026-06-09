@@ -104,27 +104,43 @@
     ],
     "clopinette": [
       {
-        "src": "assets/steam/mockup.jpg",
-        "title": "Steam — Mockup"
-      },
-      {
-        "src": "assets/steam/hibou.jpg",
+        "id": 1780990402742.7886,
+        "src": "assets/millenaire/cadomum.jpg",
         "title": ""
       },
       {
-        "src": "assets/steam/coeur.jpg",
+        "id": 1780990402742.3496,
+        "src": "assets/millenaire/pomme2.jpg",
         "title": ""
       },
       {
-        "src": "assets/steam/gueule.jpg",
+        "id": 1780990402742.5051,
+        "src": "assets/millenaire/pomme3.jpg",
         "title": ""
       },
       {
-        "src": "assets/steam/main.jpg",
+        "id": 1780990402742.0977,
+        "src": "assets/saveurs/automne.jpg",
         "title": ""
       },
       {
-        "src": "assets/steam/sablier.jpg",
+        "id": 1780990402742.857,
+        "src": "assets/saveurs/ete.jpg",
+        "title": ""
+      },
+      {
+        "id": 1780990402742.7896,
+        "src": "assets/saveurs/hiver.jpg",
+        "title": ""
+      },
+      {
+        "id": 1780990402742.375,
+        "src": "assets/saveurs/printemps.jpg",
+        "title": ""
+      },
+      {
+        "id": 1780990402742.3118,
+        "src": "assets/pulse.jpg",
         "title": ""
       }
     ],
