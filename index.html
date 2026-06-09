@@ -457,8 +457,7 @@ align-items:start;
 .cv-s-section{grid-column:1/-1;margin-top:6px;margin-bottom:2px}
 .cv-s-skill{grid-column:1/-1}
 .cv-skills-grid{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:2px 10px}
-.cv-pdf-btn{display:none}
-.win-body:has(.cv-wrap){height:calc(100% - 52px)}
+.cv-pdf-btn{display:flex}.win-body:has(.cv-wrap){height:calc(100% - 52px)}
 .cv-main{padding:12px 14px 64px;gap:12px}
 #desk-apps{margin-bottom:18px}
 .desk-section{margin-bottom:6px}
@@ -1041,6 +1040,7 @@ return `<div class="cv-wrap">
 <div class="cv-s-row"><span class="cv-s-ico">🌐</span><span class="cv-s-val">aardesign.fr</span></div>
 <div class="cv-s-row"><span class="cv-s-ico">💼</span><span class="cv-s-val">linkedin.com/in/anthonyarmand</span></div>
 <div class="cv-s-row"><span class="cv-s-ico">🪪</span><span class="cv-s-val">Permis B</span></div>
+<div class="cv-s-row"><span class="cv-s-ico">🏛</span><span class="cv-s-val">SIRET 924 926 538 00019</span></div>
 </div>
 <div class="cv-s-divider"></div>
 <div class="cv-s-section">Compétences</div>
@@ -1329,7 +1329,27 @@ Voir
 </div>
 </div>
 </div>
-<div style="border:1px dashed var(--line);border-radius:10px;padding:16px;text-align:center;color:var(--mid);font-size:.63rem;opacity:.5">+ D'autres projets web à venir</div>
+<div class="sc" tabindex="0">
+<div style="width:100%;aspect-ratio:16/9;background:linear-gradient(135deg,#050b18,#071228);display:flex;align-items:center;justify-content:center">
+<img src="assets/Logo-Aardesign-Long.png" alt="aardesign.fr" style="max-width:60%;max-height:60%;object-fit:contain">
+</div>
+<div class="sc-ov">
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px">
+<div>
+<div style="font-size:.78rem;font-weight:700;color:#fff">Aardesign</div>
+<div style="font-size:.58rem;color:var(--cyan)">aardesign.fr</div>
+</div>
+<span style="font-size:.52rem;padding:2px 7px;border-radius:20px;background:rgba(41,184,217,.15);color:var(--cyan);border:1px solid rgba(41,184,217,.3)">Portfolio</span>
+</div>
+<p style="font-size:.63rem;color:rgba(255,255,255,.6);line-height:1.5;margin-bottom:9px">Portfolio personnel — Interface OS-desktop interactive. Direction artistique, digital painting, identités visuelles.</p>
+<div style="display:flex;justify-content:flex-end">
+<a href="https://aardesign.fr" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:4px;padding:5px 10px;background:var(--cyan);color:#fff;border-radius:6px;font-size:.6rem;font-weight:600;text-decoration:none">
+<svg viewBox="0 0 14 14" fill="none" width="10" height="10"><path d="M6 2H2a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V8M9 1h4m0 0v4m0-4L6 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+Voir
+</a>
+</div>
+</div>
+</div>
 </div>`;
 createWin(winId,'Sites internet',ico,body,440,340);
 }

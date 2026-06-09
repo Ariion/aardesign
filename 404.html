@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>404 — Page introuvable · aardesign</title>
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--cyan:#29B8D9;--navy:#1B3560}
+body{font-family:'Montserrat',sans-serif;background:#050b18;color:#dde8f6;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;overflow:hidden}
+
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none}
+.wb{position:absolute;border-radius:50%;filter:blur(90px);opacity:.35;animation:blob 14s ease-in-out infinite}
+.wb:nth-child(1){width:500px;height:500px;background:#1B3560;top:-100px;left:-100px;animation-delay:0s}
+.wb:nth-child(2){width:400px;height:400px;background:#0e5e7a;bottom:-80px;right:-80px;animation-delay:-5s}
+@keyframes blob{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(30px,-20px) scale(1.05)}66%{transform:translate(-20px,25px) scale(.97)}}
+
+.wrap{position:relative;z-index:1;text-align:center;max-width:480px}
+
+.err-code{font-size:6rem;font-weight:900;color:var(--cyan);opacity:.12;line-height:1;letter-spacing:-.04em;margin-bottom:-20px}
+.win{background:rgba(10,17,40,.88);border:1px solid rgba(41,184,217,.2);border-radius:14px;padding:32px 28px;box-shadow:0 24px 64px rgba(0,0,0,.55)}
+.win-bar{display:flex;gap:6px;margin-bottom:20px}
+.dot{width:11px;height:11px;border-radius:50%}
+.dot-r{background:#ff5f57}.dot-y{background:#febc2e}.dot-g{background:#28c840}
+
+h1{font-size:1.1rem;font-weight:800;margin-bottom:8px;letter-spacing:-.01em}
+p{font-size:.72rem;color:#5c7899;line-height:1.7;margin-bottom:22px}
+
+.btn{display:inline-flex;align-items:center;gap:7px;padding:10px 20px;background:var(--cyan);color:#fff;border-radius:8px;font:.7rem 'Montserrat',sans-serif;font-weight:700;text-decoration:none;letter-spacing:.04em;transition:background .15s}
+.btn:hover{background:#0097BA}
+.btn svg{width:14px;height:14px}
+
+.logo{margin-top:28px;opacity:.3;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase}
+</style>
+</head>
+<body>
+<div class="bg"><div class="wb"></div><div class="wb"></div></div>
+
+<div class="wrap">
+  <div class="err-code">404</div>
+  <div class="win">
+    <div class="win-bar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+    <h1>Page introuvable</h1>
+    <p>Cette page n'existe pas ou a été déplacée.<br>Retournez au bureau pour explorer le portfolio.</p>
+    <a class="btn" href="/">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 2L2 7v7h4v-4h4v4h4V7z"/></svg>
+      Retour au bureau
+    </a>
+  </div>
+  <div class="logo">aardesign.fr</div>
+</div>
+</body>
+</html>
