@@ -1,6 +1,200 @@
 {
-  "_info": "Fichier de configuration aardesign - édité via admin",
-  "aar_portfolio": {},
+  "_info": "aardesign config — ne pas modifier manuellement",
+  "aar_portfolio": {
+    "arsene": [
+      {
+        "src": "assets/millenaire/cadomum.jpg",
+        "title": "Millénaire — Cadomum"
+      },
+      {
+        "src": "assets/millenaire/pomme2.jpg",
+        "title": "Millénaire — Pomme"
+      },
+      {
+        "src": "assets/millenaire/pomme3.jpg",
+        "title": ""
+      },
+      {
+        "src": "assets/aristocrate/nanti.jpg",
+        "title": "L'Aristocrate — Nanti"
+      },
+      {
+        "src": "assets/aristocrate/casque.jpg",
+        "title": ""
+      },
+      {
+        "src": "assets/aristocrate/veste.jpg",
+        "title": ""
+      },
+      {
+        "id": 1780990307322.7512,
+        "src": "assets/aristocrate/casque.jpg",
+        "title": ""
+      },
+      {
+        "id": 1780990307322.088,
+        "src": "assets/aristocrate/explorateur.jpg",
+        "title": ""
+      },
+      {
+        "id": 1780990307322.1064,
+        "src": "assets/aristocrate/nanti.jpg",
+        "title": ""
+      },
+      {
+        "id": 1780990307322.5935,
+        "src": "assets/aristocrate/veste.jpg",
+        "title": ""
+      },
+      {
+        "id": 1780990307322.409,
+        "src": "assets/dark/blood.jpg",
+        "title": ""
+      },
+      {
+        "id": 1780990307322.5583,
+        "src": "assets/dark/cult.jpg",
+        "title": ""
+      },
+      {
+        "id": 1780990307322.3684,
+        "src": "assets/dark/red.jpg",
+        "title": ""
+      },
+      {
+        "id": 1780990307322.3022,
+        "src": "assets/dark/salem.jpg",
+        "title": ""
+      },
+      {
+        "id": 1780990307322.5845,
+        "src": "assets/steam/mockup.jpg",
+        "title": ""
+      },
+      {
+        "id": 1780990307322.6733,
+        "src": "assets/voyages/amazonie.jpg",
+        "title": ""
+      },
+      {
+        "id": 1780990307322.3123,
+        "src": "assets/voyages/canada.jpg",
+        "title": ""
+      },
+      {
+        "id": 1780990307322.0752,
+        "src": "assets/voyages/cappadoce.jpg",
+        "title": ""
+      },
+      {
+        "id": 1780990307322.8745,
+        "src": "assets/voyages/fuji.jpg",
+        "title": ""
+      },
+      {
+        "id": 1780990307322.1692,
+        "src": "assets/voyages/laponie.jpg",
+        "title": ""
+      },
+      {
+        "id": 1780990307322.9683,
+        "src": "assets/voyages/pacifique.jpg",
+        "title": ""
+      }
+    ],
+    "clopinette": [
+      {
+        "src": "assets/steam/mockup.jpg",
+        "title": "Steam — Mockup"
+      },
+      {
+        "src": "assets/steam/hibou.jpg",
+        "title": ""
+      },
+      {
+        "src": "assets/steam/coeur.jpg",
+        "title": ""
+      },
+      {
+        "src": "assets/steam/gueule.jpg",
+        "title": ""
+      },
+      {
+        "src": "assets/steam/main.jpg",
+        "title": ""
+      },
+      {
+        "src": "assets/steam/sablier.jpg",
+        "title": ""
+      }
+    ],
+    "digital": [
+      {
+        "src": "assets/dark/red.jpg",
+        "title": "Dark — Red"
+      },
+      {
+        "src": "assets/dark/blood.jpg",
+        "title": ""
+      },
+      {
+        "src": "assets/dark/cult.jpg",
+        "title": ""
+      },
+      {
+        "src": "assets/dark/salem.jpg",
+        "title": ""
+      }
+    ],
+    "logo": [
+      {
+        "src": "assets/saveurs/hiver.jpg",
+        "title": "Saveurs — Hiver"
+      },
+      {
+        "src": "assets/saveurs/ete.jpg",
+        "title": ""
+      },
+      {
+        "src": "assets/saveurs/automne.jpg",
+        "title": ""
+      },
+      {
+        "src": "assets/saveurs/printemps.jpg",
+        "title": ""
+      }
+    ],
+    "animation": [
+      {
+        "src": "assets/voyages/tokyo.jpg",
+        "title": "Tokyo"
+      },
+      {
+        "src": "assets/voyages/kyoto.jpg",
+        "title": "Kyoto"
+      }
+    ],
+    "perso": [
+      {
+        "src": "assets/dark/red.jpg",
+        "title": ""
+      },
+      {
+        "src": "assets/pulse.jpg",
+        "title": "Pulse"
+      }
+    ],
+    "etudes": [
+      {
+        "src": "assets/formation/logo-etude.jpg",
+        "title": "Étude Logo"
+      },
+      {
+        "src": "assets/formation/typo-etude.jpg",
+        "title": "Typographie"
+      }
+    ]
+  },
   "aar_desk": null,
   "aar_sec_hero": null,
   "aar_sec_contact": null,
