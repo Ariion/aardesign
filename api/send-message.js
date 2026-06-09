@@ -41,7 +41,7 @@ export default async function handler(req, res) {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          from: 'Aardesign Contact <onboarding@resend.dev>',
+          from: 'Aardesign Contact <contact@aardesign.fr>',
           to: 'aardesign14@gmail.com',
           reply_to: email,
           subject: `[aardesign.fr] ${subject || 'Nouveau message'} — ${name}`,
