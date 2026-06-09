@@ -225,12 +225,49 @@
     ],
     "etudes": [
       {
-        "src": "assets/formation/logo-etude.jpg",
-        "title": "Étude Logo"
+        "id": 1780990713036.1365,
+        "src": "assets/formation/cathedrale.jpg",
+        "title": ""
       },
       {
-        "src": "assets/formation/typo-etude.jpg",
-        "title": "Typographie"
+        "id": 1780990713036.2686,
+        "src": "assets/formation/character.jpg",
+        "title": ""
+      },
+      {
+        "id": 1780990713036.5808,
+        "src": "assets/formation/environnement.jpg",
+        "title": ""
+      },
+      {
+        "id": 1780990713036.5625,
+        "src": "assets/formation/foret.jpg",
+        "title": ""
+      },
+      {
+        "id": 1780990713036.706,
+        "src": "assets/formation/halloween.jpg",
+        "title": ""
+      },
+      {
+        "id": 1780990713036.4119,
+        "src": "assets/formation/hoth.jpg",
+        "title": ""
+      },
+      {
+        "id": 1780990713036.4434,
+        "src": "assets/formation/mobydick.jpg",
+        "title": ""
+      },
+      {
+        "id": 1780990713036.4646,
+        "src": "assets/formation/paysage.jpg",
+        "title": ""
+      },
+      {
+        "id": 1780990713036.3113,
+        "src": "assets/formation/sf.jpg",
+        "title": ""
       }
     ]
   },
