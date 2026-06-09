@@ -1103,16 +1103,22 @@ tr:hover td{background:rgba(41,184,217,.03);}
       <div class="ph"><div><h1>Paramètres</h1><p>Configuration système.</p></div></div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
         <div class="card">
-          <div class="card-label">🔌 Connexion Supabase</div>
-          <div class="field"><label>URL du projet</label><input type="text" id="cfg-url"></div>
-          <div class="field"><label>Clé anonyme (anon key)</label><input type="text" id="cfg-key"></div>
-          <button class="btn btn-ink" onclick="saveConfig()" style="margin-top:.5rem">💾 Sauvegarder</button>
-        </div>
-        <div class="card">
           <div class="card-label">🔒 Mot de passe</div>
           <div class="field"><label>Nouveau mot de passe</label><input type="password" id="np"></div>
           <div class="field"><label>Confirmer</label><input type="password" id="cp"></div>
           <button class="btn btn-ink" onclick="changePwd()" style="margin-top:.5rem">Changer</button>
+        </div>
+        <div class="card">
+          <div class="card-label">💾 Sauvegarde des données</div>
+          <p style="font-size:.7rem;color:var(--mid);line-height:1.6;margin-bottom:1rem">Les données (portfolio, dossiers, CV…) sont sauvegardées dans votre navigateur. Exportez-les pour les restaurer si le cache est vidé ou sur un autre appareil.</p>
+          <div style="display:flex;flex-direction:column;gap:.6rem">
+            <button class="btn btn-gold" onclick="exportData()">⬇ Exporter la config (.json)</button>
+            <label class="btn btn-out" style="cursor:pointer;text-align:center">
+              ⬆ Importer une config
+              <input type="file" accept=".json" style="display:none" onchange="importData(event)">
+            </label>
+            <button class="btn btn-out" style="color:#ef4444;border-color:rgba(239,68,68,.3)" onclick="resetData()">🗑 Réinitialiser tout</button>
+          </div>
         </div>
       </div>
     </div>
@@ -1859,6 +1865,42 @@ function changePwd() {
 }
 
 function doLogout() { sessionStorage.removeItem('aar-auth'); window.location.href = '/' }
+
+// ── Export / Import / Reset ──
+const AAR_KEYS=['aar_portfolio','aar_desk','aar_cv','aar_sec_hero','aar_sec_contact','aar_sec_about','aar_theme','aar_images','aar_cv_url'];
+
+function exportData(){
+  const data={};
+  AAR_KEYS.forEach(k=>{ const v=localStorage.getItem(k); if(v) data[k]=JSON.parse(v); });
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='aardesign-config-'+new Date().toISOString().slice(0,10)+'.json';
+  a.click(); URL.revokeObjectURL(a.href);
+  toast('✓ Config exportée !');
+}
+
+function importData(e){
+  const file=e.target.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    try{
+      const data=JSON.parse(ev.target.result);
+      Object.entries(data).forEach(([k,v])=>localStorage.setItem(k,JSON.stringify(v)));
+      toast('✓ Config importée ! Rechargez le site.');
+      setTimeout(()=>location.reload(),1200);
+    }catch(_){ toast('Fichier invalide','err'); }
+  };
+  reader.readAsText(file);
+  e.target.value='';
+}
+
+function resetData(){
+  if(!confirm('Réinitialiser toutes les données ? (portfolio, dossiers, CV…)')) return;
+  AAR_KEYS.forEach(k=>localStorage.removeItem(k));
+  toast('✓ Données réinitialisées');
+  setTimeout(()=>location.reload(),1000);
+}
 
 // ═══════════════════════════════
 //  PORTFOLIO OS
