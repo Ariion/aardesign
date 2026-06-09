@@ -1070,17 +1070,12 @@ text-align:center;cursor:pointer;transition:all .15s;background:transparent;
 <div class="ph"><div><h1>Paramètres</h1><p>Configuration système.</p></div></div>
 
 <div class="card" style="margin-bottom:1.5rem;border-color:rgba(41,184,217,.25)">
-<div class="card-label" style="color:var(--cyan)">🔑 Connexion GitHub — Sauvegarde permanente</div>
+<div class="card-label" style="color:var(--cyan)">☁️ Sauvegarde permanente</div>
 <p style="font-size:.7rem;color:var(--mid);line-height:1.7;margin-bottom:.9rem">
-Sans token : données perdues si le cache est vidé.<br>
-<strong style="color:var(--ink)">Avec token : chaque sauvegarde est commitée sur GitHub → permanent sur tous les appareils.</strong><br><br>
-Créer un token sur <a href="https://github.com/settings/tokens/new?description=aardesign-admin&scopes=repo" target="_blank" style="color:var(--cyan)">github.com/settings/tokens</a> → cocher <strong>repo</strong> → copier le token ici.
+Les données sont sauvegardées via Vercel (côté serveur). Le token GitHub est stocké dans les variables d'environnement Vercel — jamais dans le navigateur.<br><br>
+<strong style="color:var(--ink)">Si la sauvegarde ne fonctionne pas</strong>, vérifiez que la variable <code style="background:var(--bg2);padding:1px 5px;border-radius:3px">GITHUB_TOKEN</code> est bien configurée dans les paramètres Vercel du projet.
 </p>
-<div style="display:flex;gap:.6rem;align-items:center">
-<input type="password" id="gh-token-inp" class="inp" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" style="flex:1;font-family:monospace;font-size:.72rem">
-<button class="btn btn-gold" onclick="saveGhToken()">Enregistrer</button>
-<button class="btn btn-out" onclick="testGhToken()" id="gh-test-btn">Tester</button>
-</div>
+<button class="btn btn-out" onclick="testSave()" id="gh-test-btn">🔍 Tester la connexion</button>
 <div id="gh-token-status" style="font-size:.65rem;margin-top:.5rem;color:var(--mid)"></div>
 </div>
 
@@ -1852,42 +1847,25 @@ function doLogout() { sessionStorage.removeItem('aar-auth'); window.location.hre
 // ══════════════════════════════════════
 //  SAUVEGARDE GITHUB (persistance réelle)
 // ══════════════════════════════════════
-const GH_REPO='ariion/aardesign';
-const GH_FILE='data/site-config.json';
 const AAR_CFG_KEYS=['aar_portfolio','aar_desk','aar_sec_hero','aar_sec_contact','aar_sec_about','aar_cv','aar_theme','aar_sec_marquee'];
 
-function getGhToken(){ return localStorage.getItem('aar_gh_token')||''; }
-
 async function saveToGitHub(){
-const token=getGhToken();
-if(!token){ toast('⚠ Token GitHub non configuré (Paramètres)','err'); return false; }
 try{
-// Construire la config
-const cfg={_info:'aardesign config — ne pas modifier manuellement'};
+const cfg={_info:'aardesign config'};
 AAR_CFG_KEYS.forEach(k=>{
 const v=localStorage.getItem(k);
 cfg[k]=v?JSON.parse(v):null;
 });
-const content=btoa(unescape(encodeURIComponent(JSON.stringify(cfg,null,2))));
-
-// Récupérer le SHA actuel du fichier
-const headers={'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'};
-let sha='';
-try{
-const r=await fetch('https://api.github.com/repos/'+GH_REPO+'/contents/'+GH_FILE,{headers});
-if(r.ok){ const d=await r.json(); sha=d.sha||''; }
-}catch(_){}
-
-// Committer le fichier
-const body={message:'Update site config via admin',content};
-if(sha) body.sha=sha;
-const res=await fetch('https://api.github.com/repos/'+GH_REPO+'/contents/'+GH_FILE,{
-method:'PUT',headers,body:JSON.stringify(body)
+const res=await fetch('/api/save-config',{
+method:'POST',
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({config:cfg})
 });
-if(!res.ok){ const e=await res.json(); throw new Error(e.message||res.status); }
+const data=await res.json();
+if(!res.ok) throw new Error(data.error||res.status);
 return true;
 }catch(e){
-toast('Erreur GitHub : '+e.message,'err');
+toast('Erreur sauvegarde : '+e.message,'err');
 return false;
 }
 }
@@ -1897,41 +1875,27 @@ const ok=await saveToGitHub();
 if(ok) toast('✓ '+label+' sauvegardé sur GitHub !');
 }
 
-function saveGhToken(){
-const t=document.getElementById('gh-token-inp').value.trim();
-if(!t){ toast('Token vide','err'); return; }
-localStorage.setItem('aar_gh_token',t);
-document.getElementById('gh-token-inp').value='';
-document.getElementById('gh-token-status').textContent='Token enregistré. Cliquez Tester pour vérifier.';
-toast('✓ Token GitHub enregistré');
-}
-
-async function testGhToken(){
-const token=getGhToken();
+async function testSave(){
 const btn=document.getElementById('gh-test-btn');
 const status=document.getElementById('gh-token-status');
-if(!token){ status.textContent='❌ Aucun token configuré.'; return; }
 btn.textContent='...'; btn.disabled=true;
 try{
-const res=await fetch('https://api.github.com/repos/'+GH_REPO,{
-headers:{'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json'}
-});
+const res=await fetch('/api/save-config',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({config:{_test:true}})});
+const d=await res.json();
 if(res.ok){
-status.innerHTML='✅ <strong style="color:#10b981">Token valide</strong> — la sauvegarde GitHub est active.';
-toast('✓ Token GitHub valide !');
+status.innerHTML='✅ <strong style="color:#10b981">Connexion OK</strong> — sauvegarde permanente active.';
+toast('✓ Connexion Vercel OK !');
 } else {
-status.innerHTML='❌ <strong style="color:#ef4444">Token invalide</strong> ('+res.status+'). Vérifiez et recommencez.';
-toast('Token invalide','err');
+status.innerHTML='❌ <strong style="color:#ef4444">Erreur : '+d.error+'</strong>';
+toast('Erreur : '+d.error,'err');
 }
 }catch(e){ status.textContent='❌ Erreur réseau : '+e.message; }
-btn.textContent='Tester'; btn.disabled=false;
+btn.textContent='🔍 Tester la connexion'; btn.disabled=false;
 }
 
-// Afficher le statut au chargement des paramètres
 function loadSettingsPanel(){
-const token=getGhToken();
 const status=document.getElementById('gh-token-status');
-if(status) status.textContent=token ? '✅ Token configuré ('+token.substring(0,8)+'...)' : '⚠ Aucun token — sauvegardes locales uniquement.';
+if(status) status.textContent='Cliquez "Tester" pour vérifier la connexion serveur.';
 }
 
 // ── Export / Import / Reset ──
