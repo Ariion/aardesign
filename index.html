@@ -1366,18 +1366,18 @@ let idx=startIdx;
 document.getElementById('w-lightbox')?.remove();
 const lb=document.createElement('div');
 lb.id='w-lightbox';
-const imgWrapStyle=isLogo?'background:#fff;border-radius:8px;padding:32px 40px;':'';
+const imgWrapStyle=isLogo?'padding:20px;':'';
 const imgStyle=isLogo?'object-fit:contain;max-height:75vh;max-width:85vw;':'';
 
-lb.innerHTML=`<div class="lb-bg" style="${isLogo?'background:rgba(0,0,0,.7)':''}"></div>
-<button class="lb-close" onclick="document.getElementById('w-lightbox').remove()">✕</button>
-<button class="lb-nav lb-prev" id="lb-prev">‹</button>
+lb.innerHTML=`<div class="lb-bg" style="${isLogo?'background:#f0f0f0;backdrop-filter:none':''}"></div>
+<button class="lb-close" style="${isLogo?'background:rgba(0,0,0,.15);color:#333':''}" onclick="document.getElementById('w-lightbox').remove()">✕</button>
+<button class="lb-nav lb-prev" style="${isLogo?'background:rgba(0,0,0,.15);color:#333':''}" id="lb-prev">‹</button>
 <div class="lb-img-wrap" style="${imgWrapStyle}">
 <img id="lb-img" src="${imgs[idx].src}" alt="" style="${imgStyle}">
 <div class="lb-caption" id="lb-cap">${imgs[idx].title||''}</div>
 </div>
-<button class="lb-nav lb-next" id="lb-next">›</button>
-<div class="lb-counter" id="lb-ctr">${idx+1} / ${imgs.length}</div>`;
+<button class="lb-nav lb-next" style="${isLogo?'background:rgba(0,0,0,.15);color:#333':''}" id="lb-next">›</button>
+<div class="lb-counter" style="${isLogo?'color:rgba(0,0,0,.4)':''}" id="lb-ctr">${idx+1} / ${imgs.length}</div>`;
 document.body.appendChild(lb);
 lb.querySelector('.lb-bg').addEventListener('click',()=>lb.remove());
 function go(n){ idx=(n+imgs.length)%imgs.length; lb.querySelector('#lb-img').src=imgs[idx].src; lb.querySelector('#lb-cap').textContent=imgs[idx].title||''; lb.querySelector('#lb-ctr').textContent=(idx+1)+' / '+imgs.length; }
