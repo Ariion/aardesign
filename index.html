@@ -505,18 +505,21 @@ border-radius:0 0 0 10px;overflow-y:auto;min-height:0;
 .cv-s-row{display:flex;align-items:center;gap:7px}
 .cv-s-ico{font-size:.75rem;opacity:.7;flex-shrink:0;width:14px;text-align:center}
 .cv-s-val{font-size:.58rem;color:rgba(255,255,255,.75);font-weight:500;line-height:1.3;word-break:break-all}
+.cv-s-link{text-decoration:none;border-radius:5px;transition:background .15s;margin:0 -4px;padding:2px 4px}
+.cv-s-link:hover{background:rgba(41,184,217,.12)}
+.cv-s-link:hover .cv-s-val{color:var(--cyan)}
 .cv-s-section{font-size:.44rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:rgba(41,184,217,.6);margin:10px 0 6px;width:100%;text-align:left}
-.cv-s-skill{margin-bottom:7px;width:100%}
-.cv-s-skill-name{font-size:.6rem;font-weight:600;color:rgba(255,255,255,.8);display:flex;justify-content:space-between;margin-bottom:3px}
-.cv-s-skill-name span{color:rgba(41,184,217,.7);font-size:.55rem}
-.cv-s-skill-bar{height:3px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden}
+.cv-s-skill{margin-bottom:5px;width:100%}
+.cv-s-skill-name{font-size:.56rem;font-weight:600;color:rgba(255,255,255,.8);display:flex;justify-content:space-between;margin-bottom:2px}
+.cv-s-skill-name span{color:rgba(41,184,217,.7);font-size:.52rem}
+.cv-s-skill-bar{height:2px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden}
 .cv-s-skill-fill{height:100%;background:linear-gradient(90deg,var(--cyan2),var(--cyan));border-radius:2px}
 .cv-pdf-btn{
-margin-top:auto;padding-top:14px;width:100%;
+margin-top:8px;width:100%;
 display:flex;align-items:center;justify-content:center;gap:6px;
 background:rgba(41,184,217,.15);border:1px solid rgba(41,184,217,.3);
-color:rgba(255,255,255,.85);border-radius:8px;padding:9px 12px;
-font:.68rem 'Montserrat',sans-serif;font-weight:700;cursor:pointer;
+color:rgba(255,255,255,.85);border-radius:7px;padding:7px 10px;
+font:.62rem 'Montserrat',sans-serif;font-weight:700;cursor:pointer;
 text-decoration:none;letter-spacing:.04em;
 transition:background .15s,border-color .15s;
 }
@@ -1032,13 +1035,17 @@ return `<div class="cv-wrap">
 <div class="cv-avatar"><img src="assets/photo.png" alt="" onerror="this.src='assets/Logo-Aardesign-Court.png'"></div>
 <div class="cv-s-name">${name}</div>
 <div class="cv-s-role">${role}</div>
+<a class="cv-pdf-btn" href="${cvUrl}" download target="_blank">
+<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+Télécharger le CV
+</a>
 <div class="cv-s-divider"></div>
 <div class="cv-s-contact">
-<div class="cv-s-row"><span class="cv-s-ico">✉</span><span class="cv-s-val">${email}</span></div>
-<div class="cv-s-row"><span class="cv-s-ico">📱</span><span class="cv-s-val">${phone}</span></div>
+<a class="cv-s-row cv-s-link" href="mailto:${email}"><span class="cv-s-ico">✉</span><span class="cv-s-val">${email}</span></a>
+<a class="cv-s-row cv-s-link" href="tel:${phone.replace(/\s/g,'')}"><span class="cv-s-ico">📱</span><span class="cv-s-val">${phone}</span></a>
 <div class="cv-s-row"><span class="cv-s-ico">📍</span><span class="cv-s-val">Sassy · Caen (14)</span></div>
-<div class="cv-s-row"><span class="cv-s-ico">🌐</span><span class="cv-s-val">aardesign.fr</span></div>
-<div class="cv-s-row"><span class="cv-s-ico">💼</span><span class="cv-s-val">linkedin.com/in/anthonyarmand</span></div>
+<a class="cv-s-row cv-s-link" href="https://aardesign.fr" target="_blank"><span class="cv-s-ico">🌐</span><span class="cv-s-val">aardesign.fr</span></a>
+<a class="cv-s-row cv-s-link" href="https://www.linkedin.com/in/anthonyarmand" target="_blank"><span class="cv-s-ico">💼</span><span class="cv-s-val">linkedin.com/in/anthonyarmand</span></a>
 <div class="cv-s-row"><span class="cv-s-ico">🪪</span><span class="cv-s-val">Permis B</span></div>
 <div class="cv-s-row"><span class="cv-s-ico">🏛</span><span class="cv-s-val">SIRET 924 926 538 00019</span></div>
 </div>
@@ -1048,11 +1055,6 @@ ${skills.map(([n,p])=>`<div class="cv-s-skill">
 <div class="cv-s-skill-name">${n}<span>${p}%</span></div>
 <div class="cv-s-skill-bar"><div class="cv-s-skill-fill" style="width:${p}%"></div></div>
 </div>`).join('')}
-<div class="cv-s-divider"></div>
-<a class="cv-pdf-btn" href="${cvUrl}" download target="_blank">
-<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-Télécharger le CV
-</a>
 </div>
 <div class="cv-main">
 <div>
