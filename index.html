@@ -581,6 +581,9 @@ align-content:start;
 .gal-card{position:relative;aspect-ratio:4/3;cursor:pointer;overflow:hidden;background:#0a0f1e;border-radius:4px}
 .gal-card img{width:100%;height:100%;object-fit:cover;transition:transform .22s,filter .22s;display:block}
 .gal-card:hover img{transform:scale(1.06);filter:brightness(1.1)}
+.gal-card.logo-bg{background:#fff}
+.gal-card.logo-bg img{object-fit:contain;padding:10px}
+.gal-card.logo-bg:hover img{filter:none}
 .gal-title{
 position:absolute;bottom:0;left:0;right:0;
 background:linear-gradient(transparent,rgba(0,0,0,.82));
@@ -1337,8 +1340,9 @@ const imgs=(portfolio[fid]&&portfolio[fid].length) ? portfolio[fid] : (DEFAULT_P
 
 const ico=`<svg viewBox="0 0 16 16" fill="none"><path d="M1 5a1.5 1.5 0 0 1 1.5-1.5H6l2 2h6.5A1.5 1.5 0 0 1 16 7v6.5A1.5 1.5 0 0 1 14.5 15h-13A1.5 1.5 0 0 1 1 13.5z" fill="${fd.color}"/></svg>`;
 
+const isLogo=fid==='logo';
 const gridHtml=imgs.length
-? imgs.map((im,i)=>`<div class="gal-card" onclick="openLightbox(${JSON.stringify(imgs).replace(/"/g,'&quot;')},${i})">
+? imgs.map((im,i)=>`<div class="gal-card${isLogo?' logo-bg':''}" onclick="openLightbox(${JSON.stringify(imgs).replace(/"/g,'&quot;')},${i},${isLogo})">
 <img src="${im.src}" alt="${im.title||''}" loading="lazy">
 ${im.title?`<div class="gal-title">${im.title}</div>`:''}
 </div>`).join('')
@@ -1357,16 +1361,17 @@ createWin(winId,fd.label,ico,body,720,520);
 openWins[winId].querySelector('.win-body').style.padding='0';
 }
 
-function openLightbox(imgs,startIdx){
+function openLightbox(imgs,startIdx,isLogo=false){
 let idx=startIdx;
 document.getElementById('w-lightbox')?.remove();
 const lb=document.createElement('div');
 lb.id='w-lightbox';
+const imgWrapStyle=isLogo?'background:#fff;border-radius:10px;padding:24px;box-shadow:0 20px 80px rgba(0,0,0,.6)':'';
 lb.innerHTML=`<div class="lb-bg"></div>
 <button class="lb-close" onclick="document.getElementById('w-lightbox').remove()">✕</button>
 <button class="lb-nav lb-prev" id="lb-prev">‹</button>
-<div class="lb-img-wrap">
-<img id="lb-img" src="${imgs[idx].src}" alt="">
+<div class="lb-img-wrap" style="${imgWrapStyle}">
+<img id="lb-img" src="${imgs[idx].src}" alt="" style="${isLogo?'object-fit:contain;max-height:70vh':''}">
 <div class="lb-caption" id="lb-cap">${imgs[idx].title||''}</div>
 </div>
 <button class="lb-nav lb-next" id="lb-next">›</button>
