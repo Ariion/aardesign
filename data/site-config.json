@@ -333,8 +333,23 @@
       }
     ]
   },
-  "aar_sec_hero": null,
-  "aar_sec_contact": null,
+  "aar_sec_hero": {
+    "intro": "Anthony Armand",
+    "t1": "Directeur Artistique",
+    "t2": "Aardesign",
+    "t3": "Caen · Normandie · Remote",
+    "desc": "Designer pluridisciplinaire à l'intersection du digital painting, de l'illustration narrative et de la direction artistique. 5+ ans d'expérience.",
+    "scroll": "aardesign.fr"
+  },
+  "aar_sec_contact": {
+    "t1": "Parlons de",
+    "t2": "votre projet",
+    "email": "aardesign14@gmail.com",
+    "phone": "06 79 46 62 19",
+    "ig": "",
+    "be": "",
+    "copy": "© 2025 Aardesign — Anthony Armand"
+  },
   "aar_sec_about": {
     "fn": "Anthony",
     "ln": "Armand",
