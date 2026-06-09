@@ -1177,11 +1177,13 @@ Les données sont sauvegardées via Vercel (côté serveur). Le token GitHub est
 <div class="toast" id="toast"></div>
 
 <script>
+(function(){
+  const ok = sessionStorage.getItem('aar-auth');
+  if(!ok){ window.location.replace('/?admin=1'); }
+})();
 // ═══════════════════════════════
 //  CONFIG & INIT
 // ═══════════════════════════════
-// ── Auth check ──
-if (!sessionStorage.getItem('aar-auth')) { window.location.href = '/'; }
 
 // localStorage-only data layer (no Supabase)
 const _ls = {

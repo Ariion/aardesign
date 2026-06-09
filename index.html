@@ -4,6 +4,21 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>aardesign — Anthony Armand</title>
+<meta name="description" content="Anthony Armand — Directeur Artistique & Designer pluridisciplinaire basé à Caen. Digital painting, illustration narrative, direction artistique, packaging premium.">
+<meta name="keywords" content="directeur artistique, designer graphique, digital painting, illustration, Caen, Normandie, aardesign">
+<meta name="author" content="Anthony Armand">
+<meta property="og:title" content="aardesign — Anthony Armand, Directeur Artistique">
+<meta property="og:description" content="Designer pluridisciplinaire à l'intersection du digital painting, de l'illustration narrative et de la direction artistique.">
+<meta property="og:image" content="https://aardesign.fr/assets/Logo-Aardesign-Long.png">
+<meta property="og:url" content="https://aardesign.fr">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="aardesign — Anthony Armand">
+<meta name="twitter:description" content="Directeur Artistique & Designer pluridisciplinaire">
+<meta name="twitter:image" content="https://aardesign.fr/assets/Logo-Aardesign-Long.png">
+<link rel="canonical" href="https://aardesign.fr">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#1B3560">
 <link rel="icon" type="image/png" href="assets/favicon.png">
 <link rel="apple-touch-icon" href="assets/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -206,8 +221,8 @@ content:'';width:1px;height:24px;background:linear-gradient(transparent,rgba(41,
 animation:pulseup 2s ease-in-out infinite;
 }
 @keyframes pulseup{0%,100%{opacity:.3;transform:scaleY(.7)}50%{opacity:1;transform:scaleY(1)}}
-@keyframes winopen{from{opacity:0;transform:scale(.94) translateY(8px)}to{opacity:1;transform:none}}
-@keyframes winclose{from{opacity:1;transform:scale(1)}to{opacity:0;transform:scale(.94) translateY(6px)}}
+@keyframes winopen{from{opacity:0;transform:scale(.92) translateY(12px)}to{opacity:1;transform:scale(1) translateY(0)}}
+@keyframes winclose{from{opacity:1;transform:scale(1) translateY(0)}to{opacity:0;transform:scale(.92) translateY(8px)}}
 
 #topbar{
 position:fixed;top:0;left:0;right:0;height:64px;z-index:100;
@@ -387,7 +402,7 @@ backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
 transition:background var(--theme-transition),border-color var(--theme-transition),box-shadow var(--theme-transition);
 backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);
 overflow:hidden;min-width:320px;min-height:200px;
-animation:winopen .2s cubic-bezier(.34,1.2,.64,1) both;
+animation:winopen .25s cubic-bezier(.34,1.3,.64,1) both;
 transition:background var(--theme-transition),border-color var(--theme-transition);
 }
 
@@ -614,6 +629,7 @@ background:var(--cyan);color:#fff;font:700 .82rem 'Montserrat',sans-serif;cursor
 #admin-submit:hover{background:var(--cyan2)}
 #admin-cancel{background:none;border:none;color:var(--mid);font:.75rem 'Montserrat',sans-serif;margin-top:12px;cursor:pointer}
 </style>
+<script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
 
