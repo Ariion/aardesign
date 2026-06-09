@@ -146,22 +146,6 @@
     ],
     "digital": [
       {
-        "src": "assets/dark/red.jpg",
-        "title": "Dark — Red"
-      },
-      {
-        "src": "assets/dark/blood.jpg",
-        "title": ""
-      },
-      {
-        "src": "assets/dark/cult.jpg",
-        "title": ""
-      },
-      {
-        "src": "assets/dark/salem.jpg",
-        "title": ""
-      },
-      {
         "id": 1780990418845.2278,
         "src": "assets/saveurs/renard.png",
         "title": ""
