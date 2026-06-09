@@ -230,6 +230,27 @@ body{background:var(--wall-a);color:var(--ink);transition:background var(--theme
 /* ═══════════════════════════════════════
    TOP BAR
 ═══════════════════════════════════════ */
+/* ── Marquee ── */
+#marquee-bar{
+  position:fixed;top:64px;left:0;right:0;height:26px;z-index:99;
+  overflow:hidden;display:none;
+  background:rgba(41,184,217,.07);
+  border-bottom:1px solid rgba(41,184,217,.12);
+  backdrop-filter:blur(10px);
+  display:flex;align-items:center;
+}
+[data-theme="light"] #marquee-bar{background:rgba(27,53,96,.05);border-bottom-color:rgba(27,53,96,.08);}
+#marquee-track{display:flex;align-items:center;white-space:nowrap;animation:marqueeScroll 32s linear infinite;}
+#marquee-track:hover{animation-play-state:paused}
+#marquee-content,#marquee-content2{display:inline-flex;align-items:center;gap:0}
+@keyframes marqueeScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.mq-item{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:.52rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--mid);padding:0 20px;
+}
+.mq-dot{width:4px;height:4px;border-radius:50%;background:var(--cyan);opacity:.5;flex-shrink:0}
+
 #topbar{
   position:fixed;top:0;left:0;right:0;height:64px;z-index:100;
   display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:0 10px;
@@ -319,7 +340,7 @@ body{background:var(--wall-a);color:var(--ink);transition:background var(--theme
    DESKTOP
 ═══════════════════════════════════════ */
 #desktop{
-  position:fixed;inset:64px 0 0 0;z-index:1;
+  position:fixed;inset:90px 0 0 0;z-index:1;
   display:flex;align-items:center;justify-content:center;
   pointer-events:none;
 }
@@ -369,7 +390,7 @@ body{background:var(--wall-a);color:var(--ink);transition:background var(--theme
 .d-folder-label{font-size:.57rem;font-weight:600;color:var(--ink);text-align:center;line-height:1.3}
 
 /* Category sub-folder grid inside windows */
-.cat-grid{display:flex;flex-wrap:wrap;gap:8px;padding:14px;align-content:flex-start}
+.cat-grid{display:flex;flex-wrap:wrap;gap:10px;padding:16px;align-content:flex-start;overflow-y:auto;height:100%}
 .cat-item{
   display:flex;flex-direction:column;align-items:center;gap:5px;
   width:80px;cursor:pointer;padding:8px 4px;border-radius:10px;
@@ -707,6 +728,14 @@ body{background:var(--wall-a);color:var(--ink);transition:background var(--theme
   </div>
 </div>
 
+<!-- Bandeau défilant -->
+<div id="marquee-bar">
+  <div id="marquee-track">
+    <span id="marquee-content"></span>
+    <span id="marquee-content2" aria-hidden="true"></span>
+  </div>
+</div>
+
 <!-- Drawer menu -->
 <div id="tb-drawer">
   <div class="tm-label">Navigation</div>
@@ -811,7 +840,7 @@ body{background:var(--wall-a);color:var(--ink);transition:background var(--theme
 <script>
 const ADMIN_PWD='aardesign2026';
 const GH_CONFIG_URL='https://raw.githubusercontent.com/ariion/aardesign/main/data/site-config.json';
-const AAR_CFG_KEYS=['aar_portfolio','aar_desk','aar_sec_hero','aar_sec_contact','aar_sec_about','aar_cv','aar_theme'];
+const AAR_CFG_KEYS=['aar_portfolio','aar_desk','aar_sec_hero','aar_sec_contact','aar_sec_about','aar_cv','aar_theme','aar_sec_marquee'];
 
 /* Charge la config depuis GitHub (non-bloquant) */
 (async function loadRemoteConfig(){
@@ -884,7 +913,11 @@ lsClock(); setInterval(lsClock,10000);
 document.getElementById('lockscreen').addEventListener('click',()=>{
   const ls=document.getElementById('lockscreen');
   ls.classList.add('unlocking');
-  setTimeout(()=>{ ls.style.display='none'; document.getElementById('theme-float').style.display='flex'; },620);
+  setTimeout(()=>{
+    ls.style.display='none';
+    document.getElementById('theme-float').style.display='flex';
+    document.getElementById('marquee-bar').style.display='flex';
+  },620);
 });
 
 /* ═══════════════════════════════════════
@@ -1341,7 +1374,7 @@ function openCategory(catId){
       <div class="cat-item-ico">${folderSvg(it.c1,it.c2)}</div>
       <span class="cat-item-lbl">${it.label}</span>
     </div>`).join('')}</div>`;
-  createWin(winId,cat.label,ico,body,Math.max(300,cat.items.length*120+40),200);
+  createWin(winId,cat.label,ico,body,Math.max(420,cat.items.length*160+60),220);
 }
 
 function openFolder(fid){
@@ -1370,7 +1403,7 @@ function openFolder(fid){
     <div class="gal-grid">${gridHtml}</div>
   </div>`;
 
-  createWin(winId,fd.label,ico,body,640,480);
+  createWin(winId,fd.label,ico,body,720,520);
   openWins[winId].querySelector('.win-body').style.padding='0';
 }
 
@@ -1483,6 +1516,21 @@ function renderDesktopFolders(){
   }).join('');
 }
 renderDesktopFolders();
+
+/* ═══════════════════════════════════════
+   MARQUEE
+═══════════════════════════════════════ */
+function renderMarquee(){
+  const mq=JSON.parse(localStorage.getItem('aar_sec_marquee')||'null');
+  const mq1=(mq&&mq.mq1)||['Digital Painting','Direction Artistique','Illustration','Packaging','Character Design','Steampunk','Dark Fantasy','Aquarelle Digitale'];
+  const mq2=(mq&&mq.mq2)||['Arsène Valentin','Clopinette','Millénaire Caen','Projets personnels'];
+  const all=[...mq1,...mq2];
+  if(!all.length){ document.getElementById('marquee-bar').style.display='none'; return; }
+  const html=all.map(t=>`<span class="mq-item"><span class="mq-dot"></span>${t}</span>`).join('');
+  document.getElementById('marquee-content').innerHTML=html;
+  document.getElementById('marquee-content2').innerHTML=html;
+}
+renderMarquee();
 
 /* ═══════════════════════════════════════
    ADMIN
