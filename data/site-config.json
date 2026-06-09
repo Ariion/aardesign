@@ -313,15 +313,6 @@
         "section": "Portfolio"
       },
       {
-        "id": "animation",
-        "label": "Animation",
-        "action": "folder:animation",
-        "icon": "play",
-        "c1": "#c2410c",
-        "c2": "#f97316",
-        "section": "Portfolio"
-      },
-      {
         "id": "sites",
         "label": "Sites internet",
         "action": "folder:sites",
