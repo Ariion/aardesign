@@ -324,7 +324,7 @@
       },
       {
         "id": "etudes",
-        "label": "Projet personnels",
+        "label": "Projets",
         "action": "folder:etudes",
         "icon": "book",
         "c1": "#1d4ed8",
