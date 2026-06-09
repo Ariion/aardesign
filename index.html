@@ -1130,12 +1130,14 @@ title:'Contact',w:420,h:380,ico:icoContact,
 body: buildContactBody()
 },
 mail:{
-title:'Écrire à Anthony',w:420,h:370,ico:icoMail,
-body:`<div class="w-field"><label>À</label><input type="text" value="aardesign14@gmail.com" readonly></div>
+title:'Écrire à Anthony',w:420,h:420,ico:icoMail,
+body:`<div class="w-field"><label>Votre nom</label><input id="wm-name" type="text" placeholder="Marie Dupont"></div>
+<div class="w-field"><label>Votre email</label><input id="wm-from" type="email" placeholder="marie@exemple.fr"></div>
 <div class="w-field"><label>Objet</label><input id="wm-subj" type="text" placeholder="Un projet à discuter…"></div>
 <div class="w-field"><label>Message</label><textarea id="wm-msg" placeholder="Bonjour Anthony, je vous contacte au sujet de…"></textarea></div>
 <button class="w-send" id="wm-send">Envoyer ✦</button>
-<div id="wm-ok" style="display:none;margin-top:10px;text-align:center;color:var(--cyan);font-weight:600;font-size:.8rem">✓ Message envoyé !</div>`
+<div id="wm-ok" style="display:none;margin-top:10px;text-align:center;color:var(--cyan);font-weight:600;font-size:.8rem">✓ Message envoyé !</div>
+<div id="wm-err" style="display:none;margin-top:10px;text-align:center;color:#e55;font-size:.78rem"></div>`
 },
 about:{
 title:'À propos — aardesign',w:400,h:380,ico:icoAbout,
@@ -1155,9 +1157,19 @@ if(ww){ ww.style.width=fw+'px'; ww.style.height=fh+'px'; ww.style.left=Math.max(
 
 setTimeout(()=>{
 const btn=document.getElementById('wm-send');
-if(btn) btn.addEventListener('click',()=>{
-document.getElementById('wm-ok').style.display='block';
-btn.style.display='none';
+if(btn) btn.addEventListener('click',async()=>{
+const name=document.getElementById('wm-name')?.value.trim();
+const from=document.getElementById('wm-from')?.value.trim();
+const subj=document.getElementById('wm-subj')?.value.trim();
+const msg=document.getElementById('wm-msg')?.value.trim();
+const errEl=document.getElementById('wm-err');
+if(!name||!from||!msg){errEl.textContent='Merci de remplir nom, email et message.';errEl.style.display='block';return;}
+btn.disabled=true;btn.textContent='Envoi…';
+try{
+const r=await fetch('/api/send-message',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,email:from,subject:subj,message:msg})});
+if(r.ok){document.getElementById('wm-ok').style.display='block';btn.style.display='none';}
+else{const d=await r.json();errEl.textContent=d.error||'Erreur envoi';errEl.style.display='block';btn.disabled=false;btn.textContent='Envoyer ✦';}
+}catch(e){errEl.textContent='Erreur réseau';errEl.style.display='block';btn.disabled=false;btn.textContent='Envoyer ✦';}
 });
 },50);
 }

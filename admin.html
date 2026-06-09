@@ -1344,10 +1344,7 @@ const projs = SD.projects || DEF.projects
 document.getElementById('st-proj').textContent = projs.length
 const imgs = _ls.get('images') || []
 document.getElementById('st-img').textContent = imgs.length
-const msgs = (_ls.get('messages') || []).filter(m => !m.read)
-const uc = msgs.length
-document.getElementById('st-msg').textContent = uc
-const b = document.getElementById('msgBadge'); b.textContent = uc; b.style.display = uc ? '' : 'none'
+document.getElementById('st-msg').textContent = '—'
 const allImgsLocal = _ls.get('images') || []
 const rc = document.getElementById('recentImgs')
 rc.innerHTML = allImgsLocal.slice(0,6).map(i => `<div style="aspect-ratio:1;overflow:hidden;background:var(--bg2)"><img src="${i.url}" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'"></div>`).join('') || '<div style="color:var(--mid);font-size:.7rem;grid-column:1/-1;padding:.5rem 0">Aucune image ajoutée</div>'
@@ -1710,23 +1707,32 @@ st.textContent = '✓'; st.style.color = 'var(--green)'
 }
 
 // ═══════════════════════════════
-//  MESSAGES (localStorage)
+//  MESSAGES (GitHub)
 // ═══════════════════════════════
 let curMsg = null
-function loadMsgs() {
-const data = _ls.get('messages') || []
-const unread = data.filter(m=>!m.read).length
-document.getElementById('msgCount').textContent = data.length + ' messages · ' + unread + ' non lus'
-const b = document.getElementById('msgBadge'); b.textContent = unread; b.style.display = unread ? '' : 'none'
-const list = document.getElementById('msgList')
-if (!data.length) { list.innerHTML = '<div class="empty"><span class="empty-ico">⊠</span><div class="empty-t">Aucun message</div><div class="empty-s">Les messages envoyés via le formulaire de contact apparaîtront ici.</div></div>'; return }
-list.innerHTML = data.map(m => `
+let _msgs = []
+const GH_MSGS_URL = 'https://raw.githubusercontent.com/ariion/aardesign/main/data/messages.json'
+
+async function loadMsgs() {
+  const list = document.getElementById('msgList')
+  list.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--mid);font-size:.78rem">Chargement…</div>'
+  try {
+    const r = await fetch(GH_MSGS_URL + '?t=' + Date.now())
+    _msgs = r.ok ? await r.json() : []
+  } catch(e) { _msgs = [] }
+  const readIds = JSON.parse(localStorage.getItem('aar_msg_read') || '[]')
+  _msgs = _msgs.map(m => ({ ...m, read: m.read || readIds.includes(m.id) }))
+  const unread = _msgs.filter(m => !m.read).length
+  document.getElementById('msgCount').textContent = _msgs.length + ' message' + (_msgs.length!==1?'s':'') + ' · ' + unread + ' non lu' + (unread!==1?'s':'')
+  const b = document.getElementById('msgBadge'); if(b){ b.textContent = unread; b.style.display = unread ? '' : 'none' }
+  if (!_msgs.length) { list.innerHTML = '<div class="empty"><span class="empty-ico">⊠</span><div class="empty-t">Aucun message</div><div class="empty-s">Les messages envoyés via le formulaire de contact apparaîtront ici.</div></div>'; return }
+  list.innerHTML = _msgs.map(m => `
 <div class="msg-item ${m.read?'read':'unread'}" onclick="openMsg('${m.id}')">
 <div>
-<div class="msg-from">${m.firstname||''} ${m.lastname||''} <span style="font-size:.68rem;color:var(--mid)">— ${m.email||''}</span></div>
-<div class="msg-preview">${(m.message||'').slice(0,120)}</div>
+<div class="msg-from">${m.name||'—'} <span style="font-size:.68rem;color:var(--mid)">— ${m.email||''}</span></div>
+<div class="msg-preview">${(m.subject?'<b>'+m.subject+'</b> — ':'')}${(m.message||'').slice(0,100)}</div>
 </div>
-<div style="text-align:right">
+<div style="text-align:right;flex-shrink:0">
 <div class="msg-date">${new Date(m.created_at||Date.now()).toLocaleDateString('fr')}</div>
 ${!m.read ? '<div class="msg-dot"></div>' : ''}
 </div>
@@ -1734,28 +1740,27 @@ ${!m.read ? '<div class="msg-dot"></div>' : ''}
 }
 
 function openMsg(id) {
-const data = (_ls.get('messages') || []).find(m => m.id === id); if (!data) return
-curMsg = id
-const msgs = _ls.get('messages') || []
-const m = msgs.find(m => m.id === id); if (m) { m.read = true; _ls.set('messages', msgs) }
-loadMsgs()
-document.getElementById('mmTitle').textContent = `${data.firstname||''} ${data.lastname||''}`
-document.getElementById('mmMeta').innerHTML = `
+  const data = _msgs.find(m => m.id === id); if (!data) return
+  curMsg = id
+  const readIds = JSON.parse(localStorage.getItem('aar_msg_read') || '[]')
+  if (!readIds.includes(id)) { readIds.push(id); localStorage.setItem('aar_msg_read', JSON.stringify(readIds)) }
+  _msgs = _msgs.map(m => m.id === id ? {...m, read:true} : m)
+  loadMsgs()
+  document.getElementById('mmTitle').textContent = data.name || '—'
+  document.getElementById('mmMeta').innerHTML = `
 <div><div style="font-size:.5rem;letter-spacing:.28em;text-transform:uppercase;color:var(--cyan);margin-bottom:.22rem">Email</div><div style="font-size:.78rem">${data.email||'—'}</div></div>
-<div><div style="font-size:.5rem;letter-spacing:.28em;text-transform:uppercase;color:var(--cyan);margin-bottom:.22rem">Projet</div><div style="font-size:.78rem">${data.project_type||'—'}</div></div>
+<div><div style="font-size:.5rem;letter-spacing:.28em;text-transform:uppercase;color:var(--cyan);margin-bottom:.22rem">Objet</div><div style="font-size:.78rem">${data.subject||'—'}</div></div>
 <div><div style="font-size:.5rem;letter-spacing:.28em;text-transform:uppercase;color:var(--cyan);margin-bottom:.22rem">Date</div><div style="font-size:.78rem">${new Date(data.created_at||Date.now()).toLocaleDateString('fr')}</div></div>`
-document.getElementById('mmBody').textContent = data.message || ''
-document.getElementById('mmDel').onclick = () => {
-const msgs = (_ls.get('messages')||[]).filter(m => m.id !== curMsg)
-_ls.set('messages', msgs)
-toast('✓ Message supprimé'); closeM('m-msg'); loadMsgs()
-}
-openM('m-msg')
+  document.getElementById('mmBody').textContent = data.message || ''
+  document.getElementById('mmDel').onclick = () => { toast('✗ Suppression via admin non disponible — supprimez dans data/messages.json'); closeM('m-msg') }
+  openM('m-msg')
 }
 
 function markAllRead() {
-const msgs = (_ls.get('messages')||[]).map(m => ({...m, read:true}))
-_ls.set('messages', msgs); toast('✓ Tous lus'); loadMsgs()
+  const ids = _msgs.map(m => m.id)
+  localStorage.setItem('aar_msg_read', JSON.stringify(ids))
+  _msgs = _msgs.map(m => ({...m, read:true}))
+  toast('✓ Tous lus'); loadMsgs()
 }
 
 // ═══════════════════════════════
