@@ -1294,14 +1294,14 @@ const winId='folder-sites';
 if(openWins[winId]){ bringFront(openWins[winId]); return; }
 const ico=`<svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#60a5fa" stroke-width="1.4"/><path d="M8 1c-2 2-3 4-3 7s1 5 3 7M8 1c2 2 3 4 3 7s-1 5-3 7M1 8h14" stroke="#60a5fa" stroke-width="1.2"/></svg>`;
 const body=`<div style="padding:0;height:100%;display:flex;flex-direction:column;overflow:hidden">
-<div style="flex-shrink:0;padding:18px 20px 14px">
+<div style="flex-shrink:0;padding:14px 20px 10px">
 <div style="font-size:.55rem;letter-spacing:.22em;text-transform:uppercase;color:var(--cyan);margin-bottom:6px">Sites réalisés</div>
 <div style="font-size:.82rem;color:var(--mid)">Projets web conçus et déployés</div>
 </div>
 <div style="flex:1;overflow-y:auto;padding:0 16px 16px;display:flex;flex-direction:column;gap:14px">
 
 <div style="border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--win-bg)">
-<div style="position:relative;width:100%;aspect-ratio:16/7;overflow:hidden;background:#e8f4f8">
+<div style="position:relative;width:100%;aspect-ratio:16/6;overflow:hidden;background:#e8f4f8">
 <img src="assets/procomsolution.jpg" alt="Procom Solution" style="width:100%;height:100%;object-fit:cover;object-position:top" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
 <div style="display:none;width:100%;height:100%;align-items:center;justify-content:center;background:linear-gradient(135deg,#e0f2f7,#c8eaf2);color:#2a7f9e;font-size:.75rem;font-weight:600">procomsolution.fr</div>
 </div>
@@ -1330,7 +1330,7 @@ D'autres projets web à venir
 </div>
 </div>
 </div>`;
-createWin(winId,'Sites internet',ico,body,520,480);
+createWin(winId,'Sites internet',ico,body,520,560);
 }
 
 function openFolder(fid){
