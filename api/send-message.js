@@ -37,17 +37,21 @@ export default async function handler(req, res) {
 
   if (resendKey) {
     try {
-      await fetch('https://api.resend.com/emails', {
+      const resendRes = await fetch('https://api.resend.com/emails', {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          from: 'contact@aardesign.fr',
+          from: 'Aardesign Contact <onboarding@resend.dev>',
           to: 'aardesign14@gmail.com',
           reply_to: email,
           subject: `[aardesign.fr] ${subject || 'Nouveau message'} — ${name}`,
           html: `<p><b>De :</b> ${name} &lt;${email}&gt;</p><p><b>Objet :</b> ${subject || '(sans objet)'}</p><hr><p>${message.replace(/\n/g, '<br>')}</p>`
         })
       });
+      if (!resendRes.ok) {
+        const errBody = await resendRes.json();
+        console.error('Resend error:', JSON.stringify(errBody));
+      }
     } catch (e) {
       console.error('Resend error:', e.message);
     }
