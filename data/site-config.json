@@ -335,7 +335,31 @@
   },
   "aar_sec_hero": null,
   "aar_sec_contact": null,
-  "aar_sec_about": null,
+  "aar_sec_about": {
+    "fn": "Anthony",
+    "ln": "Armand",
+    "p1": "Designer pluridisciplinaire basé en France. Je travaille à l'intersection du digital painting, de l'illustration narrative, du branding et de la direction artistique.",
+    "p2": "Du packaging premium aux peintures personnelles, chaque projet est une occasion de construire un univers visuel unique, cohérent et mémorable.",
+    "cta": "Travaillons ensemble →",
+    "stats": [
+      {
+        "n": "9+",
+        "l": "Années d'expérience"
+      },
+      {
+        "n": "35+",
+        "l": "Œuvres réalisées"
+      },
+      {
+        "n": "8",
+        "l": "Disciplines créatives"
+      },
+      {
+        "n": "FR",
+        "l": "France · Remote · Caen"
+      }
+    ]
+  },
   "aar_cv": null,
   "aar_theme": null
 }
