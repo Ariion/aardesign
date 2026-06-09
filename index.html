@@ -766,7 +766,6 @@ Mode clair
 </div>
 
 <script>
-const ADMIN_PWD='aardesign2026';
 const GH_CONFIG_URL='https://raw.githubusercontent.com/ariion/aardesign/main/data/site-config.json';
 const AAR_CFG_KEYS=['aar_portfolio','aar_desk','aar_sec_hero','aar_sec_contact','aar_sec_about','aar_cv','aar_theme','aar_sec_marquee'];
 
@@ -1426,10 +1425,17 @@ ${folders.map(f=>`<div class="d-folder" onclick="${deskFolderAction(f.action)}">
 }
 renderDesktopFolders();
 
-document.getElementById('admin-submit').addEventListener('click',()=>{
+document.getElementById('admin-submit').addEventListener('click',async()=>{
+const btn=document.getElementById('admin-submit');
 const v=document.getElementById('admin-pwd').value;
-if(v===ADMIN_PWD){ sessionStorage.setItem('aar-auth','1'); window.location.href='admin.html'; }
-else{ document.getElementById('admin-err').style.display='block'; }
+if(!v) return;
+btn.disabled=true; btn.textContent='…';
+try{
+const r=await fetch('/api/auth',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:v})});
+const d=await r.json();
+if(r.ok && d.token){ sessionStorage.setItem('aar-token',d.token); window.location.href='admin.html'; }
+else{ document.getElementById('admin-err').style.display='block'; btn.disabled=false; btn.textContent='Entrer'; }
+}catch(e){ document.getElementById('admin-err').style.display='block'; btn.disabled=false; btn.textContent='Entrer'; }
 });
 document.getElementById('admin-pwd').addEventListener('keydown',e=>{
 if(e.key==='Enter') document.getElementById('admin-submit').click();

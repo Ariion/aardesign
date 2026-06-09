@@ -1178,8 +1178,11 @@ Les données sont sauvegardées via Vercel (côté serveur). Le token GitHub est
 
 <script>
 (function(){
-  const ok = sessionStorage.getItem('aar-auth');
-  if(!ok){ window.location.replace('/?admin=1'); }
+  const token = sessionStorage.getItem('aar-token');
+  if(!token){ window.location.replace('/?admin=1'); return; }
+  fetch('/api/verify-auth',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token})})
+    .then(r=>r.json()).then(d=>{ if(!d.valid){ sessionStorage.removeItem('aar-token'); window.location.replace('/?admin=1'); } })
+    .catch(()=>{ window.location.replace('/?admin=1'); });
 })();
 // ═══════════════════════════════
 //  CONFIG & INIT
@@ -1849,7 +1852,7 @@ if (np.length<6) { toast('Minimum 6 caractères','err'); return }
 toast('✓ Note : modifiez ADMIN_PWD dans index.html pour changer le mot de passe.')
 }
 
-function doLogout() { sessionStorage.removeItem('aar-auth'); window.location.href = '/' }
+function doLogout() { sessionStorage.removeItem('aar-token'); window.location.href = '/' }
 
 // ══════════════════════════════════════
 //  SAUVEGARDE GITHUB (persistance réelle)
