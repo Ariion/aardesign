@@ -180,24 +180,53 @@
     ],
     "logo": [
       {
-        "src": "assets/saveurs/hiver.jpg",
-        "title": "Saveurs — Hiver"
-      },
-      {
-        "src": "assets/saveurs/ete.jpg",
-        "title": ""
-      },
-      {
-        "src": "assets/saveurs/automne.jpg",
-        "title": ""
-      },
-      {
-        "src": "assets/saveurs/printemps.jpg",
-        "title": ""
-      },
-      {
         "src": "assets/Logo-Aardesign-Long.png",
         "title": "Aardesign"
+      },
+      {
+        "id": 1781108632847.3718,
+        "src": "assets/Logo-Aardesign-Court.png",
+        "title": "Logo-Aardesign-Court"
+      },
+      {
+        "id": 1781108632847.2366,
+        "src": "assets/Logo-Aardesign-Long.png",
+        "title": "Logo-Aardesign-Long"
+      },
+      {
+        "id": 1781108632847.1287,
+        "src": "assets/Logo_Procom-Solution_Institutionnel_couleur-2.png",
+        "title": "Logo_Procom-Solution_Institutionnel_couleur-2"
+      },
+      {
+        "id": 1781108632847.4475,
+        "src": "assets/Planche-logo-02.png",
+        "title": "Planche-logo-02"
+      },
+      {
+        "id": 1781108632847.4626,
+        "src": "assets/Planche-logo-04.png",
+        "title": "Planche-logo-04"
+      },
+      {
+        "id": 1781108632847.2693,
+        "src": "assets/Planche-logo-05.png",
+        "title": "Planche-logo-05"
+      },
+      {
+        "id": 1781108632847.508,
+        "src": "assets/Planche-logo-07.png",
+        "title": "Planche-logo-07"
+      },
+      {
+        "id": 1781108632847.6575,
+        "src": "assets/Planche-logo-08.png",
+        "title": "Planche-logo-08"
+      },
+      {
+        "id": 1781108632847.444,
+        "src": "assets/TD-Homes_Logo.png",
+        "title": "TD-Homes_Logo"
       }
     ],
     "animation": [
@@ -283,6 +312,9 @@
         "legalMention": ""
       },
       "sites": {
+        "legalMention": ""
+      },
+      "logo": {
         "legalMention": ""
       }
     },
