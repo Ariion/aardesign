@@ -1217,11 +1217,19 @@ projects:[
 let SD = {} // site data
 let allImgs = [], mpTags = [], mq1 = [], mq2 = []
 
-window.addEventListener('load', () => {
-loadSiteData()
-loadDashboard()
-setupDrop()
-setupMpTags()
+window.addEventListener('load', async () => {
+  try {
+    const r = await fetch('/api/get-config');
+    if (r.ok) {
+      const cfg = await r.json();
+      const keys = ['aar_portfolio','aar_desk','aar_sec_hero','aar_sec_contact','aar_sec_about','aar_cv','aar_theme','aar_sec_marquee'];
+      keys.forEach(k => { if (cfg[k] !== undefined) localStorage.setItem(k, JSON.stringify(cfg[k])); });
+    }
+  } catch(_) {}
+  loadSiteData()
+  loadDashboard()
+  setupDrop()
+  setupMpTags()
 })
 
 // ═══════════════════════════════
@@ -1952,6 +1960,7 @@ arsene:[
 {src:'assets/millenaire/cadomum.jpg',title:'Millénaire — Cadomum'},
 {src:'assets/millenaire/pomme2.jpg',title:'Millénaire — Pomme'},
 {src:'assets/millenaire/pomme3.jpg',title:''},
+{src:'assets/aristocrate/explorateur.jpg',title:"L'Aristocrate — Explorateur"},
 {src:'assets/aristocrate/nanti.jpg',title:"L'Aristocrate — Nanti"},
 {src:'assets/aristocrate/casque.jpg',title:''},
 {src:'assets/aristocrate/veste.jpg',title:''},
@@ -1977,27 +1986,48 @@ logo:[
 {src:'assets/saveurs/printemps.jpg',title:''},
 ],
 animation:[
-{src:'assets/voyages/tokyo.jpg',title:'Tokyo'},
-{src:'assets/voyages/kyoto.jpg',title:'Kyoto'},
+{src:'assets/pulse.jpg',title:'Pulse'},
+{src:'assets/aristocrate/explorateur.jpg',title:''},
 ],
 perso:[
-{src:'assets/dark/red.jpg',title:''},
-{src:'assets/pulse.jpg',title:'Pulse'},
+{src:'assets/voyages/cappadoce.jpg',title:'Cappadoce'},
+{src:'assets/voyages/fuji.jpg',title:'Fuji'},
+{src:'assets/voyages/laponie.jpg',title:'Laponie'},
+{src:'assets/voyages/amazonie.jpg',title:'Amazonie'},
+{src:'assets/voyages/canada.jpg',title:'Canada'},
+{src:'assets/voyages/pacifique.jpg',title:'Pacifique'},
+{src:'assets/voyages/cartes.jpg',title:'Cartes'},
 ],
 etudes:[
-{src:'assets/formation/logo-etude.jpg',title:'Étude Logo'},
-{src:'assets/formation/typo-etude.jpg',title:'Typographie'},
+{src:'assets/formation/foret.jpg',title:''},
+{src:'assets/formation/cathedrale.jpg',title:''},
+{src:'assets/formation/character.jpg',title:''},
+{src:'assets/formation/environnement.jpg',title:''},
+{src:'assets/formation/halloween.jpg',title:''},
+{src:'assets/formation/hoth.jpg',title:''},
+{src:'assets/formation/mobydick.jpg',title:''},
+{src:'assets/formation/paysage.jpg',title:''},
+{src:'assets/formation/sf.jpg',title:''},
 ],
 };
-const PF_FOLDERS=[
-{id:'arsene',      label:'Arsène',          color:'#a78bfa'},
-{id:'clopinette',  label:'Clopinette',       color:'#f472b6'},
-{id:'digital',     label:'Digital Painting', color:'#60a5fa'},
-{id:'logo',        label:'Logo',             color:'#34d399'},
-{id:'animation',   label:'Animation',        color:'#fb923c'},
-{id:'perso',       label:'Perso',            color:'#facc15'},
-{id:'etudes',      label:'Études',           color:'#94a3b8'},
+const PF_FOLDERS_BASE=[
+{id:'arsene',   color:'#a78bfa', via:'category'},
+{id:'clopinette',color:'#f472b6',via:'category'},
 ];
+const PF_FOLDER_COLORS={digital:'#60a5fa',logo:'#34d399',animation:'#fb923c',perso:'#facc15',etudes:'#94a3b8'};
+
+function getPfFolders(){
+  const desk=bureauLoad();
+  const fromBureau=[];
+  desk.folders.forEach(f=>{
+    const m=f.action&&f.action.match(/^folder:(.+)$/);
+    if(m) fromBureau.push({id:m[1], label:f.label, color:f.c2||PF_FOLDER_COLORS[m[1]]||'#60a5fa', via:'bureau'});
+  });
+  return [...PF_FOLDERS_BASE.map(f=>{
+    const match=fromBureau.find(b=>b.id===f.id);
+    return {...f, label: match?match.label : (f.id==='arsene'?'Arsène':'Clopinette')};
+  }), ...fromBureau.filter(b=>!PF_FOLDERS_BASE.find(base=>base.id===b.id))];
+}
 let _pfCurrent=null;
 
 function pfData(){
@@ -2017,7 +2047,7 @@ function pfRender(){
 const d=pfData();
 const g=document.getElementById('pf-folders-grid');
 if(!g) return;
-g.innerHTML=PF_FOLDERS.map(f=>{
+g.innerHTML=getPfFolders().map(f=>{
 const imgs=d[f.id]||[];
 const preview=imgs.slice(0,4).map(im=>`<div style="background:url('${im.src}') center/cover;width:100%;height:100%;"></div>`).join('');
 return `<div class="pf-folder" onclick="pfEdit('${f.id}')">
@@ -2032,7 +2062,7 @@ ${imgs.length?`<div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;wi
 
 function pfEdit(fid){
 _pfCurrent=fid;
-const fd=PF_FOLDERS.find(f=>f.id===fid);
+const fd=getPfFolders().find(f=>f.id===fid);
 document.getElementById('pf-list-view').style.display='none';
 document.getElementById('pf-editor-view').style.display='';
 document.getElementById('pf-ed-title').textContent=fd?fd.label:fid;
