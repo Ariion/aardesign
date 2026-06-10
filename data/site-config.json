@@ -3,18 +3,6 @@
   "aar_portfolio": {
     "arsene": [
       {
-        "src": "assets/millenaire/cadomum.jpg",
-        "title": "Millénaire — Cadomum"
-      },
-      {
-        "src": "assets/millenaire/pomme2.jpg",
-        "title": "Millénaire — Pomme"
-      },
-      {
-        "src": "assets/millenaire/pomme3.jpg",
-        "title": ""
-      },
-      {
         "src": "assets/aristocrate/nanti.jpg",
         "title": "L'Aristocrate — Nanti"
       },
@@ -29,6 +17,81 @@
       {
         "src": "assets/aristocrate/explorateur.jpg",
         "title": "L'Aristocrate — Explorateur"
+      },
+      {
+        "id": 1781079428596.5745,
+        "src": "assets/aristocrate/casque.jpg",
+        "title": ""
+      },
+      {
+        "id": 1781079428596.347,
+        "src": "assets/aristocrate/explorateur.jpg",
+        "title": ""
+      },
+      {
+        "id": 1781079428596.855,
+        "src": "assets/aristocrate/nanti.jpg",
+        "title": ""
+      },
+      {
+        "id": 1781079428596.2517,
+        "src": "assets/aristocrate/veste.jpg",
+        "title": ""
+      },
+      {
+        "id": 1781079428596.3486,
+        "src": "assets/dark/blood.jpg",
+        "title": ""
+      },
+      {
+        "id": 1781079428596.4028,
+        "src": "assets/dark/cult.jpg",
+        "title": ""
+      },
+      {
+        "id": 1781079428596.652,
+        "src": "assets/dark/red.jpg",
+        "title": ""
+      },
+      {
+        "id": 1781079428596.6245,
+        "src": "assets/dark/salem.jpg",
+        "title": ""
+      },
+      {
+        "id": 1781079428596.6924,
+        "src": "assets/steam/mockup.jpg",
+        "title": ""
+      },
+      {
+        "id": 1781079428596.7634,
+        "src": "assets/voyages/amazonie.jpg",
+        "title": ""
+      },
+      {
+        "id": 1781079428596.9326,
+        "src": "assets/voyages/canada.jpg",
+        "title": ""
+      },
+      {
+        "id": 1781079428596.893,
+        "src": "assets/voyages/cappadoce.jpg",
+        "title": ""
+      },
+      {
+        "id": 1781079428596.6267,
+        "src": "assets/voyages/fuji.jpg",
+        "title": ""
+      },
+      {
+        "id": 1781079428596.7314,
+        "src": "assets/voyages/laponie.jpg",
+        "title": ""
+      },
+      {
+        "id": 1781079428596.6272,
+        "src": "assets/voyages/pacifique.jpg",
+        "title": ""
       }
     ],
     "clopinette": [
@@ -187,5 +250,65 @@
         "title": ""
       }
     ]
-  }
+  },
+  "_info": "aardesign config",
+  "aar_desk": {
+    "sections": [
+      "Portfolio",
+      "Créations personnelles"
+    ],
+    "folders": [
+      {
+        "id": "pro",
+        "label": "Portfolio pro",
+        "action": "category:pro",
+        "icon": "grid",
+        "c1": "#0e5e7a",
+        "c2": "#29B8D9",
+        "section": "Portfolio"
+      },
+      {
+        "id": "logo",
+        "label": "Identités visuelles",
+        "action": "folder:logo",
+        "icon": "layers",
+        "c1": "#065f46",
+        "c2": "#10b981",
+        "section": "Portfolio"
+      },
+      {
+        "id": "digital",
+        "label": "Digital Painting",
+        "action": "folder:digital",
+        "icon": "brush",
+        "c1": "#0e7490",
+        "c2": "#06b6d4",
+        "section": "Portfolio"
+      },
+      {
+        "id": "sites",
+        "label": "Sites internet",
+        "action": "folder:sites",
+        "icon": "globe",
+        "c1": "#1d4ed8",
+        "c2": "#60a5fa",
+        "section": "Portfolio"
+      },
+      {
+        "id": "etudes",
+        "label": "Projets",
+        "action": "folder:etudes",
+        "icon": "book",
+        "c1": "#1d4ed8",
+        "c2": "#3b82f6",
+        "section": "Créations personnelles"
+      }
+    ]
+  },
+  "aar_sec_hero": null,
+  "aar_sec_contact": null,
+  "aar_sec_about": null,
+  "aar_cv": null,
+  "aar_theme": null,
+  "aar_sec_marquee": null
 }
