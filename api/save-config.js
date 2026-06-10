@@ -20,19 +20,29 @@ export default async function handler(req, res) {
   };
 
   try {
-    // Récupérer le SHA actuel
-    let sha = '';
+    // Lire la config actuelle
+    let sha = '', existing = {};
     const getRes = await fetch(`https://api.github.com/repos/${REPO}/contents/${FILE}`, { headers });
-    if (getRes.ok) { const d = await getRes.json(); sha = d.sha || ''; }
+    if (getRes.ok) {
+      const d = await getRes.json();
+      sha = d.sha || '';
+      try { existing = JSON.parse(Buffer.from(d.content, 'base64').toString('utf8')); } catch(_) {}
+    }
 
-    // Encoder et committer
-    const content = Buffer.from(JSON.stringify(config, null, 2)).toString('base64');
+    // Protection : ne jamais écraser aar_portfolio avec un objet vide si l'existant a des données
+    const merged = { ...existing, ...config };
+    if ((!config.aar_portfolio || Object.keys(config.aar_portfolio).length === 0) && existing.aar_portfolio && Object.keys(existing.aar_portfolio).length > 0) {
+      merged.aar_portfolio = existing.aar_portfolio;
+    }
+
+    const content = Buffer.from(JSON.stringify(merged, null, 2)).toString('base64');
     const body = { message: 'Update site config', content };
     if (sha) body.sha = sha;
 
     const putRes = await fetch(`https://api.github.com/repos/${REPO}/contents/${FILE}`, {
       method: 'PUT', headers, body: JSON.stringify(body)
     });
+
 
     if (!putRes.ok) {
       const err = await putRes.json();
