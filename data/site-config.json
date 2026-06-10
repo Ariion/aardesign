@@ -133,28 +133,44 @@
     ],
     "digital": [
       {
-        "src": "assets/dark/red.jpg",
-        "title": "Dark — Red"
-      },
-      {
-        "src": "assets/dark/blood.jpg",
-        "title": ""
-      },
-      {
-        "src": "assets/dark/cult.jpg",
-        "title": ""
-      },
-      {
-        "src": "assets/dark/salem.jpg",
-        "title": ""
-      },
-      {
+        "id": 1781079468385.1514,
         "src": "assets/saveurs/renard.png",
-        "title": "Saveurs — Renard"
+        "title": ""
       },
       {
-        "src": "assets/pulse.jpg",
-        "title": "Pulse"
+        "id": 1781079468385.1487,
+        "src": "assets/steam/coeur.jpg",
+        "title": ""
+      },
+      {
+        "id": 1781079468385.8235,
+        "src": "assets/steam/gueule.jpg",
+        "title": ""
+      },
+      {
+        "id": 1781079468385.5486,
+        "src": "assets/steam/hibou.jpg",
+        "title": ""
+      },
+      {
+        "id": 1781079468385.6226,
+        "src": "assets/steam/main.jpg",
+        "title": ""
+      },
+      {
+        "id": 1781079468385.9858,
+        "src": "assets/steam/pomme.jpg",
+        "title": ""
+      },
+      {
+        "id": 1781079468385.5435,
+        "src": "assets/steam/sablier.jpg",
+        "title": ""
+      },
+      {
+        "id": 1781079468385.5388,
+        "src": "assets/voyages/cartes.jpg",
+        "title": ""
       }
     ],
     "logo": [
