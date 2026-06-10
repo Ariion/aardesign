@@ -407,6 +407,20 @@ text-align:center;cursor:pointer;transition:all .15s;background:transparent;
 .pf-lib-item.sel::after{content:'✓';position:absolute;top:4px;right:4px;background:var(--cyan);color:#fff;font-size:.52rem;width:16px;height:16px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-weight:700;}
 .pf-lib-check{display:none;}
 
+.pf-mention-card{background:var(--bg2);border:1px solid var(--line);border-radius:8px;padding:.8rem 1rem;margin-bottom:1rem;display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;}
+.pf-mention-toggle{display:flex;align-items:center;gap:.5rem;cursor:pointer;white-space:nowrap;font-size:.65rem;font-weight:700;color:var(--mid);}
+.pf-mention-toggle input[type=checkbox]{accent-color:var(--cyan);width:14px;height:14px;cursor:pointer;}
+.pf-mention-toggle.active{color:var(--cyan);}
+.pf-mention-inp{flex:1;min-width:200px;background:var(--bg);border:1px solid var(--line);border-radius:6px;color:var(--ink);padding:.45rem .75rem;font-family:'Montserrat',sans-serif;font-size:.72rem;outline:none;transition:border-color .15s;}
+.pf-mention-inp:focus{border-color:var(--cyan);}
+
+.pf-assets-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:.4rem;max-height:340px;overflow-y:auto;padding:2px;}
+.pf-asset-item{position:relative;aspect-ratio:1;cursor:pointer;border:2px solid transparent;border-radius:5px;overflow:hidden;transition:border-color .15s;background:var(--bg2);}
+.pf-asset-item img{width:100%;height:100%;object-fit:cover;display:block;}
+.pf-asset-item.sel{border-color:var(--cyan);}
+.pf-asset-item.sel::after{content:'✓';position:absolute;top:3px;right:3px;background:var(--cyan);color:#fff;font-size:.48rem;width:14px;height:14px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-weight:700;}
+.pf-asset-name{position:absolute;bottom:0;left:0;right:0;background:rgba(8,17,31,.75);padding:3px 4px;font-size:.45rem;color:rgba(255,255,255,.75);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
 .bureau-section-block{background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:1rem;margin-bottom:1rem;}
 .bureau-sec-hd{display:flex;align-items:center;gap:.6rem;margin-bottom:.8rem;}
 .bureau-sec-title{font-size:.72rem;font-weight:800;color:var(--ink);letter-spacing:.04em;}
@@ -925,22 +939,35 @@ text-align:center;cursor:pointer;transition:all .15s;background:transparent;
 <span id="pf-ed-count" style="font-size:.6rem;color:var(--mid);margin-left:auto"></span>
 </div>
 
+<div class="pf-mention-card">
+<label class="pf-mention-toggle" id="pf-mention-toggle">
+<input type="checkbox" id="pf-mention-chk" onchange="pfToggleMention(this.checked)">
+Mention légale
+</label>
+<input type="text" id="pf-mention-inp" class="pf-mention-inp" placeholder='Ex: © Arsène Valentin — Réalisé dans le cadre de mon CDI' style="display:none" oninput="pfMentionChanged()">
+<button class="btn btn-out btn-xs" id="pf-mention-save" onclick="pfSaveMention()" style="display:none">💾 Enregistrer</button>
+</div>
 
-<div class="pf-add-methods">
+<div class="pf-add-methods" style="grid-template-columns:repeat(4,1fr)">
 <div class="pf-method" onclick="pfAddUrl()">
 <span class="pf-method-ico">🔗</span>
-<div class="pf-method-label">Depuis une URL</div>
+<div class="pf-method-label">URL</div>
 <div class="pf-method-sub">Coller un lien image</div>
 </div>
 <div class="pf-method" onclick="document.getElementById('pf-file-inp').click()">
 <span class="pf-method-ico">💻</span>
-<div class="pf-method-label">Depuis l'ordinateur</div>
+<div class="pf-method-label">Ordinateur</div>
 <div class="pf-method-sub">Upload JPG · PNG · WebP</div>
 </div>
 <div class="pf-method" onclick="pfOpenLib()">
 <span class="pf-method-ico">⊞</span>
-<div class="pf-method-label">Depuis la bibliothèque</div>
+<div class="pf-method-label">Bibliothèque</div>
 <div class="pf-method-sub">Images déjà uploadées</div>
+</div>
+<div class="pf-method" onclick="pfOpenAssets()">
+<span class="pf-method-ico">🗂</span>
+<div class="pf-method-label">Assets /</div>
+<div class="pf-method-sub">Fichiers du repo</div>
 </div>
 </div>
 <input type="file" id="pf-file-inp" multiple accept="image/*" style="display:none" onchange="pfHandleFiles(this.files)">
@@ -975,6 +1002,28 @@ text-align:center;cursor:pointer;transition:all .15s;background:transparent;
 <div class="modal-ft">
 <button class="btn btn-out" onclick="closeM('m-pf-lib')">Annuler</button>
 <button class="btn btn-gold" onclick="pfImportLib()">Importer la sélection</button>
+</div>
+</div>
+</div>
+
+
+<div class="modal-bd" id="m-pf-assets">
+<div class="modal" style="max-width:680px">
+<div class="modal-hd">
+<div class="modal-title">Assets — Fichiers du dépôt</div>
+<button class="modal-x" onclick="closeM('m-pf-assets')">✕</button>
+</div>
+<div class="modal-body">
+<div style="display:flex;gap:.5rem;margin-bottom:.8rem;flex-wrap:wrap">
+<input type="text" id="pf-assets-q" placeholder="Filtrer (nom, dossier…)" oninput="pfFilterAssets()" style="flex:1;min-width:160px;background:var(--bg2);border:1px solid var(--line);padding:.42rem .8rem;font-family:'Montserrat',sans-serif;font-size:.75rem;outline:none;color:var(--ink);border-radius:5px">
+<span id="pf-assets-count" style="font-size:.6rem;color:var(--mid);align-self:center"></span>
+</div>
+<div id="pf-assets-loading" style="text-align:center;padding:2rem;color:var(--mid);font-size:.78rem">Chargement des assets…</div>
+<div class="pf-assets-grid" id="pf-assets-grid" style="display:none"></div>
+</div>
+<div class="modal-ft">
+<button class="btn btn-out" onclick="closeM('m-pf-assets')">Annuler</button>
+<button class="btn btn-gold" onclick="pfImportAssets()">Importer la sélection</button>
 </div>
 </div>
 </div>
@@ -2037,6 +2086,7 @@ Object.keys(DEFAULT_PORTFOLIO).forEach(k=>{
 merged[k]=(stored[k]&&stored[k].length)?stored[k]:DEFAULT_PORTFOLIO[k];
 });
 Object.keys(stored).forEach(k=>{if(!merged[k])merged[k]=stored[k];});
+if(stored._meta) merged._meta=stored._meta;
 return merged;
 }
 function pfSaveData(d){
@@ -2067,6 +2117,7 @@ document.getElementById('pf-list-view').style.display='none';
 document.getElementById('pf-editor-view').style.display='';
 document.getElementById('pf-ed-title').textContent=fd?fd.label:fid;
 document.getElementById('pf-url-form').style.display='none';
+pfLoadMention();
 pfRenderEditor();
 }
 
@@ -2166,8 +2217,105 @@ toast('✓ Image supprimée');
 }
 
 function pfSave(){
+pfSaveMention();
 toast('✓ Portfolio mis à jour !');
 ghSaveWithFeedback('Portfolio');
+}
+
+// ── Mention légale ──
+function pfGetMeta(fid){
+  const d=pfData();
+  return (d._meta&&d._meta[fid]) ? d._meta[fid] : {};
+}
+function pfSetMeta(fid,meta){
+  const raw=JSON.parse(localStorage.getItem('aar_portfolio')||'{}');
+  if(!raw._meta) raw._meta={};
+  raw._meta[fid]={...(raw._meta[fid]||{}),...meta};
+  localStorage.setItem('aar_portfolio',JSON.stringify(raw));
+}
+function pfLoadMention(){
+  if(!_pfCurrent) return;
+  const meta=pfGetMeta(_pfCurrent);
+  const chk=document.getElementById('pf-mention-chk');
+  const inp=document.getElementById('pf-mention-inp');
+  const savBtn=document.getElementById('pf-mention-save');
+  const toggle=document.getElementById('pf-mention-toggle');
+  const has=!!(meta.legalMention);
+  chk.checked=has;
+  inp.value=meta.legalMention||'';
+  inp.style.display=has?'':'none';
+  savBtn.style.display=has?'':'none';
+  toggle.classList.toggle('active',has);
+}
+function pfToggleMention(on){
+  const inp=document.getElementById('pf-mention-inp');
+  const savBtn=document.getElementById('pf-mention-save');
+  const toggle=document.getElementById('pf-mention-toggle');
+  inp.style.display=on?'':'none';
+  savBtn.style.display=on?'':'none';
+  toggle.classList.toggle('active',on);
+  if(on) inp.focus();
+  else if(!on){ pfSetMeta(_pfCurrent,{legalMention:''}); }
+}
+function pfMentionChanged(){
+  const inp=document.getElementById('pf-mention-inp');
+  inp.style.borderColor=inp.value.trim()?'var(--cyan)':'var(--line)';
+}
+function pfSaveMention(){
+  if(!_pfCurrent) return;
+  const chk=document.getElementById('pf-mention-chk');
+  const inp=document.getElementById('pf-mention-inp');
+  if(!chk) return;
+  const mention=chk.checked ? (inp.value.trim()||'') : '';
+  pfSetMeta(_pfCurrent,{legalMention:mention});
+}
+
+// ── Assets explorer ──
+let _assetsAll=[], _assetsLoaded=false;
+function pfOpenAssets(){
+  openM('m-pf-assets');
+  document.getElementById('pf-assets-q').value='';
+  if(_assetsLoaded){ pfRenderAssets(_assetsAll); return; }
+  fetch('/api/list-assets').then(r=>r.json()).then(data=>{
+    _assetsAll=data.images||[];
+    _assetsLoaded=true;
+    pfRenderAssets(_assetsAll);
+  }).catch(()=>{
+    document.getElementById('pf-assets-loading').textContent='Erreur de chargement.';
+  });
+}
+function pfFilterAssets(){
+  const q=document.getElementById('pf-assets-q').value.toLowerCase();
+  pfRenderAssets(_assetsAll.filter(p=>p.toLowerCase().includes(q)));
+}
+function pfRenderAssets(list){
+  const loading=document.getElementById('pf-assets-loading');
+  const grid=document.getElementById('pf-assets-grid');
+  const count=document.getElementById('pf-assets-count');
+  loading.style.display='none';
+  grid.style.display='';
+  count.textContent=list.length+' fichier'+(list.length!==1?'s':'');
+  if(!list.length){ grid.innerHTML='<div style="color:var(--mid);font-size:.75rem;padding:1rem">Aucun fichier trouvé.</div>'; return; }
+  grid.innerHTML=list.map(p=>`<div class="pf-asset-item" onclick="pfAssetToggle(this)">
+<img src="${p}" alt="" loading="lazy" onerror="this.style.display='none'">
+<div class="pf-asset-name">${p.split('/').pop()}</div>
+<input type="hidden" value="${p}">
+</div>`).join('');
+}
+function pfAssetToggle(el){ el.classList.toggle('sel'); }
+function pfImportAssets(){
+  const sel=Array.from(document.querySelectorAll('#pf-assets-grid .pf-asset-item.sel'));
+  if(!sel.length){ toast('Aucune image sélectionnée','err'); return; }
+  const d=pfData();
+  if(!d[_pfCurrent]) d[_pfCurrent]=[];
+  sel.forEach(el=>{
+    const src=el.querySelector('input[type=hidden]').value;
+    d[_pfCurrent].push({id:Date.now()+Math.random(),src,title:src.split('/').pop().replace(/\.[^.]+$/,'')});
+  });
+  pfSaveData(d);
+  closeM('m-pf-assets');
+  pfRenderEditor();
+  toast('✓ '+sel.length+' image(s) importée(s) depuis assets/');
 }
 
 // init portfolio when navigating to it
