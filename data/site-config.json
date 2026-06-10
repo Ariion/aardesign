@@ -331,7 +331,74 @@
   "aar_sec_hero": null,
   "aar_sec_contact": null,
   "aar_sec_about": null,
-  "aar_cv": null,
+  "aar_cv": {
+    "skills": [
+      {
+        "n": "Photoshop",
+        "p": 95
+      },
+      {
+        "n": "InDesign",
+        "p": 92
+      },
+      {
+        "n": "Illustrator",
+        "p": 90
+      },
+      {
+        "n": "Lightroom",
+        "p": 88
+      },
+      {
+        "n": "HTML/CSS",
+        "p": 75
+      },
+      {
+        "n": "Digital Painting",
+        "p": 65
+      }
+    ],
+    "experiences": [
+      {
+        "t": "Aardesign — Auto-entrepreneur",
+        "d": "2024–présent",
+        "c": "Création graphique, DA, Web, Illustration, Digital Painting, Animation"
+      },
+      {
+        "t": "Clopinette / Arsène Valentin — CDI",
+        "d": "2020–présent · Caen",
+        "c": "Packaging, Digital Painting, Etiquettes, Print & Web"
+      },
+      {
+        "t": "Creacom — CDD",
+        "d": "2019 · Valence",
+        "c": "Création graphique, communication"
+      },
+      {
+        "t": "Optimind Winter — Stage",
+        "d": "2017–2019 · Paris VIII",
+        "c": "Web design, Communication digitale, Print & Web, Guide pratique "
+      }
+    ],
+    "languages": [
+      {
+        "l": "Français",
+        "n": "Natif"
+      },
+      {
+        "l": "Anglais",
+        "n": "C1"
+      },
+      {
+        "l": "Italien",
+        "n": "A2"
+      },
+      {
+        "l": "Japonais",
+        "n": "A1"
+      }
+    ]
+  },
   "aar_theme": null,
   "aar_sec_marquee": null
 }
