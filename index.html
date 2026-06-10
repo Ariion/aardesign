@@ -1375,6 +1375,12 @@ ${im.title?`<div class="gal-title">${im.title}</div>`:''}
 </div>`).join('')
 : `<div class="gal-empty"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" width="40" height="40"><rect x="4" y="10" width="40" height="28" rx="3"/><circle cx="18" cy="22" r="4"/><path d="m4 32 12-10 8 8 6-5 14 13"/></svg><p>Aucune image</p><p style="font-size:.65rem;opacity:.6">Admin → Portfolio OS</p></div>`;
 
+const meta=(portfolio._meta&&portfolio._meta[fid])||{};
+const legalMention=meta.legalMention||'';
+const mentionHtml=legalMention
+? `<div style="padding:6px 10px;background:rgba(41,184,217,.06);border-top:1px solid var(--line);font-size:.54rem;color:var(--mid);text-align:center;flex-shrink:0;letter-spacing:.03em">${legalMention}</div>`
+: '';
+
 const body=`<div class="gal-wrap">
 <div class="gal-header">
 <svg viewBox="0 0 16 16" fill="none" width="14" height="14"><path d="M1 5a1.5 1.5 0 0 1 1.5-1.5H6l2 2h6.5A1.5 1.5 0 0 1 16 7v6.5A1.5 1.5 0 0 1 14.5 15h-13A1.5 1.5 0 0 1 1 13.5z" fill="${fd.color}"/></svg>
@@ -1382,6 +1388,7 @@ const body=`<div class="gal-wrap">
 <span style="font-size:.6rem;color:var(--mid);margin-left:auto">${imgs.length} image${imgs.length!==1?'s':''}</span>
 </div>
 <div class="gal-grid">${gridHtml}</div>
+${mentionHtml}
 </div>`;
 
 createWin(winId,fd.label,ico,body,720,520);
