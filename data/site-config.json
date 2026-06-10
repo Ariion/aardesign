@@ -281,8 +281,18 @@
     "_meta": {
       "digital": {
         "legalMention": ""
+      },
+      "sites": {
+        "legalMention": ""
       }
-    }
+    },
+    "sites": [
+      {
+        "id": 1781099783574.4592,
+        "src": "assets/procomsolution.jpg",
+        "title": "procomsolution"
+      }
+    ]
   },
   "_info": "aardesign config",
   "aar_desk": {
