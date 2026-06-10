@@ -317,33 +317,46 @@ pointer-events:none;
 #desk-center{
 display:flex;flex-direction:column;align-items:center;gap:0;
 pointer-events:all;
-padding:20px;
+padding:20px 20px 90px;
 }
 
 #desk-apps{
-display:flex;flex-direction:row;gap:8px;margin-bottom:28px;
+position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
+z-index:90;
+display:flex;flex-direction:row;gap:6px;
+padding:10px 16px;
+background:rgba(255,255,255,.08);
+backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);
+border:1px solid rgba(255,255,255,.13);
+border-radius:22px;
+box-shadow:0 8px 40px rgba(0,0,0,.4),0 1px 0 rgba(255,255,255,.08) inset;
+}
+[data-theme="light"] #desk-apps{
+background:rgba(255,255,255,.78);
+border-color:rgba(27,53,96,.1);
+box-shadow:0 8px 32px rgba(18,37,77,.14);
 }
 .d-icon{
-width:80px;display:flex;flex-direction:column;align-items:center;gap:6px;
-padding:12px 6px;border-radius:14px;cursor:pointer;
-background:var(--icon-bg);border:1px solid transparent;
-transition:background var(--theme-transition),border-color .15s,transform .15s;
+width:70px;display:flex;flex-direction:column;align-items:center;gap:5px;
+padding:8px 4px 6px;border-radius:12px;cursor:pointer;
+background:none;border:none;
+transition:transform .18s cubic-bezier(.34,1.56,.64,1);
 }
-.d-icon:hover{background:var(--icon-hover);border-color:var(--bar-border);transform:translateY(-3px)}
-.d-icon:active{transform:scale(.95)}
+.d-icon:hover{background:none;border:none;transform:translateY(-10px) scale(1.15)}
+.d-icon:active{transform:scale(.92)}
 .d-icon-face{
-width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;
-overflow:hidden;box-shadow:0 4px 14px rgba(0,0,0,.25);
+width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;
+overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.35);
 }
-.d-icon-label{font-size:.66rem;font-weight:600;color:var(--ink);text-align:center;line-height:1.2;letter-spacing:.01em}
+.d-icon-label{font-size:.58rem;font-weight:600;color:var(--ink);text-align:center;line-height:1.2;letter-spacing:.01em;opacity:.8}
 
-.desk-section{display:flex;flex-direction:column;align-items:center;gap:6px;margin-bottom:10px;width:100%}
+.desk-section{display:flex;flex-direction:column;align-items:center;gap:8px;margin-bottom:16px;width:100%}
 .desk-section-label{
 font-size:.46rem;font-weight:800;letter-spacing:.2em;text-transform:uppercase;
-color:var(--cyan);opacity:.55;margin-bottom:2px;
+color:var(--cyan);opacity:.55;margin-bottom:4px;
 }
 .desk-section-label.sec-perso{color:var(--mid)}
-.desk-folders-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.desk-folders-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
 
 .d-folder{
 display:flex;flex-direction:column;align-items:center;gap:6px;
@@ -366,32 +379,20 @@ border:1px solid transparent;transition:background .15s,border-color .15s,transf
 .cat-item-lbl{font-size:.55rem;font-weight:600;color:var(--ink);text-align:center;line-height:1.3}
 
 #desk-identity{
-text-align:center;margin-bottom:18px;pointer-events:none;
+text-align:center;margin-bottom:24px;pointer-events:none;
 }
-#desk-identity div:first-child{font-size:.62rem;font-weight:800;letter-spacing:.12em;color:rgba(41,184,217,.8);text-transform:uppercase}
-#desk-identity div:last-child{font-size:.54rem;color:var(--mid);margin-top:3px;letter-spacing:.04em}
-.d-icon:active{transform:scale(.95)}
-.d-icon-face{
-width:52px;height:52px;border-radius:13px;display:flex;align-items:center;justify-content:center;
-overflow:hidden;
-}
-.d-icon-label{font-size:.62rem;font-weight:600;color:var(--ink);text-align:center;line-height:1.2;letter-spacing:.01em}
+#desk-identity div:first-child{font-size:.66rem;font-weight:800;letter-spacing:.14em;color:rgba(41,184,217,.85);text-transform:uppercase}
+#desk-identity div:last-child{font-size:.55rem;color:var(--mid);margin-top:4px;letter-spacing:.04em}
 
 .d-folder{
 display:flex;flex-direction:column;align-items:center;gap:6px;
-width:80px;cursor:pointer;padding:8px 4px;border-radius:10px;
-border:1px solid transparent;transition:background .15s,border-color .15s,transform .15s;
+width:90px;cursor:pointer;padding:10px 6px;border-radius:12px;
+border:1px solid transparent;transition:background .15s,border-color .15s,transform .18s cubic-bezier(.34,1.56,.64,1);
 }
-.d-folder:hover{background:var(--folder-hover);border-color:var(--bar-border);transform:translateY(-3px)}
+.d-folder:hover{background:var(--folder-hover);border-color:var(--bar-border);transform:translateY(-5px)}
 .d-folder:active{transform:scale(.95)}
-.d-folder-ico{width:54px;height:46px;display:flex;align-items:center;justify-content:center}
-.d-folder-label{font-size:.54rem;font-weight:600;color:var(--ink);text-align:center;line-height:1.3}
-
-#desk-identity{
-text-align:center;margin-bottom:18px;pointer-events:none;
-}
-#desk-identity div:first-child{font-size:.62rem;font-weight:800;letter-spacing:.12em;color:rgba(41,184,217,.8);text-transform:uppercase}
-#desk-identity div:last-child{font-size:.54rem;color:var(--mid);margin-top:3px;letter-spacing:.04em}
+.d-folder-ico{width:58px;height:50px;display:flex;align-items:center;justify-content:center}
+.d-folder-label{font-size:.57rem;font-weight:600;color:var(--ink);text-align:center;line-height:1.3}
 
 #win-layer{position:fixed;inset:36px 0 0 0;z-index:50;pointer-events:none}
 .win{
@@ -429,14 +430,15 @@ margin-left:auto;
 .win-resize{display:none}
 .win-body{-webkit-overflow-scrolling:touch}
 
-#mob-home{display:none;bottom:10px;padding:9px 22px;font-size:.65rem}
-#desk-apps{display:flex;gap:4px}
-.d-icon{width:68px;padding:8px 4px}
-.d-icon-face{width:48px;height:48px;border-radius:12px}
+#mob-home{display:none;bottom:86px;padding:9px 22px;font-size:.65rem}
+#desk-apps{bottom:14px;gap:2px;padding:8px 10px;border-radius:18px;}
+.d-icon{width:58px;padding:6px 2px}
+.d-icon-face{width:44px;height:44px;border-radius:12px}
+.d-icon-label{font-size:.5rem}
 .d-folder{width:72px;padding:6px 2px}
 .d-folder-ico{width:46px;height:38px}
 .d-folder-label{font-size:.52rem}
-#desk-center{padding:12px 8px;gap:0}
+#desk-center{padding:12px 8px 90px;gap:0}
 
 
 .cv-wrap{grid-template-columns:1fr;grid-template-rows:auto 1fr;overflow:hidden}
