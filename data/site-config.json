@@ -171,6 +171,11 @@
         "id": 1781079468385.5388,
         "src": "assets/voyages/cartes.jpg",
         "title": ""
+      },
+      {
+        "id": 1781082734565.5405,
+        "src": "assets/Etiquette-Millenaire-Caen-interieur.png",
+        "title": "Etiquette-Millenaire-Caen-interieur"
       }
     ],
     "logo": [
@@ -272,7 +277,12 @@
         "src": "assets/formation/sf.jpg",
         "title": ""
       }
-    ]
+    ],
+    "_meta": {
+      "digital": {
+        "legalMention": ""
+      }
+    }
   },
   "_info": "aardesign config",
   "aar_desk": {
