@@ -1073,6 +1073,12 @@ Mention légale
 <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6" width="22" height="22" id="bfr-preview-svg"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
 </div>
 </div>
+<div style="margin-top:.6rem">
+<label style="display:inline-flex;align-items:center;gap:.5rem;font-size:.62rem;font-weight:600;color:var(--mid);cursor:pointer">
+<input type="checkbox" id="bfr-inpro" style="accent-color:var(--cyan);width:13px;height:13px;cursor:pointer">
+Inclure dans <span style="color:var(--cyan);font-weight:700">Portfolio pro</span>
+</label>
+</div>
 </div>
 </div>
 
@@ -1096,6 +1102,12 @@ Mention légale
 <div id="bed-preview" style="width:42px;height:42px;border-radius:12px;margin-left:.4rem;display:flex;align-items:center;justify-content:center;transition:.2s">
 <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6" width="22" height="22" id="bed-preview-svg"></svg>
 </div>
+</div>
+<div style="margin-top:.6rem">
+<label style="display:inline-flex;align-items:center;gap:.5rem;font-size:.62rem;font-weight:600;color:var(--mid);cursor:pointer">
+<input type="checkbox" id="bed-inpro" style="accent-color:var(--cyan);width:13px;height:13px;cursor:pointer">
+Inclure dans <span style="color:var(--cyan);font-weight:700">Portfolio pro</span>
+</label>
 </div>
 </div>
 <div class="modal-ft">
@@ -2481,7 +2493,8 @@ const c1=document.getElementById('bfr-c1')?.value||'#0e5e7a';
 const c2=document.getElementById('bfr-c2')?.value||'#29B8D9';
 const id=label.toLowerCase().replace(/[^a-z0-9]/g,'_').replace(/_+/g,'_').replace(/^_|_$/g,'').substring(0,20)||('f'+Date.now());
 const data=bureauLoad();
-data.folders.push({id,label,action:'folder:'+id,icon,c1,c2,section});
+const inPro=document.getElementById('bfr-inpro')?.checked||false;
+data.folders.push({id,label,action:'folder:'+id,icon,c1,c2,section,inPro});
 localStorage.setItem('aar_desk',JSON.stringify(data));
 document.getElementById('bfr-label').value='';
 bureauRender();
@@ -2532,6 +2545,7 @@ document.getElementById('bed-section').value=f.section;
 bureauFillIconPicker('bed-icon-picker','bed-icon-val','bed-preview-svg',updateBedPreview);
 updateBedPreview();
 ['bed-c1','bed-c2'].forEach(id=>{ const el=document.getElementById(id); if(el){ el.oninput=updateBedPreview; } });
+const bedInpro=document.getElementById('bed-inpro'); if(bedInpro) bedInpro.checked=f.inPro||false;
 openM('m-bureau-edit');
 }
 
@@ -2544,6 +2558,7 @@ data.folders[idx].section=document.getElementById('bed-section').value;
 data.folders[idx].icon=document.getElementById('bed-icon-val').value;
 data.folders[idx].c1=document.getElementById('bed-c1').value;
 data.folders[idx].c2=document.getElementById('bed-c2').value;
+data.folders[idx].inPro=document.getElementById('bed-inpro')?.checked||false;
 localStorage.setItem('aar_desk',JSON.stringify(data));
 closeM('m-bureau-edit');
 bureauRender();

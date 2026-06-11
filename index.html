@@ -1307,12 +1307,17 @@ const cat=CATEGORIES[catId]; if(!cat) return;
 const winId='cat-'+catId;
 if(openWins[winId]){ bringFront(openWins[winId]); return; }
 const ico=`<svg viewBox="0 0 16 16" fill="none"><path d="M1 5a1.5 1.5 0 0 1 1.5-1.5H6l2 2h6.5A1.5 1.5 0 0 1 16 7v6.5A1.5 1.5 0 0 1 14.5 15h-13A1.5 1.5 0 0 1 1 13.5z" fill="${cat.color}"/></svg>`;
-const body=`<div class="cat-grid">${cat.items.map(it=>`
+let items=[...cat.items];
+if(catId==='pro'){
+try{const desk=JSON.parse(localStorage.getItem('aar_desk')||'{}');
+(desk.folders||[]).filter(f=>f.inPro).forEach(f=>{if(!items.find(i=>i.id===f.id))items.push({id:f.id,label:f.label,c1:f.c1||'#0e5e7a',c2:f.c2||'#29B8D9'});});}catch(_){}
+}
+const body=`<div class="cat-grid">${items.map(it=>`
 <div class="cat-item" onclick="openFolder('${it.id}')">
 <div class="cat-item-ico">${folderSvg(it.c1,it.c2)}</div>
 <span class="cat-item-lbl">${it.label}</span>
 </div>`).join('')}</div>`;
-createWin(winId,cat.label,ico,body,Math.max(420,cat.items.length*160+60),220);
+createWin(winId,cat.label,ico,body,Math.max(420,items.length*160+60),220);
 }
 
 function openSitesFolder(){
