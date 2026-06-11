@@ -350,15 +350,6 @@
     ],
     "folders": [
       {
-        "id": "test",
-        "label": "TEST",
-        "action": "folder:test",
-        "icon": "grid",
-        "c1": "#0e5e7a",
-        "c2": "#29b8d9",
-        "section": "Portfolio"
-      },
-      {
         "id": "pro",
         "label": "Portfolio pro",
         "action": "category:pro",
