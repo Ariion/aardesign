@@ -312,6 +312,9 @@
       },
       "logo": {
         "legalMention": ""
+      },
+      "optimind": {
+        "legalMention": ""
       }
     },
     "sites": [
@@ -319,6 +322,23 @@
         "id": 1781099783574.4592,
         "src": "assets/procomsolution.jpg",
         "title": "procomsolution"
+      }
+    ],
+    "optimind": [
+      {
+        "id": 1781185970443.2332,
+        "src": "assets/CCAS-IDCP.png",
+        "title": "CCAS-IDCP"
+      },
+      {
+        "id": 1781185970443.9429,
+        "src": "assets/CCAS-IDCP2.png",
+        "title": "CCAS-IDCP2"
+      },
+      {
+        "id": 1781185970443.9868,
+        "src": "assets/Optimind.jpg",
+        "title": "Optimind"
       }
     ]
   },
