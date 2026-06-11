@@ -1379,7 +1379,15 @@ createWin(winId,'Sites internet',ico,body,440,340);
 
 function openFolder(fid){
 if(fid==='sites'){ openSitesFolder(); return; }
-const fd=FOLDERS[fid]; if(!fd) return;
+let fd=FOLDERS[fid];
+if(!fd){
+try{
+const desk=JSON.parse(localStorage.getItem('aar_desk')||'{}');
+const df=(desk.folders||[]).find(f=>f.id===fid);
+if(df) fd={label:df.label,color:df.c2||'#29B8D9'};
+}catch(_){}
+}
+if(!fd) return;
 const winId='folder-'+fid;
 if(openWins[winId]){ bringFront(openWins[winId]); return; }
 
