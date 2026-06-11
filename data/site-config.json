@@ -389,7 +389,14 @@
       }
     ]
   },
-  "aar_sec_hero": null,
+  "aar_sec_hero": {
+    "intro": "Anthony Armand",
+    "t1": "Directeur Artistique",
+    "t2": "Aardesign",
+    "t3": "Caen · Normandie · Remote",
+    "desc": "Designer pluridisciplinaire à l'intersection du digital painting, de l'illustration narrative et de la direction artistique. + de 9 ans d'expérience.",
+    "scroll": "aardesign.fr"
+  },
   "aar_sec_contact": null,
   "aar_sec_about": null,
   "aar_cv": {
