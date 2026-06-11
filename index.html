@@ -990,6 +990,20 @@ if(lines[1] && hero.t1) lines[1].textContent=(hero.t1||'')+(hero.t3?' · '+hero.
 }
 applyIdentity();
 
+// Track visit — once per session
+if(!sessionStorage.getItem('aar_tracked')){
+sessionStorage.setItem('aar_tracked','1');
+fetch('/api/track-visit',{
+method:'POST',
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({
+page:location.pathname||'/',
+referrer:document.referrer||'',
+ua:navigator.userAgent
+})
+}).catch(()=>{});
+}
+
 function buildContactChips(){
 const ct = JSON.parse(localStorage.getItem('aar_sec_contact')||'null');
 const email = ct?.email||'aardesign14@gmail.com';
