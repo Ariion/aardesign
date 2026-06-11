@@ -377,6 +377,16 @@
         "section": "Portfolio"
       },
       {
+        "id": "optimind",
+        "label": "Optimind",
+        "action": "folder:optimind",
+        "icon": "monitor",
+        "c1": "#d17000",
+        "c2": "#ff9b0f",
+        "section": "Portfolio",
+        "inPro": true
+      },
+      {
         "id": "sites",
         "label": "Sites internet",
         "action": "folder:sites",
