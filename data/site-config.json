@@ -19,26 +19,6 @@
         "title": "L'Aristocrate — Explorateur"
       },
       {
-        "id": 1781079428596.5745,
-        "src": "assets/aristocrate/casque.jpg",
-        "title": ""
-      },
-      {
-        "id": 1781079428596.347,
-        "src": "assets/aristocrate/explorateur.jpg",
-        "title": ""
-      },
-      {
-        "id": 1781079428596.855,
-        "src": "assets/aristocrate/nanti.jpg",
-        "title": ""
-      },
-      {
-        "id": 1781079428596.2517,
-        "src": "assets/aristocrate/veste.jpg",
-        "title": ""
-      },
-      {
         "id": 1781079428596.3486,
         "src": "assets/dark/blood.jpg",
         "title": ""
@@ -314,6 +294,9 @@
         "legalMention": ""
       },
       "optimind": {
+        "legalMention": ""
+      },
+      "arsene": {
         "legalMention": ""
       }
     },
