@@ -944,6 +944,10 @@ text-align:center;cursor:pointer;transition:all .15s;background:transparent;
 <input type="checkbox" id="pf-mention-chk" onchange="pfToggleMention(this.checked)">
 Mention légale
 </label>
+<label class="pf-mention-toggle" id="pf-employer-toggle" style="display:none">
+<input type="checkbox" id="pf-employer-chk" onchange="pfToggleEmployer(this.checked)">
+Mention employeur
+</label>
 <input type="text" id="pf-mention-inp" class="pf-mention-inp" placeholder='Ex: © Arsène Valentin — Réalisé dans le cadre de mon CDI' style="display:none" oninput="pfMentionChanged()">
 <button class="btn btn-out btn-xs" id="pf-mention-save" onclick="pfSaveMention()" style="display:none">💾 Enregistrer</button>
 </div>
@@ -2252,22 +2256,61 @@ function pfLoadMention(){
   const inp=document.getElementById('pf-mention-inp');
   const savBtn=document.getElementById('pf-mention-save');
   const toggle=document.getElementById('pf-mention-toggle');
+  const empToggle=document.getElementById('pf-employer-toggle');
+  const empChk=document.getElementById('pf-employer-chk');
   const has=!!(meta.legalMention);
+  const autoText=_pfCurrent?`Réalisé en tant que salarié pour ${pfLabelOf(_pfCurrent)} — droits d'utilisation détenus par l'entreprise.`:'';
+  const isEmployer=has&&meta.legalMention===autoText;
   chk.checked=has;
   inp.value=meta.legalMention||'';
   inp.style.display=has?'':'none';
   savBtn.style.display=has?'':'none';
   toggle.classList.toggle('active',has);
+  empToggle.style.display=has?'':'none';
+  empChk.checked=isEmployer;
+  if(isEmployer) inp.style.display='none';
+}
+function pfLabelOf(fid){
+  const portfolio=pfData();
+  const folder=Object.values(portfolio).find?.(()=>false)||null;
+  // cherche dans aar_desk
+  try{const desk=JSON.parse(localStorage.getItem('aar_desk')||'{}');
+  const f=(desk.folders||[]).find(f=>f.id===fid);
+  if(f) return f.label;}catch(_){}
+  // fallback: capitalise l'id
+  return fid.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
 }
 function pfToggleMention(on){
   const inp=document.getElementById('pf-mention-inp');
   const savBtn=document.getElementById('pf-mention-save');
   const toggle=document.getElementById('pf-mention-toggle');
+  const empToggle=document.getElementById('pf-employer-toggle');
+  const empChk=document.getElementById('pf-employer-chk');
   inp.style.display=on?'':'none';
   savBtn.style.display=on?'':'none';
   toggle.classList.toggle('active',on);
+  empToggle.style.display=on?'':'none';
+  empChk.checked=false;
   if(on) inp.focus();
-  else if(!on){ pfSetMeta(_pfCurrent,{legalMention:''}); }
+  else{ pfSetMeta(_pfCurrent,{legalMention:''}); }
+}
+function pfToggleEmployer(on){
+  const inp=document.getElementById('pf-mention-inp');
+  const savBtn=document.getElementById('pf-mention-save');
+  if(on){
+    const label=pfLabelOf(_pfCurrent);
+    const text=`Réalisé en tant que salarié pour ${label} — droits d'utilisation détenus par l'entreprise.`;
+    inp.value=text;
+    inp.style.display='none';
+    savBtn.style.display='';
+    pfSetMeta(_pfCurrent,{legalMention:text});
+    toast('✓ Mention employeur appliquée');
+  } else {
+    inp.value='';
+    inp.style.display='';
+    inp.focus();
+    pfSetMeta(_pfCurrent,{legalMention:''});
+  }
 }
 function pfMentionChanged(){
   const inp=document.getElementById('pf-mention-inp');
