@@ -1540,6 +1540,16 @@ ${folders.map(f=>`<div class="d-folder" onclick="${deskFolderAction(f.action)}">
 </div>`;
 }).join('');
 }
+;(function migrateDeskLabels(){
+  const fixes={'arsene':'Arsène Valentin'};
+  try{
+    const desk=JSON.parse(localStorage.getItem('aar_desk')||'null');
+    if(!desk||!desk.folders) return;
+    let changed=false;
+    desk.folders.forEach(f=>{if(fixes[f.id]&&f.label!==fixes[f.id]){f.label=fixes[f.id];changed=true;}});
+    if(changed) localStorage.setItem('aar_desk',JSON.stringify(desk));
+  }catch(_){}
+})();
 renderDesktopFolders();
 
 document.getElementById('admin-submit').addEventListener('click',async()=>{
