@@ -938,6 +938,11 @@ text-align:center;cursor:pointer;transition:all .15s;background:transparent;
 <div class="pf-ed-title" id="pf-ed-title">Dossier</div>
 <span id="pf-ed-count" style="font-size:.6rem;color:var(--mid);margin-left:auto"></span>
 </div>
+<div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.8rem">
+<label style="font-size:.6rem;font-weight:700;color:var(--mid);white-space:nowrap">Nom du dossier</label>
+<input type="text" id="pf-folder-name" class="inp" style="flex:1;height:30px;font-size:.72rem;padding:4px 10px" oninput="pfFolderNameChanged()">
+<button class="btn btn-out btn-xs" id="pf-folder-name-save" onclick="pfSaveFolderName()" style="display:none">💾</button>
+</div>
 
 <div class="pf-mention-card">
 <label class="pf-mention-toggle" id="pf-mention-toggle">
@@ -2090,7 +2095,7 @@ function getPfFolders(){
   });
   return [...PF_FOLDERS_BASE.map(f=>{
     const match=fromBureau.find(b=>b.id===f.id);
-    return {...f, label: match?match.label : (f.id==='arsene'?'Arsène':'Clopinette')};
+    return {...f, label: match?match.label : (f.id==='arsene'?'Arsène Valentin':'Clopinette')};
   }), ...fromBureau.filter(b=>!PF_FOLDERS_BASE.find(base=>base.id===b.id))];
 }
 let _pfCurrent=null;
@@ -2133,6 +2138,8 @@ document.getElementById('pf-list-view').style.display='none';
 document.getElementById('pf-editor-view').style.display='';
 document.getElementById('pf-ed-title').textContent=fd?fd.label:fid;
 document.getElementById('pf-url-form').style.display='none';
+const nameInp=document.getElementById('pf-folder-name');
+if(nameInp){ nameInp.value=fd?fd.label:fid; document.getElementById('pf-folder-name-save').style.display='none'; }
 pfLoadMention();
 pfRenderEditor();
 }
@@ -2142,6 +2149,28 @@ _pfCurrent=null;
 document.getElementById('pf-editor-view').style.display='none';
 document.getElementById('pf-list-view').style.display='';
 pfRender();
+}
+
+function pfFolderNameChanged(){
+  const inp=document.getElementById('pf-folder-name');
+  const btn=document.getElementById('pf-folder-name-save');
+  const folders=getPfFolders();
+  const fd=folders.find(f=>f.id===_pfCurrent);
+  btn.style.display=(inp.value.trim()&&inp.value.trim()!==(fd?fd.label:_pfCurrent))?'':'none';
+}
+
+function pfSaveFolderName(){
+  if(!_pfCurrent) return;
+  const newLabel=document.getElementById('pf-folder-name').value.trim();
+  if(!newLabel) return;
+  // mettre à jour dans aar_desk
+  const desk=bureauLoad();
+  const f=desk.folders.find(f=>f.id===_pfCurrent||(f.action&&f.action==='folder:'+_pfCurrent));
+  if(f){ f.label=newLabel; localStorage.setItem('aar_desk',JSON.stringify(desk)); }
+  document.getElementById('pf-ed-title').textContent=newLabel;
+  document.getElementById('pf-folder-name-save').style.display='none';
+  pfRender();
+  toast('✓ Dossier renommé en "'+newLabel+'"');
 }
 
 function pfRenderEditor(){
