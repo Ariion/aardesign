@@ -2167,10 +2167,16 @@ function pfSaveFolderName(){
   const desk=bureauLoad();
   const f=desk.folders.find(f=>f.id===_pfCurrent||(f.action&&f.action==='folder:'+_pfCurrent));
   if(f){ f.label=newLabel; localStorage.setItem('aar_desk',JSON.stringify(desk)); }
+  // mettre à jour la mention légale si elle utilisait l'ancien nom
+  const meta=pfGetMeta(_pfCurrent);
+  if(meta.legalMention&&meta.legalMention.startsWith('Réalisé en tant que salarié pour ')){
+    const newMention=`Réalisé en tant que salarié pour ${newLabel} — droits d'utilisation détenus par l'entreprise.`;
+    pfSetMeta(_pfCurrent,{legalMention:newMention});
+  }
   document.getElementById('pf-ed-title').textContent=newLabel;
   document.getElementById('pf-folder-name-save').style.display='none';
   pfRender();
-  toast('✓ Dossier renommé en "'+newLabel+'"');
+  toast('✓ Dossier et mention renommés en "'+newLabel+'"');
 }
 
 function pfRenderEditor(){
