@@ -385,11 +385,19 @@ border:1px solid transparent;transition:background .15s,border-color .15s,transf
 .cat-item-lbl{font-size:.68rem;font-weight:600;color:var(--ink);text-align:center;line-height:1.3}
 
 #desk-identity{
-text-align:center;margin-bottom:32px;pointer-events:none;
+text-align:center;margin-bottom:36px;pointer-events:none;
+display:flex;flex-direction:column;align-items:center;gap:0;
 }
-#desk-identity div:first-child{font-size:.85rem;font-weight:800;letter-spacing:.14em;color:rgba(41,184,217,.85);text-transform:uppercase}
-[data-theme="light"] #desk-identity div:first-child{color:var(--navy)}
-#desk-identity div:last-child{font-size:.7rem;color:var(--mid);margin-top:6px;letter-spacing:.04em}
+#desk-id-time{
+font-size:clamp(3.5rem,8vw,5.5rem);font-weight:300;letter-spacing:-.03em;
+color:var(--ink);line-height:1;margin-bottom:.3rem;
+text-shadow:0 0 40px rgba(41,184,217,.15);
+}
+[data-theme="light"] #desk-id-time{text-shadow:none}
+#desk-id-date{font-size:.88rem;font-weight:400;color:var(--mid);letter-spacing:.03em;margin-bottom:1.8rem}
+#desk-id-name{font-size:1.1rem;font-weight:800;letter-spacing:.14em;color:var(--ink);text-transform:uppercase}
+[data-theme="light"] #desk-id-name{color:var(--navy)}
+#desk-id-role{font-size:.75rem;font-weight:400;color:var(--mid);margin-top:.4rem;letter-spacing:.05em}
 
 .d-folder{
 display:flex;flex-direction:column;align-items:center;gap:6px;
@@ -657,7 +665,7 @@ background:var(--cyan);color:#fff;font:700 .82rem 'Montserrat',sans-serif;cursor
 
 <div id="wall-art"></div>
 <div id="wall-diag"></div>
-<div id="lockscreen">
+<div id="lockscreen" style="display:none">
 <div id="ls-logo"><img src="assets/Logo-Aardesign-Long.png" alt="aardesign" style="width:clamp(220px,36vw,480px)"></div>
 <div id="ls-time">00:00</div>
 <div id="ls-date">—</div>
@@ -755,8 +763,10 @@ Mode clair
 
 
 <div id="desk-identity">
-<div>ANTHONY ARMAND</div>
-<div>Directeur Artistique · Caen · Normandie · Remote · Aardesign</div>
+<div id="desk-id-time">00:00</div>
+<div id="desk-id-date">—</div>
+<div id="desk-id-name">Anthony Armand</div>
+<div id="desk-id-role">Directeur Artistique · Aardesign</div>
 </div>
 
 
@@ -838,14 +848,21 @@ function lsClock(){
 const n=new Date();
 const hh=String(n.getHours()).padStart(2,'0');
 const mm=String(n.getMinutes()).padStart(2,'0');
-document.getElementById('ls-time').textContent=hh+':'+mm;
-document.getElementById('tb-clock').textContent=hh+':'+mm;
+const time=hh+':'+mm;
+document.getElementById('ls-time').textContent=time;
+document.getElementById('tb-clock').textContent=time;
+const el=document.getElementById('desk-id-time'); if(el) el.textContent=time;
 const days=['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
 const months=['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
-document.getElementById('ls-date').textContent=`${days[n.getDay()]} ${n.getDate()} ${months[n.getMonth()]} ${n.getFullYear()}`;
+const dateStr=`${days[n.getDay()]} ${n.getDate()} ${months[n.getMonth()]} ${n.getFullYear()}`;
+document.getElementById('ls-date').textContent=dateStr;
+const el2=document.getElementById('desk-id-date'); if(el2) el2.textContent=dateStr;
 }
 lsClock(); setInterval(lsClock,10000);
 
+// lockscreen désactivé — affiché directement
+document.getElementById('theme-float').style.display='flex';
+/* lockscreen click handler conservé pour réactivation future
 document.getElementById('lockscreen').addEventListener('click',()=>{
 const ls=document.getElementById('lockscreen');
 ls.classList.add('unlocking');
@@ -854,6 +871,7 @@ ls.style.display='none';
 document.getElementById('theme-float').style.display='flex';
 },620);
 });
+*/
 
 function toggleTheme(){
 const html=document.documentElement;
@@ -1003,14 +1021,12 @@ const hero = JSON.parse(localStorage.getItem('aar_sec_hero')||'null');
 if(hero){
 const nameEl=document.getElementById('ls-name');
 const roleEl=document.getElementById('ls-role');
-const badgeEl=document.getElementById('desk-identity');
 if(nameEl && hero.intro) nameEl.textContent=hero.intro;
 if(roleEl && hero.t1) roleEl.textContent=(hero.t1||'')+(hero.t2?' · '+hero.t2:'');
-if(badgeEl){
-const lines=badgeEl.querySelectorAll('div');
-if(lines[0] && hero.intro) lines[0].textContent=hero.intro.toUpperCase();
-if(lines[1] && hero.t1) lines[1].textContent=(hero.t1||'')+(hero.t3?' · '+hero.t3:'')+(hero.t2?' · '+hero.t2:'');
-}
+const deskName=document.getElementById('desk-id-name');
+const deskRole=document.getElementById('desk-id-role');
+if(deskName && hero.intro) deskName.textContent=hero.intro.toUpperCase();
+if(deskRole && hero.t1) deskRole.textContent=(hero.t1||'')+(hero.t2?' · '+hero.t2:'');
 }
 }
 applyIdentity();
