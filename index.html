@@ -362,6 +362,35 @@ color:var(--cyan);opacity:.55;margin-bottom:4px;
 [data-theme="light"] .desk-section-label{opacity:.9;color:var(--navy)}
 .desk-section-label.sec-perso{color:var(--mid)}
 [data-theme="light"] .desk-section-label.sec-perso{color:var(--mid);opacity:.9}
+/* ── Barre des tâches (fenêtres minimisées) ── */
+#taskbar{
+position:fixed;bottom:102px;left:50%;transform:translateX(-50%);
+z-index:89;display:flex;flex-direction:row;gap:6px;flex-wrap:wrap;justify-content:center;
+max-width:90vw;pointer-events:none;
+}
+#taskbar:empty{display:none}
+.tb-win-pill{
+display:flex;align-items:center;gap:8px;padding:6px 10px 6px 8px;
+background:rgba(10,15,35,.82);
+backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);
+border:1px solid rgba(255,255,255,.12);border-radius:10px;
+box-shadow:0 4px 20px rgba(0,0,0,.4);
+cursor:pointer;pointer-events:all;
+transition:background .15s,transform .15s;
+animation:pillIn .2s cubic-bezier(.34,1.56,.64,1) both;
+}
+.tb-win-pill:hover{background:rgba(30,40,70,.9);transform:translateY(-2px)}
+[data-theme="light"] .tb-win-pill{background:rgba(255,255,255,.88);border-color:rgba(27,53,96,.12)}
+.tb-pill-ico{width:14px;height:14px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.tb-pill-name{font-size:.62rem;font-weight:600;color:rgba(255,255,255,.85);white-space:nowrap;max-width:140px;overflow:hidden;text-overflow:ellipsis}
+[data-theme="light"] .tb-pill-name{color:var(--navy)}
+.tb-pill-restore{width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,.12);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s}
+.tb-pill-restore:hover{background:rgba(41,184,217,.4)}
+.tb-pill-restore svg{width:8px;height:8px;stroke:rgba(255,255,255,.8);fill:none}
+[data-theme="light"] .tb-pill-restore svg{stroke:var(--navy)}
+@keyframes pillIn{from{opacity:0;transform:translateY(12px) scale(.85)}to{opacity:1;transform:none}}
+@keyframes pillOut{from{opacity:1}to{opacity:0;transform:translateY(8px) scale(.9)}}
+
 /* ── Dossiers bureau ── */
 .desk-folders-row{display:flex;gap:24px;justify-content:center;flex-wrap:wrap}
 .d-folder{
@@ -773,6 +802,7 @@ Mode clair
 </div>
 </div>
 
+<div id="taskbar"></div>
 
 <div id="desk-identity">
 <div id="desk-id-time">00:00</div>
@@ -993,6 +1023,7 @@ maxed=false;
 }
 });
 const closeFn=()=>{
+taskbarRemove(id);
 win.style.animation='winclose .15s ease both';
 setTimeout(()=>{ win.remove(); delete openWins[id]; markTb(id,false); if(Object.keys(openWins).length===0) document.getElementById('mob-home').style.display='none'; },150);
 };
@@ -1001,7 +1032,7 @@ win.querySelector('.win-btn.close-mobile').addEventListener('click',closeFn);
 win.querySelector('.win-btn.min').addEventListener('click',()=>{
   win.style.transition='transform .2s cubic-bezier(.4,0,1,1),opacity .2s';
   win.style.transform='scale(.85)';win.style.opacity='0';
-  setTimeout(()=>{ win.style.display='none'; win.style.transform=''; win.style.opacity=''; win.style.transition=''; markTb(id,true,'minimized'); },200);
+  setTimeout(()=>{ win.style.display='none'; win.style.transform=''; win.style.opacity=''; win.style.transition=''; taskbarAdd(id); },200);
 });
 win.querySelectorAll('[data-copy]').forEach(b=>b.addEventListener('click',async()=>{
 try{ await navigator.clipboard.writeText(b.dataset.copy); }catch(_){}
@@ -1017,14 +1048,40 @@ document.querySelectorAll(`.tb-app-pill[data-win="${id}"]`).forEach(b=>{
   b.dataset.winState=state||'open';
 });
 }
+
+function taskbarAdd(id){
+  const win=openWins[id]; if(!win) return;
+  const tb=document.getElementById('taskbar'); if(!tb) return;
+  if(tb.querySelector(`[data-tbwin="${id}"]`)) return;
+  const titleEl=win.querySelector('.win-title');
+  const iconEl=win.querySelector('.win-icon');
+  const name=titleEl?titleEl.textContent.trim().split(' ').slice(0,3).join(' '):'Fenêtre';
+  const iconHtml=iconEl?iconEl.innerHTML:'';
+  const pill=document.createElement('div');
+  pill.className='tb-win-pill';
+  pill.dataset.tbwin=id;
+  pill.innerHTML=`<div class="tb-pill-ico">${iconHtml}</div><span class="tb-pill-name">${name}</span><button class="tb-pill-restore" title="Restaurer"><svg viewBox="0 0 10 10" stroke-width="1.5"><polyline points="2,7 5,4 8,7"/></svg></button>`;
+  pill.addEventListener('click',()=>restoreWin(id));
+  pill.querySelector('.tb-pill-restore').addEventListener('click',e=>{e.stopPropagation();restoreWin(id);});
+  tb.appendChild(pill);
+}
+
+function taskbarRemove(id){
+  const pill=document.getElementById('taskbar')?.querySelector(`[data-tbwin="${id}"]`);
+  if(!pill) return;
+  pill.style.animation='pillOut .15s ease both';
+  setTimeout(()=>pill.remove(),150);
+}
+
 function restoreWin(id){
   const win=openWins[id]; if(!win) return;
+  taskbarRemove(id);
   if(win.style.display==='none'){
     win.style.display='';
-    win.style.transition='transform .2s cubic-bezier(.34,1.56,.64,1),opacity .2s';
+    win.style.transition='transform .22s cubic-bezier(.34,1.56,.64,1),opacity .18s';
     win.style.transform='scale(.85)';win.style.opacity='0';
     requestAnimationFrame(()=>{ win.style.transform='scale(1)';win.style.opacity='1'; });
-    setTimeout(()=>{ win.style.transition=''; bringFront(win); markTb(id,true,'open'); },200);
+    setTimeout(()=>{ win.style.transition=''; bringFront(win); },220);
   } else { bringFront(win); }
 }
 
