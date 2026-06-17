@@ -364,8 +364,8 @@ color:var(--cyan);opacity:.55;margin-bottom:4px;
 [data-theme="light"] .desk-section-label.sec-perso{color:var(--mid);opacity:.9}
 /* ── Barre des tâches (fenêtres minimisées) ── */
 #taskbar{
-position:fixed;bottom:102px;left:50%;transform:translateX(-50%);
-z-index:89;display:flex;flex-direction:row;gap:6px;flex-wrap:wrap;justify-content:center;
+position:fixed;bottom:118px;left:50%;transform:translateX(-50%);
+z-index:95;display:flex;flex-direction:row;gap:6px;flex-wrap:wrap;justify-content:center;
 max-width:90vw;pointer-events:none;
 }
 #taskbar:empty{display:none}
@@ -984,7 +984,7 @@ h.addEventListener('pointerup',()=>rs=false);
 }
 
 function createWin(id,title,iconSvg,bodyHtml,w=440,h=480){
-if(openWins[id]){ bringFront(openWins[id]); return; }
+if(openWins[id]){ restoreWin(id); return; }
 const win=document.createElement('div');
 win.className='win';
 win.style.width=w+'px'; win.style.height=h+'px';
@@ -1419,7 +1419,7 @@ return `<div style="width:64px;height:64px;border-radius:16px;background:linear-
 function openCategory(catId){
 const cat=CATEGORIES[catId]; if(!cat) return;
 const winId='cat-'+catId;
-if(openWins[winId]){ bringFront(openWins[winId]); return; }
+if(openWins[winId]){ restoreWin(winId); return; }
 const ico=`<svg viewBox="0 0 16 16" fill="none"><path d="M1 5a1.5 1.5 0 0 1 1.5-1.5H6l2 2h6.5A1.5 1.5 0 0 1 16 7v6.5A1.5 1.5 0 0 1 14.5 15h-13A1.5 1.5 0 0 1 1 13.5z" fill="${cat.color}"/></svg>`;
 let items=[...cat.items];
 if(catId==='pro'){
@@ -1436,7 +1436,7 @@ createWin(winId,cat.label,ico,body,Math.max(420,items.length*160+60),220);
 
 function openSitesFolder(){
 const winId='folder-sites';
-if(openWins[winId]){ bringFront(openWins[winId]); return; }
+if(openWins[winId]){ restoreWin(winId); return; }
 const ico=`<svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#60a5fa" stroke-width="1.4"/><path d="M8 1c-2 2-3 4-3 7s1 5 3 7M8 1c2 2 3 4 3 7s-1 5-3 7M1 8h14" stroke="#60a5fa" stroke-width="1.2"/></svg>`;
 const body=`<style>
 .sc{position:relative;border-radius:10px;overflow:hidden;cursor:pointer;border:1px solid var(--line)}
@@ -1503,7 +1503,7 @@ if(df) fd={label:df.label,color:df.c2||'#29B8D9'};
 }
 if(!fd) return;
 const winId='folder-'+fid;
-if(openWins[winId]){ bringFront(openWins[winId]); return; }
+if(openWins[winId]){ restoreWin(winId); return; }
 
 const portfolio=JSON.parse(localStorage.getItem('aar_portfolio')||'{}');
 const imgs=(portfolio[fid]&&portfolio[fid].length) ? portfolio[fid] : (DEFAULT_PORTFOLIO[fid]||[]);
