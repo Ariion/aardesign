@@ -363,33 +363,33 @@ color:var(--cyan);opacity:.55;margin-bottom:4px;
 .desk-section-label.sec-perso{color:var(--mid)}
 [data-theme="light"] .desk-section-label.sec-perso{color:var(--mid);opacity:.9}
 /* ── Barre des tâches (fenêtres minimisées) ── */
-#taskbar{
-position:fixed;bottom:118px;left:50%;transform:translateX(-50%);
-z-index:95;display:flex;flex-direction:row;gap:6px;flex-wrap:wrap;justify-content:center;
-max-width:90vw;pointer-events:none;
-}
-#taskbar:empty{display:none}
+#dock-minimized{display:none;align-items:center;gap:6px}
+#dock-minimized.has-items{display:flex}
+.dock-sep{width:1px;height:36px;background:rgba(255,255,255,.15);margin:0 4px;flex-shrink:0}
+[data-theme="light"] .dock-sep{background:rgba(27,53,96,.15)}
 .tb-win-pill{
-display:flex;align-items:center;gap:8px;padding:6px 10px 6px 8px;
-background:rgba(10,15,35,.82);
-backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);
-border:1px solid rgba(255,255,255,.12);border-radius:10px;
-box-shadow:0 4px 20px rgba(0,0,0,.4);
-cursor:pointer;pointer-events:all;
-transition:background .15s,transform .15s;
+display:flex;flex-direction:column;align-items:center;gap:4px;
+width:58px;padding:6px 4px 4px;border-radius:12px;cursor:pointer;
+background:none;border:none;
+transition:background .15s,transform .18s cubic-bezier(.34,1.56,.64,1);
 animation:pillIn .2s cubic-bezier(.34,1.56,.64,1) both;
 }
-.tb-win-pill:hover{background:rgba(30,40,70,.9);transform:translateY(-2px)}
-[data-theme="light"] .tb-win-pill{background:rgba(255,255,255,.88);border-color:rgba(27,53,96,.12)}
-.tb-pill-ico{width:14px;height:14px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
-.tb-pill-name{font-size:.62rem;font-weight:600;color:rgba(255,255,255,.85);white-space:nowrap;max-width:140px;overflow:hidden;text-overflow:ellipsis}
-[data-theme="light"] .tb-pill-name{color:var(--navy)}
-.tb-pill-restore{width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,.12);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s}
-.tb-pill-restore:hover{background:rgba(41,184,217,.4)}
-.tb-pill-restore svg{width:8px;height:8px;stroke:rgba(255,255,255,.8);fill:none}
-[data-theme="light"] .tb-pill-restore svg{stroke:var(--navy)}
-@keyframes pillIn{from{opacity:0;transform:translateY(12px) scale(.85)}to{opacity:1;transform:none}}
-@keyframes pillOut{from{opacity:1}to{opacity:0;transform:translateY(8px) scale(.9)}}
+.tb-win-pill:hover{background:rgba(255,255,255,.08);transform:translateY(-8px)}
+[data-theme="light"] .tb-win-pill:hover{background:rgba(27,53,96,.08)}
+.tb-pill-face{
+width:44px;height:44px;border-radius:12px;
+background:rgba(255,255,255,.1);
+border:1px solid rgba(255,255,255,.12);
+display:flex;align-items:center;justify-content:center;
+box-shadow:0 2px 8px rgba(0,0,0,.3);
+position:relative;
+}
+[data-theme="light"] .tb-pill-face{background:rgba(27,53,96,.08);border-color:rgba(27,53,96,.1)}
+.tb-pill-face::after{content:'';position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--cyan)}
+.tb-pill-ico{width:20px;height:20px;display:flex;align-items:center;justify-content:center}
+.tb-pill-name{font-size:.5rem;font-weight:600;color:var(--ink);text-align:center;opacity:.7;white-space:nowrap;max-width:56px;overflow:hidden;text-overflow:ellipsis}
+@keyframes pillIn{from{opacity:0;transform:translateY(10px) scale(.8)}to{opacity:1;transform:none}}
+@keyframes pillOut{from{opacity:1;transform:none}to{opacity:0;transform:translateY(6px) scale(.85)}}
 
 /* ── Dossiers bureau ── */
 .desk-folders-row{display:flex;gap:24px;justify-content:center;flex-wrap:wrap}
@@ -800,9 +800,9 @@ Mode clair
 </div>
 <span class="d-icon-label">À propos</span>
 </div>
+<div class="dock-sep" id="dock-sep" style="display:none"></div>
+<div id="dock-minimized"></div>
 </div>
-
-<div id="taskbar"></div>
 
 <div id="desk-identity">
 <div id="desk-id-time">00:00</div>
@@ -1051,26 +1051,34 @@ document.querySelectorAll(`.tb-app-pill[data-win="${id}"]`).forEach(b=>{
 
 function taskbarAdd(id){
   const win=openWins[id]; if(!win) return;
-  const tb=document.getElementById('taskbar'); if(!tb) return;
+  const tb=document.getElementById('dock-minimized'); if(!tb) return;
   if(tb.querySelector(`[data-tbwin="${id}"]`)) return;
   const titleEl=win.querySelector('.win-title');
   const iconEl=win.querySelector('.win-icon');
-  const name=titleEl?titleEl.textContent.trim().split(' ').slice(0,3).join(' '):'Fenêtre';
+  const name=titleEl?titleEl.textContent.trim().replace(/\s+\d+\s+image.*/,'').trim():'';
   const iconHtml=iconEl?iconEl.innerHTML:'';
   const pill=document.createElement('div');
   pill.className='tb-win-pill';
   pill.dataset.tbwin=id;
-  pill.innerHTML=`<div class="tb-pill-ico">${iconHtml}</div><span class="tb-pill-name">${name}</span><button class="tb-pill-restore" title="Restaurer"><svg viewBox="0 0 10 10" stroke-width="1.5"><polyline points="2,7 5,4 8,7"/></svg></button>`;
+  pill.innerHTML=`<div class="tb-pill-face"><div class="tb-pill-ico">${iconHtml}</div></div><span class="tb-pill-name">${name}</span>`;
   pill.addEventListener('click',()=>restoreWin(id));
-  pill.querySelector('.tb-pill-restore').addEventListener('click',e=>{e.stopPropagation();restoreWin(id);});
   tb.appendChild(pill);
+  tb.classList.add('has-items');
+  document.getElementById('dock-sep').style.display='';
 }
 
 function taskbarRemove(id){
-  const pill=document.getElementById('taskbar')?.querySelector(`[data-tbwin="${id}"]`);
+  const tb=document.getElementById('dock-minimized');
+  const pill=tb?.querySelector(`[data-tbwin="${id}"]`);
   if(!pill) return;
   pill.style.animation='pillOut .15s ease both';
-  setTimeout(()=>pill.remove(),150);
+  setTimeout(()=>{
+    pill.remove();
+    if(!tb.querySelector('.tb-win-pill')){
+      tb.classList.remove('has-items');
+      document.getElementById('dock-sep').style.display='none';
+    }
+  },150);
 }
 
 function restoreWin(id){
