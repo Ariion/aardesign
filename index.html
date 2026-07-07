@@ -1108,7 +1108,35 @@ if(deskRole && hero.t1) deskRole.textContent=(hero.t1||'')+(hero.t2?' · '+hero.
 }
 applyIdentity();
 
-// Track visit — once per session
+// ── Analytics de session ──
+const aarSession={
+  start:Date.now(),
+  actions:[],
+  log(type,label){
+    this.actions.push({type,label,t:Math.round((Date.now()-this.start)/1000)});
+  },
+  sent:false,
+  sendSummary(){
+    if(this.sent) return;
+    if(!this.actions.length) return; // rien fait → pas de récap
+    this.sent=true;
+    const durationS=Math.round((Date.now()-this.start)/1000);
+    const payload={
+      type:'summary',
+      duration:durationS,
+      actions:this.actions,
+      page:location.pathname||'/'
+    };
+    try{
+      navigator.sendBeacon('/api/track-visit',new Blob([JSON.stringify(payload)],{type:'application/json'}));
+    }catch(_){
+      fetch('/api/track-visit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),keepalive:true}).catch(()=>{});
+    }
+  }
+};
+function aarLog(type,label){ try{ aarSession.log(type,label); }catch(_){} }
+
+// Track visit — once per session (arrivée)
 if(!sessionStorage.getItem('aar_tracked')){
 sessionStorage.setItem('aar_tracked','1');
 fetch('/api/track-visit',{
@@ -1121,6 +1149,27 @@ ua:navigator.userAgent
 })
 }).catch(()=>{});
 }
+
+// Clics importants (email, tél, réseaux, CV)
+document.addEventListener('click',(e)=>{
+  const a=e.target.closest('a,button'); if(!a) return;
+  const href=a.getAttribute('href')||'';
+  if(href.startsWith('mailto:')) aarLog('clic','📧 Email');
+  else if(href.startsWith('tel:')) aarLog('clic','📞 Téléphone');
+  else if(/instagram\.com/i.test(href)) aarLog('clic','📷 Instagram');
+  else if(/behance\.net/i.test(href)) aarLog('clic','🎨 Behance');
+  else if(/linkedin\.com/i.test(href)) aarLog('clic','💼 LinkedIn');
+  else if(/\.pdf($|\?)/i.test(href)||/cv/i.test(a.textContent||'')&&/télécharg|download/i.test(a.textContent||'')) aarLog('clic','📄 CV téléchargé');
+  else if(a.dataset&&a.dataset.copy){
+    const v=a.dataset.copy;
+    aarLog('clic',/@/.test(v)?'📋 Email copié':/^[\d +]/.test(v)?'📋 Tél copié':'📋 Copié');
+  }
+},true);
+
+// Récap de session au départ
+document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='hidden') aarSession.sendSummary(); });
+window.addEventListener('pagehide',()=>aarSession.sendSummary());
+
 
 function buildContactChips(){
 const ct = JSON.parse(localStorage.getItem('aar_sec_contact')||'null');
@@ -1262,6 +1311,7 @@ function openApp(id){
 closeTbMenu();
 if(id==='admin'){ document.getElementById('win-admin-overlay').style.display='flex'; return; }
 if(openWins[id]){ restoreWin(id); return; }
+aarLog('app',id);
 
 const icoAtelier=`<svg viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1" fill="#29B8D9"/><rect x="9" y="1" width="6" height="6" rx="1" fill="#1B3560"/><rect x="1" y="9" width="6" height="6" rx="1" fill="#1B3560"/><rect x="9" y="9" width="6" height="6" rx="1" fill="#29B8D9"/></svg>`;
 const icoCV=`<svg viewBox="0 0 16 16" fill="none"><rect x="2" y="1" width="12" height="14" rx="1.5" stroke="#30D158" stroke-width="1.4"/><path d="M5 5h6M5 8h6M5 11h4" stroke="#30D158" stroke-width="1.4" stroke-linecap="round"/></svg>`;
@@ -1426,6 +1476,7 @@ return `<div style="width:64px;height:64px;border-radius:16px;background:linear-
 
 function openCategory(catId){
 const cat=CATEGORIES[catId]; if(!cat) return;
+aarLog('catégorie',cat.label||catId);
 const winId='cat-'+catId;
 if(openWins[winId]){ restoreWin(winId); return; }
 const ico=`<svg viewBox="0 0 16 16" fill="none"><path d="M1 5a1.5 1.5 0 0 1 1.5-1.5H6l2 2h6.5A1.5 1.5 0 0 1 16 7v6.5A1.5 1.5 0 0 1 14.5 15h-13A1.5 1.5 0 0 1 1 13.5z" fill="${cat.color}"/></svg>`;
@@ -1500,7 +1551,7 @@ createWin(winId,'Sites internet',ico,body,440,340);
 }
 
 function openFolder(fid){
-if(fid==='sites'){ openSitesFolder(); return; }
+if(fid==='sites'){ aarLog('dossier','Sites internet'); openSitesFolder(); return; }
 let fd=FOLDERS[fid];
 if(!fd){
 try{
@@ -1510,6 +1561,7 @@ if(df) fd={label:df.label,color:df.c2||'#29B8D9'};
 }catch(_){}
 }
 if(!fd) return;
+aarLog('dossier',fd.label||fid);
 const winId='folder-'+fid;
 if(openWins[winId]){ restoreWin(winId); return; }
 
@@ -1544,6 +1596,7 @@ openWins[winId].querySelector('.win-body').style.padding='0';
 
 function openLightbox(imgs,startIdx,isLogo=false){
 let idx=startIdx;
+try{const im=imgs[startIdx]; aarLog('image',(im&&(im.title||im.src.split('/').pop()))||'image');}catch(_){}
 document.getElementById('w-lightbox')?.remove();
 const lb=document.createElement('div');
 lb.id='w-lightbox';
