@@ -5,8 +5,9 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const key = process.env.ANTHROPIC_API_KEY;
-  if (!key) return res.status(200).json({ error: 'Clé API manquante (ANTHROPIC_API_KEY sur Vercel).' });
+  // Clé Google Gemini (gratuite) — aistudio.google.com/apikey
+  const key = process.env.GEMINI_API_KEY;
+  if (!key) return res.status(200).json({ error: 'Clé API manquante (GEMINI_API_KEY sur Vercel).' });
 
   let body = req.body || {};
   if (typeof body === 'string') { try { body = JSON.parse(body); } catch (_) { body = {}; } }
@@ -30,7 +31,7 @@ ${facts}
 
 Rédige, à la première personne (« je »), un ton professionnel, concret et sobre — pas de superlatifs creux, pas de jargon marketing. Textes courts (2 à 4 phrases chacun). En français.
 
-Réponds UNIQUEMENT avec un objet JSON valide, sans texte autour, de cette forme exacte :
+Réponds UNIQUEMENT avec un objet JSON valide, sans texte autour ni balises Markdown, de cette forme exacte :
 {"context":"...","objective":"...","approach":"...","result":"..."}
 
 - context : le contexte / le brief / le besoin du client.
@@ -39,24 +40,20 @@ Réponds UNIQUEMENT avec un objet JSON valide, sans texte autour, de cette forme
 - result : le rendu final et son impact (reste factuel ; si rien de mesurable, décris le résultat visuel).`;
 
   try {
-    const r = await fetch('https://api.anthropic.com/v1/messages', {
+    const url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + encodeURIComponent(key);
+    const r = await fetch(url, {
       method: 'POST',
-      headers: {
-        'x-api-key': key,
-        'anthropic-version': '2023-06-01',
-        'content-type': 'application/json'
-      },
+      headers: { 'content-type': 'application/json' },
       body: JSON.stringify({
-        model: 'claude-sonnet-5',
-        max_tokens: 1024,
-        messages: [{ role: 'user', content: prompt }]
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { temperature: 0.7, maxOutputTokens: 1024, responseMimeType: 'application/json' }
       })
     });
     const data = await r.json();
-    if (!r.ok) return res.status(200).json({ error: data?.error?.message || 'Erreur API Claude.' });
+    if (!r.ok) return res.status(200).json({ error: data?.error?.message || 'Erreur API Gemini.' });
 
-    let text = (data.content || []).map(b => b.text || '').join('').trim();
-    // isole le JSON même si le modèle a ajouté du texte
+    let text = (((data.candidates || [])[0] || {}).content || {}).parts;
+    text = Array.isArray(text) ? text.map(p => p.text || '').join('').trim() : '';
     const m = text.match(/\{[\s\S]*\}/);
     if (m) text = m[0];
     let out;
