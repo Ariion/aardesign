@@ -414,6 +414,31 @@ text-align:center;cursor:pointer;transition:all .15s;background:transparent;
 .pf-mention-inp{flex:1;min-width:200px;background:var(--bg);border:1px solid var(--line);border-radius:6px;color:var(--ink);padding:.45rem .75rem;font-family:'Montserrat',sans-serif;font-size:.72rem;outline:none;transition:border-color .15s;}
 .pf-mention-inp:focus{border-color:var(--cyan);}
 
+/* ── Projets ── */
+.pf-proj-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.7rem;margin-top:1rem;}
+.pf-proj-card{background:var(--bg2);border:1px solid var(--line);border-radius:9px;overflow:hidden;cursor:pointer;transition:border-color .15s,transform .15s;position:relative;}
+.pf-proj-card:hover{border-color:var(--cyan);transform:translateY(-2px);}
+.pf-proj-cover{height:110px;background:var(--bg);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.pf-proj-cover img{width:100%;height:100%;object-fit:cover;display:block;}
+.pf-proj-cover .noimg{font-size:1.6rem;opacity:.3;}
+.pf-proj-card-body{padding:.6rem .75rem .7rem;}
+.pf-proj-card-title{font-size:.78rem;font-weight:700;color:var(--ink);line-height:1.2;}
+.pf-proj-card-meta{font-size:.62rem;color:var(--mid);margin-top:2px;}
+.pf-proj-card-imgs{position:absolute;top:6px;right:6px;background:rgba(0,0,0,.6);color:#fff;font-size:.56rem;font-weight:700;padding:2px 7px;border-radius:20px;}
+.pf-proj-del{position:absolute;top:6px;left:6px;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,.6);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.7rem;opacity:0;transition:opacity .15s;z-index:3;}
+.pf-proj-card:hover .pf-proj-del{opacity:1;}
+.pf-proj-new{background:none;border:1.5px dashed var(--line2,rgba(255,255,255,.18));border-radius:9px;color:var(--cyan);font-weight:700;font-size:.78rem;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.3rem;min-height:170px;transition:border-color .15s,background .15s;font-family:'Montserrat',sans-serif;}
+.pf-proj-new:hover{border-color:var(--cyan);background:rgba(41,184,217,.05);}
+.pf-proj-new span{font-size:1.6rem;}
+.pf-field{margin-bottom:.75rem;}
+.pf-field label{display:block;font-size:.58rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mid);margin-bottom:.3rem;}
+.pf-field input,.pf-field textarea{width:100%;background:var(--bg2);border:1px solid var(--line);border-radius:6px;color:var(--ink);padding:.5rem .7rem;font-family:'Montserrat',sans-serif;font-size:.74rem;outline:none;transition:border-color .15s;resize:vertical;}
+.pf-field input:focus,.pf-field textarea:focus{border-color:var(--cyan);}
+.pf-field textarea{min-height:64px;line-height:1.5;}
+.pf-field-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.6rem;}
+@media(max-width:600px){.pf-field-row{grid-template-columns:1fr;}}
+.pf-proj-ed-head{display:flex;align-items:center;gap:.6rem;margin-bottom:1rem;padding-bottom:.7rem;border-bottom:1px solid var(--line);}
+
 .pf-assets-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:.4rem;max-height:340px;overflow-y:auto;padding:2px;}
 .pf-asset-item{position:relative;aspect-ratio:1;cursor:pointer;border:2px solid transparent;border-radius:5px;overflow:hidden;transition:border-color .15s;background:var(--bg2);}
 .pf-asset-item img{width:100%;height:100%;object-fit:cover;display:block;}
@@ -944,6 +969,30 @@ text-align:center;cursor:pointer;transition:all .15s;background:transparent;
 <button class="btn btn-out btn-xs" id="pf-folder-name-save" onclick="pfSaveFolderName()" style="display:none">💾</button>
 </div>
 
+<!-- LISTE DES PROJETS -->
+<div id="pf-proj-list-view">
+<div class="pf-proj-list" id="pf-projects"></div>
+</div>
+
+<!-- ÉDITEUR DE PROJET -->
+<div id="pf-proj-editor" style="display:none">
+<div class="pf-proj-ed-head">
+<button class="pf-ed-back" onclick="pfProjectBack()">← Tous les projets</button>
+<div class="pf-ed-title" id="pf-proj-ed-title" style="font-size:.8rem"></div>
+</div>
+
+<div class="pf-field"><label>Titre du projet</label><input type="text" id="pfp-title" oninput="pfProjField('title',this.value)" placeholder="Ex : Les Voyages d'Arsène"></div>
+<div class="pf-field-row">
+<div class="pf-field"><label>Client</label><input type="text" id="pfp-client" oninput="pfProjField('client',this.value)" placeholder="Arsène Valentin"></div>
+<div class="pf-field"><label>Année</label><input type="text" id="pfp-year" oninput="pfProjField('year',this.value)" placeholder="2024"></div>
+<div class="pf-field"><label>Rôle</label><input type="text" id="pfp-role" oninput="pfProjField('role',this.value)" placeholder="Direction artistique"></div>
+</div>
+<div class="pf-field"><label>Le contexte</label><textarea id="pfp-context" oninput="pfProjField('context',this.value)" placeholder="Le brief, le besoin du client…"></textarea></div>
+<div class="pf-field"><label>L'objectif</label><textarea id="pfp-objective" oninput="pfProjField('objective',this.value)" placeholder="Ce qu'il fallait atteindre…"></textarea></div>
+<div class="pf-field"><label>Ma démarche</label><textarea id="pfp-approach" oninput="pfProjField('approach',this.value)" placeholder="Comment tu t'y es pris, tes outils, tes étapes…"></textarea></div>
+<div class="pf-field"><label>Le résultat <span style="opacity:.5;text-transform:none;letter-spacing:0">(optionnel)</span></label><textarea id="pfp-result" oninput="pfProjField('result',this.value)" placeholder="L'impact, le rendu final…"></textarea></div>
+<div class="pf-field"><label>Tags <span style="opacity:.5;text-transform:none;letter-spacing:0">(séparés par des virgules)</span></label><input type="text" id="pfp-tags" oninput="pfProjField('tags',this.value)" placeholder="Photoshop, Packaging, Steampunk"></div>
+
 <div class="pf-mention-card">
 <label class="pf-mention-toggle" id="pf-mention-toggle">
 <input type="checkbox" id="pf-mention-chk" onchange="pfToggleMention(this.checked)">
@@ -954,9 +1003,10 @@ Mention légale
 Mention employeur
 </label>
 <input type="text" id="pf-mention-inp" class="pf-mention-inp" placeholder='Ex: © Arsène Valentin — Réalisé dans le cadre de mon CDI' style="display:none" oninput="pfMentionChanged()">
-<button class="btn btn-out btn-xs" id="pf-mention-save" onclick="pfSaveMention()" style="display:none">💾 Enregistrer</button>
+<button class="btn btn-out btn-xs" id="pf-mention-save" onclick="pfSaveMention()" style="display:none">💾 OK</button>
 </div>
 
+<label style="display:block;font-size:.58rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mid);margin-bottom:.4rem">Images du projet</label>
 <div class="pf-add-methods" style="grid-template-columns:repeat(4,1fr)">
 <div class="pf-method" onclick="pfAddUrl()">
 <span class="pf-method-ico">🔗</span>
@@ -981,15 +1031,15 @@ Mention employeur
 </div>
 <input type="file" id="pf-file-inp" multiple accept="image/*" style="display:none" onchange="pfHandleFiles(this.files)">
 
-
 <div id="pf-url-form" style="display:none" class="pf-url-form">
 <input type="url" id="pf-url-inp" placeholder="https://exemple.com/image.jpg" onkeydown="if(event.key==='Enter')pfConfirmUrl()">
 <button class="btn btn-ink" onclick="pfConfirmUrl()">Ajouter</button>
 <button class="btn btn-out btn-sm" onclick="pfCloseUrl()">✕</button>
 </div>
 
-
+<div style="font-size:.56rem;color:var(--mid);margin:.6rem 0 .3rem">La 1ʳᵉ image sert de couverture. Clic sur ★ pour changer.</div>
 <div class="pf-img-grid" id="pf-img-grid"></div>
+</div>
 
 <div class="save-bar" style="margin-top:1rem">
 <span class="save-msg">Les changements sont sauvegardés automatiquement.</span>
@@ -2099,6 +2149,7 @@ function getPfFolders(){
   }), ...fromBureau.filter(b=>!PF_FOLDERS_BASE.find(base=>base.id===b.id))];
 }
 let _pfCurrent=null;
+let _pfProjIdx=null;
 
 function pfData(){
 const stored=JSON.parse(localStorage.getItem('aar_portfolio')||'{}');
@@ -2119,29 +2170,31 @@ const d=pfData();
 const g=document.getElementById('pf-folders-grid');
 if(!g) return;
 g.innerHTML=getPfFolders().map(f=>{
-const imgs=d[f.id]||[];
-const preview=imgs.slice(0,4).map(im=>`<div style="background:url('${im.src}') center/cover;width:100%;height:100%;"></div>`).join('');
+const projs=pfProjectsOf(f.id);
+const covers=projs.map(p=>(p.images&&p.images[0]&&p.images[0].src)).filter(Boolean).slice(0,4);
+const preview=covers.map(src=>`<div style="background:url('${src}') center/cover;width:100%;height:100%;"></div>`).join('');
 return `<div class="pf-folder" onclick="pfEdit('${f.id}')">
 <div class="pf-folder-preview" style="background:${f.color}22;border-color:${f.color}44">
-${imgs.length?`<div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;width:100%;height:100%;padding:6px;box-sizing:border-box">${preview}</div>`:`<div style="font-size:2rem;opacity:.4">🖼</div>`}
+${covers.length?`<div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;width:100%;height:100%;padding:6px;box-sizing:border-box">${preview}</div>`:`<div style="font-size:2rem;opacity:.4">🖼</div>`}
 </div>
 <div class="pf-folder-label">${f.label}</div>
-<div class="pf-folder-count">${imgs.length} image${imgs.length!==1?'s':''}</div>
+<div class="pf-folder-count">${projs.length} projet${projs.length!==1?'s':''}</div>
 </div>`;
 }).join('');
 }
 
 function pfEdit(fid){
 _pfCurrent=fid;
+_pfProjIdx=null;
 const fd=getPfFolders().find(f=>f.id===fid);
 document.getElementById('pf-list-view').style.display='none';
 document.getElementById('pf-editor-view').style.display='';
 document.getElementById('pf-ed-title').textContent=fd?fd.label:fid;
-document.getElementById('pf-url-form').style.display='none';
 const nameInp=document.getElementById('pf-folder-name');
 if(nameInp){ nameInp.value=fd?fd.label:fid; document.getElementById('pf-folder-name-save').style.display='none'; }
-pfLoadMention();
-pfRenderEditor();
+document.getElementById('pf-proj-list-view').style.display='';
+document.getElementById('pf-proj-editor').style.display='none';
+pfRenderProjects();
 }
 
 function pfBack(){
@@ -2167,29 +2220,151 @@ function pfSaveFolderName(){
   const desk=bureauLoad();
   const f=desk.folders.find(f=>f.id===_pfCurrent||(f.action&&f.action==='folder:'+_pfCurrent));
   if(f){ f.label=newLabel; localStorage.setItem('aar_desk',JSON.stringify(desk)); }
-  // mettre à jour la mention légale si elle utilisait l'ancien nom
-  const meta=pfGetMeta(_pfCurrent);
-  if(meta.legalMention&&meta.legalMention.startsWith('Réalisé en tant que salarié pour ')){
-    const newMention=`Réalisé en tant que salarié pour ${newLabel} — droits d'utilisation détenus par l'entreprise.`;
-    pfSetMeta(_pfCurrent,{legalMention:newMention});
-  }
   document.getElementById('pf-ed-title').textContent=newLabel;
   document.getElementById('pf-folder-name-save').style.display='none';
-  pfRender();
-  toast('✓ Dossier et mention renommés en "'+newLabel+'"');
+  toast('✓ Dossier renommé en "'+newLabel+'"');
 }
 
-function pfRenderEditor(){
-if(!_pfCurrent) return;
-const d=pfData();
-const imgs=d[_pfCurrent]||[];
-document.getElementById('pf-ed-count').textContent=imgs.length+' image'+(imgs.length!==1?'s':'');
-const g=document.getElementById('pf-img-grid');
-if(!imgs.length){ g.innerHTML='<div style="color:var(--mid);font-size:.8rem;padding:1rem 0">Aucune image — ajoutez-en ci-dessus.</div>'; return; }
-g.innerHTML=imgs.map((im,i)=>`<div class="pf-img-card">
-<img src="${im.src}" alt="${im.title||''}">
-<div class="pf-img-del" onclick="pfDelete('${_pfCurrent}',${i})" title="Supprimer">✕</div>
-</div>`).join('');
+// ════ MODÈLE PROJETS ════
+// Stockés dans aar_portfolio._projects[fid] = [ {id,title,client,year,role,images:[{src,title}],context,objective,approach,result,tags:[],legalMention} ]
+function pfProjectsOf(fid){
+  const raw=JSON.parse(localStorage.getItem('aar_portfolio')||'{}');
+  if(!raw._projects) raw._projects={};
+  if(!raw._projects[fid]){
+    // migration : ancien tableau d'images → 1 projet
+    const legacy=(raw[fid]&&raw[fid].length)?raw[fid]:(DEFAULT_PORTFOLIO[fid]||[]);
+    if(legacy&&legacy.length){
+      const meta=(raw._meta&&raw._meta[fid])||{};
+      raw._projects[fid]=[{id:Date.now(),title:'Projet 1',client:'',year:'',role:'',
+        images:legacy.map(im=>({src:im.src,title:im.title||''})),
+        context:'',objective:'',approach:'',result:'',tags:[],legalMention:meta.legalMention||''}];
+    } else {
+      raw._projects[fid]=[];
+    }
+    localStorage.setItem('aar_portfolio',JSON.stringify(raw));
+  }
+  return raw._projects[fid];
+}
+function pfSaveProjects(fid,arr){
+  const raw=JSON.parse(localStorage.getItem('aar_portfolio')||'{}');
+  if(!raw._projects) raw._projects={};
+  raw._projects[fid]=arr;
+  localStorage.setItem('aar_portfolio',JSON.stringify(raw));
+}
+function pfCurProject(){
+  if(_pfProjIdx==null) return null;
+  const arr=pfProjectsOf(_pfCurrent);
+  return arr[_pfProjIdx]||null;
+}
+
+function pfRenderProjects(){
+  if(!_pfCurrent) return;
+  const arr=pfProjectsOf(_pfCurrent);
+  document.getElementById('pf-ed-count').textContent=arr.length+' projet'+(arr.length!==1?'s':'');
+  const g=document.getElementById('pf-projects');
+  const cards=arr.map((p,i)=>{
+    const cover=(p.images&&p.images[0]&&p.images[0].src)||'';
+    const n=(p.images||[]).length;
+    return `<div class="pf-proj-card" onclick="pfProjectEdit(${i})">
+    <button class="pf-proj-del" title="Supprimer" onclick="event.stopPropagation();pfProjDelete(${i})">✕</button>
+    <div class="pf-proj-cover">${cover?`<img src="${cover}" alt="">`:'<span class="noimg">🖼</span>'}${n?`<span class="pf-proj-card-imgs">${n} img</span>`:''}</div>
+    <div class="pf-proj-card-body">
+    <div class="pf-proj-card-title">${p.title||'Sans titre'}</div>
+    <div class="pf-proj-card-meta">${[p.client,p.year].filter(Boolean).join(' · ')||'—'}</div>
+    </div></div>`;
+  }).join('');
+  g.innerHTML=cards+`<button class="pf-proj-new" onclick="pfProjectNew()"><span>+</span>Nouveau projet</button>`;
+}
+
+function pfProjectNew(){
+  const arr=pfProjectsOf(_pfCurrent);
+  arr.push({id:Date.now(),title:'',client:'',year:'',role:'',images:[],context:'',objective:'',approach:'',result:'',tags:[],legalMention:''});
+  pfSaveProjects(_pfCurrent,arr);
+  pfProjectEdit(arr.length-1);
+}
+
+function pfProjectEdit(idx){
+  _pfProjIdx=idx;
+  const p=pfCurProject(); if(!p) return;
+  document.getElementById('pf-proj-list-view').style.display='none';
+  document.getElementById('pf-proj-editor').style.display='';
+  document.getElementById('pf-proj-ed-title').textContent=p.title||'Nouveau projet';
+  document.getElementById('pfp-title').value=p.title||'';
+  document.getElementById('pfp-client').value=p.client||'';
+  document.getElementById('pfp-year').value=p.year||'';
+  document.getElementById('pfp-role').value=p.role||'';
+  document.getElementById('pfp-context').value=p.context||'';
+  document.getElementById('pfp-objective').value=p.objective||'';
+  document.getElementById('pfp-approach').value=p.approach||'';
+  document.getElementById('pfp-result').value=p.result||'';
+  document.getElementById('pfp-tags').value=(p.tags||[]).join(', ');
+  document.getElementById('pf-url-form').style.display='none';
+  pfLoadMention();
+  pfRenderProjImages();
+}
+
+function pfProjectBack(){
+  _pfProjIdx=null;
+  document.getElementById('pf-proj-editor').style.display='none';
+  document.getElementById('pf-proj-list-view').style.display='';
+  pfRenderProjects();
+}
+
+function pfProjDelete(idx){
+  if(!confirm('Supprimer ce projet et toutes ses images ?')) return;
+  const arr=pfProjectsOf(_pfCurrent);
+  arr.splice(idx,1);
+  pfSaveProjects(_pfCurrent,arr);
+  pfRenderProjects();
+  toast('✓ Projet supprimé');
+}
+
+function pfProjField(field,val){
+  const p=pfCurProject(); if(!p) return;
+  if(field==='tags') p.tags=val.split(',').map(t=>t.trim()).filter(Boolean);
+  else p[field]=val;
+  const arr=pfProjectsOf(_pfCurrent); arr[_pfProjIdx]=p;
+  pfSaveProjects(_pfCurrent,arr);
+  if(field==='title') document.getElementById('pf-proj-ed-title').textContent=val||'Nouveau projet';
+}
+
+function pfRenderProjImages(){
+  const p=pfCurProject(); if(!p) return;
+  const g=document.getElementById('pf-img-grid');
+  const imgs=p.images||[];
+  if(!imgs.length){ g.innerHTML='<div style="color:var(--mid);font-size:.8rem;padding:1rem 0">Aucune image — ajoutez-en ci-dessus.</div>'; return; }
+  g.innerHTML=imgs.map((im,i)=>`<div class="pf-img-card">
+  <img src="${im.src}" alt="${im.title||''}">
+  <div class="pf-img-del" onclick="pfImgDelete(${i})" title="Supprimer">✕</div>
+  ${i===0?'<div class="pf-img-cover-badge" style="position:absolute;bottom:4px;left:4px;background:var(--cyan);color:#04121a;font-size:.5rem;font-weight:800;padding:2px 6px;border-radius:10px">★ Cover</div>':`<div class="pf-img-setcover" onclick="pfSetCover(${i})" title="Définir comme couverture" style="position:absolute;bottom:4px;left:4px;background:rgba(0,0,0,.6);color:#fff;font-size:.5rem;font-weight:700;padding:2px 6px;border-radius:10px;cursor:pointer">★</div>`}
+  </div>`).join('');
+}
+
+function pfSetCover(idx){
+  const p=pfCurProject(); if(!p||!p.images) return;
+  const [im]=p.images.splice(idx,1);
+  p.images.unshift(im);
+  const arr=pfProjectsOf(_pfCurrent); arr[_pfProjIdx]=p;
+  pfSaveProjects(_pfCurrent,arr);
+  pfRenderProjImages();
+  toast('✓ Couverture définie');
+}
+
+function pfImgDelete(idx){
+  const p=pfCurProject(); if(!p) return;
+  p.images.splice(idx,1);
+  const arr=pfProjectsOf(_pfCurrent); arr[_pfProjIdx]=p;
+  pfSaveProjects(_pfCurrent,arr);
+  pfRenderProjImages();
+  toast('✓ Image supprimée');
+}
+
+function pfPushImg(im){
+  const p=pfCurProject(); if(!p) return;
+  if(!p.images) p.images=[];
+  p.images.push(im);
+  const arr=pfProjectsOf(_pfCurrent); arr[_pfProjIdx]=p;
+  pfSaveProjects(_pfCurrent,arr);
 }
 
 function pfAddUrl(){
@@ -2204,26 +2379,18 @@ document.getElementById('pf-url-inp').value='';
 function pfConfirmUrl(){
 const url=document.getElementById('pf-url-inp').value.trim();
 if(!url){ toast('URL vide','err'); return; }
-const d=pfData();
-if(!d[_pfCurrent]) d[_pfCurrent]=[];
-d[_pfCurrent].push({id:Date.now(),src:url,title:''});
-pfSaveData(d);
+if(_pfProjIdx==null){ toast('Ouvrez un projet d\'abord','err'); return; }
+pfPushImg({src:url,title:''});
 pfCloseUrl();
-pfRenderEditor();
+pfRenderProjImages();
 toast('✓ Image ajoutée');
 }
 
 function pfHandleFiles(files){
-if(!_pfCurrent||!files.length) return;
+if(_pfProjIdx==null||!files.length) return;
 Array.from(files).forEach(file=>{
 const r=new FileReader();
-r.onload=e=>{
-const d=pfData();
-if(!d[_pfCurrent]) d[_pfCurrent]=[];
-d[_pfCurrent].push({id:Date.now()+Math.random(),src:e.target.result,title:file.name.replace(/\.[^.]+$/,'')});
-pfSaveData(d);
-pfRenderEditor();
-};
+r.onload=e=>{ pfPushImg({src:e.target.result,title:file.name.replace(/\.[^.]+$/,'')}); pfRenderProjImages(); };
 r.readAsDataURL(file);
 });
 toast('✓ '+files.length+' image(s) ajoutée(s)');
@@ -2236,35 +2403,19 @@ if(!imgs.length){ g.innerHTML='<div style="color:var(--mid)">Aucune image dans l
 else{ g.innerHTML=imgs.map((im,i)=>`<div class="pf-lib-item ${im._sel?'sel':''}" onclick="pfLibToggle(${i},this)"><img src="${im.src||im.url}" alt="${im.alt||''}"><div class="pf-lib-check">✓</div></div>`).join(''); }
 openM('m-pf-lib');
 }
-
-function pfLibToggle(i,el){
-el.classList.toggle('sel');
-}
-
+function pfLibToggle(i,el){ el.classList.toggle('sel'); }
 function pfImportLib(){
 const selected=Array.from(document.querySelectorAll('#pf-lib-grid .pf-lib-item.sel'));
 if(!selected.length){ toast('Aucune image sélectionnée','err'); return; }
 const imgs=_ls.get('images')||[];
-const d=pfData();
-if(!d[_pfCurrent]) d[_pfCurrent]=[];
 selected.forEach(el=>{
 const idx=Array.from(el.parentElement.children).indexOf(el);
 const im=imgs[idx];
-if(im) d[_pfCurrent].push({id:Date.now()+Math.random(),src:im.src||im.url,title:im.alt||im.name||''});
+if(im) pfPushImg({src:im.src||im.url,title:im.alt||im.name||''});
 });
-pfSaveData(d);
 closeM('m-pf-lib');
-pfRenderEditor();
+pfRenderProjImages();
 toast('✓ '+selected.length+' image(s) importée(s)');
-}
-
-function pfDelete(fid,idx){
-const d=pfData();
-if(!d[fid]) return;
-d[fid].splice(idx,1);
-pfSaveData(d);
-pfRenderEditor();
-toast('✓ Image supprimée');
 }
 
 function pfSave(){
@@ -2284,20 +2435,29 @@ function pfSetMeta(fid,meta){
   raw._meta[fid]={...(raw._meta[fid]||{}),...meta};
   localStorage.setItem('aar_portfolio',JSON.stringify(raw));
 }
+function pfProjMentionText(){
+  const p=pfCurProject();
+  const who=(p&&p.client&&p.client.trim())||pfLabelOf(_pfCurrent);
+  return `Réalisé en tant que salarié pour ${who} — droits d'utilisation détenus par l'entreprise.`;
+}
+function pfMentionSet(val){
+  const p=pfCurProject(); if(!p) return;
+  p.legalMention=val||'';
+  const arr=pfProjectsOf(_pfCurrent); arr[_pfProjIdx]=p;
+  pfSaveProjects(_pfCurrent,arr);
+}
 function pfLoadMention(){
-  if(!_pfCurrent) return;
-  const meta=pfGetMeta(_pfCurrent);
+  const p=pfCurProject(); if(!p) return;
   const chk=document.getElementById('pf-mention-chk');
   const inp=document.getElementById('pf-mention-inp');
   const savBtn=document.getElementById('pf-mention-save');
   const toggle=document.getElementById('pf-mention-toggle');
   const empToggle=document.getElementById('pf-employer-toggle');
   const empChk=document.getElementById('pf-employer-chk');
-  const has=!!(meta.legalMention);
-  const autoText=_pfCurrent?`Réalisé en tant que salarié pour ${pfLabelOf(_pfCurrent)} — droits d'utilisation détenus par l'entreprise.`:'';
-  const isEmployer=has&&meta.legalMention===autoText;
+  const has=!!(p.legalMention);
+  const isEmployer=has&&p.legalMention===pfProjMentionText();
   chk.checked=has;
-  inp.value=meta.legalMention||'';
+  inp.value=p.legalMention||'';
   inp.style.display=has?'':'none';
   savBtn.style.display=has?'':'none';
   toggle.classList.toggle('active',has);
@@ -2306,14 +2466,10 @@ function pfLoadMention(){
   if(isEmployer) inp.style.display='none';
 }
 function pfLabelOf(fid){
-  const portfolio=pfData();
-  const folder=Object.values(portfolio).find?.(()=>false)||null;
-  // cherche dans aar_desk
   try{const desk=JSON.parse(localStorage.getItem('aar_desk')||'{}');
   const f=(desk.folders||[]).find(f=>f.id===fid);
   if(f) return f.label;}catch(_){}
-  // fallback: capitalise l'id
-  return fid.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
+  return (fid||'').replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
 }
 function pfToggleMention(on){
   const inp=document.getElementById('pf-mention-inp');
@@ -2327,24 +2483,19 @@ function pfToggleMention(on){
   empToggle.style.display=on?'':'none';
   empChk.checked=false;
   if(on) inp.focus();
-  else{ pfSetMeta(_pfCurrent,{legalMention:''}); }
+  else pfMentionSet('');
 }
 function pfToggleEmployer(on){
   const inp=document.getElementById('pf-mention-inp');
   const savBtn=document.getElementById('pf-mention-save');
   if(on){
-    const label=pfLabelOf(_pfCurrent);
-    const text=`Réalisé en tant que salarié pour ${label} — droits d'utilisation détenus par l'entreprise.`;
-    inp.value=text;
-    inp.style.display='none';
-    savBtn.style.display='';
-    pfSetMeta(_pfCurrent,{legalMention:text});
+    const text=pfProjMentionText();
+    inp.value=text; inp.style.display='none'; savBtn.style.display='';
+    pfMentionSet(text);
     toast('✓ Mention employeur appliquée');
   } else {
-    inp.value='';
-    inp.style.display='';
-    inp.focus();
-    pfSetMeta(_pfCurrent,{legalMention:''});
+    inp.value=''; inp.style.display=''; inp.focus();
+    pfMentionSet('');
   }
 }
 function pfMentionChanged(){
@@ -2352,12 +2503,10 @@ function pfMentionChanged(){
   inp.style.borderColor=inp.value.trim()?'var(--cyan)':'var(--line)';
 }
 function pfSaveMention(){
-  if(!_pfCurrent) return;
   const chk=document.getElementById('pf-mention-chk');
   const inp=document.getElementById('pf-mention-inp');
-  if(!chk) return;
-  const mention=chk.checked ? (inp.value.trim()||'') : '';
-  pfSetMeta(_pfCurrent,{legalMention:mention});
+  if(!chk||_pfProjIdx==null) return;
+  pfMentionSet(chk.checked ? (inp.value.trim()||'') : '');
 }
 
 // ── Assets explorer ──
@@ -2396,15 +2545,13 @@ function pfAssetToggle(el){ el.classList.toggle('sel'); }
 function pfImportAssets(){
   const sel=Array.from(document.querySelectorAll('#pf-assets-grid .pf-asset-item.sel'));
   if(!sel.length){ toast('Aucune image sélectionnée','err'); return; }
-  const d=pfData();
-  if(!d[_pfCurrent]) d[_pfCurrent]=[];
+  if(_pfProjIdx==null){ toast('Ouvrez un projet d\'abord','err'); return; }
   sel.forEach(el=>{
     const src=el.querySelector('input[type=hidden]').value;
-    d[_pfCurrent].push({id:Date.now()+Math.random(),src,title:src.split('/').pop().replace(/\.[^.]+$/,'')});
+    pfPushImg({src,title:src.split('/').pop().replace(/\.[^.]+$/,'')});
   });
-  pfSaveData(d);
   closeM('m-pf-assets');
-  pfRenderEditor();
+  pfRenderProjImages();
   toast('✓ '+sel.length+' image(s) importée(s) depuis assets/');
 }
 

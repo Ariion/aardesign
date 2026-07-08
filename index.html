@@ -626,6 +626,37 @@ transition:background .15s,border-color .15s;
 .ab-stat-l{font-size:.6rem;color:var(--mid);margin-top:2px}
 .ab-tag{background:var(--chip-bg);border-radius:4px;padding:3px 8px;font-size:.65rem;color:var(--ink)}
 
+/* ── Vue projet (portfolio) ── */
+.pv-wrap{display:grid;grid-template-columns:1.15fr 1fr;height:100%}
+@media(max-width:640px){.pv-wrap{grid-template-columns:1fr;grid-template-rows:minmax(220px,45%) 1fr}}
+.pv-visual{position:relative;overflow:hidden;background:#0a0f1e;display:flex;align-items:center;justify-content:center}
+.pv-mainimg{width:100%;height:100%;object-fit:cover;display:block;cursor:zoom-in}
+.pv-noimg{font-size:3rem;opacity:.3}
+.pv-nav{position:absolute;top:50%;transform:translateY(-50%);z-index:4;width:40px;height:40px;border-radius:50%;
+background:rgba(8,14,28,.62);border:1px solid rgba(255,255,255,.18);color:#fff;font-size:1.4rem;line-height:1;
+display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(6px);transition:background .15s,transform .15s}
+.pv-nav:hover{background:rgba(41,184,217,.75);transform:translateY(-50%) scale(1.08)}
+.pv-nav-l{left:12px}.pv-nav-r{right:12px}
+.pv-thumbs{position:absolute;bottom:12px;left:12px;right:12px;z-index:3;display:flex;gap:6px;overflow-x:auto;padding:2px;justify-content:center}
+.pv-thumbs::-webkit-scrollbar{height:0}
+.pv-thumb{flex:0 0 44px;height:44px;border-radius:7px;background-size:cover;background-position:center;cursor:pointer;
+border:2px solid rgba(255,255,255,.35);opacity:.7;transition:opacity .15s,border-color .15s}
+.pv-thumb:hover{opacity:1}
+.pv-thumb.on{opacity:1;border-color:var(--cyan)}
+.pv-info{padding:24px 26px 28px;display:flex;flex-direction:column;gap:16px;overflow-y:auto;background:var(--win-bg,rgba(7,12,30,.6))}
+.pv-counter{font-size:.58rem;font-weight:700;letter-spacing:.1em;color:var(--mid);align-self:flex-start;border:1px solid var(--line);border-radius:20px;padding:3px 10px}
+.pv-cat{font-size:.56rem;letter-spacing:.22em;text-transform:uppercase;color:var(--cyan);font-weight:800}
+.pv-title{font-size:1.5rem;font-weight:800;letter-spacing:-.02em;line-height:1.08;margin-top:-6px;color:var(--ink)}
+.pv-facts{display:flex;gap:22px;flex-wrap:wrap;padding:13px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.pv-fact-l{font-size:.54rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mid);font-weight:700}
+.pv-fact-v{font-size:.8rem;font-weight:600;margin-top:3px;color:var(--ink)}
+.pv-block-l{font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--cyan);font-weight:800;margin-bottom:6px}
+.pv-block-p{font-size:.82rem;color:var(--ink);opacity:.86;line-height:1.65}
+.pv-tags{display:flex;gap:7px;flex-wrap:wrap}
+.pv-tag{font-size:.62rem;color:var(--mid);background:rgba(41,184,217,.08);border:1px solid rgba(41,184,217,.2);border-radius:20px;padding:4px 11px}
+.pv-legal{font-size:.58rem;color:var(--mid);font-style:italic;border-top:1px solid var(--line);padding-top:12px;opacity:.8}
+.pv-empty{grid-column:1/-1;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:.6rem;color:var(--mid);text-align:center}
+
 .gal-wrap{display:flex;flex-direction:column;height:100%}
 .gal-header{display:flex;align-items:center;gap:.5rem;padding:.5rem .8rem;border-bottom:1px solid var(--line);flex-shrink:0;flex-wrap:wrap;gap:.4rem}
 .gal-grid{
@@ -1565,33 +1596,89 @@ aarLog('dossier',fd.label||fid);
 const winId='folder-'+fid;
 if(openWins[winId]){ restoreWin(winId); return; }
 
-const portfolio=JSON.parse(localStorage.getItem('aar_portfolio')||'{}');
-const imgs=(portfolio[fid]&&portfolio[fid].length) ? portfolio[fid] : (DEFAULT_PORTFOLIO[fid]||[]);
-
 const ico=`<svg viewBox="0 0 16 16" fill="none"><path d="M1 5a1.5 1.5 0 0 1 1.5-1.5H6l2 2h6.5A1.5 1.5 0 0 1 16 7v6.5A1.5 1.5 0 0 1 14.5 15h-13A1.5 1.5 0 0 1 1 13.5z" fill="${fd.color}"/></svg>`;
 
-const isLogo=fid==='logo';
-const gridHtml=imgs.length
-? imgs.map((im,i)=>`<div class="gal-card${isLogo?' logo-bg':''}" onclick="openLightbox(${JSON.stringify(imgs).replace(/"/g,'&quot;')},${i},${isLogo})">
-<img src="${im.src}" alt="${im.title||''}" loading="lazy">
-${im.title?`<div class="gal-title">${im.title}</div>`:''}
-</div>`).join('')
-: `<div class="gal-empty"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" width="40" height="40"><rect x="4" y="10" width="40" height="28" rx="3"/><circle cx="18" cy="22" r="4"/><path d="m4 32 12-10 8 8 6-5 14 13"/></svg><p>Aucune image</p><p style="font-size:.65rem;opacity:.6">Admin → Portfolio OS</p></div>`;
+const projects=pvProjectsFor(fid);
+_pvData[fid]={projects,p:0,i:0,folder:fd.label};
 
-const meta=(portfolio._meta&&portfolio._meta[fid])||{};
-const legalMention=meta.legalMention||'';
-const mentionHtml=legalMention
-? `<div style="padding:6px 10px;background:rgba(41,184,217,.06);border-top:1px solid var(--line);font-size:.54rem;color:var(--mid);text-align:center;flex-shrink:0;letter-spacing:.03em">${legalMention}</div>`
-: '';
-
-const countLabel=`${imgs.length} image${imgs.length!==1?'s':''}`;
-const body=`<div class="gal-wrap">
-<div class="gal-grid">${gridHtml}</div>
-${mentionHtml}
-</div>`;
-
-createWin(winId,`${fd.label} <span style="font-size:.58rem;font-weight:400;opacity:.5;margin-left:.4rem">${countLabel}</span>`,ico,body,720,520);
+const body=`<div class="pv-wrap" id="pv-wrap-${fid}"></div>`;
+createWin(winId,fd.label,ico,body,880,560);
 openWins[winId].querySelector('.win-body').style.padding='0';
+pvRender(fid);
+}
+
+// ── Construit la liste de projets d'un dossier (avec migration depuis l'ancien format) ──
+function pvProjectsFor(fid){
+const portfolio=JSON.parse(localStorage.getItem('aar_portfolio')||'{}');
+if(portfolio._projects&&portfolio._projects[fid]) return portfolio._projects[fid];
+// migration à la volée : ancien tableau d'images → 1 projet
+const legacy=(portfolio[fid]&&portfolio[fid].length)?portfolio[fid]:((typeof DEFAULT_PORTFOLIO!=='undefined'&&DEFAULT_PORTFOLIO[fid])||[]);
+if(legacy&&legacy.length){
+const meta=(portfolio._meta&&portfolio._meta[fid])||{};
+return [{id:1,title:'',client:'',year:'',role:'',images:legacy.map(im=>({src:im.src,title:im.title||''})),context:'',objective:'',approach:'',result:'',tags:[],legalMention:meta.legalMention||''}];
+}
+return [];
+}
+
+const _pvData={};
+const _esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+function pvRender(fid){
+const st=_pvData[fid]; if(!st) return;
+const wrap=document.getElementById('pv-wrap-'+fid); if(!wrap) return;
+const projects=st.projects;
+if(!projects.length){
+wrap.innerHTML=`<div class="pv-empty"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" width="42" height="42"><rect x="4" y="10" width="40" height="28" rx="3"/><circle cx="18" cy="22" r="4"/><path d="m4 32 12-10 8 8 6-5 14 13"/></svg><p>Aucun projet</p><p style="font-size:.65rem;opacity:.6">Admin → Portfolio OS</p></div>`;
+return;
+}
+const p=projects[st.p]||projects[0];
+const imgs=p.images||[];
+const img=imgs[st.i]||imgs[0]||{src:''};
+const multi=projects.length>1;
+
+const blocks=[
+['Le contexte',p.context],['L\'objectif',p.objective],['Ma démarche',p.approach],['Le résultat',p.result]
+].filter(b=>b[1]&&b[1].trim())
+.map(b=>`<div class="pv-block"><div class="pv-block-l">${b[0]}</div><p class="pv-block-p">${_esc(b[1]).replace(/\n/g,'<br>')}</p></div>`).join('');
+
+const facts=[['Client',p.client],['Rôle',p.role],['Année',p.year]].filter(f=>f[1]&&f[1].trim())
+.map(f=>`<div><div class="pv-fact-l">${f[0]}</div><div class="pv-fact-v">${_esc(f[1])}</div></div>`).join('');
+
+const tags=(p.tags||[]).length?`<div class="pv-tags">${p.tags.map(t=>`<span class="pv-tag">${_esc(t)}</span>`).join('')}</div>`:'';
+const legal=p.legalMention?`<p class="pv-legal">${_esc(p.legalMention)}</p>`:'';
+
+const thumbs=imgs.length>1?`<div class="pv-thumbs">${imgs.map((im,k)=>`<div class="pv-thumb${k===st.i?' on':''}" style="background-image:url('${im.src}')" onclick="pvImg('${fid}',${k})"></div>`).join('')}</div>`:'';
+
+wrap.innerHTML=`
+<div class="pv-visual">
+${img.src?`<img class="pv-mainimg" src="${img.src}" alt="${_esc(img.title)}" onclick="pvLightbox('${fid}')">`:'<div class="pv-noimg">🖼</div>'}
+${multi?`<button class="pv-nav pv-nav-l" onclick="pvProj('${fid}',-1)" title="Projet précédent">‹</button><button class="pv-nav pv-nav-r" onclick="pvProj('${fid}',1)" title="Projet suivant">›</button>`:''}
+${thumbs}
+</div>
+<div class="pv-info">
+${multi?`<div class="pv-counter">${st.p+1} / ${projects.length}</div>`:''}
+<div class="pv-cat">${_esc([p.client,p.year].filter(Boolean).join(' · ')||st.folder)}</div>
+<div class="pv-title">${_esc(p.title||'Sans titre')}</div>
+${facts?`<div class="pv-facts">${facts}</div>`:''}
+${blocks}
+${tags}
+${legal}
+</div>`;
+}
+
+function pvProj(fid,dir){
+const st=_pvData[fid]; if(!st) return;
+const n=st.projects.length;
+st.p=(st.p+dir+n)%n; st.i=0;
+try{aarLog('projet',st.projects[st.p].title||('projet '+(st.p+1)));}catch(_){}
+pvRender(fid);
+const info=document.querySelector('#pv-wrap-'+fid+' .pv-info'); if(info) info.scrollTop=0;
+}
+function pvImg(fid,idx){ const st=_pvData[fid]; if(!st) return; st.i=idx; pvRender(fid); }
+function pvLightbox(fid){
+const st=_pvData[fid]; if(!st) return;
+const p=st.projects[st.p]; if(!p||!p.images||!p.images.length) return;
+openLightbox(p.images,st.i,false);
 }
 
 function openLightbox(imgs,startIdx,isLogo=false){
