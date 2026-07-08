@@ -993,6 +993,11 @@ text-align:center;cursor:pointer;transition:all .15s;background:transparent;
 <div class="pf-field"><label>Le résultat <span style="opacity:.5;text-transform:none;letter-spacing:0">(optionnel)</span></label><textarea id="pfp-result" oninput="pfProjField('result',this.value)" placeholder="L'impact, le rendu final…"></textarea></div>
 <div class="pf-field"><label>Tags <span style="opacity:.5;text-transform:none;letter-spacing:0">(séparés par des virgules)</span></label><input type="text" id="pfp-tags" oninput="pfProjField('tags',this.value)" placeholder="Photoshop, Packaging, Steampunk"></div>
 
+<div style="display:flex;align-items:center;gap:.6rem;margin:.2rem 0 1rem;flex-wrap:wrap">
+<button class="btn btn-ink btn-sm" id="pfp-gen" onclick="pfGenerateDesc()" style="display:inline-flex;align-items:center;gap:.4rem">✨ Générer les descriptions</button>
+<span style="font-size:.58rem;color:var(--mid)">Remplit contexte · objectif · démarche · résultat à partir du titre, client, rôle et tags.</span>
+</div>
+
 <div class="pf-mention-card">
 <label class="pf-mention-toggle" id="pf-mention-toggle">
 <input type="checkbox" id="pf-mention-chk" onchange="pfToggleMention(this.checked)">
@@ -2326,6 +2331,35 @@ function pfProjField(field,val){
   const arr=pfProjectsOf(_pfCurrent); arr[_pfProjIdx]=p;
   pfSaveProjects(_pfCurrent,arr);
   if(field==='title') document.getElementById('pf-proj-ed-title').textContent=val||'Nouveau projet';
+}
+
+async function pfGenerateDesc(){
+  const p=pfCurProject(); if(!p) return;
+  const title=(document.getElementById('pfp-title').value||'').trim();
+  if(!title){ toast('Ajoute un titre d\'abord','err'); return; }
+  const btn=document.getElementById('pfp-gen');
+  const filled=['context','objective','approach','result'].some(f=>(document.getElementById('pfp-'+f).value||'').trim());
+  if(filled && !confirm('Des descriptions existent déjà. Les remplacer ?')) return;
+  const orig=btn.textContent;
+  btn.disabled=true; btn.textContent='✨ Génération…';
+  const fd=getPfFolders().find(f=>f.id===_pfCurrent);
+  try{
+    const r=await fetch('/api/generate-desc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      title,
+      client:document.getElementById('pfp-client').value||'',
+      year:document.getElementById('pfp-year').value||'',
+      role:document.getElementById('pfp-role').value||'',
+      tags:(document.getElementById('pfp-tags').value||'').split(',').map(t=>t.trim()).filter(Boolean),
+      discipline:fd?fd.label:''
+    })});
+    const d=await r.json();
+    if(d.error){ toast(d.error,'err'); return; }
+    [['context',d.context],['objective',d.objective],['approach',d.approach],['result',d.result]].forEach(([f,v])=>{
+      if(v){ document.getElementById('pfp-'+f).value=v; pfProjField(f,v); }
+    });
+    toast('✓ Descriptions générées');
+  }catch(e){ toast('Erreur : '+e.message,'err'); }
+  finally{ btn.disabled=false; btn.textContent=orig; }
 }
 
 function pfRenderProjImages(){
