@@ -1,343 +1,290 @@
 {
-  "_test": true,
-  "aar_portfolio": {
-    "arsene": [
-      {
-        "src": "assets/aristocrate/nanti.jpg",
-        "title": "L'Aristocrate — Nanti"
-      },
-      {
-        "src": "assets/aristocrate/casque.jpg",
-        "title": ""
-      },
-      {
-        "src": "assets/aristocrate/veste.jpg",
-        "title": ""
-      },
-      {
-        "src": "assets/aristocrate/explorateur.jpg",
-        "title": "L'Aristocrate — Explorateur"
-      },
-      {
-        "id": 1781079428596.3486,
-        "src": "assets/dark/blood.jpg",
-        "title": ""
-      },
-      {
-        "id": 1781079428596.6924,
-        "src": "assets/steam/mockup.jpg",
-        "title": ""
-      },
-      {
-        "id": 1781079428596.7634,
-        "src": "assets/voyages/amazonie.jpg",
-        "title": ""
-      },
-      {
-        "id": 1781079428596.9326,
-        "src": "assets/voyages/canada.jpg",
-        "title": ""
-      },
-      {
-        "id": 1781079428596.893,
-        "src": "assets/voyages/cappadoce.jpg",
-        "title": ""
-      },
-      {
-        "id": 1781079428596.6267,
-        "src": "assets/voyages/fuji.jpg",
-        "title": ""
-      },
-      {
-        "id": 1781079428596.7314,
-        "src": "assets/voyages/laponie.jpg",
-        "title": ""
-      },
-      {
-        "id": 1781079428596.6272,
-        "src": "assets/voyages/pacifique.jpg",
-        "title": ""
-      }
-    ],
-    "clopinette": [
-      {
-        "id": 1781079447842.08,
-        "src": "assets/millenaire/cadomum.jpg",
-        "title": ""
-      },
-      {
-        "id": 1781079447842.5537,
-        "src": "assets/millenaire/pomme2.jpg",
-        "title": ""
-      },
-      {
-        "id": 1781079447842.4128,
-        "src": "assets/millenaire/pomme3.jpg",
-        "title": ""
-      },
-      {
-        "id": 1781079447842.232,
-        "src": "assets/saveurs/automne.jpg",
-        "title": ""
-      },
-      {
-        "id": 1781079447842.377,
-        "src": "assets/saveurs/ete.jpg",
-        "title": ""
-      },
-      {
-        "id": 1781079447842.2437,
-        "src": "assets/saveurs/hiver.jpg",
-        "title": ""
-      },
-      {
-        "id": 1781079447842.5066,
-        "src": "assets/saveurs/printemps.jpg",
-        "title": ""
-      }
-    ],
-    "digital": [
-      {
-        "id": 1781079468385.1514,
-        "src": "assets/saveurs/renard.png",
-        "title": ""
-      },
-      {
-        "id": 1781079468385.1487,
-        "src": "assets/steam/coeur.jpg",
-        "title": ""
-      },
-      {
-        "id": 1781079468385.8235,
-        "src": "assets/steam/gueule.jpg",
-        "title": ""
-      },
-      {
-        "id": 1781079468385.5486,
-        "src": "assets/steam/hibou.jpg",
-        "title": ""
-      },
-      {
-        "id": 1781079468385.6226,
-        "src": "assets/steam/main.jpg",
-        "title": ""
-      },
-      {
-        "id": 1781079468385.9858,
-        "src": "assets/steam/pomme.jpg",
-        "title": ""
-      },
-      {
-        "id": 1781079468385.5435,
-        "src": "assets/steam/sablier.jpg",
-        "title": ""
-      },
-      {
-        "id": 1781079468385.5388,
-        "src": "assets/voyages/cartes.jpg",
-        "title": ""
-      },
-      {
-        "id": 1781082734565.5405,
-        "src": "assets/Etiquette-Millenaire-Caen-interieur.png",
-        "title": "Etiquette-Millenaire-Caen-interieur"
-      }
-    ],
-    "logo": [
-      {
-        "id": 1781108632847.3718,
-        "src": "assets/Logo-Aardesign-Court.png",
-        "title": "Logo-Aardesign-Court"
-      },
-      {
-        "id": 1781108632847.2366,
-        "src": "assets/Logo-Aardesign-Long.png",
-        "title": "Logo-Aardesign-Long"
-      },
-      {
-        "id": 1781108632847.1287,
-        "src": "assets/Logo_Procom-Solution_Institutionnel_couleur-2.png",
-        "title": "Logo_Procom-Solution_Institutionnel_couleur-2"
-      },
-      {
-        "id": 1781108632847.4475,
-        "src": "assets/Planche-logo-02.png",
-        "title": "Planche-logo-02"
-      },
-      {
-        "id": 1781108632847.4626,
-        "src": "assets/Planche-logo-04.png",
-        "title": "Planche-logo-04"
-      },
-      {
-        "id": 1781108632847.2693,
-        "src": "assets/Planche-logo-05.png",
-        "title": "Planche-logo-05"
-      },
-      {
-        "id": 1781108632847.508,
-        "src": "assets/Planche-logo-07.png",
-        "title": "Planche-logo-07"
-      },
-      {
-        "id": 1781108632847.6575,
-        "src": "assets/Planche-logo-08.png",
-        "title": "Planche-logo-08"
-      },
-      {
-        "id": 1781108632847.444,
-        "src": "assets/TD-Homes_Logo.png",
-        "title": "TD-Homes_Logo"
-      }
-    ],
-    "animation": [
-      {
-        "src": "assets/pulse.jpg",
-        "title": "Pulse"
-      },
-      {
-        "src": "assets/aristocrate/explorateur.jpg",
-        "title": ""
-      }
-    ],
-    "perso": [
-      {
-        "src": "assets/voyages/cappadoce.jpg",
-        "title": "Cappadoce"
-      },
-      {
-        "src": "assets/voyages/fuji.jpg",
-        "title": "Fuji"
-      },
-      {
-        "src": "assets/voyages/laponie.jpg",
-        "title": "Laponie"
-      },
-      {
-        "src": "assets/voyages/amazonie.jpg",
-        "title": "Amazonie"
-      },
-      {
-        "src": "assets/voyages/canada.jpg",
-        "title": "Canada"
-      },
-      {
-        "src": "assets/voyages/pacifique.jpg",
-        "title": "Pacifique"
-      },
-      {
-        "src": "assets/voyages/cartes.jpg",
-        "title": "Cartes"
-      }
-    ],
-    "etudes": [
-      {
-        "src": "assets/formation/foret.jpg",
-        "title": ""
-      },
-      {
-        "src": "assets/formation/cathedrale.jpg",
-        "title": ""
-      },
-      {
-        "src": "assets/formation/character.jpg",
-        "title": ""
-      },
-      {
-        "src": "assets/formation/environnement.jpg",
-        "title": ""
-      },
-      {
-        "src": "assets/formation/halloween.jpg",
-        "title": ""
-      },
-      {
-        "src": "assets/formation/hoth.jpg",
-        "title": ""
-      },
-      {
-        "src": "assets/formation/mobydick.jpg",
-        "title": ""
-      },
-      {
-        "src": "assets/formation/paysage.jpg",
-        "title": ""
-      },
-      {
-        "src": "assets/formation/sf.jpg",
-        "title": ""
-      }
-    ],
-    "_meta": {
-      "digital": {
-        "legalMention": ""
-      },
-      "sites": {
-        "legalMention": ""
-      },
-      "logo": {
-        "legalMention": ""
-      },
-      "optimind": {
-        "legalMention": "Réalisé en tant que salarié pour Optimind — droits d'utilisation détenus par l'entreprise."
-      },
-      "arsene": {
-        "legalMention": "Réalisé en tant que salarié pour Arsene — droits d'utilisation détenus par l'entreprise."
-      },
-      "clopinette": {
-        "legalMention": "Réalisé en tant que salarié pour Clopinette — droits d'utilisation détenus par l'entreprise."
-      }
-    },
-    "sites": [
-      {
-        "id": 1781099783574.4592,
-        "src": "assets/procomsolution.jpg",
-        "title": "procomsolution"
-      }
-    ],
-    "optimind": [
-      {
-        "id": 1781185970443.2332,
-        "src": "assets/CCAS-IDCP.png",
-        "title": "CCAS-IDCP"
-      },
-      {
-        "id": 1781185970443.9429,
-        "src": "assets/CCAS-IDCP2.png",
-        "title": "CCAS-IDCP2"
-      },
-      {
-        "id": 1781185970443.9868,
-        "src": "assets/Optimind.jpg",
-        "title": "Optimind"
-      }
-    ]
-  },
   "_info": "aardesign config",
+  "aar_portfolio": {
+    "_projects": {
+      "digital": [
+        {
+          "id": 1790000001,
+          "title": "Les Voyages d'Arsène",
+          "client": "Arsène Valentin",
+          "year": "2024",
+          "role": "Direction artistique · Digital Painting",
+          "images": [
+            { "src": "assets/voyages/cappadoce.jpg", "title": "Cappadoce" },
+            { "src": "assets/voyages/fuji.jpg", "title": "Fuji" },
+            { "src": "assets/voyages/laponie.jpg", "title": "Laponie" },
+            { "src": "assets/voyages/amazonie.jpg", "title": "Amazonie" },
+            { "src": "assets/voyages/canada.jpg", "title": "Canada" },
+            { "src": "assets/voyages/pacifique.jpg", "title": "Pacifique" },
+            { "src": "assets/voyages/cartes.jpg", "title": "Cartes" }
+          ],
+          "context": "Arsène Valentin lançait une gamme premium sur le thème du voyage et d'un imaginaire rétrofuturiste. Chaque référence devait évoquer une destination sans jamais la représenter littéralement.",
+          "objective": "Construire un univers visuel cohérent et onirique, déclinable sur toute la gamme tout en restant identifiable en rayon.",
+          "approach": "J'ai constitué un moodboard steampunk, puis peint chaque scène en digital painting sous Photoshop. Palette chaude unifiée, cadres ornementés et compositions pensées pour l'étiquetage.",
+          "result": "Une collection de visuels marquants qui donnent à la gamme une identité premium et immédiatement reconnaissable.",
+          "tags": ["Photoshop", "Digital Painting", "Packaging", "Steampunk"],
+          "legalMention": "Réalisé en tant que salarié pour Arsène Valentin — droits d'utilisation détenus par l'entreprise."
+        },
+        {
+          "id": 1790000002,
+          "title": "Steampunk — Univers de marque",
+          "client": "Arsène Valentin",
+          "year": "2024",
+          "role": "Digital Painting",
+          "images": [
+            { "src": "assets/steam/mockup.jpg", "title": "Mockup" },
+            { "src": "assets/steam/main.jpg", "title": "Main" },
+            { "src": "assets/steam/sablier.jpg", "title": "Sablier" },
+            { "src": "assets/steam/hibou.jpg", "title": "Hibou" },
+            { "src": "assets/steam/coeur.jpg", "title": "Cœur" },
+            { "src": "assets/steam/gueule.jpg", "title": "Gueule" },
+            { "src": "assets/steam/pomme.jpg", "title": "Pomme" }
+          ],
+          "context": "Prolongement de l'univers Arsène Valentin autour d'objets et de symboles steampunk : sablier, hibou mécanique, cœur, main…",
+          "objective": "Enrichir la banque d'images de la marque avec des pièces fortes, utilisables en packaging comme en communication.",
+          "approach": "Peinture numérique détaillée sous Photoshop, avec un travail poussé sur la matière (laiton, cuir, verre) et la lumière chaude propre à l'univers.",
+          "result": "Une série d'illustrations cohérentes venant nourrir l'ensemble des supports de la marque.",
+          "tags": ["Photoshop", "Digital Painting", "Steampunk", "Packaging"],
+          "legalMention": "Réalisé en tant que salarié pour Arsène Valentin — droits d'utilisation détenus par l'entreprise."
+        },
+        {
+          "id": 1790000003,
+          "title": "L'Aristocrate",
+          "client": "Arsène Valentin",
+          "year": "2023",
+          "role": "Character Design · Digital Painting",
+          "images": [
+            { "src": "assets/aristocrate/nanti.jpg", "title": "Le Nanti" },
+            { "src": "assets/aristocrate/explorateur.jpg", "title": "L'Explorateur" },
+            { "src": "assets/aristocrate/veste.jpg", "title": "La Veste" },
+            { "src": "assets/aristocrate/casque.jpg", "title": "Le Casque" }
+          ],
+          "context": "Création d'un personnage récurrent, « L'Aristocrate », pour incarner une gamme au ton plus sombre et raffiné.",
+          "objective": "Donner vie à un personnage crédible et charismatique, déclinable en plusieurs mises en scène.",
+          "approach": "Character design puis digital painting : recherches de silhouette, costume et accessoires (casque, veste, tenue d'explorateur), avant un rendu final soigné.",
+          "result": "Un personnage à l'identité forte, support idéal pour raconter la marque.",
+          "tags": ["Photoshop", "Character Design", "Digital Painting"],
+          "legalMention": "Réalisé en tant que salarié pour Arsène Valentin — droits d'utilisation détenus par l'entreprise."
+        },
+        {
+          "id": 1790000004,
+          "title": "Dark Fantasy",
+          "client": "Projet personnel",
+          "year": "2023",
+          "role": "Digital Painting",
+          "images": [
+            { "src": "assets/dark/blood.jpg", "title": "Blood" },
+            { "src": "assets/dark/red.jpg", "title": "Red" },
+            { "src": "assets/dark/cult.jpg", "title": "Cult" },
+            { "src": "assets/dark/salem.jpg", "title": "Salem" }
+          ],
+          "context": "Série personnelle explorant une esthétique dark fantasy et une horreur atmosphérique.",
+          "objective": "Expérimenter des ambiances plus sombres et pousser mon travail de lumière et de narration.",
+          "approach": "Digital painting libre sous Photoshop : recherche d'atmosphères, de contrastes marqués et de cadrages cinématographiques.",
+          "result": "Une série personnelle qui élargit mon registre au-delà du travail commandité.",
+          "tags": ["Photoshop", "Digital Painting", "Dark Fantasy"],
+          "legalMention": ""
+        }
+      ],
+      "logo": [
+        {
+          "id": 1790000010,
+          "title": "TD Homes",
+          "client": "TD Homes",
+          "year": "",
+          "role": "Identité visuelle",
+          "images": [
+            { "src": "assets/TD-Homes_Logo.png", "title": "Logo TD Homes" }
+          ],
+          "context": "TD Homes, acteur de l'immobilier, avait besoin d'une identité claire et rassurante.",
+          "objective": "Concevoir un logo lisible, professionnel et déclinable sur tous les supports.",
+          "approach": "Recherches typographiques et symboliques autour de l'habitat, puis vectorisation sous Illustrator.",
+          "result": "Une identité sobre et solide, adaptée au secteur immobilier.",
+          "tags": ["Illustrator", "Logo", "Identité"],
+          "legalMention": ""
+        },
+        {
+          "id": 1790000011,
+          "title": "Procom Solution — Identité",
+          "client": "Procom Solution",
+          "year": "",
+          "role": "Identité visuelle",
+          "images": [
+            { "src": "assets/Logo_Procom-Solution_Institutionnel_couleur-2.png", "title": "Logo institutionnel" }
+          ],
+          "context": "Procom Solution souhaitait une identité institutionnelle en couleur.",
+          "objective": "Traduire le sérieux et la fiabilité de l'entreprise dans un logo intemporel.",
+          "approach": "Travail typographique et chromatique, déclinaisons et validations sous Illustrator.",
+          "result": "Un logo institutionnel propre, prêt à être décliné sur l'ensemble des supports.",
+          "tags": ["Illustrator", "Logo", "Institutionnel"],
+          "legalMention": ""
+        },
+        {
+          "id": 1790000012,
+          "title": "Recherches logotypes",
+          "client": "Divers",
+          "year": "",
+          "role": "Identité visuelle",
+          "images": [
+            { "src": "assets/Planche-logo-02.png", "title": "Planche 02" },
+            { "src": "assets/Planche-logo-03.png", "title": "Planche 03" },
+            { "src": "assets/Planche-logo-04.png", "title": "Planche 04" },
+            { "src": "assets/Planche-logo-05.png", "title": "Planche 05" },
+            { "src": "assets/Planche-logo-07.png", "title": "Planche 07" },
+            { "src": "assets/Planche-logo-08.png", "title": "Planche 08" }
+          ],
+          "context": "Sélection de planches de recherche et de propositions logotypes menées pour différents clients.",
+          "objective": "Explorer un large éventail de pistes graphiques avant de converger vers l'identité finale.",
+          "approach": "Recherches manuelles puis vectorielles sous Illustrator : déclinaisons de formes, de typographies et de couleurs.",
+          "result": "Un aperçu de ma démarche de conception, du croquis au logo abouti.",
+          "tags": ["Illustrator", "Logo", "Recherche"],
+          "legalMention": ""
+        },
+        {
+          "id": 1790000013,
+          "title": "Aardesign — Identité",
+          "client": "Projet personnel",
+          "year": "",
+          "role": "Direction artistique",
+          "images": [
+            { "src": "assets/Logo-Aardesign-Long.png", "title": "Version longue" },
+            { "src": "assets/Logo-Aardesign-Court.png", "title": "Version courte" }
+          ],
+          "context": "Identité visuelle de mon propre studio, aardesign.",
+          "objective": "Créer une marque personnelle cohérente avec mon univers de directeur artistique.",
+          "approach": "Conception du logotype et de ses déclinaisons (version longue et version courte) sous Illustrator.",
+          "result": "Une identité claire qui me représente et structure l'ensemble de ma communication.",
+          "tags": ["Illustrator", "Identité", "Branding"],
+          "legalMention": ""
+        }
+      ],
+      "print": [
+        {
+          "id": 1790000020,
+          "title": "Millénaire de Caen",
+          "client": "Clopinette",
+          "year": "",
+          "role": "Packaging · Illustration",
+          "images": [
+            { "src": "assets/millenaire/cadomum.jpg", "title": "Cadomum" },
+            { "src": "assets/millenaire/pomme2.jpg", "title": "Pomme" },
+            { "src": "assets/millenaire/pomme3.jpg", "title": "Pomme" },
+            { "src": "assets/Etiquette-Millenaire-Caen-interieur.png", "title": "Étiquette intérieure" }
+          ],
+          "context": "Dans le cadre du Millénaire de Caen, création d'étiquettes et de packagings en édition spéciale.",
+          "objective": "Célébrer l'événement avec un packaging à la fois local, patrimonial et premium.",
+          "approach": "Illustration, mise en page et préparation des fichiers d'impression sous InDesign, en tenant compte des contraintes techniques d'étiquetage.",
+          "result": "Une gamme événementielle qui ancre la marque dans le territoire caennais.",
+          "tags": ["InDesign", "Packaging", "Étiquette", "Print"],
+          "legalMention": "Réalisé en tant que salarié pour Clopinette — droits d'utilisation détenus par l'entreprise."
+        },
+        {
+          "id": 1790000021,
+          "title": "Saveurs — Collection saisonnière",
+          "client": "Clopinette",
+          "year": "",
+          "role": "Packaging · Illustration",
+          "images": [
+            { "src": "assets/saveurs/hiver.jpg", "title": "Hiver" },
+            { "src": "assets/saveurs/printemps.jpg", "title": "Printemps" },
+            { "src": "assets/saveurs/ete.jpg", "title": "Été" },
+            { "src": "assets/saveurs/automne.jpg", "title": "Automne" },
+            { "src": "assets/saveurs/renard.png", "title": "Renard" }
+          ],
+          "context": "Déclinaison d'une gamme de produits autour des quatre saisons.",
+          "objective": "Donner à chaque saison une identité propre tout en gardant une cohérence de collection.",
+          "approach": "Illustration et packaging saison par saison (hiver, printemps, été, automne), avec une charte commune de composition et de typographie.",
+          "result": "Une collection saisonnière lisible et attrayante en rayon.",
+          "tags": ["Packaging", "Illustration", "Print"],
+          "legalMention": "Réalisé en tant que salarié pour Clopinette — droits d'utilisation détenus par l'entreprise."
+        }
+      ],
+      "sites": [
+        {
+          "id": 1790000030,
+          "title": "Procom Solution — Site web",
+          "client": "Procom Solution",
+          "year": "",
+          "role": "Web Design · Intégration",
+          "images": [
+            { "src": "assets/procomsolution.jpg", "title": "Site Procom Solution" }
+          ],
+          "context": "Procom Solution avait besoin d'une présence web à la hauteur de son image institutionnelle.",
+          "objective": "Concevoir un site clair, moderne et rassurant, fidèle à l'identité de la marque.",
+          "approach": "Design de l'interface puis intégration en HTML/CSS/JS, avec une attention portée à la lisibilité et à la hiérarchie de l'information.",
+          "result": "Un site professionnel qui valorise l'entreprise et ses services.",
+          "tags": ["Web Design", "HTML/CSS/JS", "UI"],
+          "legalMention": ""
+        },
+        {
+          "id": 1790000031,
+          "title": "Optimind — CCAS / IDCP",
+          "client": "Optimind",
+          "year": "2018",
+          "role": "Print & Web · Communication",
+          "images": [
+            { "src": "assets/CCAS-IDCP.png", "title": "CCAS IDCP" },
+            { "src": "assets/CCAS-IDCP2.png", "title": "CCAS IDCP" },
+            { "src": "assets/Optimind.jpg", "title": "Optimind" }
+          ],
+          "context": "Chez Optimind, réalisation de supports print & web pour le projet CCAS / IDCP.",
+          "objective": "Vulgariser une information institutionnelle complexe dans des supports clairs et accessibles.",
+          "approach": "Conception graphique et mise en page (print et web), dans le respect de la charte et des contraintes du commanditaire.",
+          "result": "Des supports pédagogiques cohérents, utilisés en communication institutionnelle.",
+          "tags": ["Web Design", "Print & Web", "Communication"],
+          "legalMention": "Réalisé en tant que salarié pour Optimind — droits d'utilisation détenus par l'entreprise."
+        }
+      ],
+      "etudes": [
+        {
+          "id": 1790000040,
+          "title": "Études & Recherches",
+          "client": "Projet personnel",
+          "year": "",
+          "role": "Digital Painting",
+          "images": [
+            { "src": "assets/formation/foret.jpg", "title": "Forêt" },
+            { "src": "assets/formation/cathedrale.jpg", "title": "Cathédrale" },
+            { "src": "assets/formation/character.jpg", "title": "Character" },
+            { "src": "assets/formation/environnement.jpg", "title": "Environnement" },
+            { "src": "assets/formation/paysage.jpg", "title": "Paysage" },
+            { "src": "assets/formation/sf.jpg", "title": "Science-fiction" },
+            { "src": "assets/formation/hoth.jpg", "title": "Hoth" },
+            { "src": "assets/formation/mobydick.jpg", "title": "Moby Dick" },
+            { "src": "assets/formation/halloween.jpg", "title": "Halloween" }
+          ],
+          "context": "Ensemble d'exercices et d'études personnelles menés en formation et en autodidacte.",
+          "objective": "Progresser sur les fondamentaux : paysage, personnage, environnement, lumière et ambiance.",
+          "approach": "Digital painting sous Photoshop, en variant les sujets (forêt, cathédrale, science-fiction, Moby Dick…) pour explorer différents registres.",
+          "result": "Un socle technique solide qui nourrit l'ensemble de mon travail professionnel.",
+          "tags": ["Photoshop", "Digital Painting", "Étude"],
+          "legalMention": ""
+        },
+        {
+          "id": 1790000041,
+          "title": "Pulse",
+          "client": "Projet personnel",
+          "year": "",
+          "role": "Illustration",
+          "images": [
+            { "src": "assets/pulse.jpg", "title": "Pulse" }
+          ],
+          "context": "Projet personnel d'illustration, « Pulse ».",
+          "objective": "Explorer une composition dynamique et une ambiance colorée forte.",
+          "approach": "Digital painting sous Photoshop, recherche de rythme et de couleur.",
+          "result": "Une illustration personnelle aboutie.",
+          "tags": ["Digital Painting", "Illustration"],
+          "legalMention": ""
+        }
+      ]
+    }
+  },
   "aar_desk": {
     "sections": [
       "Portfolio",
       "Créations personnelles"
     ],
     "folders": [
-      {
-        "id": "pro",
-        "label": "Portfolio pro",
-        "action": "category:pro",
-        "icon": "grid",
-        "c1": "#0e5e7a",
-        "c2": "#29B8D9",
-        "section": "Portfolio"
-      },
-      {
-        "id": "logo",
-        "label": "Identités visuelles",
-        "action": "folder:logo",
-        "icon": "layers",
-        "c1": "#065f46",
-        "c2": "#10b981",
-        "section": "Portfolio"
-      },
       {
         "id": "digital",
         "label": "Digital Painting",
@@ -348,18 +295,26 @@
         "section": "Portfolio"
       },
       {
-        "id": "optimind",
-        "label": "Optimind",
-        "action": "folder:optimind",
-        "icon": "monitor",
-        "c1": "#d17000",
-        "c2": "#ff9b0f",
-        "section": "Portfolio",
-        "inPro": true
+        "id": "logo",
+        "label": "Identité visuelle",
+        "action": "folder:logo",
+        "icon": "pen",
+        "c1": "#6d28d9",
+        "c2": "#a78bfa",
+        "section": "Portfolio"
+      },
+      {
+        "id": "print",
+        "label": "Print & Packaging",
+        "action": "folder:print",
+        "icon": "image",
+        "c1": "#be185d",
+        "c2": "#f472b6",
+        "section": "Portfolio"
       },
       {
         "id": "sites",
-        "label": "Sites internet",
+        "label": "Web & Sites",
         "action": "folder:sites",
         "icon": "globe",
         "c1": "#1d4ed8",
@@ -368,11 +323,11 @@
       },
       {
         "id": "etudes",
-        "label": "Projets",
+        "label": "Illustration & Études",
         "action": "folder:etudes",
         "icon": "book",
-        "c1": "#1d4ed8",
-        "c2": "#3b82f6",
+        "c1": "#c2410c",
+        "c2": "#fb923c",
         "section": "Créations personnelles"
       }
     ]
@@ -393,50 +348,20 @@
     "p2": "Du packaging premium aux peintures personnelles, chaque projet est une occasion de construire un univers visuel unique, cohérent et mémorable.",
     "cta": "Travaillons ensemble →",
     "stats": [
-      {
-        "n": "9+",
-        "l": "Années d'expérience"
-      },
-      {
-        "n": "35+",
-        "l": "Œuvres réalisées"
-      },
-      {
-        "n": "8",
-        "l": "Disciplines créatives"
-      },
-      {
-        "n": "FR",
-        "l": "France · Remote · Int'l"
-      }
+      { "n": "9+", "l": "Années d'expérience" },
+      { "n": "35+", "l": "Œuvres réalisées" },
+      { "n": "8", "l": "Disciplines créatives" },
+      { "n": "FR", "l": "France · Remote · Int'l" }
     ]
   },
   "aar_cv": {
     "skills": [
-      {
-        "n": "Photoshop",
-        "p": 95
-      },
-      {
-        "n": "InDesign",
-        "p": 92
-      },
-      {
-        "n": "Illustrator",
-        "p": 90
-      },
-      {
-        "n": "Lightroom",
-        "p": 88
-      },
-      {
-        "n": "HTML/CSS/JS",
-        "p": 85
-      },
-      {
-        "n": "Digital Painting",
-        "p": 90
-      }
+      { "n": "Photoshop", "p": 95 },
+      { "n": "InDesign", "p": 92 },
+      { "n": "Illustrator", "p": 90 },
+      { "n": "Lightroom", "p": 88 },
+      { "n": "HTML/CSS/JS", "p": 85 },
+      { "n": "Digital Painting", "p": 90 }
     ],
     "experiences": [
       {
@@ -461,22 +386,10 @@
       }
     ],
     "languages": [
-      {
-        "l": "Français",
-        "n": "Natif"
-      },
-      {
-        "l": "Anglais",
-        "n": "C1"
-      },
-      {
-        "l": "Italien",
-        "n": "A2"
-      },
-      {
-        "l": "Japonais",
-        "n": "A1"
-      }
+      { "l": "Français", "n": "Natif" },
+      { "l": "Anglais", "n": "C1" },
+      { "l": "Italien", "n": "A2" },
+      { "l": "Japonais", "n": "A1" }
     ]
   },
   "aar_theme": null,
