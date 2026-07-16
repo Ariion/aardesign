@@ -522,6 +522,7 @@ text-align:center;cursor:pointer;transition:all .15s;background:transparent;
 <div class="ni" onclick="nav('nav',this)"><span class="ni-ico">≡</span>Navigation</div>
 <div class="ni" onclick="nav('marquee',this)"><span class="ni-ico">↔</span>Marquee</div>
 <div class="ni" onclick="nav('design',this)"><span class="ni-ico">◐</span>Design</div>
+<div class="ni" onclick="nav('langues',this)"><span class="ni-ico">🌐</span>Langues</div>
 </div>
 
 <div class="sb-group">
@@ -1215,6 +1216,22 @@ Inclure dans <span style="color:var(--cyan);font-weight:700">Portfolio pro</span
 </div>
 
 
+<div class="panel" id="panel-langues">
+<div class="ph">
+<div><h1>Langues <em>· Anglais</em></h1><p>Génère la version anglaise du site. Tout reste modifiable ci-dessous.</p></div>
+<button class="btn btn-gold" onclick="i18nGenerate()" id="i18nGenBtn">🌐 Générer / mettre à jour l'anglais</button>
+</div>
+<div style="background:var(--bg2);border:1px solid var(--line);border-radius:8px;padding:.8rem 1rem;margin-bottom:1.2rem;font-size:.7rem;color:var(--mid)">
+Le bouton traduit automatiquement tous les textes (dossiers, à propos, projets…) via l'IA. Tu peux ensuite corriger chaque traduction, puis <b>💾 Appliquer</b>. Sur le site, le visiteur bascule FR/EN avec le bouton 🌐.
+</div>
+<div id="i18n-list"></div>
+<div class="save-bar" style="margin-top:1rem">
+<span class="save-msg" id="i18nMsg">—</span>
+<button class="btn btn-gold" onclick="i18nSave()">💾 Appliquer sur le site</button>
+</div>
+</div>
+
+
 <div class="panel" id="panel-messages">
 <div class="ph">
 <div><h1>Messages</h1><p id="msgCount">—</p></div>
@@ -1380,7 +1397,7 @@ window.addEventListener('load', async () => {
     const r = await fetch('/api/get-config');
     if (r.ok) {
       const cfg = await r.json();
-      const keys = ['aar_portfolio','aar_desk','aar_sec_hero','aar_sec_contact','aar_sec_about','aar_cv','aar_theme','aar_sec_marquee'];
+      const keys = ['aar_portfolio','aar_desk','aar_sec_hero','aar_sec_contact','aar_sec_about','aar_cv','aar_theme','aar_sec_marquee','aar_i18n'];
       keys.forEach(k => { if (cfg[k] !== undefined) localStorage.setItem(k, JSON.stringify(cfg[k])); });
     }
   } catch(_) {}
@@ -1487,7 +1504,8 @@ projects:['Projets','Gestion des projets'],about:['À propos','Section À propos
 contact:['Contact','Section Contact'],cv:['CV','Compétences & Expériences'],nav:['Navigation','Barre de navigation'],
 marquee:['Marquee','Bandeaux défilants'],design:['Design','Couleurs & Typographie'],
 library:['Bibliothèque','Gestion des images'],bureau:['Bureau OS','Dossiers & disposition du bureau'],messages:['Messages','Boîte de réception'],
-settings:['Paramètres','Configuration système']
+settings:['Paramètres','Configuration système'],
+langues:['Langues','Version anglaise du site']
 }
 function toggleSidebar(){ document.body.classList.toggle('sb-open'); }
 function closeSidebar(){ document.body.classList.remove('sb-open'); }
@@ -1507,6 +1525,7 @@ if (name === 'library')  loadLib()
 if (name === 'messages') loadMsgs()
 if (name === 'dashboard') loadDashboard()
 if (name === 'cv') loadCV()
+if (name === 'langues') i18nRenderList()
 if (name === 'settings') {}
 }
 function qni(i) { return document.querySelectorAll('.ni')[i] }
@@ -2027,7 +2046,7 @@ function doLogout() { sessionStorage.removeItem('aar-token'); window.location.hr
 // ══════════════════════════════════════
 //  SAUVEGARDE GITHUB (persistance réelle)
 // ══════════════════════════════════════
-const AAR_CFG_KEYS=['aar_portfolio','aar_desk','aar_sec_hero','aar_sec_contact','aar_sec_about','aar_cv','aar_theme','aar_sec_marquee'];
+const AAR_CFG_KEYS=['aar_portfolio','aar_desk','aar_sec_hero','aar_sec_contact','aar_sec_about','aar_cv','aar_theme','aar_sec_marquee','aar_i18n'];
 
 async function saveToGitHub(){
 try{
@@ -2079,7 +2098,7 @@ if(status) status.textContent='Cliquez "Tester" pour vérifier la connexion serv
 }
 
 // ── Export / Import / Reset ──
-const AAR_KEYS=['aar_portfolio','aar_desk','aar_cv','aar_sec_hero','aar_sec_contact','aar_sec_about','aar_theme','aar_images','aar_cv_url'];
+const AAR_KEYS=['aar_portfolio','aar_desk','aar_cv','aar_sec_hero','aar_sec_contact','aar_sec_about','aar_theme','aar_images','aar_cv_url','aar_i18n'];
 
 function exportData(){
 const data={};
@@ -2493,6 +2512,118 @@ function pfSave(){
 pfSaveMention();
 toast('✓ Portfolio mis à jour !');
 ghSaveWithFeedback('Portfolio');
+}
+
+// ════════ i18n (traductions anglaises) ════════
+function i18nGetEn(){ try{ return (JSON.parse(localStorage.getItem('aar_i18n')||'{}').en)||{}; }catch(_){ return {}; } }
+function i18nSetEn(en){ localStorage.setItem('aar_i18n', JSON.stringify({en})); }
+
+// Construit la liste des textes FR à traduire, groupés pour l'affichage
+function i18nGatherFR(){
+  const groups=[];
+  const G=(title)=>{ const g={title,items:[]}; groups.push(g); return g; };
+  const add=(g,key,label,val)=>{ if(val&&String(val).trim()) g.items.push({key,label,fr:String(val)}); };
+
+  // Dossiers & sections (bureau)
+  try{
+    const desk=JSON.parse(localStorage.getItem('aar_desk')||'{}');
+    const g=G('Bureau — dossiers & sections');
+    (desk.sections||[]).forEach(s=>add(g,'section.'+s,'Section',s));
+    (desk.folders||[]).forEach(f=>add(g,'folder.'+f.id,'Dossier',f.label));
+  }catch(_){}
+
+  // Hero / identité
+  try{
+    const h=JSON.parse(localStorage.getItem('aar_sec_hero')||'{}');
+    const g=G('Identité'); add(g,'hero.t1','Rôle',h.t1);
+  }catch(_){}
+
+  // À propos
+  try{
+    const a=JSON.parse(localStorage.getItem('aar_sec_about')||'{}');
+    const g=G('À propos');
+    add(g,'about.p1','Paragraphe 1',a.p1);
+    add(g,'about.p2','Paragraphe 2',a.p2);
+    (a.stats||[]).forEach((s,i)=>add(g,'about.stat.'+i,'Stat',s.l));
+  }catch(_){}
+
+  // CV — expériences
+  try{
+    const cv=JSON.parse(localStorage.getItem('aar_cv')||'{}');
+    const g=G('CV — expériences');
+    (cv.experiences||[]).forEach((e,i)=>add(g,'cv.exp.'+i,e.t||('Expérience '+(i+1)),e.c));
+  }catch(_){}
+
+  // Projets
+  try{
+    const pf=JSON.parse(localStorage.getItem('aar_portfolio')||'{}');
+    const projs=pf._projects||{};
+    Object.keys(projs).forEach(fid=>{
+      (projs[fid]||[]).forEach(p=>{
+        const g=G('Projet — '+(p.title||'sans titre'));
+        const base='proj.'+p.id;
+        add(g,base+'.title','Titre',p.title);
+        add(g,base+'.role','Rôle',p.role);
+        add(g,base+'.context','Contexte',p.context);
+        add(g,base+'.objective','Objectif',p.objective);
+        add(g,base+'.approach','Démarche',p.approach);
+        add(g,base+'.result','Résultat',p.result);
+        add(g,base+'.tags','Tags',(p.tags||[]).join(', '));
+        add(g,base+'.legal','Mention légale',p.legalMention);
+      });
+    });
+  }catch(_){}
+
+  return groups.filter(g=>g.items.length);
+}
+
+function i18nRenderList(){
+  const groups=i18nGatherFR();
+  const en=i18nGetEn();
+  const box=document.getElementById('i18n-list');
+  if(!groups.length){ box.innerHTML='<div style="color:var(--mid);font-size:.8rem">Aucun texte à traduire pour l\'instant.</div>'; return; }
+  box.innerHTML=groups.map(g=>`<div style="margin-bottom:1.4rem">
+  <div style="font-size:.62rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--cyan);margin-bottom:.6rem">${g.title}</div>
+  ${g.items.map(it=>`<div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.6rem;align-items:start">
+    <div>
+      <div style="font-size:.52rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);margin-bottom:.2rem">${it.label} · FR</div>
+      <div style="font-size:.72rem;color:var(--mid);background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:.5rem .65rem;line-height:1.4">${(it.fr).replace(/</g,'&lt;')}</div>
+    </div>
+    <div>
+      <div style="font-size:.52rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--cyan);margin-bottom:.2rem">EN</div>
+      <textarea class="i18n-en" data-key="${it.key}" rows="2" style="width:100%;background:var(--bg2);border:1px solid var(--line);border-radius:6px;color:var(--ink);padding:.5rem .65rem;font-family:'Montserrat',sans-serif;font-size:.72rem;line-height:1.4;outline:none;resize:vertical" oninput="this.style.borderColor=this.value.trim()?'var(--cyan)':'var(--line)'">${(en[it.key]||'').replace(/</g,'&lt;')}</textarea>
+    </div>
+  </div>`).join('')}
+  </div>`).join('');
+  const filled=Object.keys(en).length;
+  document.getElementById('i18nMsg').textContent=filled?`${filled} traduction(s) enregistrée(s).`:'Aucune traduction pour l\'instant.';
+}
+
+async function i18nGenerate(){
+  const groups=i18nGatherFR();
+  const items={};
+  groups.forEach(g=>g.items.forEach(it=>{ items[it.key]=it.fr; }));
+  if(!Object.keys(items).length){ toast('Rien à traduire','err'); return; }
+  const btn=document.getElementById('i18nGenBtn');
+  const orig=btn.textContent; btn.disabled=true; btn.textContent='🌐 Traduction en cours…';
+  try{
+    const r=await fetch('/api/translate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({items})});
+    const d=await r.json();
+    if(d.error){ toast(d.error,'err'); return; }
+    const en={...i18nGetEn(), ...(d.translations||{})};
+    i18nSetEn(en);
+    i18nRenderList();
+    toast('✓ Version anglaise générée');
+  }catch(e){ toast('Erreur : '+e.message,'err'); }
+  finally{ btn.disabled=false; btn.textContent=orig; }
+}
+
+function i18nSave(){
+  const en={};
+  document.querySelectorAll('#i18n-list .i18n-en').forEach(t=>{ const v=t.value.trim(); if(v) en[t.dataset.key]=v; });
+  i18nSetEn(en);
+  toast('✓ Traductions appliquées');
+  ghSaveWithFeedback('Traductions');
 }
 
 // ── Mention légale ──

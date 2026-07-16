@@ -300,6 +300,18 @@ transition:opacity .2s,background .2s;
 [data-theme="light"] #theme-float{
 background:rgba(27,53,96,.06);border:1px solid rgba(27,53,96,.12);color:var(--mid);
 }
+#lang-float{
+position:fixed;bottom:22px;right:132px;z-index:9990;
+display:flex;align-items:center;gap:6px;
+background:rgba(255,255,255,.06);
+backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+color:var(--mid);padding:7px 13px;border-radius:30px;
+font:.6rem 'Montserrat',sans-serif;font-weight:700;letter-spacing:.08em;
+cursor:pointer;border:none;opacity:.5;transition:opacity .2s,background .2s;
+}
+#lang-float:hover{opacity:1;background:rgba(255,255,255,.12)}
+[data-theme="light"] #lang-float{background:rgba(27,53,96,.06);color:var(--mid)}
+@media(max-width:768px){#lang-float{display:none!important}}
 #mob-home{
 display:none;
 position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:9998;
@@ -796,6 +808,10 @@ Archives
 
 <button id="mob-home" onclick="closeAllWins()">⌂ Bureau</button>
 
+<button id="lang-float" onclick="toggleLang()" aria-label="Language">
+<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+<span id="lang-float-lbl">EN</span>
+</button>
 <button id="theme-float" onclick="toggleTheme()" aria-label="Basculer le thème">
 <svg id="tf-moon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
 <svg id="tf-sun"  viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg>
@@ -865,7 +881,7 @@ Mode clair
 
 <script>
 const GH_CONFIG_URL='/api/get-config';
-const AAR_CFG_KEYS=['aar_portfolio','aar_desk','aar_sec_hero','aar_sec_contact','aar_sec_about','aar_cv','aar_theme','aar_sec_marquee'];
+const AAR_CFG_KEYS=['aar_portfolio','aar_desk','aar_sec_hero','aar_sec_contact','aar_sec_about','aar_cv','aar_theme','aar_sec_marquee','aar_i18n'];
 
 (async function loadRemoteConfig(){
 try{
@@ -1133,8 +1149,10 @@ if(nameEl && hero.intro) nameEl.textContent=hero.intro;
 if(roleEl && hero.t1) roleEl.textContent=(hero.t1||'')+(hero.t2?' · '+hero.t2:'');
 const deskName=document.getElementById('desk-id-name');
 const deskRole=document.getElementById('desk-id-role');
+const role=TR('hero.t1',hero.t1||'');
 if(deskName && hero.intro) deskName.textContent=hero.intro.toUpperCase();
-if(deskRole && hero.t1) deskRole.textContent=(hero.t1||'')+(hero.t2?' · '+hero.t2:'');
+if(deskRole && hero.t1) deskRole.textContent=role+(hero.t2?' · '+hero.t2:'');
+if(roleEl && hero.t1) roleEl.textContent=role+(hero.t2?' · '+hero.t2:'');
 }
 }
 applyIdentity();
@@ -1251,7 +1269,7 @@ return `<div class="cv-wrap">
 <div class="cv-s-role">${role}</div>
 <a class="cv-pdf-btn" href="${cvUrl}" download target="_blank">
 <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-Télécharger le CV
+${t('cvDownload')}
 </a>
 <div class="cv-s-divider"></div>
 <div class="cv-s-contact">
@@ -1264,7 +1282,7 @@ Télécharger le CV
 <div class="cv-s-row"><span class="cv-s-ico">🏛</span><span class="cv-s-val">SIRET 924 926 538 00019</span></div>
 </div>
 <div class="cv-s-divider"></div>
-<div class="cv-s-section">Compétences</div>
+<div class="cv-s-section">${t('cvSkills')}</div>
 ${skills.map(([n,p])=>`<div class="cv-s-skill">
 <div class="cv-s-skill-name">${n}<span>${p}%</span></div>
 <div class="cv-s-skill-bar"><div class="cv-s-skill-fill" style="width:${p}%"></div></div>
@@ -1272,15 +1290,15 @@ ${skills.map(([n,p])=>`<div class="cv-s-skill">
 </div>
 <div class="cv-main">
 <div>
-<div class="cv-m-section">Expériences professionnelles</div>
-${exps.map(([t,d,c])=>`<div class="cv-tl-item"><div class="cv-tl-dot"></div><div><div class="cv-tl-title">${t}</div><div class="cv-tl-sub">${d}</div><div class="cv-tl-desc">${c}</div></div></div>`).join('')}
+<div class="cv-m-section">${t('cvExp')}</div>
+${exps.map(([ti,d,c],i)=>`<div class="cv-tl-item"><div class="cv-tl-dot"></div><div><div class="cv-tl-title">${ti}</div><div class="cv-tl-sub">${d}</div><div class="cv-tl-desc">${TR('cv.exp.'+i,c)}</div></div></div>`).join('')}
 </div>
 <div>
-<div class="cv-m-section">Diplômes &amp; Formations</div>
-${formations.map(([t,d,c])=>`<div class="cv-tl-item"><div class="cv-tl-dot" style="background:var(--cyan2)"></div><div><div class="cv-tl-title">${t}</div><div class="cv-tl-sub">${d}</div><div class="cv-tl-desc">${c}</div></div></div>`).join('')}
+<div class="cv-m-section">${t('cvEdu')}</div>
+${formations.map(([ti,d,c],i)=>`<div class="cv-tl-item"><div class="cv-tl-dot" style="background:var(--cyan2)"></div><div><div class="cv-tl-title">${ti}</div><div class="cv-tl-sub">${d}</div><div class="cv-tl-desc">${TR('cv.edu.'+i,c)}</div></div></div>`).join('')}
 </div>
 <div>
-<div class="cv-m-section">Langues</div>
+<div class="cv-m-section">${t('cvLang')}</div>
 <div class="cv-langs">${langs.map(([l,n])=>`<div class="cv-lang-pill"><div>${l}</div><div>${n}</div></div>`).join('')}</div>
 </div>
 </div>
@@ -1323,7 +1341,9 @@ return `<div class="w-profile">
 
 function buildAboutBody(){
 const ab = JSON.parse(localStorage.getItem('aar_sec_about')||'null');
-const text = ab ? (ab.p1||'')+' '+(ab.p2||'') : 'Designer pluridisciplinaire à l\'intersection du digital painting, de l\'illustration narrative et de la direction artistique. 5+ ans d\'expérience en création graphique, packaging premium et communication visuelle.';
+const p1=TR('about.p1',(ab&&ab.p1)||'');
+const p2=TR('about.p2',(ab&&ab.p2)||'');
+const text = (p1||p2) ? (p1+' '+p2).trim() : 'Designer pluridisciplinaire à l\'intersection du digital painting, de l\'illustration narrative et de la direction artistique.';
 const stats = ab?.stats || [{n:'5+',l:'Années exp.'},{n:'35+',l:'Œuvres'},{n:'8',l:'Disciplines'}];
 return `<div class="w-profile">
 <div class="w-ava"><img src="assets/photo.png" alt="" onerror="this.src='assets/Logo-Aardesign-Court.png'"></div>
@@ -1331,7 +1351,7 @@ return `<div class="w-profile">
 </div>
 <p style="font-size:.78rem;line-height:1.75;color:var(--mid);margin-bottom:14px">${text}</p>
 <div style="display:grid;grid-template-columns:repeat(${Math.min(stats.length,4)},1fr);gap:8px;margin-bottom:14px">
-${stats.slice(0,4).map(s=>`<div class="ab-stat"><div class="ab-stat-n">${s.n}</div><div class="ab-stat-l">${s.l}</div></div>`).join('')}
+${stats.slice(0,4).map((s,i)=>`<div class="ab-stat"><div class="ab-stat-n">${s.n}</div><div class="ab-stat-l">${TR('about.stat.'+i,s.l)}</div></div>`).join('')}
 </div>
 <div style="display:flex;flex-wrap:wrap;gap:5px">
 ${'🎨 Digital Painting,✏️ Illustration,📐 Direction Artistique,📦 Packaging,🌐 Web Design,📷 Photographie'.split(',').map(d=>`<span class="ab-tag">${d}</span>`).join('')}
@@ -1627,24 +1647,26 @@ const st=_pvData[fid]; if(!st) return;
 const wrap=document.getElementById('pv-wrap-'+fid); if(!wrap) return;
 const projects=st.projects;
 if(!projects.length){
-wrap.innerHTML=`<div class="pv-empty"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" width="42" height="42"><rect x="4" y="10" width="40" height="28" rx="3"/><circle cx="18" cy="22" r="4"/><path d="m4 32 12-10 8 8 6-5 14 13"/></svg><p>Aucun projet</p><p style="font-size:.65rem;opacity:.6">Admin → Portfolio OS</p></div>`;
+wrap.innerHTML=`<div class="pv-empty"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" width="42" height="42"><rect x="4" y="10" width="40" height="28" rx="3"/><circle cx="18" cy="22" r="4"/><path d="m4 32 12-10 8 8 6-5 14 13"/></svg><p>${t('noproj')}</p><p style="font-size:.65rem;opacity:.6">Admin → Portfolio OS</p></div>`;
 return;
 }
 const p=projects[st.p]||projects[0];
+const pid='proj.'+p.id;
 const imgs=p.images||[];
 const img=imgs[st.i]||imgs[0]||{src:''};
 const multi=projects.length>1;
 
 const blocks=[
-['Le contexte',p.context],['L\'objectif',p.objective],['Ma démarche',p.approach],['Le résultat',p.result]
+[t('ctx'),TR(pid+'.context',p.context)],[t('goal'),TR(pid+'.objective',p.objective)],[t('approach'),TR(pid+'.approach',p.approach)],[t('outcome'),TR(pid+'.result',p.result)]
 ].filter(b=>b[1]&&b[1].trim())
 .map(b=>`<div class="pv-block"><div class="pv-block-l">${b[0]}</div><p class="pv-block-p">${_esc(b[1]).replace(/\n/g,'<br>')}</p></div>`).join('');
 
-const facts=[['Client',p.client],['Rôle',p.role],['Année',p.year]].filter(f=>f[1]&&f[1].trim())
+const facts=[[t('client'),p.client],[t('role'),TR(pid+'.role',p.role)],[t('year'),p.year]].filter(f=>f[1]&&f[1].trim())
 .map(f=>`<div><div class="pv-fact-l">${f[0]}</div><div class="pv-fact-v">${_esc(f[1])}</div></div>`).join('');
 
-const tags=(p.tags||[]).length?`<div class="pv-tags">${p.tags.map(t=>`<span class="pv-tag">${_esc(t)}</span>`).join('')}</div>`:'';
-const legal=p.legalMention?`<p class="pv-legal">${_esc(p.legalMention)}</p>`:'';
+const tagArr=(TR(pid+'.tags',(p.tags||[]).join(', '))||'').split(',').map(x=>x.trim()).filter(Boolean);
+const tags=tagArr.length?`<div class="pv-tags">${tagArr.map(tg=>`<span class="pv-tag">${_esc(tg)}</span>`).join('')}</div>`:'';
+const legal=p.legalMention?`<p class="pv-legal">${_esc(TR(pid+'.legal',p.legalMention))}</p>`:'';
 
 const thumbs=imgs.length>1?`<div class="pv-thumbs">${imgs.map((im,k)=>`<div class="pv-thumb${k===st.i?' on':''}" style="background-image:url('${im.src}')" onclick="pvImg('${fid}',${k})"></div>`).join('')}</div>`:'';
 
@@ -1657,7 +1679,7 @@ ${thumbs}
 <div class="pv-info">
 ${multi?`<div class="pv-counter">${st.p+1} / ${projects.length}</div>`:''}
 <div class="pv-cat">${_esc([p.client,p.year].filter(Boolean).join(' · ')||st.folder)}</div>
-<div class="pv-title">${_esc(p.title||'Sans titre')}</div>
+<div class="pv-title">${_esc(TR(pid+'.title',p.title)||(aarLang()==='en'?'Untitled':'Sans titre'))}</div>
 ${facts?`<div class="pv-facts">${facts}</div>`:''}
 ${blocks}
 ${tags}
@@ -1710,6 +1732,47 @@ else if(e.key==='ArrowRight') go(idx+1);
 });
 if(imgs.length<=1){ lb.querySelector('#lb-prev').style.display='none'; lb.querySelector('#lb-next').style.display='none'; }
 }
+
+// ══════════ i18n (FR / EN) ══════════
+function aarLang(){ return localStorage.getItem('aar_lang')==='en' ? 'en' : 'fr'; }
+function setLang(l){ localStorage.setItem('aar_lang', l==='en'?'en':'fr'); }
+// Traductions de contenu (généré via admin) : { en: { "chemin": "texte" } }
+function aarI18n(){ try{ return JSON.parse(localStorage.getItem('aar_i18n')||'{}'); }catch(_){ return {}; } }
+// TR(chemin, texteFR) → renvoie l'EN si dispo et langue=en, sinon le FR
+function TR(path, fr){
+  if(aarLang()!=='en') return fr;
+  const dict=(aarI18n().en)||{};
+  const v=dict[path];
+  return (v!==undefined && v!==null && v!=='') ? v : fr;
+}
+// Libellés d'interface (statiques)
+const UI_STR={
+  fr:{ cv:'CV', contact:'Contact', message:'Message', about:'À propos',
+    ctx:'Le contexte', goal:'L\'objectif', approach:'Ma démarche', outcome:'Le résultat',
+    client:'Client', role:'Rôle', year:'Année', noproj:'Aucun projet',
+    themeLight:' Mode clair', themeDark:'Mode sombre',
+    write:'Écrire', copy:'Copier', copied:'Copié !', email:'Email', phone:'Téléphone',
+    msgTitle:'Message', msgPlaceholder:'Bonjour Anthony, je vous contacte au sujet de…', send:'Envoyer',
+    cvSkills:'Compétences', cvExp:'Expériences professionnelles', cvEdu:'Diplômes & Formations', cvLang:'Langues', cvDownload:'Télécharger le CV' },
+  en:{ cv:'Resume', contact:'Contact', message:'Message', about:'About',
+    ctx:'The context', goal:'The goal', approach:'My approach', outcome:'The outcome',
+    client:'Client', role:'Role', year:'Year', noproj:'No project',
+    themeLight:' Light mode', themeDark:'Dark mode',
+    write:'Write', copy:'Copy', copied:'Copied!', email:'Email', phone:'Phone',
+    msgTitle:'Message', msgPlaceholder:'Hi Anthony, I\'m reaching out about…', send:'Send',
+    cvSkills:'Skills', cvExp:'Work experience', cvEdu:'Education & Training', cvLang:'Languages', cvDownload:'Download resume' }
+};
+function t(k){ return (UI_STR[aarLang()]||UI_STR.fr)[k] || (UI_STR.fr[k]||k); }
+// Applique les libellés statiques du DOM (dock, bouton thème, langue)
+function applyStaticLang(){
+  const set=(id,val)=>{ const e=document.querySelector(id); if(e) e.textContent=val; };
+  const dock=document.querySelectorAll('#desk-apps .d-icon-label');
+  const keys=['cv','contact','message','about'];
+  dock.forEach((el,i)=>{ if(keys[i]) el.textContent=t(keys[i]); });
+  const lb=document.getElementById('lang-float-lbl'); if(lb) lb.textContent=aarLang()==='en'?'FR':'EN';
+  document.documentElement.lang=aarLang();
+}
+function toggleLang(){ setLang(aarLang()==='en'?'fr':'en'); location.reload(); }
 
 const DESK_ICONS={
 grid:'<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
@@ -1777,13 +1840,13 @@ container.innerHTML=data.sections.map(sec=>{
 const folders=bySection[sec]||[];
 if(!folders.length) return '';
 return `<div class="desk-section">
-<div class="desk-section-label">${sec}</div>
+<div class="desk-section-label">${TR('section.'+sec,sec)}</div>
 <div class="desk-folders-row">
 ${folders.map(f=>`<div class="d-folder" onclick="${deskFolderAction(f.action)}">
 <div class="d-folder-ico" style="background:linear-gradient(145deg,${f.c1||'#0e5e7a'},${f.c2||'#29B8D9'})">
 <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" width="32" height="32">${deskFolderSvg(f.icon)}</svg>
 </div>
-<span class="d-folder-label">${f.label}</span>
+<span class="d-folder-label">${TR('folder.'+f.id,f.label)}</span>
 </div>`).join('')}
 </div>
 </div>`;
@@ -1800,6 +1863,7 @@ ${folders.map(f=>`<div class="d-folder" onclick="${deskFolderAction(f.action)}">
   }catch(_){}
 })();
 renderDesktopFolders();
+applyStaticLang();
 
 document.getElementById('admin-submit').addEventListener('click',async()=>{
 const btn=document.getElementById('admin-submit');
