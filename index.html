@@ -2,6 +2,7 @@
 <html lang="fr" data-theme="dark">
 <head>
 <meta charset="UTF-8">
+<base href="/">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>aardesign — Anthony Armand</title>
 <meta name="description" content="Anthony Armand — Directeur Artistique & Designer pluridisciplinaire basé à Caen. Digital painting, illustration narrative, direction artistique, packaging premium.">
@@ -311,7 +312,7 @@ cursor:pointer;border:none;opacity:.5;transition:opacity .2s,background .2s;
 }
 #lang-float:hover{opacity:1;background:rgba(255,255,255,.12)}
 [data-theme="light"] #lang-float{background:rgba(27,53,96,.06);color:var(--mid)}
-@media(max-width:768px){#lang-float{display:none!important}}
+@media(max-width:768px){#lang-float{right:auto;left:16px;bottom:16px;opacity:.85}}
 #mob-home{
 display:none;
 position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:9998;
@@ -1733,9 +1734,8 @@ else if(e.key==='ArrowRight') go(idx+1);
 if(imgs.length<=1){ lb.querySelector('#lb-prev').style.display='none'; lb.querySelector('#lb-next').style.display='none'; }
 }
 
-// ══════════ i18n (FR / EN) ══════════
-function aarLang(){ return localStorage.getItem('aar_lang')==='en' ? 'en' : 'fr'; }
-function setLang(l){ localStorage.setItem('aar_lang', l==='en'?'en':'fr'); }
+// ══════════ i18n (FR / EN) — langue déterminée par l'URL (/en) ══════════
+function aarLang(){ return /^\/en(\/|$)/i.test(location.pathname) ? 'en' : 'fr'; }
 // Traductions de contenu (généré via admin) : { en: { "chemin": "texte" } }
 function aarI18n(){ try{ return JSON.parse(localStorage.getItem('aar_i18n')||'{}'); }catch(_){ return {}; } }
 // TR(chemin, texteFR) → renvoie l'EN si dispo et langue=en, sinon le FR
@@ -1772,7 +1772,7 @@ function applyStaticLang(){
   const lb=document.getElementById('lang-float-lbl'); if(lb) lb.textContent=aarLang()==='en'?'FR':'EN';
   document.documentElement.lang=aarLang();
 }
-function toggleLang(){ setLang(aarLang()==='en'?'fr':'en'); location.reload(); }
+function toggleLang(){ location.href = aarLang()==='en' ? '/' : '/en'; }
 
 const DESK_ICONS={
 grid:'<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
