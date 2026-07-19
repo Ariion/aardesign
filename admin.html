@@ -1027,6 +1027,11 @@ text-align:center;cursor:pointer;transition:all .15s;background:transparent;
 <div class="pf-field"><label>Le résultat <span style="opacity:.5;text-transform:none;letter-spacing:0">(optionnel)</span></label><textarea id="pfp-result" oninput="pfProjField('result',this.value)" placeholder="L'impact, le rendu final…"></textarea></div>
 <div class="pf-field"><label>Tags <span style="opacity:.5;text-transform:none;letter-spacing:0">(séparés par des virgules)</span></label><input type="text" id="pfp-tags" oninput="pfProjField('tags',this.value)" placeholder="Photoshop, Packaging, Steampunk"></div>
 
+<label style="display:inline-flex;align-items:center;gap:.5rem;font-size:.66rem;font-weight:600;color:var(--mid);cursor:pointer;margin-bottom:1rem">
+<input type="checkbox" id="pfp-light" onchange="pfProjField('light',this.checked)" style="accent-color:var(--cyan);width:14px;height:14px;cursor:pointer">
+Visuel sur <span style="color:var(--cyan);font-weight:700">fond clair</span> (logos, images sur blanc)
+</label>
+
 <div style="display:flex;align-items:center;gap:.6rem;margin:.2rem 0 1rem;flex-wrap:wrap">
 <button class="btn btn-ink btn-sm" id="pfp-gen" onclick="pfGenerateDesc()" style="display:inline-flex;align-items:center;gap:.4rem">✨ Générer les descriptions</button>
 <span style="font-size:.58rem;color:var(--mid)">Remplit contexte · objectif · démarche · résultat à partir du titre, client, rôle et tags.</span>
@@ -2359,6 +2364,7 @@ function pfProjectEdit(idx){
   document.getElementById('pfp-approach').value=p.approach||'';
   document.getElementById('pfp-result').value=p.result||'';
   document.getElementById('pfp-tags').value=(p.tags||[]).join(', ');
+  const lightChk=document.getElementById('pfp-light'); if(lightChk) lightChk.checked=!!p.light;
   document.getElementById('pf-url-form').style.display='none';
   pfLoadMention();
   pfRenderProjImages();
@@ -2563,6 +2569,7 @@ function i18nGatherFR(){
         const g=G('Projet — '+(p.title||'sans titre'));
         const base='proj.'+p.id;
         add(g,base+'.title','Titre',p.title);
+        add(g,base+'.client','Client',p.client);
         add(g,base+'.role','Rôle',p.role);
         add(g,base+'.context','Contexte',p.context);
         add(g,base+'.objective','Objectif',p.objective);

@@ -639,36 +639,97 @@ transition:background .15s,border-color .15s;
 .ab-stat-l{font-size:.6rem;color:var(--mid);margin-top:2px}
 .ab-tag{background:var(--chip-bg);border-radius:4px;padding:3px 8px;font-size:.65rem;color:var(--ink)}
 
-/* ── Vue projet (portfolio) ── */
-.pv-wrap{display:grid;grid-template-columns:1.15fr 1fr;height:100%}
-@media(max-width:640px){.pv-wrap{grid-template-columns:1fr;grid-template-rows:minmax(220px,45%) 1fr}}
-.pv-visual{position:relative;overflow:hidden;background:#0a0f1e;display:flex;align-items:center;justify-content:center}
-.pv-mainimg{width:100%;height:100%;object-fit:cover;display:block;cursor:zoom-in}
-.pv-noimg{font-size:3rem;opacity:.3}
-.pv-nav{position:absolute;top:50%;transform:translateY(-50%);z-index:4;width:40px;height:40px;border-radius:50%;
-background:rgba(8,14,28,.62);border:1px solid rgba(255,255,255,.18);color:#fff;font-size:1.4rem;line-height:1;
-display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(6px);transition:background .15s,transform .15s}
-.pv-nav:hover{background:rgba(41,184,217,.75);transform:translateY(-50%) scale(1.08)}
-.pv-nav-l{left:12px}.pv-nav-r{right:12px}
-.pv-thumbs{position:absolute;bottom:12px;left:12px;right:12px;z-index:3;display:flex;gap:6px;overflow-x:auto;padding:2px;justify-content:center}
-.pv-thumbs::-webkit-scrollbar{height:0}
-.pv-thumb{flex:0 0 44px;height:44px;border-radius:7px;background-size:cover;background-position:center;cursor:pointer;
-border:2px solid rgba(255,255,255,.35);opacity:.7;transition:opacity .15s,border-color .15s}
-.pv-thumb:hover{opacity:1}
-.pv-thumb.on{opacity:1;border-color:var(--cyan)}
-.pv-info{padding:24px 26px 28px;display:flex;flex-direction:column;gap:16px;overflow-y:auto;background:var(--win-bg,rgba(7,12,30,.6))}
-.pv-counter{font-size:.58rem;font-weight:700;letter-spacing:.1em;color:var(--mid);align-self:flex-start;border:1px solid var(--line);border-radius:20px;padding:3px 10px}
-.pv-cat{font-size:.56rem;letter-spacing:.22em;text-transform:uppercase;color:var(--cyan);font-weight:800}
-.pv-title{font-size:1.5rem;font-weight:800;letter-spacing:-.02em;line-height:1.08;margin-top:-6px;color:var(--ink)}
-.pv-facts{display:flex;gap:22px;flex-wrap:wrap;padding:13px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-.pv-fact-l{font-size:.54rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mid);font-weight:700}
-.pv-fact-v{font-size:.8rem;font-weight:600;margin-top:3px;color:var(--ink)}
-.pv-block-l{font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--cyan);font-weight:800;margin-bottom:6px}
-.pv-block-p{font-size:.82rem;color:var(--ink);opacity:.86;line-height:1.65}
-.pv-tags{display:flex;gap:7px;flex-wrap:wrap}
-.pv-tag{font-size:.62rem;color:var(--mid);background:rgba(41,184,217,.08);border:1px solid rgba(41,184,217,.2);border-radius:20px;padding:4px 11px}
-.pv-legal{font-size:.58rem;color:var(--mid);font-style:italic;border-top:1px solid var(--line);padding-top:12px;opacity:.8}
-.pv-empty{grid-column:1/-1;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:.6rem;color:var(--mid);text-align:center}
+/* ══════════ Vue projet — CINÉMATIQUE (A) ══════════ */
+.pv-wrap{position:relative;height:100%;overflow:hidden;background:#0a0f1e}
+.pv-cine{position:absolute;inset:0;overflow:hidden}
+.pv-cine-bg{position:absolute;inset:0;background-size:cover;background-position:center;transition:opacity .4s;animation:pvKen 18s ease-out both}
+@keyframes pvKen{from{transform:scale(1.06)}to{transform:scale(1)}}
+.pv-cine-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(95deg,rgba(4,9,20,.94) 0%,rgba(4,9,20,.72) 34%,rgba(4,9,20,.15) 62%,transparent 80%)}
+.pv-cine.light .pv-cine-bg{background-size:contain;background-repeat:no-repeat;background-color:#eef1f6;animation:none}
+.pv-cine.light .pv-cine-bg::after{background:linear-gradient(95deg,rgba(4,9,20,.96) 0%,rgba(4,9,20,.8) 30%,rgba(4,9,20,.2) 55%,transparent 72%)}
+.pv-panel{position:relative;z-index:3;height:100%;width:min(58%,540px);min-width:300px;
+display:flex;flex-direction:column;justify-content:flex-end;gap:14px;padding:34px 34px 30px;overflow-y:auto}
+.pv-panel::-webkit-scrollbar{width:0}
+@media(max-width:640px){.pv-panel{width:100%;padding:22px 20px 24px}
+.pv-cine-bg::after{background:linear-gradient(0deg,rgba(4,9,20,.96) 0%,rgba(4,9,20,.6) 45%,rgba(4,9,20,.1) 75%)}}
+.pv-eyebrow{font-size:.58rem;letter-spacing:.22em;text-transform:uppercase;color:var(--cyan);font-weight:800}
+.pv-title{font-size:2rem;font-weight:800;letter-spacing:-.03em;line-height:1.02;color:#fff;text-wrap:balance}
+@media(max-width:640px){.pv-title{font-size:1.5rem}}
+.pv-facts{display:flex;gap:20px;flex-wrap:wrap;padding:12px 0;border-top:1px solid rgba(255,255,255,.14);border-bottom:1px solid rgba(255,255,255,.14)}
+.pv-fact-l{font-size:.5rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mid);font-weight:700}
+.pv-fact-v{font-size:.78rem;font-weight:600;margin-top:2px;color:#fff}
+.pv-block-l{font-size:.56rem;letter-spacing:.16em;text-transform:uppercase;color:var(--cyan);font-weight:800;margin-bottom:5px}
+.pv-block-p{font-size:.82rem;color:#d4deec;line-height:1.62}
+.pv-block{margin-bottom:2px}
+.pv-tags{display:flex;gap:6px;flex-wrap:wrap}
+.pv-tag{font-size:.6rem;color:#cfe6ee;background:rgba(41,184,217,.12);border:1px solid rgba(41,184,217,.28);border-radius:20px;padding:4px 11px}
+.pv-legal{font-size:.56rem;color:var(--mid);font-style:italic;padding-top:6px;opacity:.8}
+/* nav projets */
+.pv-nav{position:absolute;top:50%;transform:translateY(-50%);z-index:5;width:42px;height:42px;border-radius:50%;
+background:rgba(8,14,28,.5);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:1.5rem;line-height:1;
+display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(8px);transition:background .15s,transform .15s}
+.pv-nav:hover{background:rgba(41,184,217,.8);transform:translateY(-50%) scale(1.08)}
+.pv-nav-l{left:16px}.pv-nav-r{right:16px}
+@media(max-width:640px){.pv-nav-l{left:8px}.pv-nav-r{right:8px}.pv-nav{width:36px;height:36px}}
+/* pellicule images */
+.pv-film{position:absolute;bottom:18px;right:20px;z-index:4;display:flex;gap:8px;max-width:46%;overflow-x:auto;padding:2px}
+.pv-film::-webkit-scrollbar{height:0}
+.pv-thumb{flex:0 0 50px;height:50px;border-radius:8px;background-size:cover;background-position:center;cursor:pointer;
+border:2px solid rgba(255,255,255,.35);opacity:.65;transition:opacity .15s,border-color .15s,transform .15s}
+.pv-thumb:hover{opacity:1;transform:translateY(-2px)}
+.pv-thumb.on{opacity:1;border-color:#fff}
+@media(max-width:640px){.pv-film{display:none}}
+/* bouton grille + compteur */
+.pv-topbar{position:absolute;top:16px;right:16px;z-index:5;display:flex;gap:8px;align-items:center}
+.pv-counter{font-size:.56rem;font-weight:700;letter-spacing:.08em;color:#fff;background:rgba(8,14,28,.5);border:1px solid rgba(255,255,255,.18);border-radius:20px;padding:5px 11px;backdrop-filter:blur(8px)}
+.pv-gridbtn{width:36px;height:36px;border-radius:10px;background:rgba(8,14,28,.5);border:1px solid rgba(255,255,255,.18);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(8px);transition:background .15s}
+.pv-gridbtn:hover{background:rgba(41,184,217,.8)}
+.pv-noimg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:3rem;opacity:.3}
+.pv-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:.6rem;color:var(--mid);text-align:center}
+
+/* ══════════ Galerie magazine (B) — overlay ══════════ */
+.pv-grid-ov{position:absolute;inset:0;z-index:20;background:rgba(6,11,22,.985);backdrop-filter:blur(16px);
+display:flex;flex-direction:column;padding:20px 22px;animation:pvFade .2s ease both}
+@keyframes pvFade{from{opacity:0}to{opacity:1}}
+.pv-grid-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-shrink:0}
+.pv-grid-h{font-size:1.05rem;font-weight:800;color:#fff}
+.pv-grid-close{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.1);border:none;color:#fff;cursor:pointer;font-size:1rem}
+.pv-grid-close:hover{background:rgba(255,95,87,.8)}
+.pv-mag{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:100px;gap:10px;overflow-y:auto;padding:2px}
+@media(max-width:640px){.pv-mag{grid-template-columns:repeat(2,1fr)}}
+.pv-mag-card{border-radius:11px;overflow:hidden;position:relative;cursor:pointer;background:#0d1424 var(--mc,none);background-size:cover;background-position:center;border:1px solid var(--line)}
+.pv-mag-card::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.75),transparent 55%);transition:opacity .2s}
+.pv-mag-card:hover{transform:translateY(-3px);border-color:var(--cyan)}
+.pv-mag-card.on{border-color:var(--cyan);box-shadow:0 0 0 1px var(--cyan)}
+.pv-mag-cap{position:absolute;left:0;bottom:0;z-index:2;padding:10px 12px}
+.pv-mag-cap .t{font-size:.82rem;font-weight:700;color:#fff;line-height:1.15}
+.pv-mag-cap .s{font-size:.6rem;color:rgba(255,255,255,.7);margin-top:2px}
+/* tailles asymétriques */
+.pv-mag-card:nth-child(6n+1){grid-column:span 2;grid-row:span 2}
+.pv-mag-card:nth-child(6n+4){grid-row:span 2}
+@media(max-width:640px){.pv-mag-card:nth-child(6n+1){grid-column:span 2;grid-row:span 1}.pv-mag-card:nth-child(6n+4){grid-row:span 1}}
+
+/* ══════════ Étude de cas scrollable (C) ══════════ */
+.pv-cs{position:absolute;inset:0;overflow-y:auto;background:var(--bg2,#0a1424)}
+.pv-cs::-webkit-scrollbar{width:8px}.pv-cs::-webkit-scrollbar-thumb{background:var(--line2,rgba(255,255,255,.14));border-radius:8px}
+.pv-cs-hero{height:44%;min-height:200px;position:relative;background-size:cover;background-position:center;display:flex;align-items:flex-end;padding:26px 32px}
+.pv-cs-hero::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(6,11,22,.92),transparent 60%)}
+.pv-cs-hero-in{position:relative;z-index:2}
+.pv-cs-eyebrow{font-size:.56rem;letter-spacing:.2em;text-transform:uppercase;color:var(--cyan);font-weight:800;margin-bottom:8px}
+.pv-cs-title{font-size:1.9rem;font-weight:800;letter-spacing:-.02em;line-height:1.02;color:#fff}
+.pv-cs-metabar{display:flex;gap:26px;flex-wrap:wrap;padding:18px 32px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.015)}
+.pv-cs-metabar div{font-size:.62rem;color:var(--mid)}.pv-cs-metabar b{color:var(--ink);font-weight:600;display:block;font-size:.82rem;margin-top:2px}
+.pv-cs-body{padding:26px 32px;display:flex;flex-direction:column;gap:22px}
+.pv-cs-block{display:grid;grid-template-columns:130px 1fr;gap:20px;align-items:start}
+@media(max-width:640px){.pv-cs-block{grid-template-columns:1fr;gap:5px}}
+.pv-cs-bl-l{font-size:.58rem;letter-spacing:.16em;text-transform:uppercase;color:var(--cyan);font-weight:800;padding-top:2px}
+.pv-cs-bl-p{font-size:.86rem;color:#c9d6e8;line-height:1.68}
+.pv-cs-imgs{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 32px 30px}
+.pv-cs-imgs .im{border-radius:10px;overflow:hidden;background:#0d1424;border:1px solid var(--line);cursor:zoom-in}
+.pv-cs-imgs .im img{width:100%;display:block}
+.pv-cs-imgs .im:first-child{grid-column:span 2}
+.pv-cs-tags{display:flex;gap:6px;flex-wrap:wrap;padding:0 32px 8px}
+.pv-cs-legal{font-size:.58rem;color:var(--mid);font-style:italic;padding:0 32px 26px;opacity:.8}
 
 .gal-wrap{display:flex;flex-direction:column;height:100%}
 .gal-header{display:flex;align-items:center;gap:.5rem;padding:.5rem .8rem;border-bottom:1px solid var(--line);flex-shrink:0;flex-wrap:wrap;gap:.4rem}
@@ -1619,7 +1680,7 @@ if(openWins[winId]){ restoreWin(winId); return; }
 const ico=`<svg viewBox="0 0 16 16" fill="none"><path d="M1 5a1.5 1.5 0 0 1 1.5-1.5H6l2 2h6.5A1.5 1.5 0 0 1 16 7v6.5A1.5 1.5 0 0 1 14.5 15h-13A1.5 1.5 0 0 1 1 13.5z" fill="${fd.color}"/></svg>`;
 
 const projects=pvProjectsFor(fid);
-_pvData[fid]={projects,p:0,i:0,folder:fd.label};
+_pvData[fid]={projects,p:0,i:0,folder:fd.label,gridOpen:false};
 
 const body=`<div class="pv-wrap" id="pv-wrap-${fid}"></div>`;
 createWin(winId,fd.label,ico,body,880,560);
@@ -1643,58 +1704,124 @@ return [];
 const _pvData={};
 const _esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 
+// Blocs de récit communs (contexte/objectif/démarche/résultat)
+function pvBlocks(p,pid){
+return [
+[t('ctx'),TR(pid+'.context',p.context)],[t('goal'),TR(pid+'.objective',p.objective)],[t('approach'),TR(pid+'.approach',p.approach)],[t('outcome'),TR(pid+'.result',p.result)]
+].filter(b=>b[1]&&b[1].trim());
+}
+function pvClientOf(p,pid){ return TR(pid+'.client',p.client); }
+function pvFactsArr(p,pid){
+return [[t('client'),pvClientOf(p,pid)],[t('role'),TR(pid+'.role',p.role)],[t('year'),p.year]].filter(f=>f[1]&&f[1].trim());
+}
+function pvTagArr(p,pid){ return (TR(pid+'.tags',(p.tags||[]).join(', '))||'').split(',').map(x=>x.trim()).filter(Boolean); }
+function pvTitleOf(p,pid){ return TR(pid+'.title',p.title)||(aarLang()==='en'?'Untitled':'Sans titre'); }
+
 function pvRender(fid){
 const st=_pvData[fid]; if(!st) return;
 const wrap=document.getElementById('pv-wrap-'+fid); if(!wrap) return;
-const projects=st.projects;
-if(!projects.length){
+if(!st.projects.length){
 wrap.innerHTML=`<div class="pv-empty"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" width="42" height="42"><rect x="4" y="10" width="40" height="28" rx="3"/><circle cx="18" cy="22" r="4"/><path d="m4 32 12-10 8 8 6-5 14 13"/></svg><p>${t('noproj')}</p><p style="font-size:.65rem;opacity:.6">Admin → Portfolio OS</p></div>`;
 return;
 }
-const p=projects[st.p]||projects[0];
+const p=st.projects[st.p]||st.projects[0];
+if(fid==='sites') return pvRenderCS(fid,wrap,p);
+pvRenderCine(fid,wrap,p);
+}
+
+// ── Vue cinématique (A) ──
+function pvRenderCine(fid,wrap,p){
+const st=_pvData[fid];const projects=st.projects;
 const pid='proj.'+p.id;
 const imgs=p.images||[];
-const img=imgs[st.i]||imgs[0]||{src:''};
+const cover=imgs[st.i]||imgs[0]||{src:''};
 const multi=projects.length>1;
-
-const blocks=[
-[t('ctx'),TR(pid+'.context',p.context)],[t('goal'),TR(pid+'.objective',p.objective)],[t('approach'),TR(pid+'.approach',p.approach)],[t('outcome'),TR(pid+'.result',p.result)]
-].filter(b=>b[1]&&b[1].trim())
-.map(b=>`<div class="pv-block"><div class="pv-block-l">${b[0]}</div><p class="pv-block-p">${_esc(b[1]).replace(/\n/g,'<br>')}</p></div>`).join('');
-
-const facts=[[t('client'),p.client],[t('role'),TR(pid+'.role',p.role)],[t('year'),p.year]].filter(f=>f[1]&&f[1].trim())
-.map(f=>`<div><div class="pv-fact-l">${f[0]}</div><div class="pv-fact-v">${_esc(f[1])}</div></div>`).join('');
-
-const tagArr=(TR(pid+'.tags',(p.tags||[]).join(', '))||'').split(',').map(x=>x.trim()).filter(Boolean);
+const light=(p.light!==undefined)?p.light:(fid==='logo');
+const eyebrow=[pvClientOf(p,pid),p.year].filter(Boolean).join(' · ')||st.folder;
+const facts=pvFactsArr(p,pid).map(f=>`<div><div class="pv-fact-l">${f[0]}</div><div class="pv-fact-v">${_esc(f[1])}</div></div>`).join('');
+const blocks=pvBlocks(p,pid).map(b=>`<div class="pv-block"><div class="pv-block-l">${b[0]}</div><p class="pv-block-p">${_esc(b[1]).replace(/\n/g,'<br>')}</p></div>`).join('');
+const tagArr=pvTagArr(p,pid);
 const tags=tagArr.length?`<div class="pv-tags">${tagArr.map(tg=>`<span class="pv-tag">${_esc(tg)}</span>`).join('')}</div>`:'';
 const legal=p.legalMention?`<p class="pv-legal">${_esc(TR(pid+'.legal',p.legalMention))}</p>`:'';
-
-const thumbs=imgs.length>1?`<div class="pv-thumbs">${imgs.map((im,k)=>`<div class="pv-thumb${k===st.i?' on':''}" style="background-image:url('${im.src}')" onclick="pvImg('${fid}',${k})"></div>`).join('')}</div>`:'';
-
+const film=imgs.length>1?`<div class="pv-film">${imgs.map((im,k)=>`<div class="pv-thumb${k===st.i?' on':''}" style="background-image:url('${im.src}')" onclick="pvImg('${fid}',${k})"></div>`).join('')}</div>`:'';
+const gridIco=`<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>`;
 wrap.innerHTML=`
-<div class="pv-visual">
-${img.src?`<img class="pv-mainimg" src="${img.src}" alt="${_esc(img.title)}" onclick="pvLightbox('${fid}')">`:'<div class="pv-noimg">🖼</div>'}
-${multi?`<button class="pv-nav pv-nav-l" onclick="pvProj('${fid}',-1)" title="Projet précédent">‹</button><button class="pv-nav pv-nav-r" onclick="pvProj('${fid}',1)" title="Projet suivant">›</button>`:''}
-${thumbs}
-</div>
-<div class="pv-info">
+<div class="pv-cine${light?' light':''}">
+${cover.src?`<div class="pv-cine-bg" style="background-image:url('${cover.src}')" onclick="pvLightbox('${fid}')"></div>`:'<div class="pv-noimg">🖼</div>'}
+<div class="pv-topbar">
 ${multi?`<div class="pv-counter">${st.p+1} / ${projects.length}</div>`:''}
-<div class="pv-cat">${_esc([p.client,p.year].filter(Boolean).join(' · ')||st.folder)}</div>
-<div class="pv-title">${_esc(TR(pid+'.title',p.title)||(aarLang()==='en'?'Untitled':'Sans titre'))}</div>
+${multi?`<button class="pv-gridbtn" onclick="pvGrid('${fid}')" title="Tous les projets">${gridIco}</button>`:''}
+</div>
+${multi?`<button class="pv-nav pv-nav-l" onclick="pvProj('${fid}',-1)" title="Projet précédent">‹</button><button class="pv-nav pv-nav-r" onclick="pvProj('${fid}',1)" title="Projet suivant">›</button>`:''}
+<div class="pv-panel">
+<div class="pv-eyebrow">${_esc(eyebrow)}</div>
+<div class="pv-title">${_esc(pvTitleOf(p,pid))}</div>
 ${facts?`<div class="pv-facts">${facts}</div>`:''}
 ${blocks}
 ${tags}
 ${legal}
+</div>
+${film}
+</div>
+${st.gridOpen?pvMagazineHTML(fid):''}`;
+}
+
+// ── Galerie magazine (B) — overlay ──
+function pvMagazineHTML(fid){
+const st=_pvData[fid];
+const cards=st.projects.map((pr,idx)=>{
+const cover=(pr.images&&pr.images[0]&&pr.images[0].src)||'';
+const pid='proj.'+pr.id;
+const sub=[pvClientOf(pr,pid),pr.year].filter(Boolean).join(' · ');
+return `<div class="pv-mag-card${idx===st.p?' on':''}" style="${cover?`background-image:url('${cover}')`:''}" onclick="pvGoTo('${fid}',${idx})">
+<div class="pv-mag-cap"><div class="t">${_esc(pvTitleOf(pr,pid))}</div>${sub?`<div class="s">${_esc(sub)}</div>`:''}</div>
+</div>`;
+}).join('');
+return `<div class="pv-grid-ov">
+<div class="pv-grid-head"><div class="pv-grid-h">${_esc(st.folder)}</div><button class="pv-grid-close" onclick="pvGrid('${fid}')" title="Fermer">✕</button></div>
+<div class="pv-mag">${cards}</div>
 </div>`;
 }
+function pvGrid(fid){ const st=_pvData[fid]; if(!st) return; st.gridOpen=!st.gridOpen; pvRender(fid); }
+function pvGoTo(fid,idx){ const st=_pvData[fid]; if(!st) return; st.p=idx; st.i=0; st.gridOpen=false; try{aarLog('projet',st.projects[idx]&&st.projects[idx].title);}catch(_){} pvRender(fid); }
+
+// ── Étude de cas scrollable (C) — dossier Sites internet ──
+function pvRenderCS(fid,wrap,p){
+const st=_pvData[fid];const projects=st.projects;
+const pid='proj.'+p.id;
+const imgs=p.images||[];
+const hero=imgs[0]||{src:''};
+const multi=projects.length>1;
+const eyebrow=[pvClientOf(p,pid),p.year].filter(Boolean).join(' · ')||st.folder;
+const metabar=pvFactsArr(p,pid).map(f=>`<div>${f[0]}<b>${_esc(f[1])}</b></div>`).join('');
+const blocks=pvBlocks(p,pid).map(b=>`<div class="pv-cs-block"><div class="pv-cs-bl-l">${b[0]}</div><div class="pv-cs-bl-p">${_esc(b[1]).replace(/\n/g,'<br>')}</div></div>`).join('');
+const tagArr=pvTagArr(p,pid);
+const tags=tagArr.length?`<div class="pv-cs-tags">${tagArr.map(tg=>`<span class="pv-tag">${_esc(tg)}</span>`).join('')}</div>`:'';
+const gallery=imgs.map((im,k)=>`<div class="im" onclick="pvCsLightbox('${fid}',${k})"><img src="${im.src}" loading="lazy" alt="${_esc(im.title)}"></div>`).join('');
+const legal=p.legalMention?`<div class="pv-cs-legal">${_esc(TR(pid+'.legal',p.legalMention))}</div>`:'';
+const switcher=multi?`<div style="position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 16px;background:rgba(6,11,22,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)">
+<button class="pv-nav" style="position:static;transform:none;width:32px;height:32px;font-size:1.2rem" onclick="pvProj('${fid}',-1)">‹</button>
+<span style="font-size:.62rem;font-weight:700;color:var(--mid)">${st.p+1} / ${projects.length}</span>
+<button class="pv-nav" style="position:static;transform:none;width:32px;height:32px;font-size:1.2rem" onclick="pvProj('${fid}',1)">›</button>
+</div>`:'';
+wrap.innerHTML=`<div class="pv-cs">
+${switcher}
+<div class="pv-cs-hero" style="${hero.src?`background-image:url('${hero.src}')`:''}"><div class="pv-cs-hero-in"><div class="pv-cs-eyebrow">${_esc(eyebrow)}</div><div class="pv-cs-title">${_esc(pvTitleOf(p,pid))}</div></div></div>
+${metabar?`<div class="pv-cs-metabar">${metabar}</div>`:''}
+${blocks?`<div class="pv-cs-body">${blocks}</div>`:''}
+${tags}
+${gallery?`<div class="pv-cs-imgs">${gallery}</div>`:''}
+${legal}
+</div>`;
+}
+function pvCsLightbox(fid,idx){ const st=_pvData[fid]; if(!st) return; const p=st.projects[st.p]; if(p&&p.images) openLightbox(p.images,idx,false); }
 
 function pvProj(fid,dir){
 const st=_pvData[fid]; if(!st) return;
 const n=st.projects.length;
-st.p=(st.p+dir+n)%n; st.i=0;
+st.p=(st.p+dir+n)%n; st.i=0; st.gridOpen=false;
 try{aarLog('projet',st.projects[st.p].title||('projet '+(st.p+1)));}catch(_){}
 pvRender(fid);
-const info=document.querySelector('#pv-wrap-'+fid+' .pv-info'); if(info) info.scrollTop=0;
 }
 function pvImg(fid,idx){ const st=_pvData[fid]; if(!st) return; st.i=idx; pvRender(fid); }
 function pvLightbox(fid){
