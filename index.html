@@ -346,19 +346,15 @@ transition:opacity .2s;
 
 #desktop{
 position:fixed;inset:64px 0 0 0;z-index:3;
-display:flex;align-items:center;justify-content:flex-start;
-padding-left:clamp(34px,7vw,120px);
+display:flex;align-items:center;justify-content:center;
 pointer-events:none;
 }
-@media(max-width:820px){#desktop{justify-content:center;padding-left:0}}
 
 #desk-center{
-display:flex;flex-direction:column;align-items:flex-start;gap:0;
+display:flex;flex-direction:column;align-items:center;gap:0;
 pointer-events:all;
 padding:30px 20px 110px;
-max-width:min(54%,600px);
 }
-@media(max-width:820px){#desk-center{align-items:center;max-width:none}}
 
 #desk-apps{
 position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
@@ -390,8 +386,7 @@ overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.35);
 }
 .d-icon-label{font-size:.68rem;font-weight:600;color:var(--ink);text-align:center;line-height:1.2;letter-spacing:.01em;opacity:.8}
 
-.desk-section{display:flex;flex-direction:column;align-items:flex-start;gap:10px;margin-bottom:24px;width:100%}
-@media(max-width:820px){.desk-section{align-items:center}}
+.desk-section{display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:24px;width:100%}
 .desk-section-label{
 font-size:.6rem;font-weight:800;letter-spacing:.2em;text-transform:uppercase;
 color:var(--cyan);opacity:.55;margin-bottom:4px;
@@ -429,8 +424,7 @@ position:relative;
 @keyframes pillOut{from{opacity:1;transform:none}to{opacity:0;transform:translateY(6px) scale(.85)}}
 
 /* ── Dossiers bureau ── */
-.desk-folders-row{display:flex;gap:24px;justify-content:flex-start;flex-wrap:wrap}
-@media(max-width:820px){.desk-folders-row{justify-content:center}}
+.desk-folders-row{display:flex;gap:24px;justify-content:center;flex-wrap:wrap}
 .d-folder{
 display:flex;flex-direction:column;align-items:center;gap:8px;
 width:90px;cursor:pointer;padding:10px 6px 8px;border-radius:14px;
@@ -474,10 +468,9 @@ text-shadow:0 1px 4px rgba(0,0,0,.4)}
 [data-theme="light"] .cat-item-lbl{text-shadow:none}
 
 #desk-identity{
-text-align:left;margin-bottom:34px;pointer-events:none;
-display:flex;flex-direction:column;align-items:flex-start;gap:0;
+text-align:center;margin-bottom:34px;pointer-events:none;
+display:flex;flex-direction:column;align-items:center;gap:0;
 }
-@media(max-width:820px){#desk-identity{text-align:center;align-items:center}}
 #desk-id-time{
 font-size:clamp(3.5rem,8vw,5.5rem);font-weight:300;letter-spacing:-.03em;
 color:var(--ink);line-height:1;margin-bottom:.3rem;
