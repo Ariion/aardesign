@@ -620,6 +620,22 @@ text-align:center;cursor:pointer;transition:all .15s;background:transparent;
 <div class="field"><label>Tagline (optionnel)</label><input type="text" id="h-scroll" placeholder="Défiler"></div>
 </div>
 </div>
+<div class="sec-card">
+<div class="sec-hd" onclick="toggleSec(this)">
+<div class="sec-title"><span class="sec-ico">🖼</span>Photo de fond du bureau</div><span class="sec-arrow">▶</span>
+</div>
+<div class="sec-body">
+<p style="font-size:.7rem;color:var(--mid);margin-bottom:.8rem;line-height:1.5">Ta photo apparaît en fond du bureau, fondue dans l'anthracite façon éditoriale (côté droit). Idéale : portrait sur fond sombre, format vertical/carré.</p>
+<div style="display:flex;gap:1rem;align-items:flex-start;flex-wrap:wrap">
+<div id="h-bg-preview" style="width:120px;height:150px;border-radius:8px;border:1px solid var(--line);background:var(--bg2) center/cover no-repeat;display:flex;align-items:center;justify-content:center;color:var(--mid);font-size:.6rem;flex-shrink:0">Aucune</div>
+<div style="display:flex;flex-direction:column;gap:.5rem">
+<button class="btn btn-ink btn-sm" onclick="document.getElementById('h-bg-file').click()">💻 Choisir une photo</button>
+<button class="btn btn-out btn-sm" onclick="hbgRemove()">✕ Retirer</button>
+<input type="file" id="h-bg-file" accept="image/*" style="display:none" onchange="hbgReadFile(this.files)">
+</div>
+</div>
+</div>
+</div>
 <div class="save-bar">
 <span class="save-msg" id="sm-hero">Modifiez les champs puis sauvegardez.</span>
 <div class="save-actions">
@@ -1552,12 +1568,27 @@ rc.innerHTML = allImgsLocal.slice(0,6).map(i => `<div style="aspect-ratio:1;over
 // ═══════════════════════════════
 //  HERO
 // ═══════════════════════════════
+let _heroBg = '';
 function loadHero() {
 const d = SD.hero || DEF.hero
 const ids = ['h-intro','h-t1','h-t2','h-t3','h-desc','h-scroll']
 const keys = ['intro','t1','t2','t3','desc','scroll']
 ids.forEach((id,i) => { const el = document.getElementById(id); if (el) { el.value = d[keys[i]] || ''; el.oninput = () => markDirty('hero') } })
+_heroBg = d.bgPhoto || '';
+hbgPreview();
 }
+function hbgPreview(){
+const p=document.getElementById('h-bg-preview'); if(!p) return;
+if(_heroBg){ p.style.backgroundImage=`url('${_heroBg}')`; p.textContent=''; }
+else { p.style.backgroundImage=''; p.textContent='Aucune'; }
+}
+function hbgReadFile(files){
+if(!files||!files[0]) return;
+const r=new FileReader();
+r.onload=e=>{ _heroBg=e.target.result; hbgPreview(); markDirty('hero'); toast('✓ Photo chargée — pense à sauvegarder'); };
+r.readAsDataURL(files[0]);
+}
+function hbgRemove(){ _heroBg=''; hbgPreview(); markDirty('hero'); }
 
 // ═══════════════════════════════
 //  ABOUT
@@ -1682,7 +1713,7 @@ function presetDark()  { applyPreset('aar') }
 //  SAVE SECTIONS
 // ═══════════════════════════════
 async function saveSection(sec) {
-if (sec==='hero') SD.hero = {intro:v('h-intro'),t1:v('h-t1'),t2:v('h-t2'),t3:v('h-t3'),desc:v('h-desc'),scroll:v('h-scroll')}
+if (sec==='hero') SD.hero = {intro:v('h-intro'),t1:v('h-t1'),t2:v('h-t2'),t3:v('h-t3'),desc:v('h-desc'),scroll:v('h-scroll'),bgPhoto:_heroBg}
 else if (sec==='about') {
 const stats = []
 for (let i=0;i<4;i++) stats.push({n:v('stn-'+i),l:v('stl-'+i)})
