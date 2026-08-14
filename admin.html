@@ -634,6 +634,19 @@ text-align:center;cursor:pointer;transition:all .15s;background:transparent;
 <input type="file" id="h-bg-file" accept="image/*" style="display:none" onchange="hbgReadFile(this.files)">
 </div>
 </div>
+<div id="h-bg-controls" style="margin-top:1rem;display:grid;grid-template-columns:1fr 1fr;gap:.7rem 1.2rem">
+<label style="display:flex;align-items:center;gap:.5rem;font-size:.66rem;font-weight:600;color:var(--mid);grid-column:1/-1;cursor:pointer">
+<input type="checkbox" id="h-bg-gray" onchange="hbgTune()" style="accent-color:var(--cyan);width:14px;height:14px"> Noir &amp; blanc
+</label>
+<div><label style="font-size:.56rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mid)">Luminosité · <span id="v-bright">1.10</span></label>
+<input type="range" id="h-bg-bright" min="0.4" max="2" step="0.05" oninput="hbgTune()" style="width:100%;accent-color:var(--cyan)"></div>
+<div><label style="font-size:.56rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mid)">Contraste · <span id="v-contrast">1.10</span></label>
+<input type="range" id="h-bg-contrast" min="0.6" max="1.8" step="0.05" oninput="hbgTune()" style="width:100%;accent-color:var(--cyan)"></div>
+<div><label style="font-size:.56rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mid)">Opacité · <span id="v-opacity">0.90</span></label>
+<input type="range" id="h-bg-opacity" min="0.15" max="1" step="0.05" oninput="hbgTune()" style="width:100%;accent-color:var(--cyan)"></div>
+<div><label style="font-size:.56rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mid)">Cadrage vertical · <span id="v-posy">12</span></label>
+<input type="range" id="h-bg-posy" min="0" max="60" step="1" oninput="hbgTune()" style="width:100%;accent-color:var(--cyan)"></div>
+</div>
 </div>
 </div>
 <div class="save-bar">
@@ -1569,19 +1582,48 @@ rc.innerHTML = allImgsLocal.slice(0,6).map(i => `<div style="aspect-ratio:1;over
 //  HERO
 // ═══════════════════════════════
 let _heroBg = '';
+const BG_DEF={bgGray:true,bgBright:1.1,bgContrast:1.1,bgOpacity:.9,bgPosY:12};
 function loadHero() {
 const d = SD.hero || DEF.hero
 const ids = ['h-intro','h-t1','h-t2','h-t3','h-desc','h-scroll']
 const keys = ['intro','t1','t2','t3','desc','scroll']
 ids.forEach((id,i) => { const el = document.getElementById(id); if (el) { el.value = d[keys[i]] || ''; el.oninput = () => markDirty('hero') } })
 _heroBg = d.bgPhoto || '';
-hbgPreview();
+const g=document.getElementById('h-bg-gray'); if(g) g.checked=(d.bgGray!==undefined?d.bgGray:BG_DEF.bgGray);
+const set=(id,val)=>{const e=document.getElementById(id);if(e)e.value=val;};
+set('h-bg-bright', d.bgBright!==undefined?d.bgBright:BG_DEF.bgBright);
+set('h-bg-contrast', d.bgContrast!==undefined?d.bgContrast:BG_DEF.bgContrast);
+set('h-bg-opacity', d.bgOpacity!==undefined?d.bgOpacity:BG_DEF.bgOpacity);
+set('h-bg-posy', d.bgPosY!==undefined?d.bgPosY:BG_DEF.bgPosY);
+hbgPreview(); hbgSyncLabels();
+}
+function bgVals(){
+return {
+bgGray: document.getElementById('h-bg-gray')?.checked!==false,
+bgBright: parseFloat(document.getElementById('h-bg-bright')?.value||BG_DEF.bgBright),
+bgContrast: parseFloat(document.getElementById('h-bg-contrast')?.value||BG_DEF.bgContrast),
+bgOpacity: parseFloat(document.getElementById('h-bg-opacity')?.value||BG_DEF.bgOpacity),
+bgPosY: parseInt(document.getElementById('h-bg-posy')?.value||BG_DEF.bgPosY)
+};
+}
+function hbgSyncLabels(){
+const v=bgVals();
+const t=(id,val)=>{const e=document.getElementById(id);if(e)e.textContent=val;};
+t('v-bright',v.bgBright.toFixed(2));t('v-contrast',v.bgContrast.toFixed(2));t('v-opacity',v.bgOpacity.toFixed(2));t('v-posy',v.bgPosY);
 }
 function hbgPreview(){
 const p=document.getElementById('h-bg-preview'); if(!p) return;
-if(_heroBg){ p.style.backgroundImage=`url('${_heroBg}')`; p.textContent=''; }
-else { p.style.backgroundImage=''; p.textContent='Aucune'; }
+if(_heroBg){ p.style.backgroundImage=`url('${_heroBg}')`; p.textContent=''; hbgApplyPreviewFilter(); }
+else { p.style.backgroundImage=''; p.style.filter=''; p.textContent='Aucune'; }
 }
+function hbgApplyPreviewFilter(){
+const p=document.getElementById('h-bg-preview'); if(!p) return;
+const v=bgVals();
+p.style.filter=`grayscale(${v.bgGray?1:0}) contrast(${v.bgContrast}) brightness(${v.bgBright})`;
+p.style.opacity=v.bgOpacity;
+p.style.backgroundPosition=`55% ${v.bgPosY}%`;
+}
+function hbgTune(){ hbgSyncLabels(); hbgApplyPreviewFilter(); markDirty('hero'); }
 function hbgReadFile(files){
 if(!files||!files[0]) return;
 const r=new FileReader();
@@ -1713,7 +1755,7 @@ function presetDark()  { applyPreset('aar') }
 //  SAVE SECTIONS
 // ═══════════════════════════════
 async function saveSection(sec) {
-if (sec==='hero') SD.hero = {intro:v('h-intro'),t1:v('h-t1'),t2:v('h-t2'),t3:v('h-t3'),desc:v('h-desc'),scroll:v('h-scroll'),bgPhoto:_heroBg}
+if (sec==='hero') SD.hero = {intro:v('h-intro'),t1:v('h-t1'),t2:v('h-t2'),t3:v('h-t3'),desc:v('h-desc'),scroll:v('h-scroll'),bgPhoto:_heroBg,...bgVals()}
 else if (sec==='about') {
 const stats = []
 for (let i=0;i<4;i++) stats.push({n:v('stn-'+i),l:v('stl-'+i)})

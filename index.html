@@ -89,7 +89,7 @@ overflow:hidden;
 #desk-portrait{
 position:fixed;top:0;right:0;bottom:0;width:min(54%,820px);z-index:2;pointer-events:none;
 background-repeat:no-repeat;background-position:55% 12%;background-size:cover;
-filter:grayscale(1) contrast(1.14) brightness(1.5);
+filter:grayscale(1) contrast(1.1) brightness(1.1);
 opacity:0;transition:opacity 1.1s ease;
 -webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 42%);
 mask-image:linear-gradient(90deg,transparent 0%,#000 42%);
@@ -1247,8 +1247,18 @@ function applyPortrait(){
 const hero = JSON.parse(localStorage.getItem('aar_sec_hero')||'null');
 const el=document.getElementById('desk-portrait'); if(!el) return;
 const src=hero&&hero.bgPhoto;
-if(src){ el.style.backgroundImage=`url('${src}')`; requestAnimationFrame(()=>el.classList.add('on')); }
-else{ el.classList.remove('on'); el.style.backgroundImage=''; }
+if(src){
+const gray=(hero.bgGray!==false)?1:0;
+const bright=(hero.bgBright!=null)?hero.bgBright:1.1;
+const contrast=(hero.bgContrast!=null)?hero.bgContrast:1.1;
+const opacity=(hero.bgOpacity!=null)?hero.bgOpacity:.9;
+const posY=(hero.bgPosY!=null)?hero.bgPosY:12;
+el.style.backgroundImage=`url('${src}')`;
+el.style.filter=`grayscale(${gray}) contrast(${contrast}) brightness(${bright})`;
+el.style.backgroundPosition=`55% ${posY}%`;
+requestAnimationFrame(()=>{ el.classList.add('on'); el.style.opacity=opacity; });
+}
+else{ el.classList.remove('on'); el.style.backgroundImage=''; el.style.opacity=''; }
 }
 applyIdentity();
 
