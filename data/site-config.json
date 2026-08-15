@@ -567,7 +567,9 @@
     "bgBright": 1.1,
     "bgContrast": 1,
     "bgOpacity": 0.75,
-    "bgPosY": 11
+    "bgPosY": 30,
+    "bgPosX": 70,
+    "bgZoom": 100
   },
   "aar_sec_contact": null,
   "aar_sec_about": {
