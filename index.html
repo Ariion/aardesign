@@ -691,6 +691,23 @@ transition:background .15s,border-color .15s;
 .ab-stat-l{font-size:.6rem;color:var(--mid);margin-top:2px}
 .ab-tag{background:var(--chip-bg);border-radius:4px;padding:3px 8px;font-size:.65rem;color:var(--ink)}
 
+/* ── Harmonisation éditoriale des fenêtres (À propos · Contact · CV) ── */
+.w-name{font-family:Georgia,'Times New Roman',serif;font-weight:400;font-size:1.2rem;letter-spacing:0}
+.cv-s-name{font-family:Georgia,'Times New Roman',serif;font-weight:400}
+.ab-stat-n{color:#a99bff;font-family:ui-monospace,'SF Mono',Menlo,monospace}
+.ab-stat-l{font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:.5rem;letter-spacing:.05em;text-transform:uppercase}
+.ab-tag{font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:.56rem;color:#a99bff;background:rgba(139,124,246,.1);border:1px solid rgba(139,124,246,.26);letter-spacing:.02em;padding:4px 9px}
+.w-row-ico svg{stroke:#a99bff}
+.cv-s-role{color:rgba(169,155,255,.85)}
+.cv-s-section{color:rgba(169,155,255,.7);font-family:ui-monospace,'SF Mono',Menlo,monospace}
+.cv-m-section{color:#a99bff;font-family:ui-monospace,'SF Mono',Menlo,monospace}
+.cv-tl-sub{color:#a99bff}
+.cv-s-skill-fill{background:linear-gradient(90deg,#5f52c9,#a99bff)}
+.w-btn.pri{background:#8b7cf6;border-color:#8b7cf6}
+.w-btn.pri:hover{background:#a99bff;border-color:#a99bff}
+.w-send{background:#8b7cf6}
+.w-ava,.cv-avatar{border-color:#8b7cf6}
+
 /* ══════════ Vue projet — SPLIT LISIBLE (A) ══════════ */
 .pv-wrap{position:relative;height:100%;overflow:hidden;background:var(--win-bg,#0b1526)}
 .pv-cine{position:absolute;inset:0;display:grid;grid-template-columns:minmax(300px,40%) 1fr}
@@ -1489,7 +1506,7 @@ return `<div class="w-profile">
 ${stats.slice(0,4).map((s,i)=>`<div class="ab-stat"><div class="ab-stat-n">${s.n}</div><div class="ab-stat-l">${TR('about.stat.'+i,s.l)}</div></div>`).join('')}
 </div>
 <div style="display:flex;flex-wrap:wrap;gap:5px">
-${'🎨 Digital Painting,✏️ Illustration,📐 Direction Artistique,📦 Packaging,🌐 Web Design,📷 Photographie'.split(',').map(d=>`<span class="ab-tag">${d}</span>`).join('')}
+${'Identité visuelle,Digital Painting,Illustration,Packaging,Print,Web Design'.split(',').map(d=>`<span class="ab-tag">${d}</span>`).join('')}
 </div>`;
 }
 
