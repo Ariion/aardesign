@@ -101,7 +101,8 @@ background:radial-gradient(circle,rgba(120,130,155,.16),transparent 62%);filter:
 #desk-portrait::after{content:'';position:absolute;inset:0;
 background:linear-gradient(90deg,var(--wall-a) 0%,rgba(6,13,31,.08) 34%,transparent 52%),
 linear-gradient(0deg,var(--wall-a) 2%,transparent 24%),
-linear-gradient(var(--portrait-tint,rgba(26,44,82,.34)),var(--portrait-tint,rgba(26,44,82,.34)));}
+linear-gradient(180deg,var(--wall-a) 0%,transparent 20%),
+linear-gradient(var(--portrait-tint,rgba(14,28,58,.62)),var(--portrait-tint,rgba(14,28,58,.62)));}
 [data-theme="light"] #desk-portrait::after{background:linear-gradient(90deg,var(--wall-a) 0%,transparent 52%),linear-gradient(0deg,var(--wall-a) 2%,transparent 24%)}
 [data-theme="light"] #desk-portrait{filter:grayscale(1) contrast(1.02) brightness(1.02)}
 @media(max-width:820px){#desk-portrait{width:100%;opacity:0!important}}
