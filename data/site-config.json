@@ -566,7 +566,7 @@
     "bgGray": false,
     "bgBright": 1.1,
     "bgContrast": 1,
-    "bgOpacity": 0.75,
+    "bgOpacity": 1,
     "bgPosY": 30,
     "bgPosX": 100,
     "bgZoom": 100
