@@ -644,8 +644,12 @@ text-align:center;cursor:pointer;transition:all .15s;background:transparent;
 <input type="range" id="h-bg-contrast" min="0.6" max="1.8" step="0.05" oninput="hbgTune()" style="width:100%;accent-color:var(--cyan)"></div>
 <div><label style="font-size:.56rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mid)">Opacité · <span id="v-opacity">0.90</span></label>
 <input type="range" id="h-bg-opacity" min="0.15" max="1" step="0.05" oninput="hbgTune()" style="width:100%;accent-color:var(--cyan)"></div>
-<div><label style="font-size:.56rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mid)">Cadrage vertical · <span id="v-posy">12</span></label>
-<input type="range" id="h-bg-posy" min="0" max="60" step="1" oninput="hbgTune()" style="width:100%;accent-color:var(--cyan)"></div>
+<div><label style="font-size:.56rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mid)">Taille / zoom · <span id="v-zoom">100</span>%</label>
+<input type="range" id="h-bg-zoom" min="70" max="220" step="2" oninput="hbgTune()" style="width:100%;accent-color:var(--cyan)"></div>
+<div><label style="font-size:.56rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mid)">Position horizontale · <span id="v-posx">70</span></label>
+<input type="range" id="h-bg-posx" min="0" max="100" step="1" oninput="hbgTune()" style="width:100%;accent-color:var(--cyan)"></div>
+<div><label style="font-size:.56rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mid)">Cadrage vertical · <span id="v-posy">30</span></label>
+<input type="range" id="h-bg-posy" min="0" max="100" step="1" oninput="hbgTune()" style="width:100%;accent-color:var(--cyan)"></div>
 </div>
 </div>
 </div>
@@ -1582,7 +1586,7 @@ rc.innerHTML = allImgsLocal.slice(0,6).map(i => `<div style="aspect-ratio:1;over
 //  HERO
 // ═══════════════════════════════
 let _heroBg = '';
-const BG_DEF={bgGray:true,bgBright:1.1,bgContrast:1.1,bgOpacity:.9,bgPosY:12};
+const BG_DEF={bgGray:true,bgBright:1.1,bgContrast:1.1,bgOpacity:.9,bgPosY:30,bgPosX:70,bgZoom:100};
 function loadHero() {
 const d = SD.hero || DEF.hero
 const ids = ['h-intro','h-t1','h-t2','h-t3','h-desc','h-scroll']
@@ -1595,6 +1599,8 @@ set('h-bg-bright', d.bgBright!==undefined?d.bgBright:BG_DEF.bgBright);
 set('h-bg-contrast', d.bgContrast!==undefined?d.bgContrast:BG_DEF.bgContrast);
 set('h-bg-opacity', d.bgOpacity!==undefined?d.bgOpacity:BG_DEF.bgOpacity);
 set('h-bg-posy', d.bgPosY!==undefined?d.bgPosY:BG_DEF.bgPosY);
+set('h-bg-posx', d.bgPosX!==undefined?d.bgPosX:BG_DEF.bgPosX);
+set('h-bg-zoom', d.bgZoom!==undefined?d.bgZoom:BG_DEF.bgZoom);
 hbgPreview(); hbgSyncLabels();
 }
 function bgVals(){
@@ -1603,13 +1609,15 @@ bgGray: document.getElementById('h-bg-gray')?.checked!==false,
 bgBright: parseFloat(document.getElementById('h-bg-bright')?.value||BG_DEF.bgBright),
 bgContrast: parseFloat(document.getElementById('h-bg-contrast')?.value||BG_DEF.bgContrast),
 bgOpacity: parseFloat(document.getElementById('h-bg-opacity')?.value||BG_DEF.bgOpacity),
-bgPosY: parseInt(document.getElementById('h-bg-posy')?.value||BG_DEF.bgPosY)
+bgPosY: parseInt(document.getElementById('h-bg-posy')?.value||BG_DEF.bgPosY),
+bgPosX: parseInt(document.getElementById('h-bg-posx')?.value||BG_DEF.bgPosX),
+bgZoom: parseInt(document.getElementById('h-bg-zoom')?.value||BG_DEF.bgZoom)
 };
 }
 function hbgSyncLabels(){
 const v=bgVals();
 const t=(id,val)=>{const e=document.getElementById(id);if(e)e.textContent=val;};
-t('v-bright',v.bgBright.toFixed(2));t('v-contrast',v.bgContrast.toFixed(2));t('v-opacity',v.bgOpacity.toFixed(2));t('v-posy',v.bgPosY);
+t('v-bright',v.bgBright.toFixed(2));t('v-contrast',v.bgContrast.toFixed(2));t('v-opacity',v.bgOpacity.toFixed(2));t('v-posy',v.bgPosY);t('v-posx',v.bgPosX);t('v-zoom',v.bgZoom);
 }
 function hbgPreview(){
 const p=document.getElementById('h-bg-preview'); if(!p) return;
@@ -1621,7 +1629,8 @@ const p=document.getElementById('h-bg-preview'); if(!p) return;
 const v=bgVals();
 p.style.filter=`grayscale(${v.bgGray?1:0}) contrast(${v.bgContrast}) brightness(${v.bgBright})`;
 p.style.opacity=v.bgOpacity;
-p.style.backgroundPosition=`55% ${v.bgPosY}%`;
+p.style.backgroundSize=`auto ${v.bgZoom}%`;
+p.style.backgroundPosition=`${v.bgPosX}% ${v.bgPosY}%`;
 }
 function hbgTune(){ hbgSyncLabels(); hbgApplyPreviewFilter(); markDirty('hero'); }
 function hbgReadFile(files){
