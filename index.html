@@ -100,7 +100,9 @@ mask-image:linear-gradient(90deg,transparent 0%,#000 42%);
 background:radial-gradient(circle,rgba(120,130,155,.16),transparent 62%);filter:blur(30px)}
 #desk-portrait::after{content:'';position:absolute;inset:0;
 background:linear-gradient(90deg,var(--wall-a) 0%,rgba(6,13,31,.08) 34%,transparent 52%),
-linear-gradient(0deg,var(--wall-a) 2%,transparent 24%);}
+linear-gradient(0deg,var(--wall-a) 2%,transparent 24%),
+linear-gradient(var(--portrait-tint,rgba(26,44,82,.34)),var(--portrait-tint,rgba(26,44,82,.34)));}
+[data-theme="light"] #desk-portrait::after{background:linear-gradient(90deg,var(--wall-a) 0%,transparent 52%),linear-gradient(0deg,var(--wall-a) 2%,transparent 24%)}
 [data-theme="light"] #desk-portrait{filter:grayscale(1) contrast(1.02) brightness(1.02)}
 @media(max-width:820px){#desk-portrait{width:100%;opacity:0!important}}
 
@@ -394,13 +396,11 @@ overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.35);
 @media(max-width:820px){.desk-section{align-items:stretch}}
 /* liste éditoriale des dossiers */
 .desk-folder-list{display:flex;flex-direction:column;width:min(360px,84vw)}
-.dfl-row{display:flex;align-items:baseline;gap:16px;padding:12px 4px;cursor:pointer;
+.dfl-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 4px;cursor:pointer;
 border-bottom:1px solid rgba(255,255,255,.08);
 transition:padding-left .25s cubic-bezier(.4,0,.2,1),border-color .25s}
 .dfl-row:hover{padding-left:12px;border-color:rgba(139,124,246,.5)}
-.dfl-num{font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:.62rem;letter-spacing:.06em;color:rgba(255,255,255,.32);transition:color .2s;min-width:20px}
-.dfl-row:hover .dfl-num{color:#a99bff}
-.dfl-label{flex:1;font-size:1.16rem;font-weight:500;letter-spacing:-.01em;color:rgba(236,238,244,.62);transition:color .2s}
+.dfl-label{font-size:1.16rem;font-weight:500;letter-spacing:-.01em;color:rgba(236,238,244,.62);transition:color .2s}
 .dfl-row:hover .dfl-label{color:#fff}
 .dfl-arrow{color:#8b7cf6;opacity:0;transform:translateX(-6px);transition:opacity .2s,transform .2s;font-size:.9rem}
 .dfl-row:hover .dfl-arrow{opacity:1;transform:translateX(0)}
@@ -2035,11 +2035,10 @@ if(!folders.length) return '';
 return `<div class="desk-section">
 <div class="desk-section-label">${TR('section.'+sec,sec)}</div>
 <div class="desk-folder-list">
-${folders.map(f=>{_fn++;const num=String(_fn).padStart(2,'0');return `<div class="dfl-row" onclick="${deskFolderAction(f.action)}">
-<span class="dfl-num">${num}</span>
+${folders.map(f=>`<div class="dfl-row" onclick="${deskFolderAction(f.action)}">
 <span class="dfl-label">${TR('folder.'+f.id,f.label)}</span>
 <span class="dfl-arrow">→</span>
-</div>`;}).join('')}
+</div>`).join('')}
 </div>
 </div>`;
 }).join('');
