@@ -509,21 +509,21 @@
     ],
     "folders": [
       {
-        "id": "digital",
-        "label": "Digital Painting",
-        "action": "folder:digital",
-        "icon": "brush",
-        "c1": "#0e7490",
-        "c2": "#06b6d4",
-        "section": "Portfolio"
-      },
-      {
         "id": "logo",
         "label": "Identité visuelle",
         "action": "folder:logo",
         "icon": "pen",
         "c1": "#6d28d9",
         "c2": "#a78bfa",
+        "section": "Portfolio"
+      },
+      {
+        "id": "digital",
+        "label": "Digital Painting",
+        "action": "folder:digital",
+        "icon": "brush",
+        "c1": "#0e7490",
+        "c2": "#06b6d4",
         "section": "Portfolio"
       },
       {
