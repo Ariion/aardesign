@@ -118,6 +118,36 @@ letter-spacing:.1em;text-transform:uppercase;transition:all .18s;white-space:now
 
 .content{padding:1.6rem 1.8rem;flex:1;}
 
+/* ── Aperçu live global (toutes sections) ── */
+.tbb-live{position:relative}
+.tbb-live.on{background:var(--cyan);color:#fff;border-color:var(--cyan)}
+.tbb-live .dot{width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.5}
+.tbb-live.on .dot{opacity:1;animation:livePulse 1.4s ease infinite}
+@keyframes livePulse{0%,100%{opacity:1}50%{opacity:.3}}
+body.gp-open .main{margin-right:min(46vw,720px);transition:margin .24s var(--E)}
+.main{transition:margin .24s var(--E)}
+#globalPreview{
+position:fixed;top:0;right:0;bottom:0;width:min(46vw,720px);z-index:90;
+background:#0b0d13;border-left:1px solid rgba(0,0,0,.2);
+display:flex;flex-direction:column;transform:translateX(100%);transition:transform .24s var(--E);
+box-shadow:-8px 0 30px rgba(0,0,0,.2);
+}
+body.gp-open #globalPreview{transform:translateX(0)}
+.gp-bar{display:flex;align-items:center;justify-content:space-between;gap:.5rem;padding:.6rem .8rem;
+background:#12141d;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0}
+.gp-bar-title{display:flex;align-items:center;gap:.5rem;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.7);font-weight:700}
+.gp-bar-dot{width:6px;height:6px;border-radius:50%;background:#34d399}
+.gp-bar-dot.stale{background:#f59e0b;animation:livePulse 1s ease infinite}
+.gp-bar-actions{display:flex;gap:.4rem}
+.gp-btn{background:transparent;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.65);
+border-radius:5px;padding:.3rem .5rem;font-size:.6rem;cursor:pointer;transition:.15s}
+.gp-btn:hover{border-color:var(--cyan);color:var(--cyan)}
+#globalPreview iframe{flex:1;width:100%;border:none;background:#0b0d13}
+.gp-scale{display:flex;gap:2px;background:rgba(255,255,255,.06);border-radius:5px;padding:2px}
+.gp-scale button{background:transparent;border:none;color:rgba(255,255,255,.5);font-size:.58rem;padding:.28rem .5rem;border-radius:4px;cursor:pointer}
+.gp-scale button.on{background:var(--cyan);color:#fff}
+@media(max-width:900px){#globalPreview{width:100vw}body.gp-open .main{margin-right:0}}
+
 /* burger + overlay (masqués sur desktop) */
 .tb-burger{display:none;flex-direction:column;justify-content:center;gap:4px;width:38px;height:38px;
 border:1px solid var(--line2);border-radius:8px;background:transparent;cursor:pointer;flex-shrink:0;padding:0 9px;}
@@ -564,6 +594,9 @@ text-align:center;cursor:pointer;transition:all .15s;background:transparent;
 <div class="tb-sub" id="pageSub">Vue d'ensemble</div>
 </div>
 <div class="tb-right">
+<button class="tbb tbb-out tbb-live" id="liveToggle" onclick="toggleGlobalPreview()" title="Aperçu en direct du site pendant l'édition">
+<span class="dot"></span> Aperçu live
+</button>
 <button class="tbb tbb-gold" id="publishBtn" onclick="publishSite()" style="display:none">
 <span id="pubLabel">↑ Publier</span>
 </button>
@@ -1409,8 +1442,8 @@ set: (k,v) => localStorage.setItem('aar_'+k, JSON.stringify(v))
 
 // Default content
 const DEF = {
-hero:{intro:'Anthony Armand',t1:'Directeur Artistique',t2:'Aardesign',t3:'Caen · Normandie · Remote',desc:'Designer pluridisciplinaire à l\'intersection du digital painting, de l\'illustration narrative et de la direction artistique. 5+ ans d\'expérience.',scroll:'aardesign.fr'},
-about:{fn:'Anthony',ln:'Armand',p1:'Designer pluridisciplinaire basé en France. Je travaille à l\'intersection du digital painting, de l\'illustration narrative et de la direction artistique.',p2:'Du packaging premium aux peintures personnelles, chaque projet est une occasion de construire un univers visuel unique, cohérent et mémorable.',cta:'Travaillons ensemble →',stats:[{n:'5+',l:'Années d\'expérience'},{n:'35+',l:'Œuvres réalisées'},{n:'8',l:'Disciplines créatives'},{n:'FR',l:'France · Remote · Int\'l'}]},
+hero:{intro:'Anthony Armand',t1:'Graphiste & Illustrateur',t2:'Aardesign',t3:'Caen · Normandie · Remote',desc:'Graphiste & illustrateur — identité visuelle, print, web et digital painting.',scroll:'aardesign.fr'},
+about:{fn:'Anthony',ln:'Armand',p1:'Graphiste & illustrateur basé en France. Je travaille à l\'intersection de l\'identité visuelle, du print/packaging et du digital painting.',p2:'Du packaging aux peintures personnelles, chaque projet est une occasion de construire un univers visuel unique, cohérent et mémorable.',cta:'Travaillons ensemble →',stats:[{n:'8',l:'Années d\'expérience'},{n:'35+',l:'Œuvres réalisées'},{n:'8',l:'Disciplines créatives'},{n:'FR',l:'France · Remote · Int\'l'}]},
 contact:{t1:'Parlons de',t2:'votre projet',email:'aardesign14@gmail.com',phone:'06 79 46 62 19',ig:'',be:'',copy:'© 2025 Aardesign — Anthony Armand'},
 nav:{l1:'Travaux',a1:'#work',l2:'À propos',a2:'#about',l3:'Contact',a3:'#contact',cta:'Démarrer un projet'},
 marquee:{mq1:['Digital Painting','Direction Artistique','Illustration','Packaging','Character Design','Steampunk','Dark Fantasy','Aquarelle Digitale'],mq2:['Arsène Valentin','Clopinette','Millénaire Caen','Projets personnels']},
@@ -1527,6 +1560,12 @@ function markDirty(sec) {
 const el = document.getElementById('sm-'+sec)
 if (el) { el.textContent = '⚠ Modifications non sauvegardées'; el.classList.add('dirty') }
 document.getElementById('publishBtn').style.display = ''
+// Live : relit le champ modifié, l'écrit tout de suite en local (brouillon), rafraîchit l'aperçu.
+try{
+if (sec==='cv' && typeof syncCVFromDOM==='function') syncCVFromDOM()
+else if (typeof syncSecFromDOM==='function' && SD[sec]!==undefined) { syncSecFromDOM(sec); saveSec(sec); }
+}catch(_){}
+schedulePreviewRefresh()
 }
 function markClean(sec) {
 const el = document.getElementById('sm-'+sec)
@@ -1763,7 +1802,9 @@ function presetDark()  { applyPreset('aar') }
 // ═══════════════════════════════
 //  SAVE SECTIONS
 // ═══════════════════════════════
-async function saveSection(sec) {
+// Relit le DOM d'une section et met SD[sec] à jour — appelé en direct (live)
+// à chaque frappe via markDirty(), et de nouveau (sans risque, idempotent) à la sauvegarde.
+function syncSecFromDOM(sec){
 if (sec==='hero') SD.hero = {intro:v('h-intro'),t1:v('h-t1'),t2:v('h-t2'),t3:v('h-t3'),desc:v('h-desc'),scroll:v('h-scroll'),bgPhoto:_heroBg,...bgVals()}
 else if (sec==='about') {
 const stats = []
@@ -1784,8 +1825,10 @@ deskbg1:v('cl-deskbg1'),deskbg2:v('cl-deskbg2'),
 wallpaper:v('desk-wallpaper')
 }
 localStorage.setItem('aar_theme', JSON.stringify(SD.design))
-setTimeout(()=>{ const f=document.getElementById('sitePreview'); if(f) f.src='index.html' }, 400)
 }
+}
+async function saveSection(sec) {
+syncSecFromDOM(sec)
 await saveSec(sec)
 markClean(sec)
 document.getElementById('publishBtn').style.display = ''
@@ -2097,6 +2140,14 @@ lw.innerHTML = d.languages.map((lang,i)=>`
 `<button class="btn btn-out btn-sm" onclick="cvAddLang()">+ Ajouter une langue</button>`;
 }
 
+// Live (brouillon, sans filtrer les lignes vides — pour ne pas décaler les index pendant la frappe)
+function syncCVFromDOM(){
+const d = _ls.get('cv') || DEF_CV;
+const skills = d.skills.map((_,i)=>({n:v('cvs-n-'+i),p:parseInt(v('cvs-p-'+i))||0}));
+const experiences = d.experiences.map((_,i)=>({t:v('cve-t-'+i),d:v('cve-d-'+i),c:v('cve-c-'+i)}));
+const languages = d.languages.map((_,i)=>({l:v('cvl-l-'+i),n:v('cvl-n-'+i)}));
+_ls.set('cv', {skills,experiences,languages});
+}
 function saveCV() {
 const d = _ls.get('cv') || DEF_CV;
 const skills = d.skills.map((_,i)=>({n:v('cvs-n-'+i)||'', p:parseInt(v('cvs-p-'+i))||0})).filter(s=>s.n);
@@ -2398,6 +2449,7 @@ function pfSaveProjects(fid,arr){
   if(!raw._projects) raw._projects={};
   raw._projects[fid]=arr;
   localStorage.setItem('aar_portfolio',JSON.stringify(raw));
+  if (typeof schedulePreviewRefresh==='function') schedulePreviewRefresh();
 }
 function pfCurProject(){
   if(_pfProjIdx==null) return null;
@@ -2889,13 +2941,11 @@ pen:'<path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>'
 const BUREAU_DEFAULT={
 sections:['Portfolio','Créations personnelles'],
 folders:[
-{id:'pro',     label:'Portfolio pro',      action:'category:pro', icon:'grid',   c1:'#0e5e7a',c2:'#29B8D9',section:'Portfolio'},
-{id:'logo',    label:'Identités visuelles', action:'folder:logo',  icon:'layers', c1:'#065f46',c2:'#10b981',section:'Portfolio'},
-{id:'digital', label:'Digital Painting',   action:'folder:digital',icon:'brush', c1:'#0e7490',c2:'#06b6d4',section:'Portfolio'},
-{id:'animation',label:'Animation',         action:'folder:animation',icon:'play',c1:'#c2410c',c2:'#f97316',section:'Portfolio'},
-{id:'sites',   label:'Sites internet',     action:'folder:sites', icon:'globe',  c1:'#1d4ed8',c2:'#60a5fa',section:'Portfolio'},
-{id:'perso',   label:'Perso',              action:'folder:perso', icon:'heart',  c1:'#6d28d9',c2:'#8b5cf6',section:'Créations personnelles'},
-{id:'etudes',  label:'Études',             action:'folder:etudes',icon:'book',   c1:'#1d4ed8',c2:'#3b82f6',section:'Créations personnelles'},
+{id:'digital', label:'Digital Painting',      action:'folder:digital',icon:'brush', c1:'#0e7490',c2:'#06b6d4',section:'Portfolio'},
+{id:'logo',    label:'Identité visuelle',     action:'folder:logo',  icon:'pen',     c1:'#6d28d9',c2:'#a78bfa',section:'Portfolio'},
+{id:'print',   label:'Print & Packaging',     action:'folder:print', icon:'image',   c1:'#be185d',c2:'#f472b6',section:'Portfolio'},
+{id:'sites',   label:'Web & Sites',           action:'folder:sites', icon:'globe',   c1:'#1d4ed8',c2:'#60a5fa',section:'Portfolio'},
+{id:'etudes',  label:'Illustration & Études', action:'folder:etudes',icon:'book',    c1:'#c2410c',c2:'#fb923c',section:'Créations personnelles'},
 ]
 };
 
@@ -2918,6 +2968,7 @@ if(f){ newFolders.push({...f,section:sec}); }
 });
 data.folders=newFolders;
 localStorage.setItem('aar_desk',JSON.stringify(data));
+if (typeof schedulePreviewRefresh==='function') schedulePreviewRefresh();
 toast('✓ Bureau mis à jour !');
 ghSaveWithFeedback('Bureau');
 }
@@ -3132,6 +3183,64 @@ const t = document.getElementById('toast')
 t.textContent = msg; t.className = 'toast show' + (type==='err'?' err':'')
 clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), 3000)
 }
+
+// ══════════════════════════════════════
+//  APERÇU LIVE GLOBAL — reflète le brouillon en cours (avant même Publier)
+// ══════════════════════════════════════
+let _gpTimer = null;
+function toggleGlobalPreview(){
+const on = document.body.classList.toggle('gp-open');
+document.getElementById('liveToggle').classList.toggle('on', on);
+sessionStorage.setItem('aar-gp-open', on ? '1' : '');
+if (on) refreshGlobalPreview(true);
+}
+function schedulePreviewRefresh(){
+if (!document.body.classList.contains('gp-open')) return;
+const dot = document.getElementById('gpDot'); if (dot) dot.classList.add('stale');
+clearTimeout(_gpTimer);
+_gpTimer = setTimeout(() => refreshGlobalPreview(false), 550);
+}
+function refreshGlobalPreview(hard){
+const f = document.getElementById('gpFrame'); if (!f) return;
+f.src = 'index.html?preview=' + Date.now();
+f.onload = () => { const dot = document.getElementById('gpDot'); if (dot) dot.classList.remove('stale'); };
+}
+function gpSetScale(pct, btn){
+const f = document.getElementById('gpFrame'); if (!f) return;
+document.querySelectorAll('.gp-scale button').forEach(b=>b.classList.remove('on'));
+if (btn) btn.classList.add('on');
+f.style.width = (10000/pct) + '%';
+f.style.height = (10000/pct) + '%';
+f.style.transform = 'scale(' + (pct/100) + ')';
+f.style.transformOrigin = 'top left';
+}
+// Restaure la préférence d'ouverture d'une session à l'autre
+if (sessionStorage.getItem('aar-gp-open')) {
+window.addEventListener('DOMContentLoaded', () => {
+document.body.classList.add('gp-open');
+document.getElementById('liveToggle')?.classList.add('on');
+refreshGlobalPreview(true);
+});
+}
 </script>
+
+<div id="globalPreview">
+<div class="gp-bar">
+<div class="gp-bar-title"><span class="gp-bar-dot" id="gpDot"></span> Aperçu en direct</div>
+<div class="gp-scale">
+<button class="on" onclick="gpSetScale(100,this)">100%</button>
+<button onclick="gpSetScale(75,this)">75%</button>
+<button onclick="gpSetScale(50,this)">50%</button>
+</div>
+<div class="gp-bar-actions">
+<button class="gp-btn" onclick="refreshGlobalPreview(true)" title="Recharger">↺</button>
+<button class="gp-btn" onclick="window.open('index.html','_blank')" title="Ouvrir dans un onglet">↗</button>
+<button class="gp-btn" onclick="toggleGlobalPreview()" title="Fermer">✕</button>
+</div>
+</div>
+<div style="flex:1;overflow:hidden;position:relative">
+<iframe id="gpFrame" src="about:blank"></iframe>
+</div>
+</div>
 </body>
 </html>
