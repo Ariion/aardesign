@@ -571,7 +571,15 @@
     "bgPosX": 100,
     "bgZoom": 100
   },
-  "aar_sec_contact": null,
+  "aar_sec_contact": {
+    "t1": "Parlons de",
+    "t2": "votre projet",
+    "email": "aardesign14@gmail.com",
+    "phone": "06 79 46 62 19",
+    "ig": "",
+    "be": "",
+    "copy": "© 2026 Aardesign — Anthony Armand"
+  },
   "aar_sec_about": {
     "fn": "Anthony",
     "ln": "Armand",
