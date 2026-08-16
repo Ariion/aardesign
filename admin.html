@@ -239,6 +239,13 @@ transition:background .15s;
 display:block;font-size:.55rem;letter-spacing:.16em;text-transform:uppercase;
 color:var(--mid);margin-bottom:.4rem;font-weight:600;
 }
+.tr-btn{
+display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;
+border:none;background:transparent;cursor:pointer;font-size:.72rem;line-height:1;
+vertical-align:middle;margin-left:.3rem;padding:0;opacity:.55;transition:opacity .15s,transform .15s;
+}
+.tr-btn:hover{opacity:1;transform:scale(1.15)}
+.tr-btn:disabled{opacity:.3;cursor:wait}
 .field input,.field select,.field textarea{
 width:100%;background:var(--bg);border:1px solid var(--line);border-radius:6px;
 color:var(--ink);padding:.55rem .8rem;
@@ -645,11 +652,11 @@ text-align:center;cursor:pointer;transition:all .15s;background:transparent;
 <div class="sec-body open">
 <div class="field"><label>Nom complet</label><input type="text" id="h-intro"></div>
 <div class="field-row">
-<div class="field"><label>Rôle — ligne 1</label><input type="text" id="h-t1"></div>
+<div class="field"><label>Rôle — ligne 1 <button type="button" class="tr-btn" onclick="trField(this,'h-t1','hero.t1')" title="Traduire en anglais">🌐</button></label><input type="text" id="h-t1"></div>
 <div class="field"><label>Rôle — ligne 2</label><input type="text" id="h-t2"></div>
 </div>
 <div class="field"><label>Localisation</label><input type="text" id="h-t3"></div>
-<div class="field"><label>Description courte (fenêtre À propos)</label><textarea id="h-desc"></textarea></div>
+<div class="field"><label>Description courte (fenêtre À propos) <button type="button" class="tr-btn" onclick="trField(this,'h-desc','hero.desc')" title="Traduire en anglais">🌐</button></label><textarea id="h-desc"></textarea></div>
 <div class="field"><label>Tagline (optionnel)</label><input type="text" id="h-scroll" placeholder="Défiler"></div>
 </div>
 </div>
@@ -720,8 +727,8 @@ text-align:center;cursor:pointer;transition:all .15s;background:transparent;
 <div class="field"><label>Prénom</label><input type="text" id="ab-fn"></div>
 <div class="field"><label>Nom (italique)</label><input type="text" id="ab-ln"></div>
 </div>
-<div class="field"><label>Paragraphe 1</label><textarea id="ab-p1"></textarea></div>
-<div class="field"><label>Paragraphe 2</label><textarea id="ab-p2"></textarea></div>
+<div class="field"><label>Paragraphe 1 <button type="button" class="tr-btn" onclick="trField(this,'ab-p1','about.p1')" title="Traduire en anglais">🌐</button></label><textarea id="ab-p1"></textarea></div>
+<div class="field"><label>Paragraphe 2 <button type="button" class="tr-btn" onclick="trField(this,'ab-p2','about.p2')" title="Traduire en anglais">🌐</button></label><textarea id="ab-p2"></textarea></div>
 <div class="field"><label>Texte du lien CTA</label><input type="text" id="ab-cta"></div>
 </div>
 </div>
@@ -2658,6 +2665,28 @@ ghSaveWithFeedback('Portfolio');
 function i18nGetEn(){ try{ return (JSON.parse(localStorage.getItem('aar_i18n')||'{}').en)||{}; }catch(_){ return {}; } }
 function i18nSetEn(en){ localStorage.setItem('aar_i18n', JSON.stringify({en})); }
 
+// Traduction ponctuelle d'un champ, directement depuis son bouton 🌐 (sans passer par l'onglet Langues)
+async function trField(btn,srcId,key){
+const el=document.getElementById(srcId); if(!el) return;
+const text=el.value.trim();
+if(!text){ toast('Rien à traduire','err'); return; }
+const orig=btn.textContent;
+btn.disabled=true; btn.textContent='…';
+try{
+const r=await fetch('/api/translate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({items:{[key]:text}})});
+const d=await r.json();
+if(d.error){ toast(d.error,'err'); return; }
+const translated=(d.translations||{})[key];
+if(!translated){ toast('Traduction vide','err'); return; }
+const en=i18nGetEn();
+en[key]=translated;
+i18nSetEn(en);
+if(typeof schedulePreviewRefresh==='function') schedulePreviewRefresh();
+toast('✓ Traduit : « '+(translated.length>60?translated.slice(0,60)+'…':translated)+' »');
+}catch(e){ toast('Erreur : '+e.message,'err'); }
+finally{ btn.disabled=false; btn.textContent=orig; }
+}
+
 // Construit la liste des textes FR à traduire, groupés pour l'affichage
 function i18nGatherFR(){
   const groups=[];
@@ -3202,7 +3231,7 @@ _gpTimer = setTimeout(() => refreshGlobalPreview(false), 550);
 }
 function refreshGlobalPreview(hard){
 const f = document.getElementById('gpFrame'); if (!f) return;
-f.src = 'index.html?preview=' + Date.now();
+f.src = 'index.html?aaredit=1&preview=' + Date.now();
 f.onload = () => { const dot = document.getElementById('gpDot'); if (dot) dot.classList.remove('stale'); };
 }
 function gpSetScale(pct, btn){
@@ -3226,7 +3255,7 @@ refreshGlobalPreview(true);
 
 <div id="globalPreview">
 <div class="gp-bar">
-<div class="gp-bar-title"><span class="gp-bar-dot" id="gpDot"></span> Aperçu en direct</div>
+<div class="gp-bar-title"><span class="gp-bar-dot" id="gpDot"></span> Aperçu en direct <span style="text-transform:none;font-weight:400;color:rgba(255,255,255,.4);letter-spacing:0">— glisse les dossiers du bureau pour les réordonner, + pour en ajouter</span></div>
 <div class="gp-scale">
 <button class="on" onclick="gpSetScale(100,this)">100%</button>
 <button onclick="gpSetScale(75,this)">75%</button>

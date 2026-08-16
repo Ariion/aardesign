@@ -429,6 +429,18 @@ transition:padding-left .25s cubic-bezier(.4,0,.2,1),border-color .25s}
 [data-theme="light"] .dfl-num{color:rgba(27,53,96,.4)}
 [data-theme="light"] .dfl-label{color:rgba(27,53,96,.65)}
 [data-theme="light"] .dfl-row:hover .dfl-label{color:var(--navy)}
+/* mode édition (aperçu live admin) */
+.dfl-edit{cursor:grab}
+.dfl-edit.dragging{opacity:.4}
+.dfl-handle{font-size:.8rem;letter-spacing:-.2em;color:rgba(255,255,255,.28);cursor:grab;user-select:none;flex-shrink:0}
+.dfl-edit .dfl-label{flex:1;cursor:pointer}
+.dfl-del{background:none;border:1px solid rgba(255,95,87,.35);color:rgba(255,120,110,.85);width:22px;height:22px;border-radius:5px;
+font-size:.68rem;line-height:1;cursor:pointer;flex-shrink:0;opacity:0;transition:opacity .2s,background .2s}
+.dfl-edit:hover .dfl-del{opacity:1}
+.dfl-del:hover{background:rgba(255,95,87,.18)}
+.dfl-add{cursor:pointer;border-bottom-style:dashed;opacity:.6;transition:opacity .2s}
+.dfl-add:hover{opacity:1}
+.dfl-plus{font-size:1.1rem;color:#29B8D9;width:16px;text-align:center;flex-shrink:0}
 /* dock — icônes sobres monochromes */
 #desk-apps .d-icon-face{background:rgba(255,255,255,.06)!important;border:1px solid rgba(255,255,255,.12);box-shadow:none}
 .d-icon:hover .d-icon-face{background:rgba(41,184,217,.22)!important;border-color:rgba(41,184,217,.5)}
@@ -2039,6 +2051,11 @@ if(type==='category') return `openCategory('${id}')`;
 return `openFolder('${id}')`;
 }
 
+// Mode édition (actif uniquement dans l'aperçu live de l'admin — jamais pour un visiteur)
+const AAR_EDIT=(function(){
+try{ return window.self!==window.top && /(?:\?|&)aaredit=1(?:&|$)/.test(location.search); }catch(_){ return false; }
+})();
+
 function renderDesktopFolders(){
 const data=getDeskData();
 const container=document.getElementById('desk-dynamic-folders');
@@ -2050,19 +2067,74 @@ if(f.inPro) return;
 if(!bySection[f.section]) bySection[f.section]=[];
 bySection[f.section].push(f);
 });
-let _fn=0;
 container.innerHTML=data.sections.map(sec=>{
 const folders=bySection[sec]||[];
-if(!folders.length) return '';
+if(!folders.length && !AAR_EDIT) return '';
+const rows=folders.map(f=>{
+if(!AAR_EDIT){
+return `<div class="dfl-row" onclick="${deskFolderAction(f.action)}"><span class="dfl-label">${TR('folder.'+f.id,f.label)}</span></div>`;
+}
+return `<div class="dfl-row dfl-edit" draggable="true" data-fid="${f.id}" ondragstart="deskDragStart(event,'${f.id}')" ondragover="deskDragOver(event)" ondrop="deskDrop(event,'${f.id}')" ondragend="deskDragEnd(event)">
+<span class="dfl-handle" title="Glisser pour réordonner">⋮⋮</span>
+<span class="dfl-label" onclick="${deskFolderAction(f.action)}">${TR('folder.'+f.id,f.label)}</span>
+<button class="dfl-del" title="Supprimer" onclick="event.stopPropagation();deskDeleteFolder('${f.id}')">✕</button>
+</div>`;
+}).join('');
+const addRow=AAR_EDIT?`<div class="dfl-row dfl-add" onclick="deskAddFolder('${_esc(sec)}')"><span class="dfl-plus">+</span><span class="dfl-label">Ajouter un dossier</span></div>`:'';
 return `<div class="desk-section">
 <div class="desk-section-label">${TR('section.'+sec,sec)}</div>
-<div class="desk-folder-list">
-${folders.map(f=>`<div class="dfl-row" onclick="${deskFolderAction(f.action)}">
-<span class="dfl-label">${TR('folder.'+f.id,f.label)}</span>
-</div>`).join('')}
+<div class="desk-folder-list" data-section="${_esc(sec)}">
+${rows}
+${addRow}
 </div>
 </div>`;
 }).join('');
+}
+
+// ── Édition live (drag/add/delete) depuis l'aperçu admin ──
+let _deskDragId=null;
+function deskDragStart(e,id){ _deskDragId=id; e.currentTarget.classList.add('dragging'); e.dataTransfer.effectAllowed='move'; }
+function deskDragEnd(e){ e.currentTarget.classList.remove('dragging'); }
+function deskDragOver(e){ e.preventDefault(); }
+function deskDrop(e,targetId){
+e.preventDefault();
+if(!_deskDragId || _deskDragId===targetId) return;
+const data=JSON.parse(JSON.stringify(getDeskData()));
+const from=data.folders.findIndex(f=>f.id===_deskDragId);
+const to=data.folders.findIndex(f=>f.id===targetId);
+if(from<0||to<0) return;
+const [moved]=data.folders.splice(from,1);
+data.folders.splice(to,0,moved);
+deskPersist(data);
+}
+function deskAddFolder(section){
+const label=prompt('Nom du nouveau dossier :'); if(!label||!label.trim()) return;
+const id=label.trim().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]/g,'_').replace(/_+/g,'_').replace(/^_|_$/g,'').substring(0,20)||('f'+Date.now());
+const palette=[['#0e7490','#06b6d4'],['#6d28d9','#a78bfa'],['#be185d','#f472b6'],['#1d4ed8','#60a5fa'],['#c2410c','#fb923c']];
+const [c1,c2]=palette[Math.floor(Math.random()*palette.length)];
+const data=JSON.parse(JSON.stringify(getDeskData()));
+data.folders.push({id,label:label.trim(),action:'folder:'+id,icon:'grid',c1,c2,section});
+deskPersist(data);
+}
+function deskDeleteFolder(id){
+if(!confirm('Supprimer ce dossier ?')) return;
+const data=JSON.parse(JSON.stringify(getDeskData()));
+data.folders=data.folders.filter(f=>f.id!==id);
+deskPersist(data);
+}
+let _deskSyncTimer=null;
+function deskPersist(data){
+localStorage.setItem('aar_desk',JSON.stringify(data));
+renderDesktopFolders();
+clearTimeout(_deskSyncTimer);
+_deskSyncTimer=setTimeout(()=>{
+try{
+if(window.parent && window.parent!==window && typeof window.parent.saveToGitHub==='function'){
+window.parent.saveToGitHub();
+if(typeof window.parent.toast==='function') window.parent.toast('✓ Bureau mis à jour !');
+}
+}catch(_){}
+},700);
 }
 ;(function migrateDeskLabels(){
   const fixes={'arsene':'Arsène Valentin'};
