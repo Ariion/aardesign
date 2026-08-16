@@ -12,12 +12,31 @@
 <meta property="og:description" content="Graphiste & illustrateur à l'intersection de l'identité visuelle, du print/packaging et du digital painting.">
 <meta property="og:image" content="https://aardesign.fr/assets/Logo-Aardesign-Long.png">
 <meta property="og:url" content="https://aardesign.fr">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:locale:alternate" content="en_US">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="aardesign — Anthony Armand">
 <meta name="twitter:description" content="Graphiste & Illustrateur">
 <meta name="twitter:image" content="https://aardesign.fr/assets/Logo-Aardesign-Long.png">
-<link rel="canonical" href="https://aardesign.fr">
+<link rel="canonical" href="https://aardesign.fr" id="meta-canonical">
+<link rel="alternate" hreflang="fr" href="https://aardesign.fr/">
+<link rel="alternate" hreflang="en" href="https://aardesign.fr/en">
+<link rel="alternate" hreflang="x-default" href="https://aardesign.fr/">
+<script>
+(function(){
+  // Ajuste dès le <head> (avant le rendu) : lang, canonical, og:url selon /en ou /
+  var isEn = /^\/en(\/|$)/i.test(location.pathname);
+  document.documentElement.lang = isEn ? 'en' : 'fr';
+  var url = 'https://aardesign.fr' + (isEn ? '/en' : '/');
+  var setAttr = function(sel, attr, val){ var e=document.querySelector(sel); if(e) e.setAttribute(attr,val); };
+  document.addEventListener('DOMContentLoaded', function(){
+    setAttr('#meta-canonical','href',url);
+    setAttr('meta[property="og:url"]','content',url);
+    setAttr('meta[property="og:locale"]','content',isEn?'en_US':'fr_FR');
+  });
+})();
+</script>
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#1B3560">
 <link rel="icon" type="image/png" href="assets/favicon.png">
