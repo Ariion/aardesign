@@ -1061,9 +1061,10 @@ const time=hh+':'+mm;
 document.getElementById('ls-time').textContent=time;
 document.getElementById('tb-clock').textContent=time;
 const el=document.getElementById('desk-id-time'); if(el) el.textContent=time;
-const days=['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
-const months=['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
-const dateStr=`${days[n.getDay()]} ${n.getDate()} ${months[n.getMonth()]} ${n.getFullYear()}`;
+const isEn=aarLang()==='en';
+const days=isEn?['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']:['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+const months=isEn?['January','February','March','April','May','June','July','August','September','October','November','December']:['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+const dateStr=isEn?`${days[n.getDay()]}, ${months[n.getMonth()]} ${n.getDate()}, ${n.getFullYear()}`:`${days[n.getDay()]} ${n.getDate()} ${months[n.getMonth()]} ${n.getFullYear()}`;
 document.getElementById('ls-date').textContent=dateStr;
 const el2=document.getElementById('desk-id-date'); if(el2) el2.textContent=dateStr;
 }
@@ -1397,7 +1398,7 @@ const cv = JSON.parse(localStorage.getItem('aar_cv')||'null');
 const hero = JSON.parse(localStorage.getItem('aar_sec_hero')||'null');
 const ct = JSON.parse(localStorage.getItem('aar_sec_contact')||'null');
 const name = hero ? (hero.intro||'Anthony Armand') : 'Anthony Armand';
-const role = hero ? ((hero.t1||'')+(hero.t2?' · '+hero.t2:'')) : 'Graphiste & Illustrateur · aardesign';
+const role = hero ? (TR('hero.t1',hero.t1||'')+(hero.t2?' · '+hero.t2:'')) : 'Graphiste & Illustrateur · aardesign';
 const email = ct?.email||'aardesign14@gmail.com';
 const phone = ct?.phone||'06 79 46 62 19';
 const skills = cv ? cv.skills.map(s=>[s.n,s.p]) : DEF_CV_DATA.skills;
@@ -1455,30 +1456,30 @@ const phone = ct?.phone||'06 79 46 62 19';
 const ig = ct?.ig||'';
 const be = ct?.be||'';
 const hero = JSON.parse(localStorage.getItem('aar_sec_hero')||'null');
-const role = hero ? ((hero.t1||'Graphiste & Illustrateur')+(hero.t2?' · '+hero.t2:'')) : 'Graphiste & Illustrateur · aardesign';
+const role = hero ? (TR('hero.t1',hero.t1||'Graphiste & Illustrateur')+(hero.t2?' · '+hero.t2:'')) : 'Graphiste & Illustrateur · aardesign';
 return `<div class="w-profile">
 <div class="w-ava"><img src="assets/photo.png" alt="" onerror="this.src='assets/Logo-Aardesign-Court.png'"></div>
 <div><div class="w-name">Anthony Armand</div><div class="w-role">${role}</div></div>
 </div>
 <div class="w-row">
 <div class="w-row-ico"><svg viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="1.8" width="18" height="18"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 7 8.5 6 8.5-6"/></svg></div>
-<div class="w-row-info"><div class="w-row-lbl">Email</div><div class="w-row-val">${email}</div></div>
-<div class="w-row-acts"><a class="w-btn pri" href="mailto:${email}">Écrire</a><button class="w-btn" data-copy="${email}">Copier</button></div>
+<div class="w-row-info"><div class="w-row-lbl">${t('email')}</div><div class="w-row-val">${email}</div></div>
+<div class="w-row-acts"><a class="w-btn pri" href="mailto:${email}">${t('write')}</a><button class="w-btn" data-copy="${email}">${t('copy')}</button></div>
 </div>
 <div class="w-row">
 <div class="w-row-ico"><svg viewBox="0 0 24 24" fill="none" stroke="#30D158" stroke-width="1.8" width="18" height="18"><path d="M22 16.9v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.9z"/></svg></div>
-<div class="w-row-info"><div class="w-row-lbl">Téléphone</div><div class="w-row-val">${phone}</div></div>
-<div class="w-row-acts"><a class="w-btn pri" href="tel:${phone.replace(/\s/g,'')}">Appeler</a><button class="w-btn" data-copy="${phone}">Copier</button></div>
+<div class="w-row-info"><div class="w-row-lbl">${t('phone')}</div><div class="w-row-val">${phone}</div></div>
+<div class="w-row-acts"><a class="w-btn pri" href="tel:${phone.replace(/\s/g,'')}">${t('call')}</a><button class="w-btn" data-copy="${phone}">${t('copy')}</button></div>
 </div>
 <div class="w-row">
 <div class="w-row-ico"><svg viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="1.8" width="18" height="18"><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></div>
-<div class="w-row-info"><div class="w-row-lbl">Localisation</div><div class="w-row-val">Caen · France · Remote OK</div></div>
+<div class="w-row-info"><div class="w-row-lbl">${t('location')}</div><div class="w-row-val">Caen · France · Remote OK</div></div>
 </div>
-<div class="w-row"><div class="w-row-ico"><svg viewBox="0 0 24 24" fill="none" stroke="#0a66c2" stroke-width="1.8" width="18" height="18"><rect x="2" y="2" width="20" height="20" rx="4"/><path d="M7 10v7M7 7v.01M12 17v-4c0-1.1.9-2 2-2s2 .9 2 2v4M12 10v7"/></svg></div><div class="w-row-info"><div class="w-row-lbl">LinkedIn</div><div class="w-row-val">linkedin.com/in/anthonyarmand</div></div><div class="w-row-acts"><a class="w-btn pri" href="https://www.linkedin.com/in/anthonyarmand" target="_blank">Voir</a></div></div>
+<div class="w-row"><div class="w-row-ico"><svg viewBox="0 0 24 24" fill="none" stroke="#0a66c2" stroke-width="1.8" width="18" height="18"><rect x="2" y="2" width="20" height="20" rx="4"/><path d="M7 10v7M7 7v.01M12 17v-4c0-1.1.9-2 2-2s2 .9 2 2v4M12 10v7"/></svg></div><div class="w-row-info"><div class="w-row-lbl">LinkedIn</div><div class="w-row-val">linkedin.com/in/anthonyarmand</div></div><div class="w-row-acts"><a class="w-btn pri" href="https://www.linkedin.com/in/anthonyarmand" target="_blank">${t('view')}</a></div></div>
 <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--line);display:flex;gap:12px;justify-content:center">
-<a href="/mentions-legales.html" style="font-size:.58rem;color:var(--mid);text-decoration:none;opacity:.7" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=.7">Mentions légales</a>
+<a href="/mentions-legales.html" style="font-size:.58rem;color:var(--mid);text-decoration:none;opacity:.7" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=.7">${t('legalNotice')}</a>
 <span style="color:var(--line)">·</span>
-<a href="/confidentialite.html" style="font-size:.58rem;color:var(--mid);text-decoration:none;opacity:.7" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=.7">Confidentialité</a>
+<a href="/confidentialite.html" style="font-size:.58rem;color:var(--mid);text-decoration:none;opacity:.7" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=.7">${t('privacy')}</a>
 </div>`;
 }
 
@@ -1497,7 +1498,7 @@ return `<div class="w-profile">
 ${stats.slice(0,4).map((s,i)=>`<div class="ab-stat"><div class="ab-stat-n">${s.n}</div><div class="ab-stat-l">${TR('about.stat.'+i,s.l)}</div></div>`).join('')}
 </div>
 <div style="display:flex;flex-wrap:wrap;gap:5px">
-${'Identité visuelle,Digital Painting,Illustration,Packaging,Print,Web Design'.split(',').map(d=>`<span class="ab-tag">${d}</span>`).join('')}
+${t('aboutTags').split(',').map(d=>`<span class="ab-tag">${d}</span>`).join('')}
 </div>`;
 }
 
@@ -1542,25 +1543,25 @@ onmouseout="this.style.transform='';this.style.filter=''">
 </div>`
 },
 cv:{
-title:'CV — Anthony Armand',w:820,h:520,ico:icoCV,
+title:t('cvWinTitle')+'Anthony Armand',w:820,h:520,ico:icoCV,
 body: buildCVBody()
 },
 contact:{
-title:'Contact',w:460,h:440,ico:icoContact,
+title:t('contact'),w:460,h:440,ico:icoContact,
 body: buildContactBody()
 },
 mail:{
-title:'Écrire à Anthony',w:500,h:520,ico:icoMail,
-body:`<div class="w-field"><label>Votre nom</label><input id="wm-name" type="text" placeholder="Marie Dupont"></div>
-<div class="w-field"><label>Votre email</label><input id="wm-from" type="email" placeholder="marie@exemple.fr"></div>
-<div class="w-field"><label>Objet</label><input id="wm-subj" type="text" placeholder="Un projet à discuter…"></div>
-<div class="w-field"><label>Message</label><textarea id="wm-msg" placeholder="Bonjour Anthony, je vous contacte au sujet de…"></textarea></div>
-<button class="w-send" id="wm-send">Envoyer ✦</button>
-<div id="wm-ok" style="display:none;margin-top:10px;text-align:center;color:var(--cyan);font-weight:600;font-size:.8rem">✓ Message envoyé !</div>
+title:t('writeTo')+' Anthony',w:500,h:520,ico:icoMail,
+body:`<div class="w-field"><label>${t('yourName')}</label><input id="wm-name" type="text" placeholder="Marie Dupont"></div>
+<div class="w-field"><label>${t('yourEmail')}</label><input id="wm-from" type="email" placeholder="marie@exemple.fr"></div>
+<div class="w-field"><label>${t('subject')}</label><input id="wm-subj" type="text" placeholder="${t('subjectPh')}"></div>
+<div class="w-field"><label>${t('msgTitle')}</label><textarea id="wm-msg" placeholder="${t('msgPlaceholder')}"></textarea></div>
+<button class="w-send" id="wm-send">${t('send')} ✦</button>
+<div id="wm-ok" style="display:none;margin-top:10px;text-align:center;color:var(--cyan);font-weight:600;font-size:.8rem">✓ ${t('sentOk')}</div>
 <div id="wm-err" style="display:none;margin-top:10px;text-align:center;color:#e55;font-size:.78rem"></div>`
 },
 about:{
-title:'À propos — aardesign',w:460,h:480,ico:icoAbout,
+title:t('about')+' — aardesign',w:460,h:480,ico:icoAbout,
 body: buildAboutBody()
 },
 };
@@ -1590,13 +1591,13 @@ const from=document.getElementById('wm-from')?.value.trim();
 const subj=document.getElementById('wm-subj')?.value.trim();
 const msg=document.getElementById('wm-msg')?.value.trim();
 const errEl=document.getElementById('wm-err');
-if(!name||!from||!msg){errEl.textContent='Merci de remplir nom, email et message.';errEl.style.display='block';return;}
-btn.disabled=true;btn.textContent='Envoi…';
+if(!name||!from||!msg){errEl.textContent=aarLang()==='en'?'Please fill in name, email and message.':'Merci de remplir nom, email et message.';errEl.style.display='block';return;}
+btn.disabled=true;btn.textContent=aarLang()==='en'?'Sending…':'Envoi…';
 try{
 const r=await fetch('/api/send-message',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,email:from,subject:subj,message:msg})});
 if(r.ok){document.getElementById('wm-ok').style.display='block';btn.style.display='none';}
-else{const d=await r.json();errEl.textContent=d.error||'Erreur envoi';errEl.style.display='block';btn.disabled=false;btn.textContent='Envoyer ✦';}
-}catch(e){errEl.textContent='Erreur réseau';errEl.style.display='block';btn.disabled=false;btn.textContent='Envoyer ✦';}
+else{const d=await r.json();errEl.textContent=d.error||t('sendErr');errEl.style.display='block';btn.disabled=false;btn.textContent=t('send')+' ✦';}
+}catch(e){errEl.textContent=t('networkErr');errEl.style.display='block';btn.disabled=false;btn.textContent=t('send')+' ✦';}
 });
 },50);
 }
@@ -1959,7 +1960,11 @@ const UI_STR={
     themeLight:' Mode clair', themeDark:'Mode sombre',
     write:'Écrire', copy:'Copier', copied:'Copié !', email:'Email', phone:'Téléphone',
     msgTitle:'Message', msgPlaceholder:'Bonjour Anthony, je vous contacte au sujet de…', send:'Envoyer',
-    cvSkills:'Compétences', cvExp:'Expériences professionnelles', cvEdu:'Diplômes & Formations', cvLang:'Langues', cvDownload:'Télécharger le CV' },
+    cvSkills:'Compétences', cvExp:'Expériences professionnelles', cvEdu:'Diplômes & Formations', cvLang:'Langues', cvDownload:'Télécharger le CV',
+    call:'Appeler', view:'Voir', location:'Localisation', legalNotice:'Mentions légales', privacy:'Confidentialité',
+    yourName:'Votre nom', yourEmail:'Votre email', subject:'Objet', subjectPh:'Un projet à discuter…',
+    writeTo:'Écrire à', cvWinTitle:'CV — ', sendErr:'Erreur envoi', networkErr:'Erreur réseau', sentOk:'Message envoyé !',
+    aboutTags:'Identité visuelle,Digital Painting,Illustration,Packaging,Print,Web Design' },
   en:{ cv:'Resume', contact:'Contact', message:'Message', about:'About',
     ctx:'The context', goal:'The goal', approach:'My approach', outcome:'The outcome',
     client:'Client', role:'Role', year:'Year', noproj:'No project',
@@ -1967,7 +1972,11 @@ const UI_STR={
     themeLight:' Light mode', themeDark:'Dark mode',
     write:'Write', copy:'Copy', copied:'Copied!', email:'Email', phone:'Phone',
     msgTitle:'Message', msgPlaceholder:'Hi Anthony, I\'m reaching out about…', send:'Send',
-    cvSkills:'Skills', cvExp:'Work experience', cvEdu:'Education & Training', cvLang:'Languages', cvDownload:'Download resume' }
+    cvSkills:'Skills', cvExp:'Work experience', cvEdu:'Education & Training', cvLang:'Languages', cvDownload:'Download resume',
+    call:'Call', view:'View', location:'Location', legalNotice:'Legal notice', privacy:'Privacy',
+    yourName:'Your name', yourEmail:'Your email', subject:'Subject', subjectPh:'A project to discuss…',
+    writeTo:'Write to', cvWinTitle:'Resume — ', sendErr:'Sending error', networkErr:'Network error', sentOk:'Message sent!',
+    aboutTags:'Visual Identity,Digital Painting,Illustration,Packaging,Print,Web Design' }
 };
 function t(k){ return (UI_STR[aarLang()]||UI_STR.fr)[k] || (UI_STR.fr[k]||k); }
 // Applique les libellés statiques du DOM (dock, bouton thème, langue)
