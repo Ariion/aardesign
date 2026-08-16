@@ -5,17 +5,17 @@
 <base href="/">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>aardesign — Anthony Armand</title>
-<meta name="description" content="Anthony Armand — Directeur Artistique & Designer pluridisciplinaire basé à Caen. Digital painting, illustration narrative, direction artistique, packaging premium.">
-<meta name="keywords" content="directeur artistique, designer graphique, digital painting, illustration, Caen, Normandie, aardesign">
+<meta name="description" content="Anthony Armand — Graphiste & Illustrateur basé à Caen. Identité visuelle, print & packaging, web et digital painting.">
+<meta name="keywords" content="graphiste, illustrateur, identité visuelle, digital painting, illustration, Caen, Normandie, aardesign">
 <meta name="author" content="Anthony Armand">
-<meta property="og:title" content="aardesign — Anthony Armand, Directeur Artistique">
-<meta property="og:description" content="Designer pluridisciplinaire à l'intersection du digital painting, de l'illustration narrative et de la direction artistique.">
+<meta property="og:title" content="aardesign — Anthony Armand, Graphiste & Illustrateur">
+<meta property="og:description" content="Graphiste & illustrateur à l'intersection de l'identité visuelle, du print/packaging et du digital painting.">
 <meta property="og:image" content="https://aardesign.fr/assets/Logo-Aardesign-Long.png">
 <meta property="og:url" content="https://aardesign.fr">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="aardesign — Anthony Armand">
-<meta name="twitter:description" content="Directeur Artistique & Designer pluridisciplinaire">
+<meta name="twitter:description" content="Graphiste & Illustrateur">
 <meta name="twitter:image" content="https://aardesign.fr/assets/Logo-Aardesign-Long.png">
 <link rel="canonical" href="https://aardesign.fr">
 <link rel="manifest" href="/manifest.json">
@@ -884,7 +884,7 @@ background:var(--cyan);color:#fff;font:700 .82rem 'Montserrat',sans-serif;cursor
 <div id="ls-time">00:00</div>
 <div id="ls-date">—</div>
 <div id="ls-name">Anthony Armand</div>
-<div id="ls-role">Directeur Artistique · aardesign</div>
+<div id="ls-role">Graphiste & Illustrateur · aardesign</div>
 <div id="ls-hint">Cliquer pour entrer</div>
 </div>
 
@@ -955,7 +955,7 @@ Mode clair
 <div id="desk-id-time">00:00</div>
 <div id="desk-id-date">—</div>
 <div id="desk-id-name">Anthony Armand</div>
-<div id="desk-id-role">Directeur Artistique · Aardesign</div>
+<div id="desk-id-role">Graphiste & Illustrateur · Aardesign</div>
 </div>
 
 
@@ -1406,7 +1406,7 @@ const cv = JSON.parse(localStorage.getItem('aar_cv')||'null');
 const hero = JSON.parse(localStorage.getItem('aar_sec_hero')||'null');
 const ct = JSON.parse(localStorage.getItem('aar_sec_contact')||'null');
 const name = hero ? (hero.intro||'Anthony Armand') : 'Anthony Armand';
-const role = hero ? ((hero.t1||'')+(hero.t2?' · '+hero.t2:'')) : 'Directeur Artistique · aardesign';
+const role = hero ? ((hero.t1||'')+(hero.t2?' · '+hero.t2:'')) : 'Graphiste & Illustrateur · aardesign';
 const email = ct?.email||'aardesign14@gmail.com';
 const phone = ct?.phone||'06 79 46 62 19';
 const skills = cv ? cv.skills.map(s=>[s.n,s.p]) : DEF_CV_DATA.skills;
@@ -1464,7 +1464,7 @@ const phone = ct?.phone||'06 79 46 62 19';
 const ig = ct?.ig||'';
 const be = ct?.be||'';
 const hero = JSON.parse(localStorage.getItem('aar_sec_hero')||'null');
-const role = hero ? ((hero.t1||'DA')+(hero.t2?' · '+hero.t2:'')) : 'DA · Digital Painting · aardesign';
+const role = hero ? ((hero.t1||'Graphiste & Illustrateur')+(hero.t2?' · '+hero.t2:'')) : 'Graphiste & Illustrateur · aardesign';
 return `<div class="w-profile">
 <div class="w-ava"><img src="assets/photo.png" alt="" onerror="this.src='assets/Logo-Aardesign-Court.png'"></div>
 <div><div class="w-name">Anthony Armand</div><div class="w-role">${role}</div></div>
@@ -1667,31 +1667,14 @@ etudes:[
 };
 
 const FOLDERS={
-arsene:{label:'Arsène Valentin',color:'#fbbf24'},
-clopinette:{label:'Clopinette',color:'#ec4899'},
 digital:{label:'Digital Painting',color:'#06b6d4'},
-logo:{label:'Identités visuelles',color:'#10b981'},
-animation:{label:'Animation',color:'#f97316'},
-sites:{label:'Sites internet',color:'#60a5fa'},
-perso:{label:'Perso',color:'#8b5cf6'},
-etudes:{label:'Études',color:'#3b82f6'},
+logo:{label:'Identité visuelle',color:'#a78bfa'},
+print:{label:'Print & Packaging',color:'#f472b6'},
+sites:{label:'Web & Sites',color:'#60a5fa'},
+etudes:{label:'Illustration & Études',color:'#fb923c'},
 };
 
-const CATEGORIES={
-pro:{
-label:'Portfolio professionnel',color:'#29B8D9',
-items:[
-{id:'arsene',  label:'Arsène Valentin', c1:'#d97706',c2:'#fbbf24'},
-{id:'clopinette',label:'Clopinette',    c1:'#be185d',c2:'#ec4899'},
-]
-},
-identites:{
-label:'Identités visuelles',color:'#10b981',
-items:[
-{id:'logo', label:'Logo & Identité', c1:'#065f46',c2:'#10b981'},
-]
-}
-};
+const CATEGORIES={};
 
 function folderSvg(c1,c2){
 return `<div style="width:64px;height:64px;border-radius:16px;background:linear-gradient(145deg,${c1},${c2});display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(0,0,0,.3),0 1px 0 rgba(255,255,255,.12) inset;position:relative;overflow:hidden">
@@ -2060,13 +2043,11 @@ pen:'<path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>'
 const DEFAULT_DESK_DATA={
 sections:['Portfolio','Créations personnelles'],
 folders:[
-{id:'pro',     label:'Portfolio pro',      action:'category:pro', icon:'grid',      c1:'#0e5e7a',c2:'#29B8D9',section:'Portfolio'},
-{id:'logo',    label:'Identités visuelles', action:'folder:logo',  icon:'layers',    c1:'#065f46',c2:'#10b981',section:'Portfolio'},
-{id:'digital', label:'Digital Painting',    action:'folder:digital',icon:'brush',   c1:'#0e7490',c2:'#06b6d4',section:'Portfolio'},
-{id:'animation',label:'Animation',          action:'folder:animation',icon:'play',  c1:'#c2410c',c2:'#f97316',section:'Portfolio'},
-{id:'sites',   label:'Sites internet',      action:'folder:sites', icon:'globe',     c1:'#1d4ed8',c2:'#60a5fa',section:'Portfolio'},
-{id:'perso',   label:'Perso',               action:'folder:perso', icon:'heart',     c1:'#6d28d9',c2:'#8b5cf6',section:'Créations personnelles'},
-{id:'etudes',  label:'Études',              action:'folder:etudes',icon:'book',      c1:'#1d4ed8',c2:'#3b82f6',section:'Créations personnelles'},
+{id:'digital', label:'Digital Painting',      action:'folder:digital',icon:'brush', c1:'#0e7490',c2:'#06b6d4',section:'Portfolio'},
+{id:'logo',    label:'Identité visuelle',     action:'folder:logo',  icon:'pen',     c1:'#6d28d9',c2:'#a78bfa',section:'Portfolio'},
+{id:'print',   label:'Print & Packaging',     action:'folder:print', icon:'image',   c1:'#be185d',c2:'#f472b6',section:'Portfolio'},
+{id:'sites',   label:'Web & Sites',           action:'folder:sites', icon:'globe',   c1:'#1d4ed8',c2:'#60a5fa',section:'Portfolio'},
+{id:'etudes',  label:'Illustration & Études', action:'folder:etudes',icon:'book',    c1:'#c2410c',c2:'#fb923c',section:'Créations personnelles'},
 ]
 };
 
