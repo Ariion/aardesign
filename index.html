@@ -1947,7 +1947,6 @@ const gallery=restImgs.length?`<div class="pvd-imgs${light?' light':''}">${restI
 const legal=p.legalMention?`<div class="pvd-legal">${_esc(TR(pid+'.legal',p.legalMention))}</div>`:'';
 const customBody=(p.layoutOn && p.layout && p.layout.length)
 ? `<div class="pvd-eyebrow">${_esc(eyebrow)}</div>
-<h2 class="pvd-title">${_esc(pvTitleOf(p,pid))}</h2>
 <div class="pvd-blocks">${pvRenderBlocks(fid,p)}</div>
 ${legal}`
 : `<div class="pvd-eyebrow">${_esc(eyebrow)}</div>
