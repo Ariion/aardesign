@@ -2840,14 +2840,48 @@ if(pfCurProject()?.layoutOn) pfRenderBlocksEditor();
 toast('✓ Image ajoutée');
 }
 
-function pfHandleFiles(files){
-if(_pfProjIdx==null||!files.length) return;
-Array.from(files).forEach(file=>{
+// Redimensionne/compresse une image côté navigateur avant de l'enregistrer, pour éviter
+// que des captures d'écran pleine résolution (souvent 3-4 Mo en base64) alourdissent
+// aar_portfolio et ralentissent le chargement du site pour les visiteurs.
+const PF_IMG_MAX_DIM=1600;
+function pfCompressImage(file){
+return new Promise(resolve=>{
+if(file.type==='image/svg+xml'){
 const r=new FileReader();
-r.onload=e=>{ pfPushImg({src:e.target.result,title:file.name.replace(/\.[^.]+$/,'')}); pfRenderProjImages(); if(pfCurProject()?.layoutOn) pfRenderBlocksEditor(); };
+r.onload=e=>resolve(e.target.result);
+r.readAsDataURL(file);
+return;
+}
+const r=new FileReader();
+r.onload=e=>{
+const img=new Image();
+img.onload=()=>{
+let w=img.width, h=img.height;
+if(w>PF_IMG_MAX_DIM||h>PF_IMG_MAX_DIM){
+const scale=PF_IMG_MAX_DIM/Math.max(w,h);
+w=Math.round(w*scale); h=Math.round(h*scale);
+}
+const canvas=document.createElement('canvas');
+canvas.width=w; canvas.height=h;
+canvas.getContext('2d').drawImage(img,0,0,w,h);
+resolve(file.type==='image/png'?canvas.toDataURL('image/png'):canvas.toDataURL('image/jpeg',0.84));
+};
+img.onerror=()=>resolve(e.target.result);
+img.src=e.target.result;
+};
 r.readAsDataURL(file);
 });
-toast('✓ '+files.length+' image(s) ajoutée(s)');
+}
+async function pfHandleFiles(files){
+if(_pfProjIdx==null||!files.length) return;
+const list=Array.from(files);
+for(const file of list){
+const src=await pfCompressImage(file);
+pfPushImg({src,title:file.name.replace(/\.[^.]+$/,'')});
+}
+pfRenderProjImages();
+if(pfCurProject()?.layoutOn) pfRenderBlocksEditor();
+toast('✓ '+list.length+' image(s) ajoutée(s) et optimisée(s)');
 }
 
 function pfOpenLib(){
