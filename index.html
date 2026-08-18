@@ -816,6 +816,33 @@ transition:background .15s,border-color .15s;
 .pvd-imgs.light .im img{object-fit:contain;background:#eef0f6;aspect-ratio:auto;padding:14px}
 .pvd-legal{font-size:.58rem;color:var(--mid);font-style:italic;padding-top:18px;margin-top:24px;border-top:1px solid var(--line);opacity:.85}
 
+/* ══════════ Blocs — mise en page personnalisée d'un projet ══════════ */
+.pvd-blocks{display:flex;flex-direction:column;gap:32px}
+.pvb-heading{font-family:Georgia,'Times New Roman',serif;font-weight:400;font-size:1.7rem;line-height:1.2;color:var(--ink);margin:0;text-wrap:balance}
+.pvb-p{font-size:.88rem;line-height:1.75;color:var(--ink);opacity:.85;margin:0;white-space:pre-line}
+.pvb-img{border-radius:2px;overflow:hidden;background:#0d1424;cursor:zoom-in}
+.pvb-img img{width:100%;display:block;object-fit:cover;object-position:center top;max-height:640px}
+.pvb-img.light{background:#eef0f6}
+.pvb-img.light img{object-fit:contain;max-height:420px;padding:36px}
+.pvb-gallery{display:grid;grid-template-columns:repeat(var(--pvb-cols,2),1fr);gap:10px}
+.pvb-gallery .im{border-radius:2px;overflow:hidden;background:#0d1424;cursor:zoom-in}
+.pvb-gallery .im img{width:100%;display:block;aspect-ratio:4/3;object-fit:cover;object-position:center top}
+.pvb-twocol{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:center}
+.pvb-twocol.rev{direction:rtl}
+.pvb-twocol.rev>*{direction:ltr}
+.pvb-twocol .pvb-tc-img{border-radius:2px;overflow:hidden;background:#0d1424;cursor:zoom-in}
+.pvb-twocol .pvb-tc-img img{width:100%;display:block;object-fit:cover;aspect-ratio:4/5}
+.pvb-twocol .pvb-tc-txt{font-size:.88rem;line-height:1.75;color:var(--ink);opacity:.85;white-space:pre-line}
+@media(max-width:640px){.pvb-twocol{grid-template-columns:1fr}}
+.pvb-quote{border-left:2px solid #29B8D9;padding-left:20px;margin:0}
+.pvb-quote-t{font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:1.2rem;line-height:1.5;color:var(--ink)}
+.pvb-quote-c{font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:.62rem;letter-spacing:.06em;color:var(--dim,rgba(255,255,255,.4));margin-top:10px;text-transform:uppercase}
+.pvb-badges{display:flex;gap:26px;flex-wrap:wrap;justify-content:center;padding:8px 0}
+.pvb-badge{display:flex;flex-direction:column;align-items:center;gap:9px;width:96px}
+.pvb-badge-ico{width:50px;height:50px;border-radius:50%;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.pvb-badge-lbl{font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:.56rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--mid);text-align:center;line-height:1.35}
+.pvb-divider{height:1px;background:var(--line);border:none;margin:0}
+
 .gal-wrap{display:flex;flex-direction:column;height:100%}
 .gal-header{display:flex;align-items:center;gap:.5rem;padding:.5rem .8rem;border-bottom:1px solid var(--line);flex-shrink:0;flex-wrap:wrap;gap:.4rem}
 .gal-grid{
@@ -1918,22 +1945,64 @@ const tags=tagArr.length?`<div class="pvd-tags">${tagArr.map(tg=>`<span class="p
 const restImgs=imgs.slice(1);
 const gallery=restImgs.length?`<div class="pvd-imgs${light?' light':''}">${restImgs.map((im,k)=>`<div class="im" onclick="pvLightbox('${fid}',${k+1})"><img src="${im.src}" loading="lazy" alt="${_esc(im.title)}"></div>`).join('')}</div>`:'';
 const legal=p.legalMention?`<div class="pvd-legal">${_esc(TR(pid+'.legal',p.legalMention))}</div>`:'';
-wrap.innerHTML=`<div class="pvd">
-<div class="pvd-top">
-<button class="pvd-back" onclick="pvBack('${fid}')">← ${t('backToGrid')}</button>
-${multi?`<div class="pvd-switch"><button onclick="pvProj('${fid}',-1)" title="${t('prevProject')}">‹</button><span>${st.p+1} / ${projects.length}</span><button onclick="pvProj('${fid}',1)" title="${t('nextProject')}">›</button></div>`:''}
-</div>
-<div class="pvd-body">
-<div class="pvd-eyebrow">${_esc(eyebrow)}</div>
+const customBody=(p.layoutOn && p.layout && p.layout.length)
+? `<div class="pvd-eyebrow">${_esc(eyebrow)}</div>
+<h2 class="pvd-title">${_esc(pvTitleOf(p,pid))}</h2>
+<div class="pvd-blocks">${pvRenderBlocks(fid,p)}</div>
+${legal}`
+: `<div class="pvd-eyebrow">${_esc(eyebrow)}</div>
 <h2 class="pvd-title">${_esc(pvTitleOf(p,pid))}</h2>
 ${facts?`<div class="pvd-facts">${facts}</div>`:''}
 ${hero.src?`<div class="pvd-hero${light?' light':''}" onclick="pvLightbox('${fid}',0)"><img src="${hero.src}" alt="${_esc(pvTitleOf(p,pid))}"></div>`:''}
 <div class="pvd-cols">${blocks}</div>
 ${tags}
 ${gallery}
-${legal}
+${legal}`;
+wrap.innerHTML=`<div class="pvd">
+<div class="pvd-top">
+<button class="pvd-back" onclick="pvBack('${fid}')">← ${t('backToGrid')}</button>
+${multi?`<div class="pvd-switch"><button onclick="pvProj('${fid}',-1)" title="${t('prevProject')}">‹</button><span>${st.p+1} / ${projects.length}</span><button onclick="pvProj('${fid}',1)" title="${t('nextProject')}">›</button></div>`:''}
+</div>
+<div class="pvd-body">
+${customBody}
 </div>
 </div>`;
+}
+
+// ── Rendu des blocs (mise en page personnalisée d'un projet) ──
+function pvRenderBlocks(fid,p){
+const pid='proj.'+p.id;
+const imgs=p.images||[];
+const light=(p.light!==undefined)?p.light:(fid==='logo');
+return (p.layout||[]).map(b=>{
+const bt=TR(pid+'.block.'+b.id,b.text||'');
+if(b.type==='heading') return `<h2 class="pvb-heading">${_esc(bt)}</h2>`;
+if(b.type==='paragraph') return `<p class="pvb-p">${_esc(bt)}</p>`;
+if(b.type==='divider') return `<hr class="pvb-divider">`;
+if(b.type==='quote') return `<blockquote class="pvb-quote"><div class="pvb-quote-t">${_esc(bt)}</div>${b.cite?`<div class="pvb-quote-c">${_esc(b.cite)}</div>`:''}</blockquote>`;
+if(b.type==='image'){
+const im=imgs[b.imgIndex]; if(!im) return '';
+return `<div class="pvb-img${light?' light':''}" onclick="pvLightbox('${fid}',${b.imgIndex})"><img src="${im.src}" loading="lazy" alt="${_esc(im.title||'')}"></div>`;
+}
+if(b.type==='gallery'){
+const idxs=(b.imgIndexes||[]).filter(i=>imgs[i]);
+if(!idxs.length) return '';
+return `<div class="pvb-gallery" style="--pvb-cols:${b.cols||2}">${idxs.map(i=>`<div class="im" onclick="pvLightbox('${fid}',${i})"><img src="${imgs[i].src}" loading="lazy" alt="${_esc(imgs[i].title||'')}"></div>`).join('')}</div>`;
+}
+if(b.type==='twocol'){
+const im=imgs[b.imgIndex];
+return `<div class="pvb-twocol${b.imgFirst===false?' rev':''}">
+${im?`<div class="pvb-tc-img" onclick="pvLightbox('${fid}',${b.imgIndex})"><img src="${im.src}" loading="lazy" alt="${_esc(im.title||'')}"></div>`:'<div></div>'}
+<div class="pvb-tc-txt">${_esc(bt)}</div>
+</div>`;
+}
+if(b.type==='badges'){
+const items=b.items||[];
+if(!items.length) return '';
+return `<div class="pvb-badges">${items.map(it=>`<div class="pvb-badge"><div class="pvb-badge-ico"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#29B8D9" stroke-width="1.6"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg></div><div class="pvb-badge-lbl">${_esc(it.label||'')}</div></div>`).join('')}</div>`;
+}
+return '';
+}).join('');
 }
 
 function pvProj(fid,dir){

@@ -474,6 +474,24 @@ text-align:center;cursor:pointer;transition:all .15s;background:transparent;
 .pf-lib-check{display:none;}
 
 .pf-mention-card{background:var(--bg2);border:1px solid var(--line);border-radius:8px;padding:.8rem 1rem;margin-bottom:1rem;display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;}
+.pf-layout-toggle-card{background:var(--bg2);border:1px solid var(--line);border-radius:8px;padding:.8rem 1rem;margin-bottom:1rem;}
+.pf-block-toolbar{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1rem;}
+.pf-block{background:var(--card);border:1px solid var(--line);border-radius:8px;margin-bottom:.7rem;overflow:hidden;}
+.pf-block.dragging{opacity:.4}
+.pf-block-hd{display:flex;align-items:center;gap:.5rem;padding:.5rem .8rem;background:var(--bg2);border-bottom:1px solid var(--line);cursor:grab;}
+.pf-block-hd-handle{color:var(--dim);font-size:.8rem;letter-spacing:-.15em;flex-shrink:0}
+.pf-block-hd-type{font-size:.58rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--cyan);flex:1}
+.pf-block-hd-del{background:none;border:1px solid rgba(229,62,62,.3);color:var(--red);width:22px;height:22px;border-radius:5px;font-size:.68rem;cursor:pointer;flex-shrink:0}
+.pf-block-hd-del:hover{background:rgba(229,62,62,.1)}
+.pf-block-body{padding:.8rem;}
+.pf-block-body textarea,.pf-block-body input[type=text]{width:100%;border:1px solid var(--line);background:var(--bg2);border-radius:6px;padding:.5rem .7rem;font-family:'Montserrat',sans-serif;font-size:.78rem;color:var(--ink);outline:none;resize:vertical;box-sizing:border-box}
+.pf-block-imgpick{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:6px;margin-top:.5rem}
+.pf-block-imgpick img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:5px;cursor:pointer;border:2px solid transparent;opacity:.55;transition:.15s}
+.pf-block-imgpick img:hover{opacity:.85}
+.pf-block-imgpick img.on{border-color:var(--cyan);opacity:1}
+.pf-block-row2{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+.pf-block-badge-item{display:flex;gap:.4rem;align-items:center;margin-bottom:.4rem}
+.pf-block-badge-item input{flex:1}
 .pf-mention-toggle{display:flex;align-items:center;gap:.5rem;cursor:pointer;white-space:nowrap;font-size:.65rem;font-weight:700;color:var(--mid);}
 .pf-mention-toggle input[type=checkbox]{accent-color:var(--cyan);width:14px;height:14px;cursor:pointer;}
 .pf-mention-toggle.active{color:var(--cyan);}
@@ -1094,10 +1112,6 @@ text-align:center;cursor:pointer;transition:all .15s;background:transparent;
 <div class="pf-field"><label>Année</label><input type="text" id="pfp-year" oninput="pfProjField('year',this.value)" placeholder="2024"></div>
 <div class="pf-field"><label>Rôle</label><input type="text" id="pfp-role" oninput="pfProjField('role',this.value)" placeholder="Direction artistique"></div>
 </div>
-<div class="pf-field"><label>Le contexte</label><textarea id="pfp-context" oninput="pfProjField('context',this.value)" placeholder="Le brief, le besoin du client…"></textarea></div>
-<div class="pf-field"><label>L'objectif</label><textarea id="pfp-objective" oninput="pfProjField('objective',this.value)" placeholder="Ce qu'il fallait atteindre…"></textarea></div>
-<div class="pf-field"><label>Ma démarche</label><textarea id="pfp-approach" oninput="pfProjField('approach',this.value)" placeholder="Comment tu t'y es pris, tes outils, tes étapes…"></textarea></div>
-<div class="pf-field"><label>Le résultat <span style="opacity:.5;text-transform:none;letter-spacing:0">(optionnel)</span></label><textarea id="pfp-result" oninput="pfProjField('result',this.value)" placeholder="L'impact, le rendu final…"></textarea></div>
 <div class="pf-field"><label>Tags <span style="opacity:.5;text-transform:none;letter-spacing:0">(séparés par des virgules)</span></label><input type="text" id="pfp-tags" oninput="pfProjField('tags',this.value)" placeholder="Photoshop, Packaging, Steampunk"></div>
 
 <label style="display:inline-flex;align-items:center;gap:.5rem;font-size:.66rem;font-weight:600;color:var(--mid);cursor:pointer;margin-bottom:1rem">
@@ -1105,9 +1119,39 @@ text-align:center;cursor:pointer;transition:all .15s;background:transparent;
 Visuel sur <span style="color:var(--cyan);font-weight:700">fond clair</span> (logos, images sur blanc)
 </label>
 
+<div class="pf-layout-toggle-card">
+<label style="display:flex;align-items:center;gap:.6rem;font-size:.72rem;font-weight:700;color:var(--ink);cursor:pointer">
+<input type="checkbox" id="pfp-layout-on" onchange="pfToggleLayout(this.checked)" style="accent-color:var(--cyan);width:15px;height:15px;cursor:pointer">
+🧱 Mise en page personnalisée (blocs)
+</label>
+<span style="font-size:.6rem;color:var(--mid);display:block;margin-top:.3rem">Remplace la fiche standard par une mise en page libre : titre, texte, images, galeries, citations… que tu ordonnes toi-même.</span>
+</div>
+
+<div id="pf-standard-fields">
+<div class="pf-field"><label>Le contexte</label><textarea id="pfp-context" oninput="pfProjField('context',this.value)" placeholder="Le brief, le besoin du client…"></textarea></div>
+<div class="pf-field"><label>L'objectif</label><textarea id="pfp-objective" oninput="pfProjField('objective',this.value)" placeholder="Ce qu'il fallait atteindre…"></textarea></div>
+<div class="pf-field"><label>Ma démarche</label><textarea id="pfp-approach" oninput="pfProjField('approach',this.value)" placeholder="Comment tu t'y es pris, tes outils, tes étapes…"></textarea></div>
+<div class="pf-field"><label>Le résultat <span style="opacity:.5;text-transform:none;letter-spacing:0">(optionnel)</span></label><textarea id="pfp-result" oninput="pfProjField('result',this.value)" placeholder="L'impact, le rendu final…"></textarea></div>
+
 <div style="display:flex;align-items:center;gap:.6rem;margin:.2rem 0 1rem;flex-wrap:wrap">
 <button class="btn btn-ink btn-sm" id="pfp-gen" onclick="pfGenerateDesc()" style="display:inline-flex;align-items:center;gap:.4rem">✨ Générer les descriptions</button>
 <span style="font-size:.58rem;color:var(--mid)">Remplit contexte · objectif · démarche · résultat à partir du titre, client, rôle et tags.</span>
+</div>
+</div>
+
+<div id="pf-blocks-editor" style="display:none">
+<label style="display:block;font-size:.58rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mid);margin-bottom:.5rem">Blocs de la page</label>
+<div class="pf-block-toolbar">
+<button class="btn btn-out btn-xs" onclick="pfBlockAdd('heading')">+ Titre</button>
+<button class="btn btn-out btn-xs" onclick="pfBlockAdd('paragraph')">+ Texte</button>
+<button class="btn btn-out btn-xs" onclick="pfBlockAdd('image')">+ Image</button>
+<button class="btn btn-out btn-xs" onclick="pfBlockAdd('gallery')">+ Galerie</button>
+<button class="btn btn-out btn-xs" onclick="pfBlockAdd('twocol')">+ 2 colonnes</button>
+<button class="btn btn-out btn-xs" onclick="pfBlockAdd('quote')">+ Citation</button>
+<button class="btn btn-out btn-xs" onclick="pfBlockAdd('badges')">+ Badges</button>
+<button class="btn btn-out btn-xs" onclick="pfBlockAdd('divider')">+ Séparateur</button>
+</div>
+<div id="pf-blocks-list"></div>
 </div>
 
 <div class="pf-mention-card">
@@ -2507,6 +2551,10 @@ function pfProjectEdit(idx){
   document.getElementById('pfp-tags').value=(p.tags||[]).join(', ');
   const lightChk=document.getElementById('pfp-light'); if(lightChk) lightChk.checked=!!p.light;
   document.getElementById('pf-url-form').style.display='none';
+  const layoutChk=document.getElementById('pfp-layout-on'); if(layoutChk) layoutChk.checked=!!p.layoutOn;
+  document.getElementById('pf-standard-fields').style.display=p.layoutOn?'none':'';
+  document.getElementById('pf-blocks-editor').style.display=p.layoutOn?'':'none';
+  pfRenderBlocksEditor();
   pfLoadMention();
   pfRenderProjImages();
 }
@@ -2535,6 +2583,156 @@ function pfProjField(field,val){
   pfSaveProjects(_pfCurrent,arr);
   if(field==='title') document.getElementById('pf-proj-ed-title').textContent=val||'Nouveau projet';
 }
+
+// ════════ Mise en page personnalisée (blocs) ════════
+const PF_BLOCK_LABELS={heading:'Titre',paragraph:'Texte',image:'Image',gallery:'Galerie',twocol:'2 colonnes',quote:'Citation',badges:'Badges',divider:'Séparateur'};
+
+function pfToggleLayout(on){
+  const p=pfCurProject(); if(!p) return;
+  p.layoutOn=on;
+  if(on && !p.layout) p.layout=[];
+  const arr=pfProjectsOf(_pfCurrent); arr[_pfProjIdx]=p;
+  pfSaveProjects(_pfCurrent,arr);
+  document.getElementById('pf-standard-fields').style.display=on?'none':'';
+  document.getElementById('pf-blocks-editor').style.display=on?'':'none';
+  pfRenderBlocksEditor();
+}
+
+function pfBlockDefaults(type){
+  const id='b'+Date.now()+Math.floor(Math.random()*1000);
+  if(type==='heading') return {id,type,text:'Titre de section'};
+  if(type==='paragraph') return {id,type,text:'Un paragraphe qui décrit cette partie du projet.'};
+  if(type==='image') return {id,type,imgIndex:null};
+  if(type==='gallery') return {id,type,imgIndexes:[],cols:2};
+  if(type==='twocol') return {id,type,imgIndex:null,text:'Le texte à côté de l\'image.',imgFirst:true};
+  if(type==='quote') return {id,type,text:'Une phrase marquante.',cite:''};
+  if(type==='badges') return {id,type,items:[{label:'Identité forte'},{label:'Qualité premium'}]};
+  if(type==='divider') return {id,type};
+  return {id,type};
+}
+
+function pfBlockAdd(type){
+  const p=pfCurProject(); if(!p) return;
+  if(!p.layout) p.layout=[];
+  p.layout.push(pfBlockDefaults(type));
+  const arr=pfProjectsOf(_pfCurrent); arr[_pfProjIdx]=p;
+  pfSaveProjects(_pfCurrent,arr);
+  pfRenderBlocksEditor();
+}
+
+function pfBlockDelete(id){
+  const p=pfCurProject(); if(!p||!p.layout) return;
+  p.layout=p.layout.filter(b=>b.id!==id);
+  const arr=pfProjectsOf(_pfCurrent); arr[_pfProjIdx]=p;
+  pfSaveProjects(_pfCurrent,arr);
+  pfRenderBlocksEditor();
+}
+
+function pfBlockField(id,field,val){
+  const p=pfCurProject(); if(!p||!p.layout) return;
+  const b=p.layout.find(x=>x.id===id); if(!b) return;
+  b[field]=val;
+  const arr=pfProjectsOf(_pfCurrent); arr[_pfProjIdx]=p;
+  pfSaveProjects(_pfCurrent,arr);
+}
+
+function pfBlockPickImage(id,idx){
+  const p=pfCurProject(); if(!p||!p.layout) return;
+  const b=p.layout.find(x=>x.id===id); if(!b) return;
+  if(b.type==='gallery'){
+    b.imgIndexes=b.imgIndexes||[];
+    const pos=b.imgIndexes.indexOf(idx);
+    if(pos>-1) b.imgIndexes.splice(pos,1); else b.imgIndexes.push(idx);
+  } else {
+    b.imgIndex=idx;
+  }
+  const arr=pfProjectsOf(_pfCurrent); arr[_pfProjIdx]=p;
+  pfSaveProjects(_pfCurrent,arr);
+  pfRenderBlocksEditor();
+}
+
+function pfBlockBadgeAdd(id){
+  const p=pfCurProject(); if(!p||!p.layout) return;
+  const b=p.layout.find(x=>x.id===id); if(!b) return;
+  b.items=b.items||[];
+  b.items.push({label:'Nouveau badge'});
+  const arr=pfProjectsOf(_pfCurrent); arr[_pfProjIdx]=p;
+  pfSaveProjects(_pfCurrent,arr);
+  pfRenderBlocksEditor();
+}
+function pfBlockBadgeField(id,i,val){
+  const p=pfCurProject(); if(!p||!p.layout) return;
+  const b=p.layout.find(x=>x.id===id); if(!b||!b.items) return;
+  b.items[i].label=val;
+  const arr=pfProjectsOf(_pfCurrent); arr[_pfProjIdx]=p;
+  pfSaveProjects(_pfCurrent,arr);
+}
+function pfBlockBadgeDel(id,i){
+  const p=pfCurProject(); if(!p||!p.layout) return;
+  const b=p.layout.find(x=>x.id===id); if(!b||!b.items) return;
+  b.items.splice(i,1);
+  const arr=pfProjectsOf(_pfCurrent); arr[_pfProjIdx]=p;
+  pfSaveProjects(_pfCurrent,arr);
+  pfRenderBlocksEditor();
+}
+
+let _pfBlockDragId=null;
+function pfBlockDragStart(e,id){ _pfBlockDragId=id; e.currentTarget.closest('.pf-block').classList.add('dragging'); }
+function pfBlockDragEnd(e){ e.currentTarget.closest('.pf-block').classList.remove('dragging'); }
+function pfBlockDragOver(e){ e.preventDefault(); }
+function pfBlockDrop(e,targetId){
+  e.preventDefault();
+  const p=pfCurProject(); if(!p||!p.layout||!_pfBlockDragId||_pfBlockDragId===targetId) return;
+  const from=p.layout.findIndex(b=>b.id===_pfBlockDragId);
+  const to=p.layout.findIndex(b=>b.id===targetId);
+  if(from<0||to<0) return;
+  const [moved]=p.layout.splice(from,1);
+  p.layout.splice(to,0,moved);
+  const arr=pfProjectsOf(_pfCurrent); arr[_pfProjIdx]=p;
+  pfSaveProjects(_pfCurrent,arr);
+  pfRenderBlocksEditor();
+}
+
+function pfImgPickerHtml(id,selectedFn){
+  const p=pfCurProject(); if(!p) return '';
+  const imgs=p.images||[];
+  if(!imgs.length) return '<div style="font-size:.6rem;color:var(--mid)">Ajoute des images au projet ci-dessous d\'abord.</div>';
+  return `<div class="pf-block-imgpick">${imgs.map((im,i)=>`<img src="${im.src}" class="${selectedFn(i)?'on':''}" onclick="pfBlockPickImage('${id}',${i})" title="${im.title||''}">`).join('')}</div>`;
+}
+
+function pfRenderBlocksEditor(){
+  const p=pfCurProject(); if(!p) return;
+  const list=document.getElementById('pf-blocks-list'); if(!list) return;
+  const blocks=p.layout||[];
+  if(!blocks.length){ list.innerHTML='<div style="font-size:.68rem;color:var(--mid);padding:.5rem 0">Aucun bloc — ajoute-en avec les boutons ci-dessus.</div>'; return; }
+  list.innerHTML=blocks.map(b=>{
+    let body='';
+    if(b.type==='heading'||b.type==='paragraph'||b.type==='quote'){
+      body=`<textarea rows="${b.type==='paragraph'?4:2}" oninput="pfBlockField('${b.id}','text',this.value)" placeholder="Texte…">${_esc(b.text||'')}</textarea>`;
+      if(b.type==='quote') body+=`<input type="text" style="margin-top:.5rem" value="${_esc(b.cite||'')}" oninput="pfBlockField('${b.id}','cite',this.value)" placeholder="Source (optionnel)">`;
+    } else if(b.type==='image'){
+      body=pfImgPickerHtml(b.id,(i)=>b.imgIndex===i);
+    } else if(b.type==='gallery'){
+      body=pfImgPickerHtml(b.id,(i)=>(b.imgIndexes||[]).includes(i))+
+        `<div style="margin-top:.6rem;display:flex;align-items:center;gap:.5rem"><label style="font-size:.6rem;color:var(--mid)">Colonnes</label><select onchange="pfBlockField('${b.id}','cols',parseInt(this.value))" style="font-size:.7rem"><option value="2" ${b.cols===2?'selected':''}>2</option><option value="3" ${b.cols===3?'selected':''}>3</option></select></div>`;
+    } else if(b.type==='twocol'){
+      body=pfImgPickerHtml(b.id,(i)=>b.imgIndex===i)+
+        `<textarea rows="3" style="margin-top:.6rem" oninput="pfBlockField('${b.id}','text',this.value)" placeholder="Texte…">${_esc(b.text||'')}</textarea>
+        <label style="display:flex;align-items:center;gap:.4rem;font-size:.6rem;color:var(--mid);margin-top:.5rem;cursor:pointer">
+        <input type="checkbox" ${b.imgFirst!==false?'checked':''} onchange="pfBlockField('${b.id}','imgFirst',this.checked)"> Image à gauche</label>`;
+    } else if(b.type==='badges'){
+      body=(b.items||[]).map((it,i)=>`<div class="pf-block-badge-item"><input type="text" value="${_esc(it.label||'')}" oninput="pfBlockBadgeField('${b.id}',${i},this.value)"><button class="btn btn-out btn-xs" onclick="pfBlockBadgeDel('${b.id}',${i})">✕</button></div>`).join('')+
+        `<button class="btn btn-out btn-xs" onclick="pfBlockBadgeAdd('${b.id}')">+ Badge</button>`;
+    } else if(b.type==='divider'){
+      body='<div style="font-size:.6rem;color:var(--mid)">Une simple ligne de séparation.</div>';
+    }
+    return `<div class="pf-block" draggable="true" ondragstart="pfBlockDragStart(event,'${b.id}')" ondragover="pfBlockDragOver(event)" ondrop="pfBlockDrop(event,'${b.id}')" ondragend="pfBlockDragEnd(event)">
+    <div class="pf-block-hd"><span class="pf-block-hd-handle">⋮⋮</span><span class="pf-block-hd-type">${PF_BLOCK_LABELS[b.type]||b.type}</span><button class="pf-block-hd-del" onclick="pfBlockDelete('${b.id}')">✕</button></div>
+    <div class="pf-block-body">${body}</div>
+    </div>`;
+  }).join('');
+}
+function _esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
 async function pfGenerateDesc(){
   const p=pfCurProject(); if(!p) return;
@@ -2584,6 +2782,7 @@ function pfSetCover(idx){
   const arr=pfProjectsOf(_pfCurrent); arr[_pfProjIdx]=p;
   pfSaveProjects(_pfCurrent,arr);
   pfRenderProjImages();
+  if(p.layoutOn) pfRenderBlocksEditor();
   toast('✓ Couverture définie');
 }
 
@@ -2593,6 +2792,7 @@ function pfImgDelete(idx){
   const arr=pfProjectsOf(_pfCurrent); arr[_pfProjIdx]=p;
   pfSaveProjects(_pfCurrent,arr);
   pfRenderProjImages();
+  if(p.layoutOn) pfRenderBlocksEditor();
   toast('✓ Image supprimée');
 }
 
@@ -2620,6 +2820,7 @@ if(_pfProjIdx==null){ toast('Ouvrez un projet d\'abord','err'); return; }
 pfPushImg({src:url,title:''});
 pfCloseUrl();
 pfRenderProjImages();
+if(pfCurProject()?.layoutOn) pfRenderBlocksEditor();
 toast('✓ Image ajoutée');
 }
 
@@ -2627,7 +2828,7 @@ function pfHandleFiles(files){
 if(_pfProjIdx==null||!files.length) return;
 Array.from(files).forEach(file=>{
 const r=new FileReader();
-r.onload=e=>{ pfPushImg({src:e.target.result,title:file.name.replace(/\.[^.]+$/,'')}); pfRenderProjImages(); };
+r.onload=e=>{ pfPushImg({src:e.target.result,title:file.name.replace(/\.[^.]+$/,'')}); pfRenderProjImages(); if(pfCurProject()?.layoutOn) pfRenderBlocksEditor(); };
 r.readAsDataURL(file);
 });
 toast('✓ '+files.length+' image(s) ajoutée(s)');
@@ -2652,6 +2853,7 @@ if(im) pfPushImg({src:im.src||im.url,title:im.alt||im.name||''});
 });
 closeM('m-pf-lib');
 pfRenderProjImages();
+if(pfCurProject()?.layoutOn) pfRenderBlocksEditor();
 toast('✓ '+selected.length+' image(s) importée(s)');
 }
 
@@ -2924,6 +3126,7 @@ function pfImportAssets(){
   });
   closeM('m-pf-assets');
   pfRenderProjImages();
+  if(pfCurProject()?.layoutOn) pfRenderBlocksEditor();
   toast('✓ '+sel.length+' image(s) importée(s) depuis assets/');
 }
 
