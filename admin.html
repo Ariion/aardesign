@@ -2587,10 +2587,26 @@ function pfProjField(field,val){
 // ════════ Mise en page personnalisée (blocs) ════════
 const PF_BLOCK_LABELS={heading:'Titre',paragraph:'Texte',image:'Image',gallery:'Galerie',twocol:'2 colonnes',quote:'Citation',badges:'Badges',divider:'Séparateur'};
 
+function pfBlockId(){ return 'b'+Date.now()+Math.floor(Math.random()*10000); }
+
+// Gabarit de départ (façon planche de présentation client) : titre, visuel principal,
+// bannière/mockups, description, badges — pré-rempli avec ce que le projet a déjà.
+function pfBlockStarterTemplate(p){
+  const imgs=p.images||[];
+  const desc=[p.context,p.objective,p.approach,p.result].filter(Boolean).join(' ')||'Décris ici le contexte, l\'objectif et la démarche du projet.';
+  return [
+    {id:pfBlockId(),type:'heading',text:p.title||'Nom du projet'},
+    {id:pfBlockId(),type:'image',imgIndex:imgs.length?0:null},
+    {id:pfBlockId(),type:'gallery',imgIndexes:imgs.length>2?[1,2]:(imgs.length>1?[1]:[]),cols:2},
+    {id:pfBlockId(),type:'paragraph',text:desc},
+    {id:pfBlockId(),type:'badges',items:[{label:'Identité forte'},{label:'Qualité premium'},{label:'Sur-mesure'},{label:'Livré clé en main'}]}
+  ];
+}
+
 function pfToggleLayout(on){
   const p=pfCurProject(); if(!p) return;
   p.layoutOn=on;
-  if(on && !p.layout) p.layout=[];
+  if(on && (!p.layout||!p.layout.length)) p.layout=pfBlockStarterTemplate(p);
   const arr=pfProjectsOf(_pfCurrent); arr[_pfProjIdx]=p;
   pfSaveProjects(_pfCurrent,arr);
   document.getElementById('pf-standard-fields').style.display=on?'none':'';
