@@ -407,14 +407,14 @@
           "layoutOn": true,
           "layout": [
             {
-              "id": "b1787088186030997",
-              "type": "heading",
-              "text": "Procom Solution — Site web"
-            },
-            {
               "id": "b17870881860308743",
               "type": "image",
               "imgIndex": 0
+            },
+            {
+              "id": "b17870881860305829",
+              "type": "paragraph",
+              "text": "Procom Solution avait besoin d'une présence web à la hauteur de son image institutionnelle. Concevoir un site clair, moderne et rassurant, fidèle à l'identité de la marque. Design de l'interface puis intégration en HTML/CSS/JS, avec une attention portée à la lisibilité et à la hiérarchie de l'information. Un site professionnel qui valorise l'entreprise et ses services."
             },
             {
               "id": "b17870881860304931",
@@ -426,11 +426,6 @@
                 4
               ],
               "cols": 2
-            },
-            {
-              "id": "b17870881860305829",
-              "type": "paragraph",
-              "text": "Procom Solution avait besoin d'une présence web à la hauteur de son image institutionnelle. Concevoir un site clair, moderne et rassurant, fidèle à l'identité de la marque. Design de l'interface puis intégration en HTML/CSS/JS, avec une attention portée à la lisibilité et à la hiérarchie de l'information. Un site professionnel qui valorise l'entreprise et ses services."
             },
             {
               "id": "b17870881860302040",
