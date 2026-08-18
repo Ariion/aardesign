@@ -399,6 +399,21 @@ background:rgba(255,255,255,.78);
 border-color:rgba(27,53,96,.1);
 box-shadow:0 8px 32px rgba(18,37,77,.14);
 }
+#site-footer{
+position:fixed;left:0;right:0;bottom:6px;z-index:80;
+display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;
+padding:0 16px;font-family:ui-monospace,'SF Mono',Menlo,monospace;
+font-size:.66rem;letter-spacing:.02em;color:rgba(255,255,255,.4);
+pointer-events:none;
+}
+#site-footer a,#site-footer span{pointer-events:all}
+#site-footer a{color:rgba(255,255,255,.4);text-decoration:none;transition:color .2s}
+#site-footer a:hover{color:#29B8D9}
+#site-footer .sf-sep{color:rgba(255,255,255,.18)}
+[data-theme="light"] #site-footer{color:rgba(27,53,96,.4)}
+[data-theme="light"] #site-footer a{color:rgba(27,53,96,.4)}
+[data-theme="light"] #site-footer .sf-sep{color:rgba(27,53,96,.18)}
+@media(max-width:768px){#site-footer{display:none}}
 .d-icon{
 width:82px;display:flex;flex-direction:column;align-items:center;gap:7px;
 padding:10px 4px 8px;border-radius:14px;cursor:pointer;
@@ -998,6 +1013,14 @@ Mode clair
 <div id="dock-minimized"></div>
 </div>
 
+<div id="site-footer">
+<span id="sf-copy">© 2025 Aardesign — Anthony Armand</span>
+<span class="sf-sep">·</span>
+<a href="/mentions-legales.html" id="sf-legal">Mentions légales</a>
+<span class="sf-sep">·</span>
+<a href="/confidentialite.html" id="sf-privacy">Confidentialité</a>
+</div>
+
 <div id="win-admin-overlay">
 <div class="admin-card">
 <div class="admin-card-ico">🔐</div>
@@ -1031,6 +1054,7 @@ if(changed){
 renderDesktopFolders();
 if(typeof applyIdentity==='function') applyIdentity();
 if(typeof applyTheme==='function') applyTheme();
+if(typeof applyFooter==='function') applyFooter();
 }
 }catch(_){}
 })();
@@ -1069,6 +1093,17 @@ if (t.fontBody) r.setProperty('--font', `'${t.fontBody}', sans-serif`);
 } catch(e) {}
 }
 applyTheme();
+
+function applyFooter(){
+try{
+const ct=JSON.parse(localStorage.getItem('aar_sec_contact')||'null');
+const copyEl=document.getElementById('sf-copy');
+if(copyEl) copyEl.textContent=(ct&&ct.copy)||'© 2025 Aardesign — Anthony Armand';
+const legalEl=document.getElementById('sf-legal'); if(legalEl) legalEl.textContent=t('legalNotice');
+const privEl=document.getElementById('sf-privacy'); if(privEl) privEl.textContent=t('privacy');
+}catch(_){}
+}
+applyFooter();
 
 function lsClock(){
 const n=new Date();
