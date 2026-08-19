@@ -11,10 +11,15 @@ export default async function handler(req, res) {
   };
 
   try {
-    const r = await fetch(`https://api.github.com/repos/${REPO}/contents/${FILE}`, { headers });
+    // L'API Contents de GitHub ne renvoie le contenu en base64 (champ "content") que pour
+    // les fichiers < 1 Mo. Au-delà, "content" est vide sans erreur explicite — le fichier
+    // grossit avec les images des projets, donc on demande directement le média "raw" qui,
+    // lui, n'a pas cette limite (jusqu'à 100 Mo).
+    const r = await fetch(`https://api.github.com/repos/${REPO}/contents/${FILE}`, {
+      headers: { ...headers, 'Accept': 'application/vnd.github.raw' }
+    });
     if (!r.ok) return res.status(r.status).json({ error: 'GitHub error' });
-    const d = await r.json();
-    const content = JSON.parse(Buffer.from(d.content, 'base64').toString('utf8'));
+    const content = await r.json();
     return res.status(200).json(content);
   } catch(e) {
     return res.status(500).json({ error: e.message });

@@ -20,19 +20,36 @@ export default async function handler(req, res) {
   };
 
   try {
-    // Lire la config actuelle
+    // Lire la config actuelle. Deux appels : un pour le sha (nécessaire au PUT), un pour le
+    // contenu en "raw" — l'API Contents ne renvoie "content" en base64 que pour les fichiers
+    // < 1 Mo, et notre config le dépasse désormais (images des projets) ; au-delà elle serait
+    // silencieusement vide, ce qui viderait "existing" et pourrait écraser des données réelles.
     let sha = '', existing = {};
     const getRes = await fetch(`https://api.github.com/repos/${REPO}/contents/${FILE}`, { headers });
     if (getRes.ok) {
       const d = await getRes.json();
       sha = d.sha || '';
-      try { existing = JSON.parse(Buffer.from(d.content, 'base64').toString('utf8')); } catch(_) {}
+    }
+    const rawRes = await fetch(`https://api.github.com/repos/${REPO}/contents/${FILE}`, {
+      headers: { ...headers, 'Accept': 'application/vnd.github.raw' }
+    });
+    if (rawRes.ok) {
+      try { existing = await rawRes.json(); } catch(_) {}
     }
 
-    // Protection : ne jamais écraser aar_portfolio avec un objet vide si l'existant a des données
+    // Protection : bloque uniquement une perte massive et suspecte (fichier vidé, navigateur
+    // pas resynchronisé après une coupure) — pas une suppression normale d'un ou deux projets,
+    // qui reste tout à fait légitime depuis l'admin.
+    const countProjects = (pf) => {
+      if (!pf || !pf._projects) return 0;
+      return Object.values(pf._projects).reduce((n, arr) => n + (Array.isArray(arr) ? arr.length : 0), 0);
+    };
     const merged = { ...existing, ...config };
-    if ((!config.aar_portfolio || Object.keys(config.aar_portfolio).length === 0) && existing.aar_portfolio && Object.keys(existing.aar_portfolio).length > 0) {
+    const existingCount = countProjects(existing.aar_portfolio);
+    const incomingCount = countProjects(config.aar_portfolio);
+    if (existingCount >= 4 && incomingCount < existingCount / 2) {
       merged.aar_portfolio = existing.aar_portfolio;
+      merged._lastRejectedPortfolioSave = { at: new Date().toISOString(), incomingCount, existingCount };
     }
 
     const content = Buffer.from(JSON.stringify(merged, null, 2)).toString('base64');
