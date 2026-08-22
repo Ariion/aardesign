@@ -587,6 +587,29 @@
             "Steampunk"
           ],
           "legalMention": "Réalisé en tant que salarié pour Arsène Valentin."
+        },
+        {
+          "id": 1787433687103,
+          "title": "CCAS - Guide pratique",
+          "client": "Optimind",
+          "year": "",
+          "role": "Graphiste salarié chez optimind",
+          "images": [
+            {
+              "src": "assets/CCAS-IDCP.png",
+              "title": "CCAS-IDCP"
+            },
+            {
+              "src": "assets/CCAS-IDCP2.png",
+              "title": "CCAS-IDCP2"
+            }
+          ],
+          "context": "",
+          "objective": "",
+          "approach": "",
+          "result": "",
+          "tags": [],
+          "legalMention": ""
         }
       ],
       "sites": [
