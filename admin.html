@@ -502,6 +502,8 @@ text-align:center;cursor:pointer;transition:all .15s;background:transparent;
 .pf-proj-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.7rem;margin-top:1rem;}
 .pf-proj-card{background:var(--bg2);border:1px solid var(--line);border-radius:9px;overflow:hidden;cursor:pointer;transition:border-color .15s,transform .15s;position:relative;}
 .pf-proj-card:hover{border-color:var(--cyan);transform:translateY(-2px);}
+.pf-proj-hidden{opacity:.5;}
+.pf-proj-hidden-badge{position:absolute;top:6px;left:6px;z-index:2;background:rgba(0,0,0,.72);color:#fff;font-size:.56rem;font-weight:700;padding:3px 7px;border-radius:20px;letter-spacing:.03em;}
 .pf-proj-cover{height:110px;background:var(--bg);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
 .pf-proj-cover img{width:100%;height:100%;object-fit:cover;display:block;}
 .pf-proj-cover .noimg{font-size:1.6rem;opacity:.3;}
@@ -1104,6 +1106,7 @@ text-align:center;cursor:pointer;transition:all .15s;background:transparent;
 <div class="pf-proj-ed-head">
 <button class="pf-ed-back" onclick="pfProjectBack()">← Tous les projets</button>
 <div class="pf-ed-title" id="pf-proj-ed-title" style="font-size:.8rem"></div>
+<button class="btn btn-out btn-sm" id="pfp-hide-btn" onclick="pfToggleHidden()" style="margin-left:auto;flex-shrink:0"></button>
 </div>
 
 <div class="pf-field"><label>Titre du projet</label><input type="text" id="pfp-title" oninput="pfProjField('title',this.value)" placeholder="Ex : Les Voyages d'Arsène"></div>
@@ -2520,8 +2523,9 @@ function pfRenderProjects(){
   const cards=arr.map((p,i)=>{
     const cover=(p.images&&p.images[0]&&p.images[0].src)||'';
     const n=(p.images||[]).length;
-    return `<div class="pf-proj-card" onclick="pfProjectEdit(${i})">
+    return `<div class="pf-proj-card${p.hidden?' pf-proj-hidden':''}" onclick="pfProjectEdit(${i})">
     <button class="pf-proj-del" title="Supprimer" onclick="event.stopPropagation();pfProjDelete(${i})">✕</button>
+    ${p.hidden?'<div class="pf-proj-hidden-badge">🚫 Masqué</div>':''}
     <div class="pf-proj-cover">${cover?`<img src="${cover}" alt="">`:'<span class="noimg">🖼</span>'}${n?`<span class="pf-proj-card-imgs">${n} img</span>`:''}</div>
     <div class="pf-proj-card-body">
     <div class="pf-proj-card-title">${p.title||'Sans titre'}</div>
@@ -2561,6 +2565,22 @@ function pfProjectEdit(idx){
   pfRenderBlocksEditor();
   pfLoadMention();
   pfRenderProjImages();
+  pfSyncHideBtn();
+}
+
+function pfSyncHideBtn(){
+  const p=pfCurProject(); if(!p) return;
+  const btn=document.getElementById('pfp-hide-btn'); if(!btn) return;
+  if(p.hidden){ btn.textContent='👁 Réafficher sur le site'; btn.classList.add('btn-gold'); }
+  else{ btn.textContent='🚫 Désactiver (masquer du site)'; btn.classList.remove('btn-gold'); }
+}
+function pfToggleHidden(){
+  const p=pfCurProject(); if(!p) return;
+  p.hidden=!p.hidden;
+  const arr=pfProjectsOf(_pfCurrent); arr[_pfProjIdx]=p;
+  pfSaveProjects(_pfCurrent,arr);
+  pfSyncHideBtn();
+  toast(p.hidden?'✓ Projet masqué — toujours dans l\'admin, invisible sur le site':'✓ Projet réaffiché sur le site');
 }
 
 function pfProjectBack(){

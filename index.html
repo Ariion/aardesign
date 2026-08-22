@@ -1864,7 +1864,7 @@ pvRender(fid);
 // ── Construit la liste de projets d'un dossier (avec migration depuis l'ancien format) ──
 function pvProjectsFor(fid){
 const portfolio=JSON.parse(localStorage.getItem('aar_portfolio')||'{}');
-if(portfolio._projects&&portfolio._projects[fid]) return portfolio._projects[fid];
+if(portfolio._projects&&portfolio._projects[fid]) return portfolio._projects[fid].filter(p=>!p.hidden);
 // migration à la volée : ancien tableau d'images → 1 projet
 const legacy=(portfolio[fid]&&portfolio[fid].length)?portfolio[fid]:((typeof DEFAULT_PORTFOLIO!=='undefined'&&DEFAULT_PORTFOLIO[fid])||[]);
 if(legacy&&legacy.length){
