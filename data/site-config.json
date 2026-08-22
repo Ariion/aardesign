@@ -421,19 +421,11 @@
             {
               "src": "assets/clopinette-15ans/mockup-nefle-menthe-framboise.jpg",
               "title": "Nèfle · Menthe · Framboise"
-            },
-            {
-              "src": "assets/clopinette-15ans/affiche-pulse.jpg",
-              "title": "Gamme Pulse"
-            },
-            {
-              "src": "assets/clopinette-15ans/mockup-pulse.jpg",
-              "title": "Mockup Pulse"
             }
           ],
-          "context": "Pour ses 15 ans, Clopinette lançait deux nouvelles saveurs et une identité de campagne dédiée, à décliner sur l'affiche, les réseaux sociaux et les mockups produits.",
-          "objective": "Célébrer l'anniversaire de la marque avec un univers frais et végétal, tout en mettant en avant les nouvelles saveurs et la gamme Pulse en édition limitée.",
-          "approach": "Création du visuel d'affiche autour du logo anniversaire, déclinaison sur les étiquettes des nouvelles saveurs et sur la gamme Pulse, avec une mise en page pensée pour l'impression comme pour le web.",
+          "context": "Pour ses 15 ans, Clopinette lançait deux nouvelles saveurs à décliner sur l'affiche, les réseaux sociaux et les mockups produits.",
+          "objective": "Célébrer l'anniversaire de la marque avec un univers frais et végétal, tout en mettant en avant les deux nouvelles saveurs.",
+          "approach": "Création du visuel d'affiche autour du logo anniversaire, déclinaison sur les étiquettes des nouvelles saveurs, avec une mise en page pensée pour l'impression comme pour le web.",
           "result": "Une campagne cohérente qui valorise 15 ans de la marque tout en donnant envie de découvrir les nouveautés.",
           "tags": [
             "Packaging",
@@ -444,8 +436,35 @@
           "legalMention": "Réalisé en tant qu'auto-entrepreneur pour Clopinette."
         },
         {
-          "id": 1790000023,
-          "title": "Arsène Valentin — Affiches saisonnières",
+          "id": 1790000024,
+          "title": "Clopinette x TJuice — Pulse",
+          "client": "Clopinette",
+          "year": "2026",
+          "role": "Packaging · Communication",
+          "images": [
+            {
+              "src": "assets/clopinette-15ans/affiche-pulse.jpg",
+              "title": "Wild · Hype · Solar Pulse"
+            },
+            {
+              "src": "assets/clopinette-15ans/mockup-pulse.jpg",
+              "title": "Mockup Pulse"
+            }
+          ],
+          "context": "Lancement de Pulse, une collaboration exclusive entre Clopinette et TJuice, avec 3 saveurs à la personnalité affirmée (Wild, Hype, Solar).",
+          "objective": "Donner à cette gamme collaborative une identité énergique et distincte, immédiatement reconnaissable, tout en restant cohérente avec l'univers Clopinette.",
+          "approach": "Création de l'affiche de lancement et des étiquettes des 3 saveurs, avec une palette contrastée et une typographie dynamique qui reflète l'esprit \"exclusivité\" de la gamme.",
+          "result": "Une gamme événementielle qui se démarque visuellement du reste du catalogue tout en restant identifiable comme un produit Clopinette.",
+          "tags": [
+            "Packaging",
+            "Print",
+            "Communication"
+          ],
+          "legalMention": "Réalisé en tant qu'auto-entrepreneur pour Clopinette."
+        },
+        {
+          "id": 1790000025,
+          "title": "Arsène Valentin — Octobre Citrouille",
           "client": "Arsène Valentin",
           "year": "2026",
           "role": "Packaging · Illustration · Communication",
@@ -457,7 +476,27 @@
             {
               "src": "assets/arsene-campagnes/banniere-octobre-halloween.jpg",
               "title": "Bannière — octobre"
-            },
+            }
+          ],
+          "context": "Sortie d'\"Eden Ritual\", une nouvelle saveur pomme de la gamme Freaks Flavours, à l'occasion d'Halloween.",
+          "objective": "Créer une affiche et une bannière à l'ambiance Halloween affirmée, cohérente avec l'univers steampunk de la marque.",
+          "approach": "Illustration d'une citrouille rituelle dans un décor gothique éclairé à la bougie, mise en page de l'étiquette produit intégrée au visuel, déclinaison en bannière réseaux sociaux.",
+          "result": "Une communication saisonnière immersive qui capte l'attention pendant la période d'Halloween tout en restant fidèle à l'identité de la marque.",
+          "tags": [
+            "Packaging",
+            "Illustration",
+            "Print",
+            "Steampunk"
+          ],
+          "legalMention": "Réalisé en tant qu'auto-entrepreneur pour Arsène Valentin."
+        },
+        {
+          "id": 1790000026,
+          "title": "Arsène Valentin — Voyage",
+          "client": "Arsène Valentin",
+          "year": "2026",
+          "role": "Packaging · Illustration · Communication",
+          "images": [
             {
               "src": "assets/arsene-campagnes/affiche-novembre-voyage.jpg",
               "title": "Les Voyages d'Arsène — novembre"
@@ -471,10 +510,10 @@
               "title": "Portugal · Italie"
             }
           ],
-          "context": "Arsène Valentin publie une nouvelle affiche et une bannière chaque mois pour accompagner ses sorties de saveurs — un rythme de communication soutenu qui doit rester reconnaissable tout en se renouvelant.",
-          "objective": "Décliner l'identité steampunk de la marque sur des thèmes différents chaque mois (Halloween, voyage) sans perdre la cohérence visuelle de la gamme.",
-          "approach": "Illustration et composition de chaque affiche autour du thème du mois, déclinaison en bannière format réseaux sociaux, dans une palette et une typographie qui restent fidèles à l'univers Arsène Valentin.",
-          "result": "Une communication mensuelle vivante qui entretient l'intérêt autour de la marque tout en gardant une identité forte et reconnaissable d'un mois sur l'autre.",
+          "context": "Deux nouvelles saveurs rejoignent la collection \"Les Voyages d'Arsène\" : Pasteis de Nata (Portugal) et Sorbet Citron (Amalfi, Italie).",
+          "objective": "Prolonger l'univers carnet de voyage steampunk de la gamme avec deux nouvelles destinations, en gardant la cohérence visuelle de la collection.",
+          "approach": "Illustration des décors typiques de chaque destination (tramway lisboète, terrasses d'Amalfi), intégration des étiquettes produit dans la composition, déclinaison en bannière.",
+          "result": "Deux nouvelles saveurs qui enrichissent la collection voyage tout en conservant une identité visuelle immédiatement reconnaissable.",
           "tags": [
             "Packaging",
             "Illustration",
