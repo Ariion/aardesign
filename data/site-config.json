@@ -427,6 +427,11 @@
               "imgIndex": 1
             },
             {
+              "id": "b17874333993262463",
+              "type": "paragraph",
+              "text": "Arsène Valentin souhaitait lancer une nouvelle « Gamme Manga » pour étendre son offre sur le marché. Le besoin était de créer une identité visuelle forte et cohérente pour ces produits. Mon objectif était de concevoir l'ensemble du design packaging et des supports imprimés associés à cette gamme. Il fallait capter l'essence du style manga tout en assurant une visibilité et une attractivité maximales des produits. J'ai débuté par la création d'illustrations originales en digital painting, inspirées des codes graphiques du manga. Ces visuels ont ensuite été intégrés sur les maquettes de packaging et d'affiches, travaillées sous Photoshop et Illustrator, pour une préparation optimale à l'impression. Le projet a abouti à une gamme de produits distincte, avec un packaging et des affiches à l'esthétique manga affirmée. Le design final a permis de positionner clairement la nouvelle offre d'Arsène Valentin sur son marché cible avec une identité visuelle forte."
+            },
+            {
               "id": "b17874333993269235",
               "type": "gallery",
               "imgIndexes": [
@@ -437,29 +442,6 @@
                 5
               ],
               "cols": 2
-            },
-            {
-              "id": "b17874333993262463",
-              "type": "paragraph",
-              "text": "Arsène Valentin souhaitait lancer une nouvelle « Gamme Manga » pour étendre son offre sur le marché. Le besoin était de créer une identité visuelle forte et cohérente pour ces produits. Mon objectif était de concevoir l'ensemble du design packaging et des supports imprimés associés à cette gamme. Il fallait capter l'essence du style manga tout en assurant une visibilité et une attractivité maximales des produits. J'ai débuté par la création d'illustrations originales en digital painting, inspirées des codes graphiques du manga. Ces visuels ont ensuite été intégrés sur les maquettes de packaging et d'affiches, travaillées sous Photoshop et Illustrator, pour une préparation optimale à l'impression. Le projet a abouti à une gamme de produits distincte, avec un packaging et des affiches à l'esthétique manga affirmée. Le design final a permis de positionner clairement la nouvelle offre d'Arsène Valentin sur son marché cible avec une identité visuelle forte."
-            },
-            {
-              "id": "b17874333993263735",
-              "type": "badges",
-              "items": [
-                {
-                  "label": "Identité forte"
-                },
-                {
-                  "label": "Qualité premium"
-                },
-                {
-                  "label": "Sur-mesure"
-                },
-                {
-                  "label": "Livré clé en main"
-                }
-              ]
             }
           ]
         },
