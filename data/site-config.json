@@ -488,6 +488,10 @@
           "role": "Digital Painting",
           "images": [
             {
+              "src": "assets/formation/hoth.jpg",
+              "title": "Hoth"
+            },
+            {
               "src": "assets/formation/foret.jpg",
               "title": "Forêt"
             },
@@ -510,10 +514,6 @@
             {
               "src": "assets/formation/sf.jpg",
               "title": "Science-fiction"
-            },
-            {
-              "src": "assets/formation/hoth.jpg",
-              "title": "Hoth"
             },
             {
               "src": "assets/formation/mobydick.jpg",
