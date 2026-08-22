@@ -363,6 +363,102 @@
             "Print"
           ],
           "legalMention": "Réalisé en tant que salarié pour Clopinette — droits d'utilisation détenus par l'entreprise."
+        },
+        {
+          "id": 1790000022,
+          "title": "Clopinette — Gamme 15 ans",
+          "client": "Clopinette",
+          "year": "2026",
+          "role": "Packaging · Communication",
+          "images": [
+            {
+              "src": "assets/clopinette-15ans/affiche-principale.jpg",
+              "title": "2 nouvelles saveurs"
+            },
+            {
+              "src": "assets/clopinette-15ans/affiche-variante.jpg",
+              "title": "Affiche variante"
+            },
+            {
+              "src": "assets/clopinette-15ans/mockup-citron-mure-groseille.jpg",
+              "title": "Citron · Mûre · Groseille"
+            },
+            {
+              "src": "assets/clopinette-15ans/mockup-nefle-menthe-framboise.jpg",
+              "title": "Nèfle · Menthe · Framboise"
+            },
+            {
+              "src": "assets/clopinette-15ans/affiche-pulse.jpg",
+              "title": "Gamme Pulse"
+            },
+            {
+              "src": "assets/clopinette-15ans/mockup-pulse.jpg",
+              "title": "Mockup Pulse"
+            }
+          ],
+          "context": "Pour ses 15 ans, Clopinette lançait deux nouvelles saveurs et une identité de campagne dédiée, à décliner sur l'affiche, les réseaux sociaux et les mockups produits.",
+          "objective": "Célébrer l'anniversaire de la marque avec un univers frais et végétal, tout en mettant en avant les nouvelles saveurs et la gamme Pulse en édition limitée.",
+          "approach": "Création du visuel d'affiche autour du logo anniversaire, déclinaison sur les étiquettes des nouvelles saveurs et sur la gamme Pulse, avec une mise en page pensée pour l'impression comme pour le web.",
+          "result": "Une campagne cohérente qui valorise 15 ans de la marque tout en donnant envie de découvrir les nouveautés.",
+          "tags": [
+            "Packaging",
+            "Print",
+            "Communication",
+            "Illustration"
+          ],
+          "legalMention": "Réalisé en tant qu'auto-entrepreneur pour Clopinette."
+        },
+        {
+          "id": 1790000023,
+          "title": "Arsène Valentin — Campagnes saisonnières",
+          "client": "Arsène Valentin",
+          "year": "2026",
+          "role": "Packaging · Illustration · Communication",
+          "images": [
+            {
+              "src": "assets/arsene-campagnes/affiche-septembre-manga.jpg",
+              "title": "Nouveautés — septembre"
+            },
+            {
+              "src": "assets/arsene-campagnes/banniere-septembre-manga.jpg",
+              "title": "Bannière — septembre"
+            },
+            {
+              "src": "assets/arsene-campagnes/personnage-miyabi.jpg",
+              "title": "Miyabi"
+            },
+            {
+              "src": "assets/arsene-campagnes/affiche-octobre-halloween.jpg",
+              "title": "Eden Ritual — octobre"
+            },
+            {
+              "src": "assets/arsene-campagnes/banniere-octobre-halloween.jpg",
+              "title": "Bannière — octobre"
+            },
+            {
+              "src": "assets/arsene-campagnes/affiche-novembre-voyage.jpg",
+              "title": "Les Voyages d'Arsène — novembre"
+            },
+            {
+              "src": "assets/arsene-campagnes/banniere-novembre-voyage.jpg",
+              "title": "Bannière — novembre"
+            },
+            {
+              "src": "assets/arsene-campagnes/mockup-voyage-portugal-italie.jpg",
+              "title": "Portugal · Italie"
+            }
+          ],
+          "context": "Arsène Valentin publie une nouvelle affiche et une bannière chaque mois pour accompagner ses sorties de saveurs — un rythme de communication soutenu qui doit rester reconnaissable tout en se renouvelant.",
+          "objective": "Décliner l'identité steampunk de la marque sur des thèmes différents chaque mois (univers manga, Halloween, voyage) sans perdre la cohérence visuelle de la gamme.",
+          "approach": "Illustration et composition de chaque affiche autour du thème du mois, déclinaison en bannière format réseaux sociaux, dans une palette et une typographie qui restent fidèles à l'univers Arsène Valentin.",
+          "result": "Une communication mensuelle vivante qui entretient l'intérêt autour de la marque tout en gardant une identité forte et reconnaissable d'un mois sur l'autre.",
+          "tags": [
+            "Packaging",
+            "Illustration",
+            "Print",
+            "Steampunk"
+          ],
+          "legalMention": "Réalisé en tant qu'auto-entrepreneur pour Arsène Valentin."
         }
       ],
       "sites": [
