@@ -1723,11 +1723,15 @@ p.style.backgroundSize=`auto ${v.bgZoom}%`;
 p.style.backgroundPosition=`${v.bgPosX}% ${v.bgPosY}%`;
 }
 function hbgTune(){ hbgSyncLabels(); hbgApplyPreviewFilter(); markDirty('hero'); }
-function hbgReadFile(files){
+async function hbgReadFile(files){
 if(!files||!files[0]) return;
-const r=new FileReader();
-r.onload=e=>{ _heroBg=e.target.result; hbgPreview(); markDirty('hero'); toast('✓ Photo chargée — pense à sauvegarder'); };
-r.readAsDataURL(files[0]);
+const file=files[0];
+const compressed=await pfCompressImage(file);
+const path=await pfUploadToRepo(compressed, file.name);
+_heroBg=path||compressed;
+hbgPreview();
+markDirty('hero');
+toast(path?'✓ Photo chargée — pense à sauvegarder':'✓ Photo chargée (secours local) — pense à sauvegarder');
 }
 function hbgRemove(){ _heroBg=''; hbgPreview(); markDirty('hero'); }
 
@@ -2872,13 +2876,29 @@ img.src=e.target.result;
 r.readAsDataURL(file);
 });
 }
+// Envoie une image compressée vers le dépôt (vrai fichier dans assets/uploads/) au lieu de
+// l'incruster en base64 dans la config — la config entière est renvoyée à chaque sauvegarde,
+// et les fonctions Vercel refusent tout payload de plus de 4,5 Mo. Si l'upload échoue pour
+// une raison quelconque, on retombe sur le base64 en mémoire (comportement précédent).
+async function pfUploadToRepo(dataUrl, filename){
+try{
+const r=await fetch('/api/upload-image',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({dataUrl,filename})});
+const d=await r.json();
+if(r.ok && d.ok && d.path) return d.path;
+}catch(_){}
+return null;
+}
 async function pfHandleFiles(files){
 if(_pfProjIdx==null||!files.length) return;
 const list=Array.from(files);
+let uploadFailed=0;
 for(const file of list){
-const src=await pfCompressImage(file);
-pfPushImg({src,title:file.name.replace(/\.[^.]+$/,'')});
+const compressed=await pfCompressImage(file);
+const path=await pfUploadToRepo(compressed, file.name);
+if(!path) uploadFailed++;
+pfPushImg({src:path||compressed,title:file.name.replace(/\.[^.]+$/,'')});
 }
+if(uploadFailed) toast(uploadFailed+' image(s) stockée(s) en secours (upload direct indisponible)','err');
 pfRenderProjImages();
 if(pfCurProject()?.layoutOn) pfRenderBlocksEditor();
 toast('✓ '+list.length+' image(s) ajoutée(s) et optimisée(s)');
