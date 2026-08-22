@@ -297,15 +297,15 @@
           "role": "Packaging · Illustration",
           "images": [
             {
+              "src": "assets/millenaire/pomme3.jpg",
+              "title": "Pomme"
+            },
+            {
               "src": "assets/millenaire/cadomum.jpg",
               "title": "Cadomum"
             },
             {
               "src": "assets/millenaire/pomme2.jpg",
-              "title": "Pomme"
-            },
-            {
-              "src": "assets/millenaire/pomme3.jpg",
               "title": "Pomme"
             },
             {
