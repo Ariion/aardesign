@@ -781,6 +781,17 @@ transition:background .15s,border-color .15s;
 .pvg-card.feat .pvg-t{font-size:1.05rem}
 .pvg-c{font-size:.64rem;color:rgba(255,255,255,.62);margin-top:3px}
 .pvg-badge{position:absolute;top:12px;left:12px;z-index:2;font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:.52rem;letter-spacing:.12em;text-transform:uppercase;color:#fff;background:rgba(41,184,217,.85);padding:4px 9px;border-radius:2px}
+
+/* ── Identité visuelle : grille "planche de logos" dédiée ── */
+.pvg-grid.logo-grid{grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px;background:none;border:none}
+.pvg-card.spec{aspect-ratio:auto;max-height:none;display:flex;flex-direction:column;border-radius:10px;border:1px solid var(--line);box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .25s cubic-bezier(.2,.7,.2,1),box-shadow .25s ease,border-color .25s ease}
+.pvg-card.spec:hover,.pvg-card.spec:focus-visible{transform:translateY(-4px);box-shadow:0 14px 28px rgba(0,0,0,.35);border-color:#29B8D9}
+.spec-img{position:relative;aspect-ratio:4/3;background:#eef0f6;overflow:hidden}
+.spec-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:15%;transition:transform .35s cubic-bezier(.2,.7,.2,1)}
+.pvg-card.spec:hover .spec-img img{transform:scale(1.06)}
+.spec-foot{padding:13px 16px;background:var(--win-bg,#0b1526);border-top:1px solid var(--line)}
+.spec-t{font-family:Georgia,'Times New Roman',serif;font-size:.9rem;color:var(--ink);line-height:1.25}
+.spec-c{font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:.6rem;letter-spacing:.04em;color:var(--dim,rgba(255,255,255,.45));margin-top:4px}
 .pv-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:.6rem;color:var(--mid);text-align:center}
 
 /* ══════════ Vue projet — détail (depuis la grille) ══════════ */
@@ -1906,11 +1917,21 @@ else pvRenderGrid(fid,wrap);
 // ── Grille (vue par défaut d'un dossier) ──
 function pvRenderGrid(fid,wrap){
 const st=_pvData[fid];const projects=st.projects;
+const isLogo=fid==='logo';
 const cards=projects.map((pr,idx)=>{
 const pid='proj.'+pr.id;
 const cover=(pr.images&&pr.images[0]&&pr.images[0].src)||'';
 const light=(pr.light!==undefined)?pr.light:(fid==='logo');
 const sub=[pvClientOf(pr,pid),pr.year].filter(Boolean).join(' · ');
+if(isLogo){
+return `<div class="pvg-card spec" data-i="${idx}" tabindex="0" onclick="pvOpen('${fid}',${idx})" onkeydown="if(event.key==='Enter')pvOpen('${fid}',${idx})">
+<div class="spec-img">${cover?`<img src="${cover}" alt="${_esc(pvTitleOf(pr,pid))}" loading="lazy">`:''}</div>
+<div class="spec-foot">
+<div class="spec-t">${_esc(pvTitleOf(pr,pid))}</div>
+${sub?`<div class="spec-c">${_esc(sub)}</div>`:''}
+</div>
+</div>`;
+}
 const feat=idx===0&&projects.length>=3;
 return `<div class="pvg-card${feat?' feat':''}${light?' light':''}" data-i="${idx}" tabindex="0" onclick="pvOpen('${fid}',${idx})" onkeydown="if(event.key==='Enter')pvOpen('${fid}',${idx})">
 ${feat?`<div class="pvg-badge">${t('featured')}</div>`:''}
@@ -1924,7 +1945,7 @@ ${sub?`<div class="pvg-c">${_esc(sub)}</div>`:''}
 }).join('');
 wrap.innerHTML=`<div class="pvg-wrap">
 <div class="pvg-head"><div class="pvg-title">${_esc(st.folder)}</div><div class="pvg-count">${projects.length} ${projects.length>1?t('projects'):t('project')}</div></div>
-<div class="pvg-grid${projects.length<3?' few':''}">${cards}</div>
+<div class="pvg-grid${isLogo?' logo-grid':(projects.length<3?' few':'')}">${cards}</div>
 </div>`;
 }
 function pvOpen(fid,idx){ const st=_pvData[fid]; if(!st) return; st.p=idx; st.i=0; st.opened=true; try{aarLog('projet',st.projects[idx]&&st.projects[idx].title);}catch(_){} pvRender(fid); }
