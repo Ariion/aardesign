@@ -558,24 +558,32 @@
           "role": "Packaging · Illustration · Communication",
           "images": [
             {
-              "src": "assets/arsene-campagnes/affiche-novembre-voyage.jpg",
-              "title": "Les Voyages d'Arsène — novembre"
+              "src": "assets/voyages/cartes.jpg",
+              "title": ""
             },
             {
-              "src": "assets/arsene-campagnes/banniere-novembre-voyage.jpg",
-              "title": "Bannière — novembre"
+              "src": "assets/voyages/amazonie.jpg",
+              "title": ""
             },
             {
-              "src": "assets/arsene-campagnes/mockup-voyage-portugal-italie.jpg",
-              "title": "Portugal · Italie"
+              "src": "assets/voyages/canada.jpg",
+              "title": ""
             },
             {
-              "src": "assets/uploads/1787433647174-Italie2.jpg",
-              "title": "Italie2"
+              "src": "assets/voyages/cappadoce.jpg",
+              "title": ""
             },
             {
-              "src": "assets/uploads/1787433648580-Portugal2.jpg",
-              "title": "Portugal2"
+              "src": "assets/voyages/fuji.jpg",
+              "title": ""
+            },
+            {
+              "src": "assets/voyages/laponie.jpg",
+              "title": ""
+            },
+            {
+              "src": "assets/voyages/pacifique.jpg",
+              "title": ""
             }
           ],
           "context": "Deux nouvelles saveurs rejoignent la collection \"Les Voyages d'Arsène\" : Pasteis de Nata (Portugal) et Sorbet Citron (Amalfi, Italie).",
