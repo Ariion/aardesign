@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anthony Armand — Développeur web</title>
+<meta name="description" content="Anthony Armand — DUT MMI, graphiste-développeur. Projets : intranet Firebase temps réel, script de réservation FiveM avec 23+ PR mergées.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#1B3560;
+    --ink:#10151C;
+    --paper:#EEF1EF;
+    --paper-2:#E2E7E4;
+    --mist:#C6D0CB;
+    --signal:#3E8E5C;
+    --signal-dim:#DCEAE1;
+    --amber:#B87A2E;
+    --amber-dim:#F1E3CF;
+    --white:#FBFCFB;
+    --radius:2px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important;}
+  }
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'IBM Plex Sans', sans-serif;
+    line-height:1.5;
+  }
+  a{color:inherit;}
+  .mono{font-family:'IBM Plex Mono', monospace;}
+  .wrap{max-width:920px; margin:0 auto; padding:0 24px;}
+
+  /* ---- top bar ---- */
+  .topbar{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:20px 24px; border-bottom:1px solid var(--mist);
+    font-family:'IBM Plex Mono', monospace; font-size:13px;
+  }
+  .topbar .brand{color:var(--navy); font-weight:500; text-decoration:none;}
+  .topbar nav a{margin-left:20px; text-decoration:none; color:var(--ink); opacity:0.75;}
+  .topbar nav a:hover{opacity:1; color:var(--signal);}
+  .topbar nav a:focus-visible, a:focus-visible, button:focus-visible{
+    outline:2px solid var(--signal); outline-offset:3px;
+  }
+
+  /* ---- hero / boot sequence ---- */
+  .hero{padding:96px 0 72px;}
+  .boot{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+    color:var(--signal);
+    margin-bottom:28px;
+    min-height:1.4em;
+  }
+  .boot::after{
+    content:'▍';
+    animation:blink 1s steps(1) infinite;
+  }
+  @keyframes blink{ 50%{opacity:0;} }
+  .hero h1{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    font-size:clamp(34px, 6vw, 56px);
+    line-height:1.05;
+    letter-spacing:-0.01em;
+    margin:0 0 20px;
+    color:var(--navy);
+  }
+  .hero p.lede{
+    font-size:18px;
+    max-width:56ch;
+    color:#2B3A45;
+    margin:0 0 32px;
+  }
+  .hero-tags{display:flex; flex-wrap:wrap; gap:8px;}
+  .tag{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    padding:6px 10px;
+    background:var(--white);
+    border:1px solid var(--mist);
+    border-radius:var(--radius);
+  }
+
+  /* ---- section labels ---- */
+  .section{padding:56px 0;}
+  .section + .section{border-top:1px solid var(--mist);}
+  .section-label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    color:var(--amber);
+    margin:0 0 8px;
+  }
+  .section h2{
+    font-family:'Space Grotesk', sans-serif;
+    font-size:28px;
+    margin:0 0 32px;
+    color:var(--navy);
+  }
+
+  /* ---- about ---- */
+  .about-grid{display:grid; grid-template-columns:1fr; gap:28px;}
+  @media(min-width:720px){ .about-grid{grid-template-columns:1.3fr 1fr;} }
+  .about-text p{margin:0 0 16px; color:#2B3A45;}
+  .path{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+    background:var(--white);
+    border:1px solid var(--mist);
+    border-radius:var(--radius);
+    padding:18px;
+  }
+  .path .step{display:flex; gap:10px; padding:6px 0;}
+  .path .step:not(:last-child){border-bottom:1px dashed var(--mist);}
+  .path .yr{color:var(--amber); min-width:52px;}
+
+  /* ---- projects ---- */
+  .project{
+    background:var(--white);
+    border:1px solid var(--mist);
+    border-radius:var(--radius);
+    padding:28px;
+    margin-bottom:24px;
+  }
+  .project-head{
+    display:flex; justify-content:space-between; align-items:baseline;
+    flex-wrap:wrap; gap:8px; margin-bottom:12px;
+  }
+  .project h3{
+    font-family:'Space Grotesk', sans-serif;
+    font-size:22px;
+    margin:0;
+    color:var(--ink);
+  }
+  .status{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    padding:3px 8px;
+    background:var(--signal-dim);
+    color:var(--signal);
+    border-radius:var(--radius);
+    white-space:nowrap;
+  }
+  .project p.desc{margin:0 0 16px; color:#2B3A45;}
+  .logline{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12.5px;
+    color:#4A5A63;
+    border-top:1px solid var(--paper-2);
+    padding-top:14px;
+    display:grid;
+    gap:6px;
+  }
+  .logline span.k{color:var(--amber);}
+  .highlights{margin:14px 0 0; padding-left:18px; color:#2B3A45; font-size:14.5px;}
+  .highlights li{margin-bottom:6px;}
+
+  /* ---- mini mockup (recréation d'écran, pas une capture) ---- */
+  .mockup{
+    margin:18px 0 6px;
+    background:#0b1526;
+    border:1px solid #1c2a3f;
+    border-radius:6px;
+    overflow:hidden;
+    font-family:'IBM Plex Sans', sans-serif;
+  }
+  .mockup-bar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:9px 14px; background:#0e1a2e; border-bottom:1px solid #1c2a3f;
+    font-family:'IBM Plex Mono', monospace; font-size:10.5px; color:#7891ab;
+  }
+  .mockup-bar .badge{
+    background:rgba(62,142,92,.18); color:#57c98a; border:1px solid rgba(62,142,92,.35);
+    padding:2px 7px; border-radius:20px; font-weight:600; margin-right:8px;
+  }
+  .mockup-body{display:grid; grid-template-columns:1fr 1fr; gap:1px; background:#1c2a3f;}
+  @media(max-width:560px){ .mockup-body{grid-template-columns:1fr;} }
+  .mockup-col{background:#0b1526; padding:14px;}
+  .mockup-col .role{
+    font-family:'IBM Plex Mono', monospace; font-size:10px; text-transform:uppercase;
+    letter-spacing:.06em; color:#7891ab; margin-bottom:8px;
+  }
+  .mockup-col .role em{
+    font-style:normal; background:rgba(255,255,255,.08); color:#d7e0ea;
+    padding:2px 7px; border-radius:20px; margin-left:6px;
+  }
+  .mockup-card{
+    background:#f4efe6; border-radius:4px; padding:12px; color:#1a1a1a;
+  }
+  .mockup-card .t{font-weight:600; font-size:13px; margin-bottom:2px;}
+  .mockup-card .s{font-size:11px; color:#6b7280;}
+  .mockup-row{
+    display:flex; justify-content:space-between; align-items:center;
+    background:#fff; border-radius:3px; padding:7px 10px; margin-top:8px; font-size:11.5px;
+  }
+  .mockup-row .btn{
+    background:#2AA9CC; color:#fff; font-size:10.5px; font-weight:600;
+    padding:4px 9px; border-radius:3px;
+  }
+
+  /* ---- footer / contact ---- */
+  footer{padding:56px 0 80px;}
+  .contact-box{
+    background:var(--navy);
+    color:var(--white);
+    border-radius:var(--radius);
+    padding:36px;
+  }
+  .contact-box h2{
+    font-family:'Space Grotesk', sans-serif;
+    margin:0 0 12px;
+    font-size:24px;
+  }
+  .contact-box p{margin:0 0 20px; color:#C9D3DE;}
+  .btn-row{display:flex; flex-wrap:wrap; gap:12px;}
+  .btn{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+    text-decoration:none;
+    padding:11px 18px;
+    border-radius:var(--radius);
+    border:1px solid rgba(255,255,255,0.3);
+    color:var(--white);
+    transition:background 0.15s ease, border-color 0.15s ease;
+  }
+  .btn.primary{background:var(--signal); border-color:var(--signal); color:var(--white);}
+  .btn:hover{border-color:var(--white);}
+  .btn.primary:hover{background:#357B4E;}
+  .foot-note{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:#7C8B95;
+    margin-top:40px;
+    text-align:center;
+  }
+  .foot-note a{color:var(--navy); text-decoration:underline;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="/" class="brand">← aardesign</a>
+  <nav>
+    <a href="#projets">Projets</a>
+    <a href="#parcours">Parcours</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</div>
+
+<div class="wrap">
+
+  <section class="hero">
+    <div class="boot mono" id="boot">anthony@aardesign:~$ whoami</div>
+    <h1>Anthony Armand<br>Graphiste, devenu développeur.</h1>
+    <p class="lede">DUT MMI en poche, dix ans de pratique visuelle, et une bascule assumée vers le développement web — portée par des projets réels en production, pas des exercices. Recherche un poste de développeur web junior, basé près de Caen.</p>
+    <div class="hero-tags">
+      <span class="tag">HTML / CSS / JS</span>
+      <span class="tag">Firebase &amp; Firestore</span>
+      <span class="tag">Lua</span>
+      <span class="tag">oxmysql</span>
+      <span class="tag">DUT MMI</span>
+    </div>
+  </section>
+
+  <section class="section" id="projets">
+    <p class="section-label">// Projets</p>
+    <h2>Ce que j'ai construit</h2>
+
+    <article class="project">
+      <div class="project-head">
+        <h3>OMC — Intranet hospitalier</h3>
+        <span class="status">en production</span>
+      </div>
+      <p class="desc">Application web temps réel pour la gestion d'un service hospitalier (dispatch, lits, plannings) : suivi des patients, gestion des chambres avec superposition de plans, et planning du personnel — utilisée quotidiennement par une équipe, y compris sur une tablette embarquée sur site.</p>
+      <ul class="highlights">
+        <li>Authentification et persistance des données via Firebase / Firestore</li>
+        <li>Tableau de dispatch en glisser-déposer avec sauvegarde en temps réel</li>
+        <li>Cartographie des chambres par coordonnées en pourcentage, calée pièce par pièce sur les plans réels</li>
+        <li>Migration d'hébergement pour intégration dans une tablette embarquée (en-têtes CSP/CORS spécifiques pour compatibilité Chromium)</li>
+      </ul>
+      <div class="logline">
+        <div><span class="k">stack:</span> Firebase, Firestore, JavaScript</div>
+        <div><span class="k">rôle:</span> solo dev — conception, code, déploiement</div>
+        <div><span class="k">contrainte notable:</span> intégration NUI dans un environnement Chromium embarqué</div>
+      </div>
+    </article>
+
+    <article class="project">
+      <div class="project-head">
+        <h3>AGENDA — Système de réservation</h3>
+        <span class="status">23+ PR mergées</span>
+      </div>
+      <p class="desc">Script de prise de rendez-vous conçu pour une distribution publique : architecture pensée dès le départ pour être installée et configurée par des tiers, pas juste pour un usage perso. Zéro configuration serveur — chaque métier (hôpital, garage, cabinet, notaire...) se déclare dans un fichier de config.</p>
+      <ul class="highlights">
+        <li>Vue "côte à côte" civil / soignant avec état partagé en temps réel — une réservation posée côté civil apparaît instantanément côté staff</li>
+        <li>Architecture multi-établissements et multi-services, filtrage par grade (ex. Scanner/IRM réservés aux médecins)</li>
+        <li>Disponibilités récurrentes (quotidiennes ou hebdomadaires), anti-double-réservation par verrou atomique côté serveur</li>
+        <li>Internationalisation, thème configurable, détection automatique du téléphone (lb-phone, qb-phone, standalone)</li>
+      </ul>
+      <div class="mockup" aria-hidden="true">
+        <div class="mockup-bar"><span><span class="badge">✓ Démo</span>AGENDA — côte à côte · état partagé · aucun serveur requis</span><span>FR</span></div>
+        <div class="mockup-body">
+          <div class="mockup-col">
+            <div class="role">Civil <em>Réservation</em></div>
+            <div class="mockup-card">
+              <div class="t">Ocean Medical Center</div>
+              <div class="s">hospital</div>
+              <div class="mockup-row"><span>Consultation — 08:15</span><span class="btn">Réserver</span></div>
+              <div class="mockup-row"><span>Consultation — 08:30</span><span class="btn">Réserver</span></div>
+            </div>
+          </div>
+          <div class="mockup-col">
+            <div class="role">Soignant <em>Staff</em></div>
+            <div class="mockup-card">
+              <div class="t">Disponibilités ouvertes</div>
+              <div class="mockup-row"><span>Consultation · 08:00–12:00</span><span class="btn" style="background:#c8763a">Fermer</span></div>
+              <div class="mockup-row"><span>Consultation longue · 08:00–12:00</span><span class="btn" style="background:#c8763a">Fermer</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="logline">
+        <div><span class="k">stack:</span> Lua, oxmysql, JavaScript</div>
+        <div><span class="k">rôle:</span> solo dev — 23+ pull requests mergées au fil des itérations</div>
+        <div><span class="k">contrainte notable:</span> conçu pour être configuré et réutilisé par des développeurs tiers, pas pour un seul serveur</div>
+      </div>
+    </article>
+  </section>
+
+  <section class="section" id="parcours">
+    <p class="section-label">// Parcours</p>
+    <h2>D'où ça vient</h2>
+    <div class="about-grid">
+      <div class="about-text">
+        <p>Le DUT MMI (Métiers du Multimédia et de l'Internet) mêle dès le départ direction artistique et développement — ce n'est qu'après coup que j'ai pris le virage graphisme avec un Mastère en Direction Artistique. Le code n'a jamais vraiment disparu : il s'est déplacé vers des projets personnels de plus en plus sérieux.</p>
+        <p>Aujourd'hui, je veux remettre le développement au centre — avec la même exigence que j'applique en tant que graphiste.</p>
+      </div>
+      <div class="path mono">
+        <div class="step"><span class="yr">DUT</span> MMI — bases web &amp; dev</div>
+        <div class="step"><span class="yr">+</span> Mastère Direction Artistique</div>
+        <div class="step"><span class="yr">+</span> Cert. TOSA Photoshop Expert</div>
+        <div class="step"><span class="yr">→</span> Projets dev en prod (OMC, AGENDA)</div>
+      </div>
+    </div>
+  </section>
+
+  <footer id="contact">
+    <div class="contact-box">
+      <h2>On en parle ?</h2>
+      <p>Ouvert aux postes de développeur web junior, intégrateur, ou webdesigner-développeur — basé près de Caen.</p>
+      <div class="btn-row">
+        <a href="mailto:aardesign14@gmail.com" class="btn primary">Écrire un mail</a>
+        <a href="/" class="btn">Voir le travail graphique</a>
+      </div>
+    </div>
+    <p class="foot-note">Le reste du travail (identité visuelle, illustration, print) est visible sur <a href="/">aardesign.fr</a></p>
+  </footer>
+
+</div>
+
+<script>
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const bootEl = document.getElementById('boot');
+  const fullText = 'anthony@aardesign:~$ whoami';
+  if(!prefersReduced && bootEl){
+    bootEl.textContent = '';
+    let i = 0;
+    const type = () => {
+      if(i <= fullText.length){
+        bootEl.textContent = fullText.slice(0, i);
+        i++;
+        setTimeout(type, 32);
+      }
+    };
+    type();
+  }
+</script>
+
+</body>
+</html>
