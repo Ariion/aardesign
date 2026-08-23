@@ -547,7 +547,8 @@
             "Print",
             "Steampunk"
           ],
-          "legalMention": "Réalisé en tant que salarié pour Arsène Valentin."
+          "legalMention": "Réalisé en tant que salarié pour Arsène Valentin.",
+          "hidden": true
         },
         {
           "id": 1790000026,
