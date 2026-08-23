@@ -254,6 +254,7 @@
   <a href="/" class="brand">← aardesign</a>
   <nav>
     <a href="#projets">Projets</a>
+    <a href="#jeux">Jeux</a>
     <a href="#parcours">Parcours</a>
     <a href="#contact">Contact</a>
   </nav>
@@ -353,6 +354,47 @@
         <div><span class="k">stack:</span> HTML, CSS, JavaScript</div>
         <div><span class="k">rôle:</span> solo — design UI &amp; intégration, du brief à la mise en ligne</div>
         <div><span class="k">contrainte notable:</span> site vitrine client réel, pas un exercice — validé et livré</div>
+      </div>
+    </article>
+  </section>
+
+  <section class="section" id="jeux">
+    <p class="section-label">// Jeux</p>
+    <h2>À côté, du jeu vidéo</h2>
+
+    <article class="project">
+      <div class="project-head">
+        <h3>Les Cryptes Éternelles</h3>
+        <span class="status">alpha — en dev</span>
+      </div>
+      <p class="desc">Roguelike heroic-fantasy bilingue (FR/EN), tout le jeu tient dans un seul fichier HTML/JS. Sauvegarde cloud et classement mondial en temps réel, packaging pensé pour une vraie distribution publique plutôt qu'un prototype jetable.</p>
+      <ul class="highlights">
+        <li>Sauvegarde et classement mondial via Firebase / Firestore, avec règles de validation côté serveur pour filtrer les scores aberrants</li>
+        <li>Progressive Web App (installable, jouable hors-ligne)</li>
+        <li>Pipeline de build dédié : obfuscation du code JS pour la version publique, déploiement continu via GitHub Actions vers Firebase Hosting à chaque push</li>
+      </ul>
+      <div class="logline">
+        <div><span class="k">stack:</span> JavaScript, Firebase / Firestore, GitHub Actions</div>
+        <div><span class="k">rôle:</span> solo dev — game design, code, infra de déploiement</div>
+        <div><span class="k">contrainte notable:</span> tout le jeu (moteur, UI, sauvegarde) tient dans un seul fichier HTML, pensé pour rester distribuable et copiable-collable</div>
+      </div>
+    </article>
+
+    <article class="project">
+      <div class="project-head">
+        <h3>Horde de Chats</h3>
+        <span class="status">alpha — dev local</span>
+      </div>
+      <p class="desc">Prototype de jeu 3D dans le navigateur, jouable sur mobile. Plusieurs modes de jeu autour d'une horde de chats à faire grandir et défendre, avec un vrai rendu 3D temps réel plutôt qu'un jeu en 2D classique.</p>
+      <ul class="highlights">
+        <li>Rendu 3D temps réel avec Three.js (scène, caméra, post-traitement visuel)</li>
+        <li>Plusieurs modes de jeu distincts (tower defense, moulin, puzzle) partageant le même moteur</li>
+        <li>Système de biomes, boutique in-game, interface tactile pensée mobile-first</li>
+      </ul>
+      <div class="logline">
+        <div><span class="k">stack:</span> JavaScript, Three.js (WebGL)</div>
+        <div><span class="k">rôle:</span> solo dev — game design, rendu 3D, gameplay</div>
+        <div><span class="k">contrainte notable:</span> encore en développement local, pas de version publique pour l'instant</div>
       </div>
     </article>
   </section>
