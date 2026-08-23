@@ -483,7 +483,8 @@
             "Communication",
             "Illustration"
           ],
-          "legalMention": "Réalisé en tant que salarié pour Clopinette."
+          "legalMention": "Réalisé en tant que salarié pour Clopinette.",
+          "hidden": true
         },
         {
           "id": 1790000024,
