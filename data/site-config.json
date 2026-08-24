@@ -229,10 +229,6 @@
               "title": "Planche 02"
             },
             {
-              "src": "assets/Planche-logo-03.png",
-              "title": "Planche 03"
-            },
-            {
               "src": "assets/Planche-logo-04.png",
               "title": "Planche 04"
             },
@@ -413,7 +409,7 @@
             "Impression"
           ],
           "legalMention": "Réalisé en tant que salarié pour Arsène Valentin.",
-          "light": false,
+          "light": true,
           "layoutOn": true,
           "layout": [
             {
