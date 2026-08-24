@@ -761,7 +761,8 @@
           "result": "",
           "tags": [],
           "legalMention": "",
-          "light": true
+          "light": true,
+          "coverPad": 0
         }
       ],
       "etudes": [
