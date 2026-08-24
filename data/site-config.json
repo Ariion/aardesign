@@ -712,7 +712,8 @@
               ]
             }
           ],
-          "light": true
+          "light": true,
+          "coverPad": 0
         },
         {
           "id": 1787428738097,
