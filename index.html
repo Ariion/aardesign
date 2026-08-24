@@ -226,6 +226,35 @@ animation:circleBreath 25s ease-in-out infinite reverse;
 [data-theme="light"] #wall-art{opacity:0}
 #wall-diag{display:none}
 
+/* ══════════ Écran de démarrage (logo → dock dans la topbar) ══════════ */
+#boot-splash{
+position:fixed;inset:0;z-index:999999;pointer-events:none;
+display:flex;align-items:center;justify-content:center;
+}
+#boot-backdrop{
+position:absolute;inset:0;z-index:0;
+background:linear-gradient(150deg,var(--wall-a),var(--wall-b));
+transition:opacity .5s ease .1s;
+}
+#boot-backdrop.gone{opacity:0}
+#boot-splash img{
+position:relative;z-index:1;
+width:180px;opacity:0;transform:scale(.92);
+transition:opacity .55s ease,transform .55s cubic-bezier(.2,.8,.2,1);
+}
+#boot-splash.show img{opacity:1;transform:scale(1)}
+@media(prefers-reduced-motion: reduce){
+#boot-splash{display:none}
+}
+#topbar,#desk-center,#desk-apps{opacity:0;transform:translateY(14px)}
+#topbar.boot-in,#desk-center.boot-in,#desk-apps.boot-in{
+opacity:1;transform:translateY(0);
+transition:opacity .6s ease,transform .6s cubic-bezier(.2,.8,.2,1);
+}
+@media(prefers-reduced-motion: reduce){
+#topbar,#desk-center,#desk-apps{opacity:1;transform:none}
+}
+
 #lockscreen{
 position:fixed;inset:0;z-index:999;
 display:flex;flex-direction:column;align-items:center;justify-content:center;
@@ -932,6 +961,8 @@ background:var(--cyan);color:#fff;font:700 .82rem 'Montserrat',sans-serif;cursor
 </head>
 <body>
 
+<div id="boot-splash"><div id="boot-backdrop"></div><img src="assets/Logo-Aardesign-Long.png" alt=""></div>
+
 <div id="wall">
 <div class="wb wb1"></div>
 <div class="wb wb2"></div>
@@ -1465,6 +1496,60 @@ const phone = ct?.phone||'06 79 46 62 19';
 return [
 `📧 ${email}`,`📱 ${phone}`,`📍 Caen, Normandie`,`🌐 aardesign.fr`,`🪪 Permis B`
 ].map(c=>`<span class="cv-chip">${c}</span>`).join('');
+}
+
+// ── Écran de démarrage : le logo fondu-apparaît au centre, puis rejoint sa place
+// dans la topbar pendant que le bureau se révèle (comme un boot macOS/Windows, sans
+// écran de connexion). Respecte prefers-reduced-motion (voir CSS #boot-splash).
+function playBootAnimation(){
+try{
+const splash=document.getElementById('boot-splash');
+const backdrop=document.getElementById('boot-backdrop');
+if(!splash) return;
+if(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches){
+splash.remove();
+return;
+}
+const cloneImg=splash.querySelector('img');
+const target=document.querySelector('#tb-logo-center img');
+const topbar=document.getElementById('topbar');
+const deskCenter=document.getElementById('desk-center');
+const deskApps=document.getElementById('desk-apps');
+if(target) target.style.opacity='0';
+
+requestAnimationFrame(()=>{ splash.classList.add('show'); });
+
+setTimeout(()=>{
+if(topbar) topbar.classList.add('boot-in');
+if(deskCenter) deskCenter.classList.add('boot-in');
+if(deskApps) deskApps.classList.add('boot-in');
+
+if(target && cloneImg){
+const tr=target.getBoundingClientRect();
+const cr=cloneImg.getBoundingClientRect();
+cloneImg.style.position='fixed';
+cloneImg.style.margin='0';
+cloneImg.style.left=cr.left+'px';
+cloneImg.style.top=cr.top+'px';
+cloneImg.style.width=cr.width+'px';
+cloneImg.style.transform='none';
+void cloneImg.offsetWidth; // force reflow avant la transition
+cloneImg.style.transition='left .65s cubic-bezier(.4,0,.2,1),top .65s cubic-bezier(.4,0,.2,1),width .65s cubic-bezier(.4,0,.2,1)';
+cloneImg.style.left=tr.left+'px';
+cloneImg.style.top=tr.top+'px';
+cloneImg.style.width=tr.width+'px';
+}
+if(backdrop) backdrop.classList.add('gone');
+}, 850);
+
+setTimeout(()=>{
+if(target) target.style.opacity='';
+splash.remove();
+}, 850+680);
+}catch(_){
+const splash=document.getElementById('boot-splash');
+if(splash) splash.remove();
+}
 }
 
 let _logoClickCount=0,_logoClickTimer=null;
@@ -2344,6 +2429,7 @@ if(typeof window.parent.toast==='function') window.parent.toast('✓ Bureau mis 
 renderDesktopFolders();
 applyStaticLang();
 if(typeof _pvResolveDeepLink==='function') _pvResolveDeepLink();
+playBootAnimation();
 
 document.getElementById('admin-submit').addEventListener('click',async()=>{
 const btn=document.getElementById('admin-submit');
