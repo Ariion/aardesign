@@ -240,13 +240,11 @@ transition:opacity .6s ease .15s;
 #boot-backdrop.gone{opacity:0}
 #tb-logo-center img.boot-hero{
 position:fixed;z-index:999999;left:0;top:0;
-opacity:0;
 transition:opacity .7s ease,transform .8s cubic-bezier(.22,.8,.2,1);
 }
-#tb-logo-center img.boot-hero.show{opacity:1}
 @media(prefers-reduced-motion: reduce){
 #boot-splash{display:none}
-#tb-logo-center img.boot-hero{position:static;opacity:1!important;transform:none!important;transition:none}
+#tb-logo-center img.boot-hero{position:static!important;opacity:1!important;transform:none!important;transition:none}
 }
 #topbar{opacity:0;transition:opacity .6s ease}
 #desk-center,#desk-apps{opacity:0;transition:opacity .6s ease}
@@ -1504,16 +1502,31 @@ return [
 function playBootAnimation(){
 const splash=document.getElementById('boot-splash');
 const target=document.querySelector('#tb-logo-center img');
-try{
-const backdrop=document.getElementById('boot-backdrop');
-const topbar=document.getElementById('topbar');
-const deskCenter=document.getElementById('desk-center');
-const deskApps=document.getElementById('desk-apps');
 if(!splash || !target){ if(splash) splash.remove(); return; }
 if(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches){
 splash.remove();
 return;
 }
+// L'image du logo n'a pas forcément fini de charger quand ce script s'exécute (en local
+// elle vient du disque, instantané — en vrai sur le réseau, non). Si on mesure sa position
+// avant qu'elle soit chargée, sa largeur "naturelle" vaut 0 et tous les calculs qui en
+// dépendent (échelle, centrage) partent n'importe où — d'où le logo qui apparaissait en
+// haut à gauche puis disparaissait. On attend qu'elle soit réellement prête.
+let started=false;
+const start=()=>{ if(started) return; started=true; runBootAnimation(splash,target); };
+if(target.complete && target.naturalWidth) start();
+else{
+target.addEventListener('load',start,{once:true});
+setTimeout(start,1500); // filet de sécurité si l'image ne charge jamais
+}
+}
+function runBootAnimation(splash,target){
+try{
+const backdrop=document.getElementById('boot-backdrop');
+const topbar=document.getElementById('topbar');
+const deskCenter=document.getElementById('desk-center');
+const deskApps=document.getElementById('desk-apps');
+if(!target.naturalWidth){ splash.remove(); return; } // image en échec (404 etc.) : abandon propre
 
 // Position/taille naturelles du logo dans la topbar (avant de le sortir du flux).
 const natural=target.getBoundingClientRect();
@@ -1525,17 +1538,28 @@ const scale=heroWidth/natural.width;
 const dx=window.innerWidth/2-naturalCx, dy=window.innerHeight/2-naturalCy;
 
 target.classList.add('boot-hero');
+// Opacité et transform pilotés en style inline (jamais en classe CSS) : l'inline gagne
+// toujours sur n'importe quelle règle de feuille de style, aucune ambiguïté de cascade
+// possible avec la règle par défaut du logo (#tb-logo-center img{opacity:.92;...}).
+target.style.opacity='0';
 // Départ légèrement plus petit que la taille finale au centre : donne l'impression
 // d'entrer dans l'écran (léger zoom-avant) une fois combiné au fondu.
 target.style.transform=`translate(${dx}px,${dy}px) scale(${scale*0.9})`;
 void target.offsetWidth; // force reflow avant la transition (sinon pas de fondu visible)
 
-requestAnimationFrame(()=>{
-requestAnimationFrame(()=>{
-target.classList.add('show');
+// Toute la suite est enchaînée DEPUIS ce callback plutôt que lancée en parallèle avec des
+// setTimeout indépendants : si le déclenchement est retardé (onglet en arrière-plan,
+// navigateur chargé...), un minuteur d'atterrissage démarré à l'heure prévue pouvait
+// s'exécuter AVANT l'apparition du logo, et écrasait ensuite sa position en le ramenant au
+// centre — le bug "logo qui apparaît en haut à gauche puis disparaît" vu en prod. En
+// chaînant, l'atterrissage ne peut plus jamais démarrer avant l'apparition effective.
+// setTimeout (et non requestAnimationFrame, même doublé) : garantit que le navigateur a le
+// temps de vraiment peindre l'état de départ (petit, invisible) avant de passer à l'état
+// affiché — un rAF peut se coalescer avec le changement de style qui le précède et sauter
+// la transition plutôt que l'animer.
+setTimeout(()=>{
+target.style.opacity='1';
 target.style.transform=`translate(${dx}px,${dy}px) scale(${scale})`;
-});
-});
 
 setTimeout(()=>{
 if(topbar) topbar.classList.add('boot-in');
@@ -1545,16 +1569,18 @@ if(backdrop) backdrop.classList.add('gone');
 // Retour à sa position naturelle exacte : transform:none === la vraie place dans la
 // topbar (calculée à partir d'elle), donc aucun saut possible à l'arrivée.
 target.style.transform='';
-}, 1300);
 
 setTimeout(()=>{
-target.classList.remove('boot-hero','show');
+target.classList.remove('boot-hero');
 target.style.transform='';
+target.style.opacity='';
 splash.remove();
-}, 1300+800);
+}, 800);
+}, 1300);
+}, 50);
 }catch(_){
 if(splash) splash.remove();
-if(target){ target.classList.remove('boot-hero','show'); target.style.transform=''; }
+if(target){ target.classList.remove('boot-hero'); target.style.transform=''; target.style.opacity=''; }
 }
 }
 
