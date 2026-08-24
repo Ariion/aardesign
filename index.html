@@ -233,24 +233,27 @@ display:flex;align-items:center;justify-content:center;
 }
 #boot-backdrop{
 position:absolute;inset:0;z-index:0;
-background:linear-gradient(150deg,var(--wall-a),var(--wall-b));
-transition:opacity .5s ease .1s;
+background:#fff;
+transition:opacity .6s ease .15s;
 }
 #boot-backdrop.gone{opacity:0}
 #boot-splash img{
 position:relative;z-index:1;
 width:180px;opacity:0;transform:scale(.92);
-transition:opacity .55s ease,transform .55s cubic-bezier(.2,.8,.2,1);
+transition:opacity .7s ease,transform .7s cubic-bezier(.2,.8,.2,1);
 }
 #boot-splash.show img{opacity:1;transform:scale(1)}
+#boot-splash img.landing{transition:left .65s cubic-bezier(.4,0,.2,1),top .65s cubic-bezier(.4,0,.2,1),width .65s cubic-bezier(.4,0,.2,1),filter .65s ease,opacity .2s ease .45s}
+#boot-splash img.landed{opacity:0}
 @media(prefers-reduced-motion: reduce){
 #boot-splash{display:none}
 }
-#topbar,#desk-center,#desk-apps{opacity:0;transform:translateY(14px)}
-#topbar.boot-in,#desk-center.boot-in,#desk-apps.boot-in{
-opacity:1;transform:translateY(0);
-transition:opacity .6s ease,transform .6s cubic-bezier(.2,.8,.2,1);
-}
+/* Seule l'opacité anime à l'arrivée : le logo de la topbar ne doit jamais bouger pendant
+   le vol du clone, sinon la position visée devient une cible mouvante (coupure visible). */
+#topbar{opacity:0;transition:opacity .6s ease}
+#desk-center,#desk-apps{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s cubic-bezier(.2,.8,.2,1)}
+#topbar.boot-in{opacity:1}
+#desk-center.boot-in,#desk-apps.boot-in{opacity:1;transform:translateY(0)}
 @media(prefers-reduced-motion: reduce){
 #topbar,#desk-center,#desk-apps{opacity:1;transform:none}
 }
@@ -1517,16 +1520,26 @@ const deskCenter=document.getElementById('desk-center');
 const deskApps=document.getElementById('desk-apps');
 if(target) target.style.opacity='0';
 
+// Deux rAF imbriqués : garantit que le navigateur peint bien l'état "opacité 0" dans
+// une frame avant de passer à "opacité 1" — avec un seul rAF, les deux changements
+// peuvent être fusionnés dans la même frame et le fondu ne se voit jamais.
+requestAnimationFrame(()=>{
 requestAnimationFrame(()=>{ splash.classList.add('show'); });
+});
 
 setTimeout(()=>{
+// La topbar ne fait qu'un fondu d'opacité (pas de translateY) : sa position — donc
+// celle du logo cible — ne bouge jamais pendant le vol du clone, sinon la cible se
+// déplace en cours de route et l'atterrissage final saute (la "coupure").
 if(topbar) topbar.classList.add('boot-in');
 if(deskCenter) deskCenter.classList.add('boot-in');
 if(deskApps) deskApps.classList.add('boot-in');
+if(backdrop) backdrop.classList.add('gone');
 
 if(target && cloneImg){
 const tr=target.getBoundingClientRect();
 const cr=cloneImg.getBoundingClientRect();
+const targetFilter=getComputedStyle(target).filter;
 cloneImg.style.position='fixed';
 cloneImg.style.margin='0';
 cloneImg.style.left=cr.left+'px';
@@ -1534,18 +1547,23 @@ cloneImg.style.top=cr.top+'px';
 cloneImg.style.width=cr.width+'px';
 cloneImg.style.transform='none';
 void cloneImg.offsetWidth; // force reflow avant la transition
-cloneImg.style.transition='left .65s cubic-bezier(.4,0,.2,1),top .65s cubic-bezier(.4,0,.2,1),width .65s cubic-bezier(.4,0,.2,1)';
+cloneImg.classList.add('landing','landed');
 cloneImg.style.left=tr.left+'px';
 cloneImg.style.top=tr.top+'px';
 cloneImg.style.width=tr.width+'px';
+cloneImg.style.filter=targetFilter;
+// Le vrai logo réapparaît en fondu pile quand le clone commence à s'effacer (même
+// délai que la classe .landing) : croisement en douceur, jamais de saut net.
+setTimeout(()=>{
+if(target){ target.style.transition='opacity .2s ease'; target.style.opacity=''; }
+},450);
 }
-if(backdrop) backdrop.classList.add('gone');
-}, 850);
+}, 1050);
 
 setTimeout(()=>{
-if(target) target.style.opacity='';
+if(target){ target.style.transition=''; target.style.opacity=''; }
 splash.remove();
-}, 850+680);
+}, 1050+680);
 }catch(_){
 const splash=document.getElementById('boot-splash');
 if(splash) splash.remove();
