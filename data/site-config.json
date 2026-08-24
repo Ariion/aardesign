@@ -413,7 +413,7 @@
             "Impression"
           ],
           "legalMention": "Réalisé en tant que salarié pour Arsène Valentin.",
-          "light": true,
+          "light": false,
           "layoutOn": true,
           "layout": [
             {
