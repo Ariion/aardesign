@@ -753,8 +753,8 @@
               "title": "OMC-site-07"
             }
           ],
-          "context": "Site internet réalisé pour un serveur Role Play du jeu GTA V. Un site internet destiné à l'hôpital du serveur qui se nomme Ocean Medical Center. ",
-          "objective": "",
+          "context": "Application web temps réel pour la gestion d'un service hospitalier (dispatch, lits, plannings) : suivi des patients, gestion des chambres avec superposition de plans, et planning du personnel — utilisée quotidiennement par une équipe, y compris sur une tablette embarquée sur site.\n\nService hospitalier pour un serveur Role Play FIVEM pour GTA V\n\n",
+          "objective": "Authentification et persistance des données via Firebase / Firestore\nTableau de dispatch en glisser-déposer avec sauvegarde en temps réel\nCartographie des chambres par coordonnées en pourcentage, calée pièce par pièce sur les plans réels\nMigration d'hébergement pour intégration dans une tablette embarquée (en-têtes CSP/CORS spécifiques pour compatibilité Chromium)",
           "approach": "",
           "result": "",
           "tags": [],
