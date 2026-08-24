@@ -1518,7 +1518,9 @@ return;
 // Position/taille naturelles du logo dans la topbar (avant de le sortir du flux).
 const natural=target.getBoundingClientRect();
 const naturalCx=natural.left+natural.width/2, naturalCy=natural.top+natural.height/2;
-const heroWidth=Math.min(220,window.innerWidth*0.5);
+// Nettement plus grand que sa taille dans la topbar, pour que le moment "splash" au
+// centre de l'écran se voie sans ambiguïté (pas juste un léger décalage de taille).
+const heroWidth=Math.min(320,window.innerWidth*0.55);
 const scale=heroWidth/natural.width;
 const dx=window.innerWidth/2-naturalCx, dy=window.innerHeight/2-naturalCy;
 
@@ -1543,13 +1545,13 @@ if(backdrop) backdrop.classList.add('gone');
 // Retour à sa position naturelle exacte : transform:none === la vraie place dans la
 // topbar (calculée à partir d'elle), donc aucun saut possible à l'arrivée.
 target.style.transform='';
-}, 1100);
+}, 1300);
 
 setTimeout(()=>{
 target.classList.remove('boot-hero','show');
 target.style.transform='';
 splash.remove();
-}, 1100+800);
+}, 1300+800);
 }catch(_){
 if(splash) splash.remove();
 if(target){ target.classList.remove('boot-hero','show'); target.style.transform=''; }
