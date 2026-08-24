@@ -1117,10 +1117,15 @@ text-align:center;cursor:pointer;transition:all .15s;background:transparent;
 </div>
 <div class="pf-field"><label>Tags <span style="opacity:.5;text-transform:none;letter-spacing:0">(séparés par des virgules)</span></label><input type="text" id="pfp-tags" oninput="pfProjField('tags',this.value)" placeholder="Photoshop, Packaging, Steampunk"></div>
 
-<label style="display:inline-flex;align-items:center;gap:.5rem;font-size:.66rem;font-weight:600;color:var(--mid);cursor:pointer;margin-bottom:1rem">
-<input type="checkbox" id="pfp-light" onchange="pfProjField('light',this.checked)" style="accent-color:var(--cyan);width:14px;height:14px;cursor:pointer">
+<label style="display:inline-flex;align-items:center;gap:.5rem;font-size:.66rem;font-weight:600;color:var(--mid);cursor:pointer;margin-bottom:.5rem">
+<input type="checkbox" id="pfp-light" onchange="pfToggleLightPad(this.checked)" style="accent-color:var(--cyan);width:14px;height:14px;cursor:pointer">
 Visuel sur <span style="color:var(--cyan);font-weight:700">fond clair</span> (logos, images sur blanc)
 </label>
+<div class="pf-field" id="pfp-lightpad-wrap" style="display:none;margin-bottom:1rem">
+<label>Taille du visuel dans la vignette <span id="pfp-lightpad-val" style="opacity:.6;text-transform:none;letter-spacing:0"></span></label>
+<input type="range" id="pfp-lightpad" min="0" max="25" step="1" oninput="pfProjField('coverPad',Number(this.value));pfSyncLightPadLabel()" style="width:100%;accent-color:var(--cyan)">
+<div style="display:flex;justify-content:space-between;font-size:.56rem;opacity:.5;margin-top:.15rem"><span>Grand (0)</span><span>Petit (25)</span></div>
+</div>
 
 <div class="pf-layout-toggle-card">
 <label style="display:flex;align-items:center;gap:.6rem;font-size:.72rem;font-weight:700;color:var(--ink);cursor:pointer">
@@ -2558,6 +2563,8 @@ function pfProjectEdit(idx){
   document.getElementById('pfp-result').value=p.result||'';
   document.getElementById('pfp-tags').value=(p.tags||[]).join(', ');
   const lightChk=document.getElementById('pfp-light'); if(lightChk) lightChk.checked=!!p.light;
+  const lightPadWrap=document.getElementById('pfp-lightpad-wrap'); if(lightPadWrap) lightPadWrap.style.display=p.light?'':'none';
+  if(p.light) pfSyncLightPadLabel();
   document.getElementById('pf-url-form').style.display='none';
   const layoutChk=document.getElementById('pfp-layout-on'); if(layoutChk) layoutChk.checked=!!p.layoutOn;
   document.getElementById('pf-standard-fields').style.display=p.layoutOn?'none':'';
@@ -2606,6 +2613,18 @@ function pfProjField(field,val){
   const arr=pfProjectsOf(_pfCurrent); arr[_pfProjIdx]=p;
   pfSaveProjects(_pfCurrent,arr);
   if(field==='title') document.getElementById('pf-proj-ed-title').textContent=val||'Nouveau projet';
+}
+
+function pfToggleLightPad(on){
+  pfProjField('light',on);
+  const wrap=document.getElementById('pfp-lightpad-wrap'); if(wrap) wrap.style.display=on?'':'none';
+  if(on) pfSyncLightPadLabel();
+}
+function pfSyncLightPadLabel(){
+  const p=pfCurProject(); if(!p) return;
+  const pad=(p.coverPad!==undefined&&p.coverPad!==null)?p.coverPad:15;
+  const range=document.getElementById('pfp-lightpad'); if(range) range.value=pad;
+  const val=document.getElementById('pfp-lightpad-val'); if(val) val.textContent='('+pad+'%)';
 }
 
 // ════════ Mise en page personnalisée (blocs) ════════

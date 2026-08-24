@@ -789,7 +789,7 @@ transition:background .15s,border-color .15s;
 .spec-img{position:relative;aspect-ratio:4/3;max-height:280px;background:#10151f;overflow:hidden}
 .spec-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 38%;filter:grayscale(.1) contrast(1.02);transition:transform .35s cubic-bezier(.2,.7,.2,1),filter .35s}
 .pvg-card.spec.light .spec-img{background:#eef0f6}
-.pvg-card.spec.light .spec-img img{object-fit:contain;padding:15%;filter:none}
+.pvg-card.spec.light .spec-img img{object-fit:contain;padding:var(--cover-pad,15%);filter:none}
 .pvg-card.spec:hover .spec-img img{transform:scale(1.06);filter:grayscale(0) contrast(1.02)}
 .pvg-card.spec.light:hover .spec-img img{filter:none}
 .spec-foot{padding:13px 16px;background:var(--win-bg,#0b1526);border-top:1px solid var(--line)}
@@ -1925,8 +1925,9 @@ const pid='proj.'+pr.id;
 const cover=(pr.images&&pr.images[0]&&pr.images[0].src)||'';
 const light=(pr.light!==undefined)?pr.light:(fid==='logo');
 const sub=[pvClientOf(pr,pid),pr.year].filter(Boolean).join(' · ');
+const coverPad=(pr.coverPad!==undefined&&pr.coverPad!==null)?pr.coverPad:15;
 return `<div class="pvg-card spec${light?' light':''}" data-i="${idx}" tabindex="0" onclick="pvOpen('${fid}',${idx})" onkeydown="if(event.key==='Enter')pvOpen('${fid}',${idx})">
-<div class="spec-img">${cover?`<img src="${cover}" alt="${_esc(pvTitleOf(pr,pid))}" loading="lazy">`:''}</div>
+<div class="spec-img"${light?` style="--cover-pad:${coverPad}%"`:''}>${cover?`<img src="${cover}" alt="${_esc(pvTitleOf(pr,pid))}" loading="lazy">`:''}</div>
 <div class="spec-foot">
 <div class="spec-t">${_esc(pvTitleOf(pr,pid))}</div>
 ${sub?`<div class="spec-c">${_esc(sub)}</div>`:''}
