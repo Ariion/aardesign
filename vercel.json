@@ -3,6 +3,7 @@
   "trailingSlash": false,
   "rewrites": [
     { "source": "/en", "destination": "/index" },
-    { "source": "/en/(.*)", "destination": "/index" }
+    { "source": "/en/(.*)", "destination": "/index" },
+    { "source": "/projets/:slug", "destination": "/api/projet?slug=:slug" }
   ]
 }

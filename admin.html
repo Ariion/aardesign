@@ -2244,6 +2244,13 @@ toast('✓ Note : modifiez ADMIN_PWD dans index.html pour changer le mot de pass
 
 function doLogout() { sessionStorage.removeItem('aar-token'); window.location.href = '/' }
 
+// En-têtes à joindre à tout appel vers un endpoint protégé (save-config, upload-image,
+// generate-desc, translate, list-assets) — le serveur vérifie ce token via /api/_lib/auth.js.
+function authHeaders(extra){
+  const token=sessionStorage.getItem('aar-token')||'';
+  return Object.assign({'Authorization':'Bearer '+token}, extra||{});
+}
+
 // ══════════════════════════════════════
 //  SAUVEGARDE GITHUB (persistance réelle)
 // ══════════════════════════════════════
@@ -2258,7 +2265,7 @@ cfg[k]=v?JSON.parse(v):null;
 });
 const res=await fetch('/api/save-config',{
 method:'POST',
-headers:{'Content-Type':'application/json'},
+headers:authHeaders({'Content-Type':'application/json'}),
 body:JSON.stringify({config:cfg})
 });
 const data=await res.json();
@@ -2280,7 +2287,7 @@ const btn=document.getElementById('gh-test-btn');
 const status=document.getElementById('gh-token-status');
 btn.textContent='...'; btn.disabled=true;
 try{
-const res=await fetch('/api/save-config',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({config:{_test:true}})});
+const res=await fetch('/api/save-config',{method:'POST',headers:authHeaders({'Content-Type':'application/json'}),body:JSON.stringify({config:{_test:true}})});
 const d=await res.json();
 if(res.ok){
 status.innerHTML='✅ <strong style="color:#10b981">Connexion OK</strong> — sauvegarde permanente active.';
@@ -2804,7 +2811,7 @@ async function pfGenerateDesc(){
   btn.disabled=true; btn.textContent='✨ Génération…';
   const fd=getPfFolders().find(f=>f.id===_pfCurrent);
   try{
-    const r=await fetch('/api/generate-desc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+    const r=await fetch('/api/generate-desc',{method:'POST',headers:authHeaders({'Content-Type':'application/json'}),body:JSON.stringify({
       title,
       client:document.getElementById('pfp-client').value||'',
       year:document.getElementById('pfp-year').value||'',
@@ -2921,7 +2928,7 @@ r.readAsDataURL(file);
 // une raison quelconque, on retombe sur le base64 en mémoire (comportement précédent).
 async function pfUploadToRepo(dataUrl, filename){
 try{
-const r=await fetch('/api/upload-image',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({dataUrl,filename})});
+const r=await fetch('/api/upload-image',{method:'POST',headers:authHeaders({'Content-Type':'application/json'}),body:JSON.stringify({dataUrl,filename})});
 const d=await r.json();
 if(r.ok && d.ok && d.path) return d.path;
 }catch(_){}
@@ -2984,7 +2991,7 @@ if(!text){ toast('Rien à traduire','err'); return; }
 const orig=btn.textContent;
 btn.disabled=true; btn.textContent='…';
 try{
-const r=await fetch('/api/translate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({items:{[key]:text}})});
+const r=await fetch('/api/translate',{method:'POST',headers:authHeaders({'Content-Type':'application/json'}),body:JSON.stringify({items:{[key]:text}})});
 const d=await r.json();
 if(d.error){ toast(d.error,'err'); return; }
 const translated=(d.translations||{})[key];
@@ -3088,7 +3095,7 @@ async function i18nGenerate(){
   const btn=document.getElementById('i18nGenBtn');
   const orig=btn.textContent; btn.disabled=true; btn.textContent='🌐 Traduction en cours…';
   try{
-    const r=await fetch('/api/translate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({items})});
+    const r=await fetch('/api/translate',{method:'POST',headers:authHeaders({'Content-Type':'application/json'}),body:JSON.stringify({items})});
     const d=await r.json();
     if(d.error){ toast(d.error,'err'); return; }
     const en={...i18nGetEn(), ...(d.translations||{})};
@@ -3198,7 +3205,7 @@ function pfOpenAssets(){
   openM('m-pf-assets');
   document.getElementById('pf-assets-q').value='';
   if(_assetsLoaded){ pfRenderAssets(_assetsAll); return; }
-  fetch('/api/list-assets').then(r=>r.json()).then(data=>{
+  fetch('/api/list-assets',{headers:authHeaders()}).then(r=>r.json()).then(data=>{
     _assetsAll=data.images||[];
     _assetsLoaded=true;
     pfRenderAssets(_assetsAll);

@@ -26,13 +26,18 @@
 <script>
 (function(){
   // Ajuste dès le <head> (avant le rendu) : lang, canonical, og:url selon /en ou /
+  // — sauf sur /projets/<slug>, où api/projet.js a déjà posé un canonical/og:url
+  // spécifiques au projet : ne pas les écraser avec l'URL de la page d'accueil.
+  var isProjectPage = /^\/projets\//.test(location.pathname);
   var isEn = /^\/en(\/|$)/i.test(location.pathname);
   document.documentElement.lang = isEn ? 'en' : 'fr';
   var url = 'https://aardesign.fr' + (isEn ? '/en' : '/');
   var setAttr = function(sel, attr, val){ var e=document.querySelector(sel); if(e) e.setAttribute(attr,val); };
   document.addEventListener('DOMContentLoaded', function(){
-    setAttr('#meta-canonical','href',url);
-    setAttr('meta[property="og:url"]','content',url);
+    if(!isProjectPage){
+      setAttr('#meta-canonical','href',url);
+      setAttr('meta[property="og:url"]','content',url);
+    }
     setAttr('meta[property="og:locale"]','content',isEn?'en_US':'fr_FR');
   });
 })();
@@ -1090,6 +1095,9 @@ if(typeof applyIdentity==='function') applyIdentity();
 if(typeof applyTheme==='function') applyTheme();
 if(typeof applyFooter==='function') applyFooter();
 }
+// Deep-link projet (aardesign.fr/projets/<slug>) : à tenter aussi ici, pour le cas d'une
+// toute première visite où le localStorage était vide avant l'arrivée de la config distante.
+if(typeof _pvResolveDeepLink==='function' && !Object.keys(openWins||{}).length) _pvResolveDeepLink();
 }catch(_){}
 })();
 
@@ -1945,8 +1953,68 @@ wrap.innerHTML=`<div class="pvg-wrap">
 <div class="pvg-grid logo-grid">${cards}</div>
 </div>`;
 }
-function pvOpen(fid,idx){ const st=_pvData[fid]; if(!st) return; st.p=idx; st.i=0; st.opened=true; try{aarLog('projet',st.projects[idx]&&st.projects[idx].title);}catch(_){} pvRender(fid); }
-function pvBack(fid){ const st=_pvData[fid]; if(!st) return; st.opened=false; pvRender(fid); }
+function pvOpen(fid,idx){
+const st=_pvData[fid]; if(!st) return;
+st.p=idx; st.i=0; st.opened=true;
+try{aarLog('projet',st.projects[idx]&&st.projects[idx].title);}catch(_){}
+pvRender(fid);
+_pvPushUrl(fid,idx);
+}
+function pvBack(fid){
+const st=_pvData[fid]; if(!st) return;
+st.opened=false;
+pvRender(fid);
+if(location.pathname!=='/' && location.pathname!=='') history.pushState(null,'','/');
+}
+
+// ── URLs partageables par projet (aardesign.fr/projets/<slug>) ──
+function _slugify(s){
+return String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+}
+function _pvAllFolderIds(){
+const ids=Object.keys(FOLDERS);
+try{
+const desk=JSON.parse(localStorage.getItem('aar_desk')||'{}');
+(desk.folders||[]).forEach(f=>{ if(f.id && !ids.includes(f.id)) ids.push(f.id); });
+}catch(_){}
+return ids;
+}
+function _pvFindBySlug(slug){
+for(const fid of _pvAllFolderIds()){
+const projects=pvProjectsFor(fid);
+const idx=projects.findIndex(p=>_slugify(p.title||'')===slug);
+if(idx>-1) return {fid,idx};
+}
+return null;
+}
+function _pvPushUrl(fid,idx){
+const st=_pvData[fid]; if(!st) return;
+const p=st.projects[idx]; if(!p) return;
+const slug=_slugify(p.title||'');
+if(!slug) return;
+const url='/projets/'+slug;
+if(location.pathname!==url) history.pushState({fid,idx},'',url);
+}
+function _pvResolveDeepLink(){
+try{
+let target=window.__AAR_DEEP_PROJECT__||null;
+if(!target){
+const m=/^\/projets\/([^\/]+)\/?$/.exec(location.pathname);
+if(m) target=_pvFindBySlug(decodeURIComponent(m[1]));
+}
+if(!target) return;
+openFolder(target.fid);
+pvOpen(target.fid,target.idx);
+}catch(_){}
+}
+window.addEventListener('popstate',()=>{
+if(/^\/projets\//.test(location.pathname)){
+const m=/^\/projets\/([^\/]+)\/?$/.exec(location.pathname);
+const found=m?_pvFindBySlug(decodeURIComponent(m[1])):null;
+if(found){ openFolder(found.fid); pvOpen(found.fid,found.idx); return; }
+}
+closeAllWins();
+});
 
 // ── Détail projet (depuis la grille) ──
 function pvRenderDetail(fid,wrap,p){
@@ -2275,6 +2343,7 @@ if(typeof window.parent.toast==='function') window.parent.toast('✓ Bureau mis 
 })();
 renderDesktopFolders();
 applyStaticLang();
+if(typeof _pvResolveDeepLink==='function') _pvResolveDeepLink();
 
 document.getElementById('admin-submit').addEventListener('click',async()=>{
 const btn=document.getElementById('admin-submit');
