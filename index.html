@@ -226,25 +226,27 @@ animation:circleBreath 25s ease-in-out infinite reverse;
 [data-theme="light"] #wall-art{opacity:0}
 #wall-diag{display:none}
 
-/* ══════════ Écran de démarrage (logo → dock dans la topbar) ══════════ */
-/* Même élément du début à la fin (le vrai logo de la topbar, jamais un clone séparé) :
-   aucun swap, donc aucun risque de voir les deux logos en même temps. Il est sorti du
-   flux (position:fixed) puis rendu géant + centré via un transform calculé en JS, et
-   revient simplement à transform:none — sa position naturelle exacte — à la fin. */
-#boot-splash{position:fixed;inset:0;z-index:999998;pointer-events:none}
-#boot-backdrop{
-position:absolute;inset:0;
+/* ══════════ Écran de démarrage ══════════ */
+/* Version volontairement simple : un fondu, pas un vol vers la topbar. Après plusieurs
+   tentatives ratées de faire "voyager" le vrai logo jusqu'à sa position exacte dans la
+   topbar (bugs de timing à répétition, y compris en prod), on préfère une animation plus
+   modeste mais fiable à 100% dans toutes les conditions : logo au centre en fondu, tenue,
+   puis fondu croisé — l'écran de démarrage disparaît pendant que le bureau apparaît. */
+#boot-splash{
+position:fixed;inset:0;z-index:999998;
+display:flex;align-items:center;justify-content:center;
 background:linear-gradient(150deg,var(--wall-a),var(--wall-b));
-transition:opacity .6s ease .15s;
+transition:opacity .6s ease;
 }
-#boot-backdrop.gone{opacity:0}
-#tb-logo-center img.boot-hero{
-position:fixed;z-index:999999;left:0;top:0;
-transition:opacity .7s ease,transform .8s cubic-bezier(.22,.8,.2,1);
+#boot-splash.gone{opacity:0;pointer-events:none}
+#boot-splash img{
+width:min(220px,45vw);opacity:0;transform:scale(.94);
+filter:brightness(0) invert(1);
+transition:opacity .8s ease,transform .8s cubic-bezier(.2,.8,.2,1);
 }
+#boot-splash.show img{opacity:1;transform:scale(1)}
 @media(prefers-reduced-motion: reduce){
 #boot-splash{display:none}
-#tb-logo-center img.boot-hero{position:static!important;opacity:1!important;transform:none!important;transition:none}
 }
 #topbar{opacity:0;transition:opacity .6s ease}
 #desk-center,#desk-apps{opacity:0;transition:opacity .6s ease}
@@ -959,7 +961,7 @@ background:var(--cyan);color:#fff;font:700 .82rem 'Montserrat',sans-serif;cursor
 </head>
 <body>
 
-<div id="boot-splash"><div id="boot-backdrop"></div></div>
+<div id="boot-splash"><img src="assets/Logo-Aardesign-Long.png" alt=""></div>
 
 <div id="wall">
 <div class="wb wb1"></div>
@@ -1496,91 +1498,33 @@ return [
 ].map(c=>`<span class="cv-chip">${c}</span>`).join('');
 }
 
-// ── Écran de démarrage : le logo fondu-apparaît au centre, puis rejoint sa place
-// dans la topbar pendant que le bureau se révèle (comme un boot macOS/Windows, sans
-// écran de connexion). Respecte prefers-reduced-motion (voir CSS #boot-splash).
+// ── Écran de démarrage : logo au centre en fondu, tenue, puis fondu croisé vers le
+// bureau. Version volontairement simple (voir commentaire CSS #boot-splash) — n'anime
+// jamais le vrai logo de la topbar, seulement une image de présentation indépendante :
+// aucune dépendance à la mise en page de la topbar (grid pas encore stabilisée, image pas
+// encore chargée...), donc aucun risque de logo mal positionné pendant l'animation.
 function playBootAnimation(){
+try{
 const splash=document.getElementById('boot-splash');
-const target=document.querySelector('#tb-logo-center img');
-if(!splash || !target){ if(splash) splash.remove(); return; }
+const topbar=document.getElementById('topbar');
+const deskCenter=document.getElementById('desk-center');
+const deskApps=document.getElementById('desk-apps');
+if(!splash) return;
 if(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches){
 splash.remove();
 return;
 }
-// L'image du logo n'a pas forcément fini de charger quand ce script s'exécute (en local
-// elle vient du disque, instantané — en vrai sur le réseau, non). Si on mesure sa position
-// avant qu'elle soit chargée, sa largeur "naturelle" vaut 0 et tous les calculs qui en
-// dépendent (échelle, centrage) partent n'importe où — d'où le logo qui apparaissait en
-// haut à gauche puis disparaissait. On attend qu'elle soit réellement prête.
-let started=false;
-const start=()=>{ if(started) return; started=true; runBootAnimation(splash,target); };
-if(target.complete && target.naturalWidth) start();
-else{
-target.addEventListener('load',start,{once:true});
-setTimeout(start,1500); // filet de sécurité si l'image ne charge jamais
-}
-}
-function runBootAnimation(splash,target){
-try{
-const backdrop=document.getElementById('boot-backdrop');
-const topbar=document.getElementById('topbar');
-const deskCenter=document.getElementById('desk-center');
-const deskApps=document.getElementById('desk-apps');
-if(!target.naturalWidth){ splash.remove(); return; } // image en échec (404 etc.) : abandon propre
-
-// Position/taille naturelles du logo dans la topbar (avant de le sortir du flux).
-const natural=target.getBoundingClientRect();
-const naturalCx=natural.left+natural.width/2, naturalCy=natural.top+natural.height/2;
-// Nettement plus grand que sa taille dans la topbar, pour que le moment "splash" au
-// centre de l'écran se voie sans ambiguïté (pas juste un léger décalage de taille).
-const heroWidth=Math.min(320,window.innerWidth*0.55);
-const scale=heroWidth/natural.width;
-const dx=window.innerWidth/2-naturalCx, dy=window.innerHeight/2-naturalCy;
-
-target.classList.add('boot-hero');
-// Opacité et transform pilotés en style inline (jamais en classe CSS) : l'inline gagne
-// toujours sur n'importe quelle règle de feuille de style, aucune ambiguïté de cascade
-// possible avec la règle par défaut du logo (#tb-logo-center img{opacity:.92;...}).
-target.style.opacity='0';
-// Départ légèrement plus petit que la taille finale au centre : donne l'impression
-// d'entrer dans l'écran (léger zoom-avant) une fois combiné au fondu.
-target.style.transform=`translate(${dx}px,${dy}px) scale(${scale*0.9})`;
-void target.offsetWidth; // force reflow avant la transition (sinon pas de fondu visible)
-
-// Toute la suite est enchaînée DEPUIS ce callback plutôt que lancée en parallèle avec des
-// setTimeout indépendants : si le déclenchement est retardé (onglet en arrière-plan,
-// navigateur chargé...), un minuteur d'atterrissage démarré à l'heure prévue pouvait
-// s'exécuter AVANT l'apparition du logo, et écrasait ensuite sa position en le ramenant au
-// centre — le bug "logo qui apparaît en haut à gauche puis disparaît" vu en prod. En
-// chaînant, l'atterrissage ne peut plus jamais démarrer avant l'apparition effective.
-// setTimeout (et non requestAnimationFrame, même doublé) : garantit que le navigateur a le
-// temps de vraiment peindre l'état de départ (petit, invisible) avant de passer à l'état
-// affiché — un rAF peut se coalescer avec le changement de style qui le précède et sauter
-// la transition plutôt que l'animer.
+setTimeout(()=>{ splash.classList.add('show'); },30);
 setTimeout(()=>{
-target.style.opacity='1';
-target.style.transform=`translate(${dx}px,${dy}px) scale(${scale})`;
-
-setTimeout(()=>{
+splash.classList.add('gone');
 if(topbar) topbar.classList.add('boot-in');
 if(deskCenter) deskCenter.classList.add('boot-in');
 if(deskApps) deskApps.classList.add('boot-in');
-if(backdrop) backdrop.classList.add('gone');
-// Retour à sa position naturelle exacte : transform:none === la vraie place dans la
-// topbar (calculée à partir d'elle), donc aucun saut possible à l'arrivée.
-target.style.transform='';
-
-setTimeout(()=>{
-target.classList.remove('boot-hero');
-target.style.transform='';
-target.style.opacity='';
-splash.remove();
-}, 800);
-}, 1300);
-}, 50);
+setTimeout(()=>{ splash.remove(); },700);
+},1300);
 }catch(_){
+const splash=document.getElementById('boot-splash');
 if(splash) splash.remove();
-if(target){ target.classList.remove('boot-hero'); target.style.transform=''; target.style.opacity=''; }
 }
 }
 
