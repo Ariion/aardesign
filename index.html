@@ -227,35 +227,32 @@ animation:circleBreath 25s ease-in-out infinite reverse;
 #wall-diag{display:none}
 
 /* ══════════ Écran de démarrage (logo → dock dans la topbar) ══════════ */
-#boot-splash{
-position:fixed;inset:0;z-index:999999;pointer-events:none;
-display:flex;align-items:center;justify-content:center;
-}
+/* Même élément du début à la fin (le vrai logo de la topbar, jamais un clone séparé) :
+   aucun swap, donc aucun risque de voir les deux logos en même temps. Il est sorti du
+   flux (position:fixed) puis rendu géant + centré via un transform calculé en JS, et
+   revient simplement à transform:none — sa position naturelle exacte — à la fin. */
+#boot-splash{position:fixed;inset:0;z-index:999998;pointer-events:none}
 #boot-backdrop{
-position:absolute;inset:0;z-index:0;
-background:#fff;
+position:absolute;inset:0;
+background:linear-gradient(150deg,var(--wall-a),var(--wall-b));
 transition:opacity .6s ease .15s;
 }
 #boot-backdrop.gone{opacity:0}
-#boot-splash img{
-position:relative;z-index:1;
-width:180px;opacity:0;transform:scale(.92);
-transition:opacity .7s ease,transform .7s cubic-bezier(.2,.8,.2,1);
+#tb-logo-center img.boot-hero{
+position:fixed;z-index:999999;left:0;top:0;
+opacity:0;
+transition:opacity .7s ease,transform .8s cubic-bezier(.22,.8,.2,1);
 }
-#boot-splash.show img{opacity:1;transform:scale(1)}
-#boot-splash img.landing{transition:left .65s cubic-bezier(.4,0,.2,1),top .65s cubic-bezier(.4,0,.2,1),width .65s cubic-bezier(.4,0,.2,1),filter .65s ease,opacity .2s ease .45s}
-#boot-splash img.landed{opacity:0}
+#tb-logo-center img.boot-hero.show{opacity:1}
 @media(prefers-reduced-motion: reduce){
 #boot-splash{display:none}
+#tb-logo-center img.boot-hero{position:static;opacity:1!important;transform:none!important;transition:none}
 }
-/* Seule l'opacité anime à l'arrivée : le logo de la topbar ne doit jamais bouger pendant
-   le vol du clone, sinon la position visée devient une cible mouvante (coupure visible). */
 #topbar{opacity:0;transition:opacity .6s ease}
-#desk-center,#desk-apps{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s cubic-bezier(.2,.8,.2,1)}
-#topbar.boot-in{opacity:1}
-#desk-center.boot-in,#desk-apps.boot-in{opacity:1;transform:translateY(0)}
+#desk-center,#desk-apps{opacity:0;transition:opacity .6s ease}
+#topbar.boot-in,#desk-center.boot-in,#desk-apps.boot-in{opacity:1}
 @media(prefers-reduced-motion: reduce){
-#topbar,#desk-center,#desk-apps{opacity:1;transform:none}
+#topbar,#desk-center,#desk-apps{opacity:1}
 }
 
 #lockscreen{
@@ -964,7 +961,7 @@ background:var(--cyan);color:#fff;font:700 .82rem 'Montserrat',sans-serif;cursor
 </head>
 <body>
 
-<div id="boot-splash"><div id="boot-backdrop"></div><img src="assets/Logo-Aardesign-Long.png" alt=""></div>
+<div id="boot-splash"><div id="boot-backdrop"></div></div>
 
 <div id="wall">
 <div class="wb wb1"></div>
@@ -1505,68 +1502,57 @@ return [
 // dans la topbar pendant que le bureau se révèle (comme un boot macOS/Windows, sans
 // écran de connexion). Respecte prefers-reduced-motion (voir CSS #boot-splash).
 function playBootAnimation(){
-try{
 const splash=document.getElementById('boot-splash');
+const target=document.querySelector('#tb-logo-center img');
+try{
 const backdrop=document.getElementById('boot-backdrop');
-if(!splash) return;
+const topbar=document.getElementById('topbar');
+const deskCenter=document.getElementById('desk-center');
+const deskApps=document.getElementById('desk-apps');
+if(!splash || !target){ if(splash) splash.remove(); return; }
 if(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches){
 splash.remove();
 return;
 }
-const cloneImg=splash.querySelector('img');
-const target=document.querySelector('#tb-logo-center img');
-const topbar=document.getElementById('topbar');
-const deskCenter=document.getElementById('desk-center');
-const deskApps=document.getElementById('desk-apps');
-if(target) target.style.opacity='0';
 
-// Deux rAF imbriqués : garantit que le navigateur peint bien l'état "opacité 0" dans
-// une frame avant de passer à "opacité 1" — avec un seul rAF, les deux changements
-// peuvent être fusionnés dans la même frame et le fondu ne se voit jamais.
+// Position/taille naturelles du logo dans la topbar (avant de le sortir du flux).
+const natural=target.getBoundingClientRect();
+const naturalCx=natural.left+natural.width/2, naturalCy=natural.top+natural.height/2;
+const heroWidth=Math.min(220,window.innerWidth*0.5);
+const scale=heroWidth/natural.width;
+const dx=window.innerWidth/2-naturalCx, dy=window.innerHeight/2-naturalCy;
+
+target.classList.add('boot-hero');
+// Départ légèrement plus petit que la taille finale au centre : donne l'impression
+// d'entrer dans l'écran (léger zoom-avant) une fois combiné au fondu.
+target.style.transform=`translate(${dx}px,${dy}px) scale(${scale*0.9})`;
+void target.offsetWidth; // force reflow avant la transition (sinon pas de fondu visible)
+
 requestAnimationFrame(()=>{
-requestAnimationFrame(()=>{ splash.classList.add('show'); });
+requestAnimationFrame(()=>{
+target.classList.add('show');
+target.style.transform=`translate(${dx}px,${dy}px) scale(${scale})`;
+});
 });
 
 setTimeout(()=>{
-// La topbar ne fait qu'un fondu d'opacité (pas de translateY) : sa position — donc
-// celle du logo cible — ne bouge jamais pendant le vol du clone, sinon la cible se
-// déplace en cours de route et l'atterrissage final saute (la "coupure").
 if(topbar) topbar.classList.add('boot-in');
 if(deskCenter) deskCenter.classList.add('boot-in');
 if(deskApps) deskApps.classList.add('boot-in');
 if(backdrop) backdrop.classList.add('gone');
-
-if(target && cloneImg){
-const tr=target.getBoundingClientRect();
-const cr=cloneImg.getBoundingClientRect();
-const targetFilter=getComputedStyle(target).filter;
-cloneImg.style.position='fixed';
-cloneImg.style.margin='0';
-cloneImg.style.left=cr.left+'px';
-cloneImg.style.top=cr.top+'px';
-cloneImg.style.width=cr.width+'px';
-cloneImg.style.transform='none';
-void cloneImg.offsetWidth; // force reflow avant la transition
-cloneImg.classList.add('landing','landed');
-cloneImg.style.left=tr.left+'px';
-cloneImg.style.top=tr.top+'px';
-cloneImg.style.width=tr.width+'px';
-cloneImg.style.filter=targetFilter;
-// Le vrai logo réapparaît en fondu pile quand le clone commence à s'effacer (même
-// délai que la classe .landing) : croisement en douceur, jamais de saut net.
-setTimeout(()=>{
-if(target){ target.style.transition='opacity .2s ease'; target.style.opacity=''; }
-},450);
-}
-}, 1050);
+// Retour à sa position naturelle exacte : transform:none === la vraie place dans la
+// topbar (calculée à partir d'elle), donc aucun saut possible à l'arrivée.
+target.style.transform='';
+}, 1100);
 
 setTimeout(()=>{
-if(target){ target.style.transition=''; target.style.opacity=''; }
+target.classList.remove('boot-hero','show');
+target.style.transform='';
 splash.remove();
-}, 1050+680);
+}, 1100+800);
 }catch(_){
-const splash=document.getElementById('boot-splash');
 if(splash) splash.remove();
+if(target){ target.classList.remove('boot-hero','show'); target.style.transform=''; }
 }
 }
 

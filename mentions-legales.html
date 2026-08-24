@@ -15,11 +15,15 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--ink);m
 a{color:var(--cyan);text-decoration:none}
 a:hover{text-decoration:underline}
 
-header{background:rgba(7,18,40,.9);border-bottom:1px solid var(--line);backdrop-filter:blur(12px);position:sticky;top:0;z-index:10;padding:0 24px;height:52px;display:flex;align-items:center;justify-content:space-between}
-.logo{display:flex;align-items:center;gap:10px;text-decoration:none}
-.logo img{height:28px}
-.logo span{font-size:.72rem;font-weight:700;color:var(--ink);letter-spacing:.04em}
-.back{font-size:.65rem;color:var(--mid);display:flex;align-items:center;gap:5px;text-decoration:none;transition:color .15s}
+header{
+background:rgba(6,11,24,.82);border-bottom:1px solid rgba(41,184,217,.13);
+backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);
+position:sticky;top:0;z-index:10;padding:0 20px;height:64px;
+display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
+}
+.logo{justify-self:center;display:flex;align-items:center;text-decoration:none}
+.logo img{height:32px;width:auto;filter:brightness(0) invert(1);opacity:.92}
+.back{justify-self:start;font-size:.65rem;color:var(--mid);display:flex;align-items:center;gap:5px;text-decoration:none;transition:color .15s}
 .back:hover{color:var(--cyan);text-decoration:none}
 .back svg{width:14px;height:14px}
 
@@ -42,20 +46,27 @@ strong{color:var(--ink);font-weight:600}
 .info-row .lbl{color:var(--mid);min-width:160px;flex-shrink:0}
 .info-row .val{color:var(--ink);font-weight:500}
 
-footer{text-align:center;padding:24px;color:var(--mid);font-size:.6rem;border-top:1px solid var(--line)}
+footer{
+text-align:center;padding:24px;border-top:1px solid var(--line);
+font-family:ui-monospace,'SF Mono',Menlo,monospace;
+font-size:.66rem;letter-spacing:.02em;color:rgba(255,255,255,.4);
+}
+footer a{color:rgba(255,255,255,.4);text-decoration:none;transition:color .2s}
+footer a:hover{color:var(--cyan);text-decoration:none}
+footer .sep{color:rgba(255,255,255,.18);margin:0 4px}
 </style>
 </head>
 <body>
 
 <header>
-  <a class="logo" href="/">
-    <img src="assets/Logo-Aardesign-Court.png" alt="Aardesign">
-    <span>aardesign.fr</span>
-  </a>
   <a class="back" href="/">
     <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 2L4 7l5 5"/></svg>
     Retour au site
   </a>
+  <a class="logo" href="/">
+    <img src="assets/Logo-Aardesign-Long.png" alt="aardesign">
+  </a>
+  <span></span>
 </header>
 
 <main>
@@ -111,10 +122,13 @@ footer{text-align:center;padding:24px;color:var(--mid);font-size:.6rem;border-to
 </main>
 
 <footer>
-  © 2025 Aardesign — Anthony Armand &nbsp;·&nbsp;
-  <a href="/mentions-legales.html">Mentions légales</a> &nbsp;·&nbsp;
-  <a href="/confidentialite.html">Politique de confidentialité</a>
+  <span id="lp-copy">© Aardesign — Anthony Armand</span>
+  <span class="sep">·</span>
+  <a href="/mentions-legales.html">Mentions légales</a>
+  <span class="sep">·</span>
+  <a href="/confidentialite.html">Confidentialité</a>
 </footer>
 
+<script>document.getElementById('lp-copy').textContent='© '+new Date().getFullYear()+' Aardesign — Anthony Armand';</script>
 </body>
 </html>
