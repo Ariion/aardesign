@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>CV — Anthony Armand</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+@page{ size:A4; margin:16mm 15mm; }
+*,*::before,*::after{ box-sizing:border-box; margin:0; padding:0; }
+:root{
+  --navy:#1B3560; --ink:#12254d; --mid:#5c7899; --dim:#8a9ab5;
+  --cyan:#29B8D9; --line:#e3e8f0;
+}
+html,body{ font-family:'Montserrat',sans-serif; color:var(--ink); background:#fff; }
+body{ font-size:9.6pt; line-height:1.45; }
+.mono{ font-family:'IBM Plex Mono',monospace; }
+
+.sheet{ width:210mm; min-height:297mm; margin:0 auto; padding:0; }
+
+/* ── En-tête ── */
+header{
+  display:flex; align-items:flex-start; justify-content:space-between;
+  gap:20px; padding-bottom:14px; border-bottom:2px solid var(--navy);
+  margin-bottom:20px;
+}
+.h-name{ font-family:Georgia,'Times New Roman',serif; font-size:26pt; color:var(--navy); line-height:1.05; }
+.h-role{ font-size:10.5pt; color:var(--cyan); font-weight:600; letter-spacing:.02em; margin-top:5px; }
+.h-contact{ text-align:right; font-size:8.3pt; color:var(--mid); line-height:1.8; }
+.h-contact a{ color:var(--mid); text-decoration:none; }
+.h-contact .lbl{ color:var(--dim); font-size:6.6pt; letter-spacing:.1em; text-transform:uppercase; margin-right:6px; }
+
+/* ── Intro ── */
+.intro{ font-size:9.4pt; color:var(--mid); margin-bottom:22px; max-width:100%; line-height:1.6; }
+
+/* ── Grille 2 colonnes ── */
+.grid{ display:grid; grid-template-columns:1fr 210pt; gap:28px; align-items:start; }
+
+.sec{ margin-bottom:22px; }
+.sec:last-child{ margin-bottom:0; }
+.sec-h{
+  font-family:'IBM Plex Mono',monospace; font-size:7.6pt; font-weight:600;
+  letter-spacing:.14em; text-transform:uppercase; color:var(--cyan);
+  padding-bottom:5px; border-bottom:1px solid var(--line); margin-bottom:11px;
+}
+
+/* Expériences / Formations */
+.item{ margin-bottom:13px; }
+.item:last-child{ margin-bottom:0; }
+.item-top{ display:flex; justify-content:space-between; align-items:baseline; gap:10px; }
+.item-title{ font-size:9.8pt; font-weight:700; color:var(--ink); }
+.item-date{ font-family:'IBM Plex Mono',monospace; font-size:7.6pt; color:var(--dim); white-space:nowrap; }
+.item-sub{ font-size:8.4pt; color:var(--mid); margin-top:1px; }
+.item-desc{ font-size:8.2pt; color:var(--mid); margin-top:3px; line-height:1.55; }
+
+/* Compétences */
+.skill-row{ display:flex; justify-content:space-between; align-items:baseline; font-size:8.6pt; padding:3.5px 0; border-bottom:1px dotted var(--line); }
+.skill-row:last-child{ border-bottom:none; }
+.skill-name{ color:var(--ink); font-weight:500; }
+.skill-lvl{ font-family:'IBM Plex Mono',monospace; font-size:7.2pt; color:var(--cyan); text-transform:uppercase; letter-spacing:.03em; }
+
+/* Langues */
+.lang-row{ display:flex; justify-content:space-between; font-size:8.6pt; padding:3px 0; }
+.lang-name{ color:var(--ink); }
+.lang-lvl{ font-family:'IBM Plex Mono',monospace; font-size:7.6pt; color:var(--mid); }
+
+/* Tags / centres d'intérêt */
+.tags{ display:flex; flex-wrap:wrap; gap:5px; }
+.tag{
+  font-family:'IBM Plex Mono',monospace; font-size:7.2pt; color:var(--mid);
+  border:1px solid var(--line); border-radius:2px; padding:3px 7px;
+}
+
+footer{ margin-top:28px; padding-top:10px; border-top:1px solid var(--line); text-align:center; }
+footer .mono{ font-size:7px; color:var(--dim); letter-spacing:.05em; }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <header>
+    <div>
+      <div class="h-name">Anthony Armand</div>
+      <div class="h-role">Graphiste &amp; Illustrateur — Aardesign</div>
+    </div>
+    <div class="h-contact">
+      <div><span class="lbl">Tél</span>06&nbsp;79&nbsp;46&nbsp;62&nbsp;19</div>
+      <div><span class="lbl">Mail</span><a href="mailto:aardesign14@gmail.com">aardesign14@gmail.com</a></div>
+      <div><span class="lbl">Lieu</span>Sassy · Caen (14)</div>
+      <div><span class="lbl">Web</span><a href="https://aardesign.fr">aardesign.fr</a></div>
+      <div><span class="lbl">Permis</span>B</div>
+    </div>
+  </header>
+
+  <div class="intro">
+    Graphiste &amp; illustrateur basé à Caen, près de 8 ans de métier — dont 6 ans en poste avant de me lancer
+    à mon compte. Je crée des identités, des supports print &amp; web et des illustrations. Du packaging premium
+    aux peintures personnelles, chaque projet est une occasion de construire un univers visuel unique, cohérent
+    et mémorable.
+  </div>
+
+  <div class="grid">
+    <!-- Colonne principale -->
+    <div>
+      <div class="sec">
+        <div class="sec-h">Expériences professionnelles</div>
+
+        <div class="item">
+          <div class="item-top"><span class="item-title">Aardesign — Auto-entrepreneur</span><span class="item-date">2024 — présent</span></div>
+          <div class="item-sub">Caen, Normandie</div>
+          <div class="item-desc">Création graphique, identité visuelle, web, illustration, digital painting, animation.</div>
+        </div>
+
+        <div class="item">
+          <div class="item-top"><span class="item-title">Clopinette / Arsène Valentin — CDI, Infographiste</span><span class="item-date">2020 — 2024</span></div>
+          <div class="item-sub">Caen · Société de cigarette électronique</div>
+          <div class="item-desc">Packaging, étiquettes e-liquide, digital painting, affiches, stickers vitrine, supports de communication.</div>
+        </div>
+
+        <div class="item">
+          <div class="item-top"><span class="item-title">Creacom — CDD, Infographiste</span><span class="item-date">2019</span></div>
+          <div class="item-sub">Valence</div>
+          <div class="item-desc">Création graphique, communication, création de magazine de vente, retouche photo.</div>
+        </div>
+
+        <div class="item">
+          <div class="item-top"><span class="item-title">Optimind — Stage puis Alternance, Graphiste</span><span class="item-date">2017 — 2019</span></div>
+          <div class="item-sub">Paris VIII · Conseil en assurances, banques et entreprises</div>
+          <div class="item-desc">Web design, communication digitale, print &amp; web, guide pratique, motion design, communiqué de presse.</div>
+        </div>
+
+        <div class="item">
+          <div class="item-top"><span class="item-title">Euptech — Stage, Graphiste</span><span class="item-date">2016</span></div>
+          <div class="item-sub">Grenoble · Solutions &amp; services en ingénierie électrique HTA/HTB</div>
+          <div class="item-desc">Supports de communication, site internet Wordpress, flyer, brochure d'entreprise.</div>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-h">Diplômes &amp; formations</div>
+
+        <div class="item">
+          <div class="item-top"><span class="item-title">Certification Photoshop EXPERT</span><span class="item-date">2024</span></div>
+          <div class="item-sub">TOSA, Paris · 879/1000</div>
+        </div>
+
+        <div class="item">
+          <div class="item-top"><span class="item-title">Formation Digital Painting</span><span class="item-date">2024 — 2025</span></div>
+          <div class="item-sub">TUTO.com · Mention très bien</div>
+        </div>
+
+        <div class="item">
+          <div class="item-top"><span class="item-title">Bachelor &amp; Mastère Direction Artistique</span><span class="item-date">2016 — 2019</span></div>
+          <div class="item-sub">LIM'ART, Paris</div>
+          <div class="item-desc">Infographie, animation 2D/3D, management, web marketing, sculpting, culture de l'image, level design.</div>
+        </div>
+
+        <div class="item">
+          <div class="item-top"><span class="item-title">DUT MMI — Métiers du Multimédia et d'Internet</span><span class="item-date">2014 — 2016</span></div>
+          <div class="item-sub">IUT 1, Grenoble · C2I</div>
+          <div class="item-desc">Infographie, animation 2D, communication visuelle, identité visuelle, HTML/CSS/JS, Wordpress, court-métrage.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Colonne latérale -->
+    <div>
+      <div class="sec">
+        <div class="sec-h">Compétences</div>
+        <div class="skill-row"><span class="skill-name">Photoshop</span><span class="skill-lvl">Expert</span></div>
+        <div class="skill-row"><span class="skill-name">InDesign</span><span class="skill-lvl">Expert</span></div>
+        <div class="skill-row"><span class="skill-name">Illustrator</span><span class="skill-lvl">Expert</span></div>
+        <div class="skill-row"><span class="skill-name">Lightroom</span><span class="skill-lvl">Expert</span></div>
+        <div class="skill-row"><span class="skill-name">Digital Painting</span><span class="skill-lvl">Expert</span></div>
+        <div class="skill-row"><span class="skill-name">Photographie produit</span><span class="skill-lvl">Avancé</span></div>
+        <div class="skill-row"><span class="skill-name">HTML / CSS</span><span class="skill-lvl">Avancé</span></div>
+        <div class="skill-row"><span class="skill-name">Wordpress, Wix</span><span class="skill-lvl">Avancé</span></div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-h">Langues</div>
+        <div class="lang-row"><span class="lang-name">Français</span><span class="lang-lvl">Natif</span></div>
+        <div class="lang-row"><span class="lang-name">Anglais</span><span class="lang-lvl">C1</span></div>
+        <div class="lang-row"><span class="lang-name">Italien</span><span class="lang-lvl">A2</span></div>
+        <div class="lang-row"><span class="lang-name">Japonais</span><span class="lang-lvl">A1</span></div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-h">Centres d'intérêt</div>
+        <div class="tags">
+          <span class="tag">Photographie</span>
+          <span class="tag">Digital Painting</span>
+          <span class="tag">Graphisme</span>
+          <span class="tag">Jeux vidéo</span>
+          <span class="tag">Cinéma</span>
+          <span class="tag">Lecture</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <span class="mono">AARDESIGN.FR</span>
+  </footer>
+
+</div>
+</body>
+</html>
