@@ -1,6 +1,7 @@
 User-agent: *
 Allow: /
 Disallow: /admin.html
+Disallow: /dev.html
 Disallow: /api/
 
 Sitemap: https://aardesign.fr/sitemap.xml
