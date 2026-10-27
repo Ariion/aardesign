@@ -797,22 +797,12 @@ transition:background .15s,border-color .15s;
 .pvg-title{font-family:Georgia,'Times New Roman',serif;font-size:1.3rem;font-weight:400;color:var(--ink)}
 .pvg-count{font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:.6rem;letter-spacing:.08em;color:var(--dim,rgba(255,255,255,.4))}
 .pvg-grid{display:grid;grid-template-columns:repeat(3,1fr);grid-auto-flow:row dense;gap:2px;width:calc(100% - 56px);max-width:1200px;margin:0 auto 110px}
-.pvg-grid.few{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
 @media(max-width:820px){.pvg-grid{grid-template-columns:repeat(2,1fr)}}
 .pvg-card{position:relative;aspect-ratio:4/5;max-height:320px;overflow:hidden;cursor:pointer;background:var(--win-bg,#0b1526);border:1px solid var(--line)}
-.pvg-card.feat{grid-column:span 2;aspect-ratio:8/5;max-height:320px}
-@media(max-width:640px){.pvg-card.feat{grid-column:span 1;aspect-ratio:4/5}}
 .pvg-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 38%;transition:transform .6s cubic-bezier(.2,.7,.2,1),filter .4s;filter:grayscale(.12) contrast(1.02)}
 .pvg-card.light img{object-fit:contain;padding:14%;background:#eef0f6;filter:none}
 .pvg-card:hover img{transform:scale(1.045);filter:grayscale(0) contrast(1.02)}
 .pvg-card:focus-visible{outline:2px solid #29B8D9;outline-offset:-2px}
-.pvg-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(6,8,14,.94) 0%,rgba(6,8,14,.3) 42%,transparent 68%);display:flex;flex-direction:column;justify-content:flex-end;padding:16px;opacity:0;transition:opacity .3s}
-.pvg-card:hover .pvg-ov,.pvg-card:focus-visible .pvg-ov{opacity:1}
-.pvg-fol{font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:.54rem;letter-spacing:.13em;text-transform:uppercase;color:#74D1E6;margin-bottom:5px}
-.pvg-t{font-family:Georgia,'Times New Roman',serif;font-size:.92rem;color:#fff;line-height:1.25}
-.pvg-card.feat .pvg-t{font-size:1.05rem}
-.pvg-c{font-size:.64rem;color:rgba(255,255,255,.62);margin-top:3px}
-.pvg-badge{position:absolute;top:12px;left:12px;z-index:2;font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:.52rem;letter-spacing:.12em;text-transform:uppercase;color:#fff;background:rgba(41,184,217,.85);padding:4px 9px;border-radius:2px}
 
 /* ── Grille "planche de projets" — appliquée à tous les dossiers ── */
 .pvg-grid.logo-grid{grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px;background:none;border:none}
@@ -1579,7 +1569,7 @@ const langs = cv ? cv.languages.map(l=>[l.l,l.n]) : DEF_CV_DATA.languages;
 const cvUrl = localStorage.getItem('aar_cv_url')||'assets/cv-anthony-armand.pdf';
 return `<div class="cv-wrap">
 <div class="cv-sidebar">
-<div class="cv-avatar"><img src="assets/photo.png" alt="" onerror="this.src='assets/Logo-Aardesign-Court.png'"></div>
+<div class="cv-avatar"><img src="assets/photo.jpg" alt="" onerror="this.src='assets/Logo-Aardesign-Court.png'"></div>
 <div class="cv-s-name">${name}</div>
 <div class="cv-s-role">${role}</div>
 <a class="cv-pdf-btn" href="${cvUrl}" download target="_blank">
@@ -1627,7 +1617,7 @@ const be = ct?.be||'';
 const hero = JSON.parse(localStorage.getItem('aar_sec_hero')||'null');
 const role = hero ? (TR('hero.t1',hero.t1||'Graphiste & Illustrateur')+(hero.t2?' · '+hero.t2:'')) : 'Graphiste & Illustrateur · aardesign';
 return `<div class="w-profile">
-<div class="w-ava"><img src="assets/photo.png" alt="" onerror="this.src='assets/Logo-Aardesign-Court.png'"></div>
+<div class="w-ava"><img src="assets/photo.jpg" alt="" onerror="this.src='assets/Logo-Aardesign-Court.png'"></div>
 <div><div class="w-name">Anthony Armand</div><div class="w-role">${role}</div></div>
 </div>
 <div class="w-row">
@@ -1659,7 +1649,7 @@ const p2=TR('about.p2',(ab&&ab.p2)||'');
 const text = (p1||p2) ? (p1+' '+p2).trim() : 'Designer pluridisciplinaire à l\'intersection du digital painting, de l\'illustration narrative et de la direction artistique.';
 const stats = ab?.stats || [{n:'9+',l:'Années exp.'},{n:'35+',l:'Œuvres'},{n:'8',l:'Disciplines'}];
 return `<div class="w-profile">
-<div class="w-ava"><img src="assets/photo.png" alt="" onerror="this.src='assets/Logo-Aardesign-Court.png'"></div>
+<div class="w-ava"><img src="assets/photo.jpg" alt="" onerror="this.src='assets/Logo-Aardesign-Court.png'"></div>
 <div><div class="w-name">Anthony Armand</div><div class="w-role">aardesign · Caen</div></div>
 </div>
 <p style="font-size:.78rem;line-height:1.75;color:var(--mid);margin-bottom:14px">${text}</p>
@@ -1793,7 +1783,7 @@ digital:[
 {src:'assets/dark/blood.jpg',title:''},
 {src:'assets/dark/cult.jpg',title:''},
 {src:'assets/dark/salem.jpg',title:''},
-{src:'assets/saveurs/renard.png',title:''},
+{src:'assets/saveurs/renard.jpg',title:''},
 {src:'assets/pulse.jpg',title:'Pulse'},
 ],
 logo:[
