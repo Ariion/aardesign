@@ -492,5 +492,53 @@
   }
 </script>
 
+<script>
+// Suivi de visite (même API que la page d'accueil : arrivée + récap de départ)
+(function(){
+  var start=Date.now(), actions=[], sent=false, seen={};
+  function log(type,label){ try{ actions.push({type:type,label:label,t:Math.round((Date.now()-start)/1000)}); }catch(_){} }
+  try{
+    if(!sessionStorage.getItem('aar_tracked_dev')){
+      sessionStorage.setItem('aar_tracked_dev','1');
+      fetch('/api/track-visit',{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({page:location.pathname||'/dev',referrer:document.referrer||'',ua:navigator.userAgent})}).catch(function(){});
+    }
+  }catch(_){}
+  // Projets réellement vus (au moins 50% à l'écran)
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        if(e.isIntersecting){
+          var h=e.target.querySelector('h3'); var name=h?h.textContent.trim():'projet';
+          if(!seen[name]){ seen[name]=1; log('dossier',name); }
+        }
+      });
+    },{threshold:0.5});
+    document.querySelectorAll('.project').forEach(function(el){ io.observe(el); });
+  }
+  // Clics utiles
+  document.addEventListener('click',function(e){
+    var a=e.target.closest('a'); if(!a) return;
+    var href=a.getAttribute('href')||'';
+    if(href.indexOf('mailto:')===0) log('clic','📧 Email');
+    else if(/mairiedesassy/i.test(href)) log('clic','🌐 Site mairie de Sassy');
+    else if(/procomsolution/i.test(href)) log('clic','🌐 Site Procom Solution');
+    else if(href==='/'||/aardesign\.fr\/?$/.test(href)) log('clic','🎨 Retour au portfolio graphique');
+    else if(href.charAt(0)==='#') log('clic','↓ '+href);
+  },true);
+  function send(){
+    if(sent) return; sent=true;
+    var payload={type:'summary',duration:Math.round((Date.now()-start)/1000),actions:actions,page:location.pathname||'/dev'};
+    try{ navigator.sendBeacon('/api/track-visit',new Blob([JSON.stringify(payload)],{type:'application/json'})); }
+    catch(_){ fetch('/api/track-visit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),keepalive:true}).catch(function(){}); }
+  }
+  document.addEventListener('visibilitychange',function(){
+    if(document.visibilityState==='hidden'){ send(); }
+    else if(sent){ sent=false; start=Date.now(); actions=[]; seen={}; } // retour sur l'onglet : nouveau récap
+  });
+  window.addEventListener('pagehide',send);
+})();
+</script>
+
 </body>
 </html>

@@ -53,6 +53,7 @@ export default async function handler(req, res) {
         { name: '🖼 Images vues',  value: String(images), inline: true },
         { name: '👆 Clics',        value: String(clics),  inline: true },
         { name: '🌍 Localisation', value: `${flag} ${location}`, inline: true },
+        { name: '📄 Page',        value: String(body.page || '/').slice(0, 60), inline: true },
       ],
       footer: { text: now }
     };
