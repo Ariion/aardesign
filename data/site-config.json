@@ -957,10 +957,10 @@
   },
   "aar_sec_hero": {
     "intro": "Anthony Armand",
-    "t1": "Graphiste, illustrateur & développeur front-end",
+    "t1": "Graphiste, illustrateur & intégrateur web",
     "t2": "Aardesign",
     "t3": "Caen · Normandie · Remote",
-    "desc": "Graphiste & illustrateur, et développeur front-end : identité visuelle, print, web, interfaces codées à la main. Près de 8 ans de métier au service des marques.",
+    "desc": "Graphiste & illustrateur, et intégrateur web : identité visuelle, print, web, interfaces dessinées puis codées. Près de 8 ans de métier au service des marques.",
     "scroll": "aardesign.fr",
     "bgPhoto": "assets/portrait-bureau.jpg",
     "bgGray": false,
@@ -983,7 +983,7 @@
   "aar_sec_about": {
     "fn": "Anthony",
     "ln": "Armand",
-    "p1": "Graphiste & illustrateur basé à Caen, et développeur front-end : je dessine mes interfaces et je les code moi-même. Près de 8 ans de métier — dont 6 ans en poste — avant de me lancer à mon compte. Je crée des identités, des supports print & web et des illustrations.",
+    "p1": "Graphiste & illustrateur basé à Caen. Je dessine mes interfaces et je les intègre moi-même en HTML/CSS/JS. Près de 8 ans de métier — dont 6 ans en poste — avant de me lancer à mon compte. Je crée des identités, des supports print & web et des illustrations.",
     "p2": "Du packaging premium aux peintures personnelles, chaque projet est une occasion de construire un univers visuel unique, cohérent et mémorable.",
     "cta": "Travaillons ensemble →",
     "stats": [
@@ -1028,7 +1028,7 @@
         "p": 85
       },
       {
-        "n": "UI / Intégration front-end",
+        "n": "UI / Intégration web",
         "p": 85
       }
     ],
@@ -1036,7 +1036,7 @@
       {
         "t": "Aardesign — Auto-entrepreneur",
         "d": "2024–présent",
-        "c": "Création graphique, identité, web (intégration front-end HTML/CSS/JS), illustration, digital painting, animation"
+        "c": "Création graphique, identité, web (intégration HTML/CSS/JS), illustration, digital painting, animation"
       },
       {
         "t": "Clopinette / Arsène Valentin — CDI",
@@ -1080,14 +1080,14 @@
       "folder.print": "Print & Packaging",
       "folder.sites": "Web & Sites",
       "folder.etudes": "Illustration & Studies",
-      "hero.t1": "Graphic designer, illustrator & front-end developer",
-      "about.p1": "Graphic designer & illustrator based in Caen, France, and front-end developer: I design my interfaces and code them myself. Nearly 8 years in the trade — including 6 years in-house — before going freelance. I create visual identities, print & web supports and illustrations.",
+      "hero.t1": "Graphic designer, illustrator & web integrator",
+      "about.p1": "Graphic designer & illustrator based in Caen, France. I design my interfaces and build them myself in HTML/CSS/JS. Nearly 8 years in the trade — including 6 years in-house — before going freelance. I create visual identities, print & web supports and illustrations.",
       "about.p2": "From premium packaging to personal paintings, every project is a chance to build a unique, coherent and memorable visual world.",
       "about.stat.0": "Years of experience",
       "about.stat.1": "Works created",
       "about.stat.2": "Creative disciplines",
       "about.stat.3": "France · Remote · Int'l",
-      "cv.exp.0": "Graphic design, visual identity, web (front-end integration, HTML/CSS/JS), illustration, digital painting, animation",
+      "cv.exp.0": "Graphic design, visual identity, web (HTML/CSS/JS integration), illustration, digital painting, animation",
       "cv.exp.1": "Packaging, digital painting, labels, print & web, video, motion design, posters, window stickers",
       "cv.exp.2": "Graphic design, communication, sales magazine, photo retouching",
       "cv.exp.3": "Web design, digital communication, print & web, practical guide, press release",
