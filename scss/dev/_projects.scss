@@ -35,16 +35,17 @@
   li { margin-bottom: 6px; }
 }
 
-// Maquettes Figma
+// Maquettes Figma : une image par ligne, pleine largeur de la carte,
+// pour que le texte des maquettes reste lisible
 .shots {
-  display: grid; grid-template-columns: 1fr; gap: 12px; margin: 18px 0 6px;
-  @include tablet-up { grid-template-columns: 1fr 1fr; }
-  &.one { @include tablet-up { grid-template-columns: minmax(0, 520px); } }
+  display: grid; grid-template-columns: 1fr; gap: 20px; margin: 18px 0 6px;
 
-  figure { margin: 0; }
+  figure { margin: 0; &.compact { max-width: 680px; } }
   img {
     display: block; width: 100%; height: auto;
     border: 1px solid $mist; border-radius: $radius; background: $white;
   }
+  // Image d'origine étroite : on ne l'agrandit pas (sinon elle devient floue)
+  &.narrow figure { max-width: 668px; }
   figcaption { @include mono(11.5px); color: #4A5A63; margin-top: 6px; }
 }
