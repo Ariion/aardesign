@@ -67,3 +67,24 @@
   span { margin-left: 8px; }
 }
 @media (prefers-reduced-motion: reduce) { .frame { transition: none; } }
+
+// Lightbox : un <dialog> natif (Échap et clic hors de l'image ferment)
+.lightbox {
+  border: 0; padding: 0; background: transparent;
+  max-width: 96vw; max-height: 96vh; overflow: visible;
+  &::backdrop { background: rgba(#050b18, .86); }
+
+  img {
+    display: block; max-width: 96vw; max-height: 88vh; width: auto; height: auto;
+    border-radius: 6px; box-shadow: 0 24px 60px rgba(#000, .6);
+  }
+  .lb-cap { @include mono(12px); color: #C9D3DE; text-align: center; margin-top: 10px; }
+  .lb-close {
+    position: absolute; top: -14px; right: -14px; width: 34px; height: 34px;
+    border-radius: 50%; border: 0; cursor: pointer;
+    background: $white; color: $ink; font-size: 20px; line-height: 1;
+    box-shadow: 0 4px 14px rgba(#000, .4);
+    &:focus-visible { outline: 2px solid $signal; outline-offset: 3px; }
+  }
+}
+.frame a { cursor: zoom-in; }
