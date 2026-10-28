@@ -34,3 +34,17 @@
   margin: 14px 0 0; padding-left: 18px; color: $text; font-size: 14.5px;
   li { margin-bottom: 6px; }
 }
+
+// Maquettes Figma
+.shots {
+  display: grid; grid-template-columns: 1fr; gap: 12px; margin: 18px 0 6px;
+  @include tablet-up { grid-template-columns: 1fr 1fr; }
+  &.one { @include tablet-up { grid-template-columns: minmax(0, 520px); } }
+
+  figure { margin: 0; }
+  img {
+    display: block; width: 100%; height: auto;
+    border: 1px solid $mist; border-radius: $radius; background: $white;
+  }
+  figcaption { @include mono(11.5px); color: #4A5A63; margin-top: 6px; }
+}
