@@ -1,0 +1,36 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+.project {
+  @include boxed;
+  padding: 28px;
+  margin-bottom: 24px;
+
+  h3 { @include title; font-size: 22px; margin: 0; color: $ink; }
+  p.desc { margin: 0 0 16px; color: $text; }
+  code { font-family: $font-mono; font-size: 0.9em; background: $paper-2; padding: 1px 4px; }
+}
+.project-head {
+  display: flex; justify-content: space-between; align-items: baseline;
+  flex-wrap: wrap; gap: 8px; margin-bottom: 12px;
+}
+.status {
+  @include mono(11px);
+  padding: 3px 8px;
+  background: $signal-dim; color: $signal;
+  border-radius: $radius; white-space: nowrap;
+}
+.logline {
+  @include mono(12.5px);
+  color: #4A5A63;
+  border-top: 1px solid $paper-2;
+  padding-top: 14px;
+  display: grid; gap: 6px;
+
+  span.k { color: $amber; }
+  a { color: $navy; text-underline-offset: 2px; }
+}
+.highlights {
+  margin: 14px 0 0; padding-left: 18px; color: $text; font-size: 14.5px;
+  li { margin-bottom: 6px; }
+}

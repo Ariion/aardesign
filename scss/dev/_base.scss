@@ -1,0 +1,37 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+// Les variables CSS restent pour les couleurs utilisées dans le HTML inline
+:root {
+  --navy: #{$navy};
+  --signal: #{$signal};
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body {
+  margin: 0;
+  background: $paper;
+  color: $ink;
+  font-family: $font-body;
+  line-height: 1.5;
+}
+
+a {
+  color: inherit;
+  &:focus-visible { outline: 2px solid $signal; outline-offset: 3px; }
+}
+button:focus-visible { outline: 2px solid $signal; outline-offset: 3px; }
+
+.mono { font-family: $font-mono; }
+.wrap { max-width: 920px; margin: 0 auto; padding: 0 24px; }

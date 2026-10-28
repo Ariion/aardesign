@@ -1,0 +1,9 @@
+{
+  "name": "aardesign-scss",
+  "private": true,
+  "scripts": {
+    "build": "sass --style=compressed --no-source-map dev/main.scss ../assets/css/dev.css",
+    "watch": "sass --watch dev/main.scss ../assets/css/dev.css"
+  },
+  "devDependencies": { "sass": "^1.77.0" }
+}

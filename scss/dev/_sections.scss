@@ -1,0 +1,32 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+.section {
+  padding: 56px 0;
+  & + & { border-top: 1px solid $mist; }
+
+  h2 { @include title; font-size: 28px; margin: 0 0 32px; color: $navy; }
+}
+.section-label {
+  @include mono(12px);
+  text-transform: uppercase; letter-spacing: 0.08em;
+  color: $amber; margin: 0 0 8px;
+}
+
+.about-grid {
+  display: grid; grid-template-columns: 1fr; gap: 28px;
+  @include tablet-up { grid-template-columns: 1.3fr 1fr; }
+}
+.about-text p { margin: 0 0 16px; color: $text; }
+
+.path {
+  @include boxed;
+  @include mono;
+  padding: 18px;
+
+  .step {
+    display: flex; gap: 10px; padding: 6px 0;
+    &:not(:last-child) { border-bottom: 1px dashed $mist; }
+  }
+  .yr { color: $amber; min-width: 52px; }
+}

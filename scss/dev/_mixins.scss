@@ -1,0 +1,12 @@
+@use 'variables' as *;
+
+// Un seul endroit pour les media queries
+@mixin tablet-up { @media (min-width: $bp-tablet) { @content; } }
+@mixin mobile { @media (max-width: $bp-mobile) { @content; } }
+
+// Les titres, la police mono: utilisés partout, donc écrits une fois
+@mixin mono($size: 13px) { font-family: $font-mono; font-size: $size; }
+@mixin title { font-family: $font-title; }
+
+// Bloc "carte blanche avec bordure"
+@mixin boxed { background: $white; border: 1px solid $mist; border-radius: $radius; }
