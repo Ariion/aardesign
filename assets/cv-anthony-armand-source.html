@@ -6,23 +6,23 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-@page{ size:A4; margin:16mm 15mm; }
+@page{ size:A4; margin:12mm 14mm; }
 *,*::before,*::after{ box-sizing:border-box; margin:0; padding:0; }
 :root{
   --navy:#1B3560; --ink:#12254d; --mid:#5c7899; --dim:#8a9ab5;
   --cyan:#29B8D9; --line:#e3e8f0;
 }
 html,body{ font-family:'Montserrat',sans-serif; color:var(--ink); background:#fff; }
-body{ font-size:9.6pt; line-height:1.45; }
+body{ font-size:9.3pt; line-height:1.4; }
 .mono{ font-family:'IBM Plex Mono',monospace; }
 
-.sheet{ width:210mm; min-height:297mm; margin:0 auto; padding:0; }
+.sheet{ width:210mm; margin:0 auto; padding:0; }
 
 /* ── En-tête ── */
 header{
   display:flex; align-items:flex-start; justify-content:space-between;
   gap:20px; padding-bottom:14px; border-bottom:2px solid var(--navy);
-  margin-bottom:20px;
+  margin-bottom:14px;
 }
 .h-name{ font-family:Georgia,'Times New Roman',serif; font-size:26pt; color:var(--navy); line-height:1.05; }
 .h-role{ font-size:10.5pt; color:var(--cyan); font-weight:600; letter-spacing:.02em; margin-top:5px; }
@@ -31,12 +31,12 @@ header{
 .h-contact .lbl{ color:var(--dim); font-size:6.6pt; letter-spacing:.1em; text-transform:uppercase; margin-right:6px; }
 
 /* ── Intro ── */
-.intro{ font-size:9.4pt; color:var(--mid); margin-bottom:22px; max-width:100%; line-height:1.6; }
+.intro{ font-size:9.2pt; color:var(--mid); margin-bottom:16px; max-width:100%; line-height:1.6; }
 
 /* ── Grille 2 colonnes ── */
 .grid{ display:grid; grid-template-columns:1fr 210pt; gap:28px; align-items:start; }
 
-.sec{ margin-bottom:22px; }
+.sec{ margin-bottom:14px; }
 .sec:last-child{ margin-bottom:0; }
 .sec-h{
   font-family:'IBM Plex Mono',monospace; font-size:7.6pt; font-weight:600;
@@ -45,7 +45,7 @@ header{
 }
 
 /* Expériences / Formations */
-.item{ margin-bottom:13px; }
+.item{ margin-bottom:10px; }
 .item:last-child{ margin-bottom:0; }
 .item-top{ display:flex; justify-content:space-between; align-items:baseline; gap:10px; }
 .item-title{ font-size:9.8pt; font-weight:700; color:var(--ink); }
@@ -71,7 +71,7 @@ header{
   border:1px solid var(--line); border-radius:2px; padding:3px 7px;
 }
 
-footer{ margin-top:28px; padding-top:10px; border-top:1px solid var(--line); text-align:center; }
+footer{ margin-top:12px; padding-top:6px; border-top:1px solid var(--line); text-align:center; }
 footer .mono{ font-size:7px; color:var(--dim); letter-spacing:.05em; }
 </style>
 </head>
@@ -81,22 +81,21 @@ footer .mono{ font-size:7px; color:var(--dim); letter-spacing:.05em; }
   <header>
     <div>
       <div class="h-name">Anthony Armand</div>
-      <div class="h-role">Graphiste &amp; Illustrateur — Aardesign</div>
+      <div class="h-role">Graphiste, illustrateur &amp; développeur front-end — Aardesign</div>
     </div>
     <div class="h-contact">
       <div><span class="lbl">Tél</span>06&nbsp;79&nbsp;46&nbsp;62&nbsp;19</div>
-      <div><span class="lbl">Mail</span><a href="mailto:aardesign14@gmail.com">aardesign14@gmail.com</a></div>
+      <div><span class="lbl">Mail</span><a href="mailto:anthony.armand07@gmail.com">anthony.armand07@gmail.com</a></div>
       <div><span class="lbl">Lieu</span>Sassy · Caen (14)</div>
-      <div><span class="lbl">Web</span><a href="https://aardesign.fr">aardesign.fr</a></div>
+      <div><span class="lbl">Web</span><a href="https://aardesign.fr/dev">aardesign.fr/dev</a></div>
       <div><span class="lbl">Permis</span>B</div>
     </div>
   </header>
 
   <div class="intro">
-    Graphiste &amp; illustrateur basé à Caen, près de 8 ans de métier — dont 6 ans en poste avant de me lancer
-    à mon compte. Je crée des identités, des supports print &amp; web et des illustrations. Du packaging premium
-    aux peintures personnelles, chaque projet est une occasion de construire un univers visuel unique, cohérent
-    et mémorable.
+    Graphiste &amp; illustrateur depuis près de 8 ans, DUT MMI, je code aussi mes propres interfaces : un éditeur
+    visuel pour sites statiques, le site d'une mairie, des sites clients livrés. Je cherche des missions de
+    développement front-end et UI où le regard design compte autant que le code.
   </div>
 
   <div class="grid">
@@ -108,11 +107,11 @@ footer .mono{ font-size:7px; color:var(--dim); letter-spacing:.05em; }
         <div class="item">
           <div class="item-top"><span class="item-title">Aardesign — Auto-entrepreneur</span><span class="item-date">2024 — présent</span></div>
           <div class="item-sub">Caen, Normandie</div>
-          <div class="item-desc">Création graphique, identité visuelle, web, illustration, digital painting, animation.</div>
+          <div class="item-desc">Création graphique, identité visuelle, intégration web front-end (HTML/CSS/JS), illustration, digital painting, animation.</div>
         </div>
 
         <div class="item">
-          <div class="item-top"><span class="item-title">Clopinette / Arsène Valentin — CDI, Infographiste</span><span class="item-date">2020 — 2024</span></div>
+          <div class="item-top"><span class="item-title">Clopinette / Arsène Valentin — CDI, Infographiste</span><span class="item-date">2020 — présent</span></div>
           <div class="item-sub">Caen · Société de cigarette électronique</div>
           <div class="item-desc">Packaging, étiquettes e-liquide, digital painting, affiches, stickers vitrine, supports de communication.</div>
         </div>
@@ -133,6 +132,28 @@ footer .mono{ font-size:7px; color:var(--dim); letter-spacing:.05em; }
           <div class="item-top"><span class="item-title">Euptech — Stage, Graphiste</span><span class="item-date">2016</span></div>
           <div class="item-sub">Grenoble · Solutions &amp; services en ingénierie électrique HTA/HTB</div>
           <div class="item-desc">Supports de communication, site internet Wordpress, flyer, brochure d'entreprise.</div>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-h">Projets web</div>
+
+        <div class="item">
+          <div class="item-top"><span class="item-title">Module Admin</span><span class="item-date">outil maison</span></div>
+          <div class="item-sub">module-admin-theta.vercel.app</div>
+          <div class="item-desc">Éditeur visuel qui se greffe sur un site HTML statique : deux lignes de code, et le client modifie lui-même textes, images et liens. JavaScript, en phase de test.</div>
+        </div>
+
+        <div class="item">
+          <div class="item-top"><span class="item-title">Site de la mairie de Sassy</span><span class="item-date">en ligne</span></div>
+          <div class="item-sub">mairiedesassy.vercel.app</div>
+          <div class="item-desc">Intégration front-end d'un site institutionnel, responsive.</div>
+        </div>
+
+        <div class="item">
+          <div class="item-top"><span class="item-title">Procom Solution</span><span class="item-date">en ligne</span></div>
+          <div class="item-sub">procomsolution.fr</div>
+          <div class="item-desc">Site client dont les contenus sont modifiés par la cliente elle-même.</div>
         </div>
       </div>
 
@@ -170,10 +191,9 @@ footer .mono{ font-size:7px; color:var(--dim); letter-spacing:.05em; }
         <div class="skill-row"><span class="skill-name">Photoshop</span><span class="skill-lvl">Expert</span></div>
         <div class="skill-row"><span class="skill-name">InDesign</span><span class="skill-lvl">Expert</span></div>
         <div class="skill-row"><span class="skill-name">Illustrator</span><span class="skill-lvl">Expert</span></div>
-        <div class="skill-row"><span class="skill-name">Lightroom</span><span class="skill-lvl">Expert</span></div>
-        <div class="skill-row"><span class="skill-name">Digital Painting</span><span class="skill-lvl">Expert</span></div>
-        <div class="skill-row"><span class="skill-name">Photographie produit</span><span class="skill-lvl">Avancé</span></div>
-        <div class="skill-row"><span class="skill-name">HTML / CSS</span><span class="skill-lvl">Avancé</span></div>
+                <div class="skill-row"><span class="skill-name">Digital Painting</span><span class="skill-lvl">Expert</span></div>
+                <div class="skill-row"><span class="skill-name">HTML / CSS / JS</span><span class="skill-lvl">Avancé</span></div>
+        <div class="skill-row"><span class="skill-name">UI / Responsive</span><span class="skill-lvl">Avancé</span></div>
         <div class="skill-row"><span class="skill-name">Wordpress, Wix</span><span class="skill-lvl">Avancé</span></div>
       </div>
 

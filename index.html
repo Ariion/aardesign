@@ -5,7 +5,7 @@
 <base href="/">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>aardesign — Anthony Armand</title>
-<meta name="description" content="Anthony Armand — Graphiste & Illustrateur basé à Caen. Identité visuelle, print & packaging, web et digital painting.">
+<meta name="description" content="Anthony Armand — Graphiste, illustrateur et développeur front-end basé à Caen. Identité visuelle, print & packaging, web et digital painting.">
 <meta name="keywords" content="graphiste, illustrateur, identité visuelle, digital painting, illustration, Caen, Normandie, aardesign">
 <meta name="author" content="Anthony Armand">
 <meta property="og:title" content="aardesign — Anthony Armand, Graphiste & Illustrateur">
@@ -594,6 +594,8 @@ text-shadow:none;
 #desk-id-name{font-size:1.1rem;font-weight:800;letter-spacing:.14em;color:var(--ink);text-transform:uppercase}
 [data-theme="light"] #desk-id-name{color:var(--navy)}
 #desk-id-role{font-size:.75rem;font-weight:400;color:var(--mid);margin-top:.4rem;letter-spacing:.05em}
+#desk-id-dev{display:inline-block;margin-top:.7rem;font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--cyan);text-decoration:none;opacity:.85;border-bottom:1px solid transparent;transition:opacity .2s,border-color .2s}
+#desk-id-dev:hover{opacity:1;border-color:var(--cyan)}
 
 #win-layer{position:fixed;inset:36px 0 0 0;z-index:50;pointer-events:none}
 .win{
@@ -968,7 +970,7 @@ background:var(--cyan);color:#fff;font:700 .82rem 'Montserrat',sans-serif;cursor
 <div id="ls-time">00:00</div>
 <div id="ls-date">—</div>
 <div id="ls-name">Anthony Armand</div>
-<div id="ls-role">Graphiste & Illustrateur · aardesign</div>
+<div id="ls-role">Graphiste, illustrateur & développeur front-end · aardesign</div>
 <div id="ls-hint">Cliquer pour entrer</div>
 </div>
 
@@ -1007,6 +1009,10 @@ Contact
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 7 8.5 6 8.5-6"/></svg>
 Message
 </button>
+<a class="tm-item" href="/dev" style="text-decoration:none;color:inherit">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><path d="m8 8-4 4 4 4M16 8l4 4-4 4M14 5l-4 14" stroke-linecap="round" stroke-linejoin="round"/></svg>
+Développement
+</a>
 <button class="tm-item" onclick="openApp('about');closeDrawer()">
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><circle cx="12" cy="8" r="4"/><path d="M4 20a8 8 0 0 1 16 0"/></svg>
 À propos
@@ -1033,7 +1039,8 @@ Mode clair
 <div id="desk-id-time">00:00</div>
 <div id="desk-id-date">—</div>
 <div id="desk-id-name">Anthony Armand</div>
-<div id="desk-id-role">Graphiste & Illustrateur · Aardesign</div>
+<div id="desk-id-role">Graphiste, illustrateur & développeur front-end · Aardesign</div>
+<a id="desk-id-dev" href="/dev">Développement front-end : voir mes projets →</a>
 </div>
 
 
@@ -1538,7 +1545,7 @@ function buildCVBody(){
 const DEF_CV_DATA={
 skills:[
 ['Photoshop',95],['InDesign',92],['Illustrator',92],['Lightroom',90],
-['Digital Painting',90],['Photographie produit',78],['HTML/CSS',78],['Wordpress/Wix',72]
+['Digital Painting',90],['Photographie produit',78],['HTML/CSS/JS',85],['UI / Intégration front-end',85]
 ],
 experiences:[
 ['aardesign — Auto-entrepreneur','2024–présent · Sassy (14170)','Identité visuelle, Logo, Affiches, Flyers, Web, Digital painting, Retouche photo, Wordpress'],
@@ -1559,7 +1566,7 @@ const cv = JSON.parse(localStorage.getItem('aar_cv')||'null');
 const hero = JSON.parse(localStorage.getItem('aar_sec_hero')||'null');
 const ct = JSON.parse(localStorage.getItem('aar_sec_contact')||'null');
 const name = hero ? (hero.intro||'Anthony Armand') : 'Anthony Armand';
-const role = hero ? (TR('hero.t1',hero.t1||'')+(hero.t2?' · '+hero.t2:'')) : 'Graphiste & Illustrateur · aardesign';
+const role = hero ? (TR('hero.t1',hero.t1||'')+(hero.t2?' · '+hero.t2:'')) : 'Graphiste, illustrateur & développeur front-end · aardesign';
 const email = ct?.email||'aardesign14@gmail.com';
 const phone = ct?.phone||'06 79 46 62 19';
 const skills = cv ? cv.skills.map(s=>[s.n,s.p]) : DEF_CV_DATA.skills;
@@ -1597,6 +1604,10 @@ ${skills.map(([n,p])=>`<div class="cv-s-skill">
 ${exps.map(([ti,d,c],i)=>`<div class="cv-tl-item"><div class="cv-tl-dot"></div><div><div class="cv-tl-title">${ti}</div><div class="cv-tl-sub">${d}</div><div class="cv-tl-desc">${TR('cv.exp.'+i,c)}</div></div></div>`).join('')}
 </div>
 <div>
+<div class="cv-m-section">${t('cvProj')}</div>
+${[['Module Admin','Éditeur visuel pour sites HTML statiques, en phase de test','https://module-admin-theta.vercel.app/'],['Site de la mairie de Sassy','Intégration front-end, site institutionnel','https://mairiedesassy.vercel.app/'],['Procom Solution','Site client, contenus modifiables par la cliente','https://procomsolution.fr']].map(([ti,c,u])=>`<div class="cv-tl-item"><div class="cv-tl-dot"></div><div><div class="cv-tl-title"><a href="${u}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;border-bottom:1px solid rgba(41,184,217,.4)">${ti}</a></div><div class="cv-tl-desc">${c}</div></div></div>`).join('')}
+</div>
+<div>
 <div class="cv-m-section">${t('cvEdu')}</div>
 ${formations.map(([ti,d,c],i)=>`<div class="cv-tl-item"><div class="cv-tl-dot" style="background:var(--cyan2)"></div><div><div class="cv-tl-title">${ti}</div><div class="cv-tl-sub">${d}</div><div class="cv-tl-desc">${TR('cv.edu.'+i,c)}</div></div></div>`).join('')}
 </div>
@@ -1615,7 +1626,7 @@ const phone = ct?.phone||'06 79 46 62 19';
 const ig = ct?.ig||'';
 const be = ct?.be||'';
 const hero = JSON.parse(localStorage.getItem('aar_sec_hero')||'null');
-const role = hero ? (TR('hero.t1',hero.t1||'Graphiste & Illustrateur')+(hero.t2?' · '+hero.t2:'')) : 'Graphiste & Illustrateur · aardesign';
+const role = hero ? (TR('hero.t1',hero.t1||'Graphiste, illustrateur & développeur front-end')+(hero.t2?' · '+hero.t2:'')) : 'Graphiste, illustrateur & développeur front-end · aardesign';
 return `<div class="w-profile">
 <div class="w-ava"><img src="assets/photo.jpg" alt="" onerror="this.src='assets/Logo-Aardesign-Court.png'"></div>
 <div><div class="w-name">Anthony Armand</div><div class="w-role">${role}</div></div>
@@ -2218,7 +2229,7 @@ const UI_STR={
     themeLight:' Mode clair', themeDark:'Mode sombre',
     write:'Écrire', copy:'Copier', copied:'Copié !', email:'Email', phone:'Téléphone',
     msgTitle:'Message', msgPlaceholder:'Bonjour Anthony, je vous contacte au sujet de…', send:'Envoyer',
-    cvSkills:'Compétences', cvExp:'Expériences professionnelles', cvEdu:'Diplômes & Formations', cvLang:'Langues', cvDownload:'Télécharger le CV',
+    cvSkills:'Compétences', cvProj:'Projets web', cvExp:'Expériences professionnelles', cvEdu:'Diplômes & Formations', cvLang:'Langues', cvDownload:'Télécharger le CV',
     call:'Appeler', view:'Voir', location:'Localisation', legalNotice:'Mentions légales', privacy:'Confidentialité',
     yourName:'Votre nom', yourEmail:'Votre email', subject:'Objet', subjectPh:'Un projet à discuter…',
     writeTo:'Écrire à', cvWinTitle:'CV — ', sendErr:'Erreur envoi', networkErr:'Erreur réseau', sentOk:'Message envoyé !',
@@ -2230,7 +2241,7 @@ const UI_STR={
     themeLight:' Light mode', themeDark:'Dark mode',
     write:'Write', copy:'Copy', copied:'Copied!', email:'Email', phone:'Phone',
     msgTitle:'Message', msgPlaceholder:'Hi Anthony, I\'m reaching out about…', send:'Send',
-    cvSkills:'Skills', cvExp:'Work experience', cvEdu:'Education & Training', cvLang:'Languages', cvDownload:'Download resume',
+    cvSkills:'Skills', cvProj:'Web projects', cvExp:'Work experience', cvEdu:'Education & Training', cvLang:'Languages', cvDownload:'Download resume',
     call:'Call', view:'View', location:'Location', legalNotice:'Legal notice', privacy:'Privacy',
     yourName:'Your name', yourEmail:'Your email', subject:'Subject', subjectPh:'A project to discuss…',
     writeTo:'Write to', cvWinTitle:'Resume — ', sendErr:'Sending error', networkErr:'Network error', sentOk:'Message sent!',
