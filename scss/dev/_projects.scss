@@ -35,17 +35,35 @@
   li { margin-bottom: 6px; }
 }
 
-// Maquettes Figma : miniatures nettes (jamais agrandies), clic = image en taille réelle
+// Maquettes Figma : présentées dans un cadre de navigateur, sur un fond teinté.
+// Miniatures nettes (jamais agrandies), clic = image en taille réelle.
 .shots {
-  display: flex; flex-wrap: wrap; gap: 16px; margin: 18px 0 6px;
-
-  figure { margin: 0; flex: 0 1 380px; min-width: 0; max-width: 100%; }
-  a { display: block; }
-  img {
-    display: block; width: 100%; height: auto;
-    border: 1px solid $mist; border-radius: $radius; background: $white;
-    transition: border-color .15s ease;
-  }
-  a:hover img { border-color: $navy; }
-  figcaption { @include mono(11.5px); color: #4A5A63; margin-top: 6px; }
+  display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start; gap: 20px;
+  margin: 22px 0 8px; padding: 28px;
+  background:
+    radial-gradient(120% 90% at 0% 0%, rgba($signal, .10), transparent 60%),
+    linear-gradient(160deg, $navy, #0f2142);
+  border-radius: $radius;
 }
+.frame {
+  margin: 0; flex: 0 1 360px; min-width: 0; max-width: 100%;
+  background: $white; border-radius: 6px; overflow: hidden;
+  box-shadow: 0 18px 40px -16px rgba(#000, .55), 0 0 0 1px rgba(#fff, .08);
+  transition: transform .2s ease;
+  &:hover { transform: translateY(-3px); }
+
+  a { display: block; text-decoration: none; }
+  img { display: block; width: 100%; height: auto; }
+}
+.frame-bar {
+  display: flex; align-items: center; gap: 5px;
+  padding: 8px 10px; background: #E9EDEB; border-bottom: 1px solid $mist;
+  @include mono(10.5px); color: #4A5A63;
+
+  i { width: 8px; height: 8px; border-radius: 50%; background: $mist; }
+  i:nth-child(1) { background: #E5736B; }
+  i:nth-child(2) { background: #E8B84F; }
+  i:nth-child(3) { background: #62B97D; }
+  span { margin-left: 8px; }
+}
+@media (prefers-reduced-motion: reduce) { .frame { transition: none; } }
