@@ -21,13 +21,13 @@ footer { padding: 56px 0 80px; }
 
   &:hover { border-color: $white; }
   &.primary {
-    background: $signal; border-color: $signal;
-    &:hover { background: $signal-hover; }
+    background: $cyan; border-color: $cyan; color: $navy; font-weight: 600;
+    &:hover { background: $cyan-hover; border-color: $cyan-hover; }
   }
 }
 
 .foot-note {
   @include mono(12px);
-  color: #7C8B95; margin-top: 40px; text-align: center;
+  color: $mid; margin-top: 40px; text-align: center;
   a { color: $navy; text-decoration: underline; }
 }

@@ -22,7 +22,7 @@ $mk-muted: #7891ab;
   color: $mk-muted;
 
   .badge {
-    background: rgba($signal, .18); color: #57c98a; border: 1px solid rgba($signal, .35);
+    background: rgba($cyan, .16); color: $cyan; border: 1px solid rgba($cyan, .4);
     padding: 2px 7px; border-radius: 20px; font-weight: 600; margin-right: 8px;
   }
 }

@@ -10,8 +10,8 @@
 
   nav a {
     margin-left: 20px; text-decoration: none; color: $ink; opacity: 0.75;
-    &:hover { opacity: 1; color: $signal; }
-    &:focus-visible { outline: 2px solid $signal; outline-offset: 3px; }
+    &:hover { opacity: 1; color: $cyan2; }
+    &:focus-visible { outline: 2px solid $cyan2; outline-offset: 3px; }
   }
 }
 
@@ -20,9 +20,9 @@
 
   h1 {
     @include title;
-    font-weight: 700;
+    font-weight: 400;
     font-size: clamp(34px, 6vw, 56px);
-    line-height: 1.05;
+    line-height: 1.08;
     letter-spacing: -0.01em;
     margin: 0 0 20px;
     color: $navy;
@@ -32,7 +32,7 @@
 
 .boot {
   @include mono;
-  color: $signal;
+  color: $cyan2;
   margin-bottom: 28px;
   min-height: 1.4em;
   &::after { content: '▍'; animation: blink 1s steps(1) infinite; }

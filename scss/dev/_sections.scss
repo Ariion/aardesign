@@ -10,7 +10,7 @@
 .section-label {
   @include mono(12px);
   text-transform: uppercase; letter-spacing: 0.08em;
-  color: $amber; margin: 0 0 8px;
+  color: $cyan2; margin: 0 0 8px;
 }
 
 .about-grid {
@@ -28,5 +28,5 @@
     display: flex; gap: 10px; padding: 6px 0;
     &:not(:last-child) { border-bottom: 1px dashed $mist; }
   }
-  .yr { color: $amber; min-width: 52px; }
+  .yr { color: $cyan2; min-width: 52px; }
 }

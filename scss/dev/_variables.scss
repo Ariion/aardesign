@@ -1,21 +1,23 @@
-// Couleurs (les mêmes que l'ancien :root)
+// Charte aardesign (voir la DA du site principal)
 $navy: #1B3560;
-$ink: #10151C;
-$paper: #EEF1EF;
-$paper-2: #E2E7E4;
-$mist: #C6D0CB;
-$signal: #3E8E5C;
-$signal-dim: #DCEAE1;
-$amber: #B87A2E;
-$white: #FBFCFB;
-$text: #2B3A45;
-$signal-hover: #357B4E;
-$radius: 2px;
+$cyan: #29B8D9;      // accent principal : filets, labels, focus
+$cyan2: #0097BA;     // accent lisible sur fond clair (texte, liens)
+$cyan-dim: rgba(41, 184, 217, .12);
+$cyan-hover: #1fa3c2;
 
-// Polices
-$font-title: 'Space Grotesk', sans-serif;
-$font-body: 'IBM Plex Sans', sans-serif;
-$font-mono: 'IBM Plex Mono', monospace;
+$ink: #12254d;       // texte principal
+$text: #3d5278;      // texte courant
+$mid: #6278a0;       // texte secondaire
+$paper: #f5f7fa;
+$paper-2: #edf0f6;
+$mist: #d5dcea;      // filets et bordures
+$white: #ffffff;
+$radius: 6px;
+
+// Polices : Georgia (titres), Montserrat (texte), mono (labels)
+$font-title: Georgia, 'Times New Roman', serif;
+$font-body: 'Montserrat', sans-serif;
+$font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
 
 // Breakpoints
 $bp-tablet: 720px;

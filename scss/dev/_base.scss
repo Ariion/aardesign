@@ -4,7 +4,7 @@
 // Les variables CSS restent pour les couleurs utilisées dans le HTML inline
 :root {
   --navy: #{$navy};
-  --signal: #{$signal};
+  --signal: #{$cyan2};
 }
 
 * { box-sizing: border-box; }
@@ -21,7 +21,7 @@ html { scroll-behavior: smooth; }
 
 body {
   margin: 0;
-  background: $paper;
+  background: linear-gradient(180deg, $paper 0%, $paper-2 100%) fixed;
   color: $ink;
   font-family: $font-body;
   line-height: 1.5;
@@ -29,9 +29,9 @@ body {
 
 a {
   color: inherit;
-  &:focus-visible { outline: 2px solid $signal; outline-offset: 3px; }
+  &:focus-visible { outline: 2px solid $cyan2; outline-offset: 3px; }
 }
-button:focus-visible { outline: 2px solid $signal; outline-offset: 3px; }
+button:focus-visible { outline: 2px solid $cyan2; outline-offset: 3px; }
 
 .mono { font-family: $font-mono; }
 .wrap { max-width: 920px; margin: 0 auto; padding: 0 24px; }
