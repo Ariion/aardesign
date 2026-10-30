@@ -8,66 +8,65 @@
 <style>
 @page{ size:A4; margin:0; }
 *,*::before,*::after{ box-sizing:border-box; margin:0; padding:0; }
-:root{ --navy:#1B3560; --deep:#0e1f3d; --ink:#12254d; --mid:#566b8a; --cyan:#29B8D9; --line:#e3e8f0; --pale:#8fa6c4; }
+:root{ --navy:#1B3560; --cyan:#29B8D9; --cyan2:#0097BA; --ink:#12254d; --text:#3d5278; --mid:#6278a0; --line:#d5dcea; --paper:#f5f7fa; }
 html,body{ font-family:'Montserrat',sans-serif; color:var(--ink); background:#fff; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
-body{ font-size:8.6pt; line-height:1.42; }
-.page{ width:210mm; height:297mm; display:grid; grid-template-columns:66mm 1fr; overflow:hidden; }
-aside{ background:linear-gradient(170deg,var(--navy) 0%,var(--deep) 100%); color:#fff; padding:14mm 8mm 10mm; position:relative; }
-aside::after{ content:''; position:absolute; left:0; right:0; bottom:0; height:46mm; background:
-  radial-gradient(circle at 20% 110%, rgba(41,184,217,.55), transparent 62%); pointer-events:none; }
-.mono{ font-family:'IBM Plex Mono',monospace; }
-aside h3{ font-family:'IBM Plex Mono',monospace; font-size:7pt; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:var(--cyan); margin:0 0 7px; }
-aside section{ margin-bottom:15px; position:relative; z-index:1; }
-.contact div{ font-size:8pt; margin-bottom:6px; color:#dbe6f5; word-break:break-word; }
-.contact .l{ display:block; font-family:'IBM Plex Mono',monospace; font-size:6.2pt; letter-spacing:.12em; text-transform:uppercase; color:var(--pale); }
-.contact a{ color:#fff; text-decoration:none; }
-.row{ display:flex; justify-content:space-between; align-items:center; font-size:8.2pt; padding:3.4px 0; color:#eef4fb; }
-.row em{ font-style:normal; font-family:'IBM Plex Mono',monospace; font-size:6.6pt; color:var(--pale); margin-left:4px; }
+body{ font-size:8.5pt; line-height:1.42; }
+.mono{ font-family:ui-monospace,'IBM Plex Mono',monospace; }
+.page{ width:210mm; height:297mm; display:grid; grid-template-columns:62mm 1fr; overflow:hidden; }
+aside{ background:var(--paper); border-right:1px solid var(--line); padding:14mm 8mm 10mm; }
+aside section{ margin-bottom:15px; }
+.lab{ font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:6.6pt; letter-spacing:.14em; text-transform:uppercase; color:var(--cyan2); display:block; }
+aside h3{ font-family:Georgia,serif; font-weight:400; font-size:13pt; color:var(--navy); margin:2px 0 8px; padding-bottom:5px; border-bottom:1px solid var(--cyan); }
+.contact div{ font-size:8pt; margin-bottom:6px; color:var(--ink); word-break:break-word; }
+.contact .l{ display:block; font-family:'IBM Plex Mono',monospace; font-size:6.2pt; letter-spacing:.12em; text-transform:uppercase; color:var(--mid); }
+.contact a{ color:var(--ink); text-decoration:none; }
+.row{ display:flex; justify-content:space-between; align-items:center; font-size:8.2pt; padding:3.4px 0; color:var(--ink); }
+.row em{ font-style:normal; font-family:'IBM Plex Mono',monospace; font-size:6.6pt; color:var(--mid); margin-left:4px; }
 .dots{ display:inline-flex; gap:3px; }
-.dots i{ width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,.18); display:block; }
-.dots i.on{ background:var(--cyan); }
+.dots i{ width:6px; height:6px; border-radius:50%; background:#d5dcea; display:block; }
+.dots i.on{ background:var(--navy); }
 .tags{ display:flex; flex-wrap:wrap; gap:4px; }
-.tags span{ font-family:'IBM Plex Mono',monospace; font-size:6.8pt; border:1px solid rgba(255,255,255,.25); border-radius:2px; padding:2px 6px; color:#dbe6f5; }
+.tags span{ font-family:'IBM Plex Mono',monospace; font-size:6.8pt; border:1px solid var(--line); background:#fff; border-radius:2px; padding:2px 6px; color:var(--text); }
 main{ padding:14mm 12mm 8mm 11mm; }
-.name{ font-family:Georgia,serif; font-size:29pt; line-height:1; color:var(--navy); }
-.role{ font-size:10pt; font-weight:600; color:var(--cyan); margin-top:6px; }
-.intro{ margin:10px 0 0; color:var(--mid); font-size:8.6pt; line-height:1.6; padding-left:10px; border-left:2px solid var(--cyan); }
-h2{ font-family:'IBM Plex Mono',monospace; font-size:7.4pt; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:var(--navy); margin:15px 0 8px; display:flex; align-items:center; gap:8px; }
-h2::after{ content:''; flex:1; height:1px; background:var(--line); }
+.name{ font-family:Georgia,serif; font-size:30pt; line-height:1; color:var(--navy); font-weight:400; }
+.role{ font-family:'IBM Plex Mono',monospace; font-size:8pt; letter-spacing:.12em; text-transform:uppercase; color:var(--cyan2); margin-top:8px; }
+.intro{ margin:10px 0 0; color:var(--text); font-size:8.6pt; line-height:1.6; padding-left:10px; border-left:2px solid var(--cyan); }
+h2{ font-family:Georgia,serif; font-weight:400; font-size:14pt; color:var(--navy); margin:15px 0 8px; padding-bottom:4px; border-bottom:1px solid var(--line); }
+h2 .lab{ margin-bottom:1px; }
 .pj{ display:grid; grid-template-columns:34mm 1fr; gap:10px; margin-bottom:8px; align-items:center; }
 .pj img{ width:34mm; height:21.5mm; object-fit:cover; object-position:top; border-radius:3px; border:1px solid var(--line); }
 .pj b,.tl b,.fm b{ font-size:9pt; color:var(--ink); }
-.pj-sub{ font-family:'IBM Plex Mono',monospace; font-size:6.8pt; color:var(--cyan); margin:1px 0 2px; }
-.pj p,.tl p{ color:var(--mid); font-size:7.9pt; line-height:1.5; }
+.pj-sub{ font-family:'IBM Plex Mono',monospace; font-size:6.8pt; color:var(--cyan2); margin:1px 0 2px; }
+.pj p,.tl p{ color:var(--text); font-size:7.9pt; line-height:1.5; }
 .tl{ position:relative; padding-left:12px; margin-bottom:8px; border-left:1px solid var(--line); margin-left:3px; }
-.tl::before{ content:''; position:absolute; left:-4px; top:3px; width:7px; height:7px; border-radius:50%; background:var(--cyan); }
-.tl-top,.fm{ display:flex; justify-content:space-between; align-items:baseline; gap:8px; flex-wrap:wrap; }
+.tl::before{ content:''; position:absolute; left:-4px; top:3px; width:7px; height:7px; border-radius:50%; background:#fff; border:1.5px solid var(--cyan); }
+.tl-top{ display:flex; justify-content:space-between; align-items:baseline; gap:8px; }
 .tl-sub{ color:var(--mid); font-size:7.8pt; }
 .fm{ margin-bottom:7px; display:grid; grid-template-columns:1fr auto; row-gap:0; align-items:baseline; }
 .fm .tl-sub{ grid-column:1/-1; margin-top:1px; }
-.date{ font-family:'IBM Plex Mono',monospace; font-size:7pt; color:var(--pale); white-space:nowrap; }
+.date{ font-family:'IBM Plex Mono',monospace; font-size:7pt; color:var(--mid); white-space:nowrap; }
 </style>
 </head>
 <body>
 <div class="page">
 <aside>
- <section class="contact"><h3>Contact</h3>
+ <section class="contact"><span class="lab">// contact</span><h3>Contact</h3>
   <div><span class="l">Mail</span><a href="mailto:anthony.armand07@gmail.com">anthony.armand07@gmail.com</a></div>
   <div><span class="l">Tél</span>06&nbsp;79&nbsp;46&nbsp;62&nbsp;19</div>
   <div><span class="l">Web</span><a href="https://aardesign.fr/dev">aardesign.fr/dev</a></div>
   <div><span class="l">Lieu</span>Sassy · Caen (14)</div>
   <div><span class="l">Permis</span>B</div></section>
- <section><h3>Compétences</h3><div class="row"><span>Photoshop</span><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span></div><div class="row"><span>Illustrator</span><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span></div><div class="row"><span>InDesign</span><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span></div><div class="row"><span>Digital painting</span><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span></div><div class="row"><span>HTML / CSS / JS</span><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i></span></div><div class="row"><span>UI, Adobe XD</span><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i></span></div><div class="row"><span>Wordpress, Wix</span><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i></span></div><div class="row"><span>Figma</span><span class="dots"><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i></span></div><div class="row"><span>SCSS</span><span class="dots"><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i></span></div></section>
- <section><h3>Langues</h3><div class="row"><span>Français <em>Natif</em></span><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span></div><div class="row"><span>Anglais <em>C1</em></span><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i></span></div><div class="row"><span>Italien <em>A2</em></span><span class="dots"><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i></span></div><div class="row"><span>Japonais <em>A1</em></span><span class="dots"><i class="on"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i></span></div></section>
- <section><h3>Centres d'intérêt</h3><div class="tags"><span>Photographie</span><span>Digital painting</span><span>Graphisme</span><span>Jeux vidéo</span><span>Cinéma</span><span>Lecture</span></div></section>
+ <section><span class="lab">// outils</span><h3>Compétences</h3><div class="row"><span>Photoshop</span><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span></div><div class="row"><span>Illustrator</span><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span></div><div class="row"><span>InDesign</span><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span></div><div class="row"><span>Digital painting</span><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span></div><div class="row"><span>HTML / CSS / JS</span><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i></span></div><div class="row"><span>UI, Adobe XD</span><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i></span></div><div class="row"><span>Wordpress, Wix</span><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i></span></div><div class="row"><span>Figma</span><span class="dots"><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i></span></div><div class="row"><span>SCSS</span><span class="dots"><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i></span></div></section>
+ <section><span class="lab">// parler</span><h3>Langues</h3><div class="row"><span>Français <em>Natif</em></span><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span></div><div class="row"><span>Anglais <em>C1</em></span><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i></span></div><div class="row"><span>Italien <em>A2</em></span><span class="dots"><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i></span></div><div class="row"><span>Japonais <em>A1</em></span><span class="dots"><i class="on"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i></span></div></section>
+ <section><span class="lab">// hors écran</span><h3>Centres d'intérêt</h3><div class="tags"><span>Photographie</span><span>Digital painting</span><span>Graphisme</span><span>Jeux vidéo</span><span>Cinéma</span><span>Lecture</span></div></section>
 </aside>
 <main>
  <div class="name">Anthony Armand</div>
  <div class="role">Graphiste, illustrateur &amp; intégrateur web</div>
  <p class="intro">Graphiste et illustrateur depuis près de 8 ans, DUT MMI. Je dessine mes interfaces et je les intègre moi-même en HTML, CSS et JavaScript. Je cherche des missions d'intégration front-end et d'UI où le regard design compte autant que le code.</p>
- <h2>Projets web</h2><div class="pj"><img src="dev/figma-module-admin-editeur.webp" alt=""><div><b>Module Admin</b><div class="pj-sub">outil maison · module-admin-theta.vercel.app</div><p>Éditeur visuel pour sites HTML statiques : le client modifie lui-même textes, images et liens. JavaScript, en test.</p></div></div><div class="pj"><img src="dev/site-mairie.webp" alt=""><div><b>Proposition de site, mairie de Sassy</b><div class="pj-sub">maquette non validée, contenu fictif</div><p>Maquette Figma puis intégration responsive, présentée à la mairie.</p></div></div><div class="pj"><img src="dev/site-procom.webp" alt=""><div><b>Procom Solution</b><div class="pj-sub">en ligne · procomsolution.fr</div><p>Site client dont les contenus sont modifiés par la cliente elle-même.</p></div></div>
- <h2>Expériences</h2><div class="tl"><div class="tl-top"><b>Aardesign</b><span class="date">2024 — présent</span></div><div class="tl-sub">Auto-entrepreneur</div><p>Identité visuelle, création graphique, intégration web HTML/CSS/JS, illustration, digital painting, animation.</p></div><div class="tl"><div class="tl-top"><b>Clopinette / Arsène Valentin</b><span class="date">2020 — présent</span></div><div class="tl-sub">CDI, infographiste · Caen</div><p>Packaging, étiquettes e-liquide, digital painting, affiches, supports de communication.</p></div><div class="tl"><div class="tl-top"><b>Creacom</b><span class="date">2019</span></div><div class="tl-sub">CDD, infographiste · Valence</div><p>Création graphique, magazine de vente, retouche photo.</p></div><div class="tl"><div class="tl-top"><b>Optimind</b><span class="date">2017 — 2019</span></div><div class="tl-sub">Stage puis alternance, graphiste · Paris</div><p>Web design, communication digitale, print & web, motion design.</p></div><div class="tl"><div class="tl-top"><b>Euptech</b><span class="date">2016</span></div><div class="tl-sub">Stage, graphiste · Grenoble</div><p>Supports de communication, site WordPress, flyer, brochure.</p></div>
- <h2>Formations</h2><div class="fm"><b>Certification Photoshop Expert</b><span class="date">2024</span><div class="tl-sub">TOSA · 879/1000</div></div><div class="fm"><b>Formation Digital Painting</b><span class="date">2024 — 2025</span><div class="tl-sub">TUTO.com · mention très bien</div></div><div class="fm"><b>Bachelor & Mastère Direction Artistique</b><span class="date">2016 — 2019</span><div class="tl-sub">LIM'ART, Paris</div></div><div class="fm"><b>DUT MMI</b><span class="date">2014 — 2016</span><div class="tl-sub">IUT 1 Grenoble · HTML/CSS/JS, Wordpress, identité visuelle</div></div>
+ <h2><span class="lab">// réalisations</span>Projets web</h2><div class="pj"><img src="dev/figma-module-admin-editeur.webp" alt=""><div><b>Module Admin</b><div class="pj-sub">outil maison · module-admin-theta.vercel.app</div><p>Éditeur visuel pour sites HTML statiques : le client modifie lui-même textes, images et liens. JavaScript, en test.</p></div></div><div class="pj"><img src="dev/site-mairie.webp" alt=""><div><b>Proposition de site, mairie de Sassy</b><div class="pj-sub">maquette non validée, contenu fictif</div><p>Maquette Figma puis intégration responsive, présentée à la mairie.</p></div></div><div class="pj"><img src="dev/site-procom.webp" alt=""><div><b>Procom Solution</b><div class="pj-sub">en ligne · procomsolution.fr</div><p>Site client dont les contenus sont modifiés par la cliente elle-même.</p></div></div>
+ <h2><span class="lab">// parcours</span>Expériences</h2><div class="tl"><div class="tl-top"><b>Aardesign</b><span class="date">2024 — présent</span></div><div class="tl-sub">Auto-entrepreneur</div><p>Identité visuelle, création graphique, intégration web HTML/CSS/JS, illustration, digital painting, animation.</p></div><div class="tl"><div class="tl-top"><b>Clopinette / Arsène Valentin</b><span class="date">2020 — présent</span></div><div class="tl-sub">CDI, infographiste · Caen</div><p>Packaging, étiquettes e-liquide, digital painting, affiches, supports de communication.</p></div><div class="tl"><div class="tl-top"><b>Creacom</b><span class="date">2019</span></div><div class="tl-sub">CDD, infographiste · Valence</div><p>Création graphique, magazine de vente, retouche photo.</p></div><div class="tl"><div class="tl-top"><b>Optimind</b><span class="date">2017 — 2019</span></div><div class="tl-sub">Stage puis alternance, graphiste · Paris</div><p>Web design, communication digitale, print & web, motion design.</p></div><div class="tl"><div class="tl-top"><b>Euptech</b><span class="date">2016</span></div><div class="tl-sub">Stage, graphiste · Grenoble</div><p>Supports de communication, site WordPress, flyer, brochure.</p></div>
+ <h2><span class="lab">// bagage</span>Formations</h2><div class="fm"><b>Certification Photoshop Expert</b><span class="date">2024</span><div class="tl-sub">TOSA · 879/1000</div></div><div class="fm"><b>Formation Digital Painting</b><span class="date">2024 — 2025</span><div class="tl-sub">TUTO.com · mention très bien</div></div><div class="fm"><b>Bachelor & Mastère Direction Artistique</b><span class="date">2016 — 2019</span><div class="tl-sub">LIM'ART, Paris</div></div><div class="fm"><b>DUT MMI</b><span class="date">2014 — 2016</span><div class="tl-sub">IUT 1 Grenoble · HTML/CSS/JS, Wordpress, identité visuelle</div></div>
 </main></div>
 </body>
 </html>
