@@ -16,4 +16,9 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://aardesign.fr/en"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://aardesign.fr/"/>
   </url>
+  <url>
+    <loc>https://aardesign.fr/dev</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
 </urlset>
