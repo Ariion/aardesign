@@ -631,7 +631,9 @@ margin-left:auto;
 .win-resize{display:none}
 .win-body{-webkit-overflow-scrolling:touch}
 
-#mob-home{display:none;bottom:86px;padding:9px 22px;font-size:.65rem}
+/* Le dock monte jusqu'à ~123 px du bas : à 86 px, ce bouton atterrissait en plein dessus
+   (il se superposait à l'icône Contact). On le place au-dessus de la zone réservée. */
+#mob-home{display:none;bottom:var(--dock-safe,135px);padding:9px 22px;font-size:.65rem}
 #desk-apps{bottom:14px;gap:2px;padding:8px 10px;border-radius:18px;}
 .d-icon{width:58px;padding:6px 2px}
 .d-icon-face{width:44px;height:44px;border-radius:12px}
@@ -946,6 +948,20 @@ background:var(--cyan);color:#fff;font:700 .82rem 'Montserrat',sans-serif;cursor
 }
 #admin-submit:hover{background:var(--cyan2)}
 #admin-cancel{background:none;border:none;color:var(--mid);font:.75rem 'Montserrat',sans-serif;margin-top:12px;cursor:pointer}
+
+/* ── Mobile : réserver la place du dock sous les contenus défilants ──
+   Sur mobile les fenêtres sont en plein écran (inset:64px 0 0 0) et descendent donc
+   jusqu'au bas de l'écran, où le dock flottant occupe ~123 px. Sans cette réserve, le
+   dernier contenu d'une zone défilante reste définitivement sous le dock : mesuré à
+   102 px inatteignables en bas du CV sur iPhone 14 comme sur Android.
+   L'équivalent au-dessus de 820 px est géré en JS par deskFreeZone(). */
+@media(max-width:768px){
+:root{--dock-safe:135px}
+.win-body{padding-bottom:var(--dock-safe)}
+.cv-main,.cv-sidebar{padding-bottom:var(--dock-safe)}
+.pvd-body{padding-bottom:var(--dock-safe)}
+.pvg-grid{margin-bottom:var(--dock-safe)}
+}
 </style>
 <script defer src="/_vercel/insights/script.js"></script>
 </head>
