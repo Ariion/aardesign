@@ -61,7 +61,7 @@
 --desk-img:none;
 --bar-bg:rgba(6,11,24,.82);
 --bar-border:rgba(41,184,217,.13);
---ink:#dde8f6; --mid:#5c7899; --line:rgba(255,255,255,.055);
+--ink:#dde8f6; --mid:#6b86a8; --dim:rgba(255,255,255,.52); --line:rgba(255,255,255,.055);
 --win-bg:rgba(10,17,40,.88);
 --win-bar:rgba(7,12,30,.92);
 --win-border:rgba(41,184,217,.2);
@@ -78,7 +78,7 @@
 --desk-a:#f5f7fa; --desk-b:#edf0f6;
 --bar-bg:rgba(255,255,255,.82);
 --bar-border:rgba(27,53,96,.1);
---ink:#12254d; --mid:#6278a0; --line:rgba(27,53,96,.07);
+--ink:#12254d; --mid:#566a8c; --dim:rgba(27,53,96,.72); --line:rgba(27,53,96,.07);
 --win-bg:rgba(255,255,255,.96);
 --win-bar:rgba(245,248,255,.98);
 --win-border:rgba(27,53,96,.09);
@@ -437,11 +437,11 @@ box-shadow:0 8px 32px rgba(18,37,77,.14);
 position:fixed;left:0;right:0;bottom:6px;z-index:80;
 display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;
 padding:0 16px;font-family:ui-monospace,'SF Mono',Menlo,monospace;
-font-size:.66rem;letter-spacing:.02em;color:rgba(255,255,255,.4);
+font-size:.66rem;letter-spacing:.02em;color:rgba(255,255,255,.52);
 pointer-events:none;
 }
 #site-footer a,#site-footer span{pointer-events:all}
-#site-footer a{color:rgba(255,255,255,.4);text-decoration:none;transition:color .2s}
+#site-footer a{color:rgba(255,255,255,.52);text-decoration:none;transition:color .2s}
 #site-footer a:hover{color:#29B8D9}
 #site-footer .sf-sep{color:rgba(255,255,255,.18)}
 [data-theme="light"] #site-footer{color:rgba(27,53,96,.4)}
@@ -919,7 +919,7 @@ opacity:0;transition:opacity .18s;
 .lb-nav{position:absolute;top:50%;transform:translateY(-50%);z-index:2;background:rgba(255,255,255,.1);border:none;color:#fff;width:44px;height:44px;border-radius:50%;cursor:pointer;font-size:1.6rem;display:flex;align-items:center;justify-content:center;transition:background .15s}
 .lb-nav:hover{background:rgba(255,255,255,.2)}
 .lb-prev{left:16px}.lb-next{right:16px}
-.lb-counter{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);z-index:2;color:rgba(255,255,255,.4);font-size:.7rem}
+.lb-counter{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);z-index:2;color:rgba(255,255,255,.62);font-size:.7rem}
 
 #win-admin-overlay{
 position:fixed;inset:0;z-index:900;display:none;
@@ -1225,6 +1225,26 @@ d.classList.toggle('open');
 function closeDrawer(){
 document.getElementById('tb-drawer').classList.remove('open');
 }
+// Bande verticale réellement libre du bureau : sous la topbar, au-dessus du dock.
+// Le dock est en position:fixed bottom:24px et mesure ~130px : il occupait donc ~154px
+// alors que le placement des fenêtres n'en réservait que 90 à 100. Sur un écran peu haut
+// (1280x720 par exemple), le bas de la fenêtre CV passait définitivement sous le dock,
+// hors d'atteinte même en défilant. On mesure le dock plutôt que de coder sa hauteur en dur,
+// pour que le calcul suive toute évolution de son style.
+function deskFreeZone(){
+const vh=window.innerHeight;
+const topbar=document.getElementById('topbar');
+const dock=document.getElementById('desk-apps');
+const couche=document.getElementById('win-layer');
+const haut=(topbar?topbar.getBoundingClientRect().bottom:64)+10;
+const dockHaut=dock?dock.getBoundingClientRect().top:vh-154;
+const bas=Math.max(haut+200,dockHaut-12); // marge de respiration au-dessus du dock
+// Les fenêtres sont positionnées dans #win-layer, qui démarre plus bas que l'écran :
+// leur "top" doit donc être exprimé dans le repère de cette couche, pas celui de l'écran.
+const offsetCouche=couche?couche.getBoundingClientRect().top:0;
+return { haut, bas, hauteur: Math.max(200, bas-haut), offsetCouche };
+}
+
 function closeAllWins(){
 Object.values(openWins).forEach(w=>{ w.style.animation='winclose .15s ease both'; setTimeout(()=>{ w.remove(); },150); });
 Object.keys(openWins).forEach(k=>{ delete openWins[k]; markTb(k,false); });
@@ -1737,16 +1757,18 @@ const c=configs[id]; if(!c) return;
 createWin(id,c.title,c.ico,c.body,c.w,c.h);
 markDock(id,true);
 
-// centrage de toutes les fenêtres d'app (au-dessus du dock)
+// centrage de toutes les fenêtres d'app dans la bande réellement libre
 {
-const wv=window.innerWidth, wh=window.innerHeight;
+const wv=window.innerWidth;
 const ww=openWins[id];
 if(ww && wv>820){
+const zone=deskFreeZone();
 let fw=c.w, fh=c.h;
-if(id==='cv'){ fw=Math.min(880,wv-40); fh=Math.min(560,wh-100); }
+if(id==='cv'){ fw=Math.min(880,wv-40); fh=Math.min(560,zone.hauteur); }
+fh=Math.min(fh,zone.hauteur);
 ww.style.width=fw+'px'; ww.style.height=fh+'px';
 ww.style.left=Math.round((wv-fw)/2)+'px';
-ww.style.top=Math.round((wh-fh-90)/2+42)+'px';
+ww.style.top=Math.round(zone.haut-zone.offsetCouche+(zone.hauteur-fh)/2)+'px';
 }
 }
 
@@ -1939,12 +1961,14 @@ _pvData[fid]={projects,p:0,i:0,folder:fd.label,opened:false};
 _pvActive=fid;
 
 const body=`<div class="pv-wrap" id="pv-wrap-${fid}"></div>`;
-// grand format centré (~82% de l'écran)
+// grand format centré (~82% de l'écran), borné à la bande libre entre topbar et dock
 const vw=window.innerWidth, vh=window.innerHeight;
-const w=Math.min(Math.round(vw*0.82),1320), h=Math.min(Math.round(vh*0.82),880);
+const zone=deskFreeZone();
+const w=Math.min(Math.round(vw*0.82),1320);
+const h=Math.min(Math.round(vh*0.82),880,zone.hauteur);
 createWin(winId,fd.label,ico,body,w,h);
 const _w=openWins[winId];
-if(_w && vw>820){ _w.style.left=Math.round((vw-w)/2)+'px'; _w.style.top=Math.round((vh-h)/2+18)+'px'; }
+if(_w && vw>820){ _w.style.left=Math.round((vw-w)/2)+'px'; _w.style.top=Math.round(zone.haut-zone.offsetCouche+(zone.hauteur-h)/2)+'px'; }
 _w.querySelector('.win-body').style.padding='0';
 pvRender(fid);
 }
