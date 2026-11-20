@@ -88,6 +88,21 @@
         <div><span class="k">en usage:</span> <a href="https://procomsolution.fr">procomsolution.fr</a>, édité par la cliente elle-même</div>
         <div><span class="k">à tester:</span> <a href="https://module-admin-theta.vercel.app/">module-admin-theta.vercel.app</a>, version de démonstration, modifiable en direct</div>
       </div>
+
+      <form class="notify" id="notify-module-admin" novalidate>
+        <div class="notify-txt">
+          <strong>Être prévenu du lancement</strong>
+          <span>Module Admin ouvrira d'abord en bêta. Laissez votre adresse : vous recevrez un message à l'ouverture de la bêta, puis quand l'outil sera en ligne. Rien d'autre, pas de lettre d'information. Votre adresse n'est utilisée que pour ça et n'est transmise à personne (<a href="/confidentialite">politique de confidentialité</a>).</span>
+        </div>
+        <div class="notify-row">
+          <label class="sr-only" for="notify-email">Votre adresse e-mail</label>
+          <input id="notify-email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="vous@exemple.fr" required maxlength="180">
+          <!-- Champ piège : invisible pour un visiteur, rempli par les robots. -->
+          <div class="notify-pot" aria-hidden="true"><label>Laissez ce champ vide<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+          <button type="submit">Me prévenir</button>
+        </div>
+        <p class="notify-msg" role="status" aria-live="polite"></p>
+      </form>
     </article>
 
     <article class="project project--lead">
@@ -363,6 +378,48 @@
     else if(sent){ sent=false; start=Date.now(); actions=[]; seen={}; } // retour sur l'onglet : nouveau récap
   });
   window.addEventListener('pagehide',send);
+})();
+</script>
+
+<script>
+// Liste d'attente Module Admin : l'adresse part vers /api/notify-signup, la page ne change pas.
+(function(){
+  var f = document.getElementById('notify-module-admin'); if(!f) return;
+  var champ = f.querySelector('input[name="email"]');
+  var bouton = f.querySelector('button[type="submit"]');
+  var msg = f.querySelector('.notify-msg');
+  var libelle = bouton.textContent;
+
+  function dire(texte, etat){ msg.textContent = texte; f.setAttribute('data-etat', etat || ''); }
+
+  f.addEventListener('submit', function(e){
+    e.preventDefault();
+    var email = (champ.value || '').trim();
+    if(!email || !champ.checkValidity()){
+      dire('Il manque une adresse e-mail valide.', 'erreur');
+      champ.focus();
+      return;
+    }
+    bouton.disabled = true; bouton.textContent = 'Envoi…'; dire('', '');
+    fetch('/api/notify-signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: email,
+        source: 'module-admin',
+        website: (f.querySelector('input[name="website"]') || {}).value || ''
+      })
+    })
+    .then(function(r){ return r.json().then(function(d){ return { ok: r.ok, d: d }; }); })
+    .then(function(res){
+      if(!res.ok){ dire(res.d && res.d.error ? res.d.error : 'Envoi impossible pour le moment.', 'erreur'); return; }
+      if(res.d && res.d.deja){ dire('Cette adresse est déjà sur la liste. Vous serez prévenu.', 'ok'); }
+      else { dire('C’est noté. Vous recevrez un message à l’ouverture de la bêta.', 'ok'); }
+      f.querySelector('.notify-row').hidden = true;
+    })
+    .catch(function(){ dire('Envoi impossible pour le moment. Réessayez plus tard.', 'erreur'); })
+    .then(function(){ bouton.disabled = false; bouton.textContent = libelle; });
+  });
 })();
 </script>
 
