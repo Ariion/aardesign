@@ -1,6 +1,47 @@
 @use 'variables' as *;
 @use 'mixins' as *;
 
+// Le premier écran reprend le fond sombre du bureau d'aardesign.fr : l'arrivée
+// depuis l'accueil est continue, puis le contenu repasse en clair pour la
+// lecture longue et pour que les captures d'interface se détachent.
+$deep: #0A1626;
+$deep-2: #13263F;
+$on-deep: #DDE8F6;
+$on-deep-2: #9FB3CD;
+
+.masthead {
+  background: linear-gradient(180deg, $deep 0%, $deep-2 100%);
+  color: $on-deep;
+
+  .topbar {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+
+    .brand {
+      color: $on-deep;
+      // Même procédé que la barre du site principal : le logo navy passe en blanc.
+      img { filter: brightness(0) invert(1); }
+      .brand-back { color: $cyan; }
+    }
+    nav a {
+      color: $on-deep;
+      &:hover { color: $cyan; }
+      &:focus-visible { outline-color: $cyan; }
+    }
+  }
+
+  .hero {
+    h1 { color: #fff; }
+    p.lede { color: $on-deep-2; }
+  }
+  .boot { color: $cyan; }
+  .tag {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.16);
+    color: $on-deep;
+  }
+  a:focus-visible, button:focus-visible { outline-color: $cyan; }
+}
+
 .topbar {
   display: flex; justify-content: space-between; align-items: center;
   padding: 20px 24px; border-bottom: 1px solid $mist;
