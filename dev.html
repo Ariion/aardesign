@@ -3,19 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Anthony Armand, intégrateur web et UI</title>
+<title>Webdesign et intégration web — Anthony Armand</title>
 <meta name="description" content="Anthony Armand, graphiste et intégrateur web. Module Admin (éditeur visuel), proposition de site pour la mairie de Sassy (Astro, maquette non validée), sites clients en production.">
 <link rel="canonical" href="https://aardesign.fr/dev">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Anthony Armand, intégrateur web et UI">
+<meta property="og:title" content="Webdesign et intégration web — Anthony Armand">
 <meta property="og:description" content="Anthony Armand, graphiste et intégrateur web. Module Admin (éditeur visuel), proposition de site pour la mairie de Sassy (Astro, maquette non validée), sites clients en production.">
 <meta property="og:url" content="https://aardesign.fr/dev">
 <meta property="og:image" content="https://aardesign.fr/assets/Logo-Aardesign-Long.png">
 <meta property="og:locale" content="fr_FR">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Anthony Armand, intégrateur web et UI">
+<meta name="twitter:title" content="Webdesign et intégration web — Anthony Armand">
 <meta name="twitter:description" content="Anthony Armand, graphiste et intégrateur web. Module Admin (éditeur visuel), proposition de site pour la mairie de Sassy (Astro, maquette non validée), sites clients en production.">
 <meta name="twitter:image" content="https://aardesign.fr/assets/Logo-Aardesign-Long.png">
+<meta name="theme-color" content="#1B3560">
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<link rel="apple-touch-icon" href="/assets/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -24,7 +27,7 @@
 <body>
 
 <div class="topbar">
-  <a href="/" class="brand">← aardesign</a>
+  <a href="/" class="brand" aria-label="Retour au portfolio aardesign.fr"><span class="brand-back" aria-hidden="true">←</span><img src="/assets/Logo-Aardesign-Long.png" alt="Aardesign" width="1104" height="398"></a>
   <nav>
     <a href="#projets">Projets</a>
     <a href="#jeux">Jeux</a>
@@ -38,7 +41,7 @@
 
   <section class="hero">
     <div class="boot mono" id="boot">anthony@aardesign:~$ whoami</div>
-    <h1>Anthony Armand<br>Graphiste et intégrateur web.</h1>
+    <h1>Anthony Armand<br>Webdesign &amp; intégration web.</h1>
     <p class="lede">Graphiste et illustrateur depuis dix ans, DUT MMI, et je code mes propres interfaces : un éditeur visuel pour sites statiques, une proposition de site pour une mairie, des sites clients livrés. Je cherche un poste d'intégrateur front-end où le regard design compte autant que le code.</p>
     <div class="hero-tags">
       <span class="tag">HTML / CSS / JS</span>
@@ -54,7 +57,7 @@
     <p class="section-label">// Front-end et interfaces</p>
     <h2>Ce que j'ai construit</h2>
 
-    <article class="project">
+    <article class="project project--lead">
       <div class="project-head">
         <h3>Module Admin, éditeur visuel pour sites statiques</h3>
         <span class="status">outil maison</span>
@@ -71,6 +74,7 @@
         <figure class="frame"><a href="/assets/dev/figma-module-admin-assistant.webp" title="Agrandir"><div class="frame-bar"><i></i><i></i><i></i><span>Figma · l'assistant de page</span></div><img src="/assets/dev/figma-module-admin-assistant.webp" alt="Maquette Figma de l'assistant de création de page" loading="lazy"></a></figure>
       </div>
       <div class="logline">
+        <div><span class="k">type:</span> outil / éditeur visuel embarqué dans un site</div>
         <div><span class="k">stack:</span> JavaScript (modules ES), HTML, CSS, PHP pour l'hébergement</div>
         <div><span class="k">rôle:</span> solo, conception de l'UX, design de l'interface et code</div>
         <div><span class="k">en usage:</span> <a href="https://procomsolution.fr">procomsolution.fr</a>, édité par la cliente elle-même</div>
@@ -78,7 +82,7 @@
       </div>
     </article>
 
-    <article class="project">
+    <article class="project project--lead">
       <div class="project-head">
         <h3>Proposition de site pour la mairie de Sassy</h3>
         <span class="status">maquette, non validée</span>
@@ -94,13 +98,14 @@
         <figure class="frame"><a href="/assets/dev/figma-mairie-sassy.webp" title="Agrandir"><div class="frame-bar"><i></i><i></i><i></i><span>Maquette Figma</span></div><img src="/assets/dev/figma-mairie-sassy.webp" alt="Maquette Figma de l'accueil du site de la mairie" loading="lazy"></a></figure>
       </div>
       <div class="logline">
+        <div><span class="k">type:</span> site vitrine institutionnel (proposition)</div>
         <div><span class="k">stack:</span> Astro, TypeScript, Markdown / YAML, Pagefind, Vercel</div>
         <div><span class="k">rôle:</span> solo, design et intégration</div>
         <div><span class="k">lien:</span> <a href="https://mairiedesassy.vercel.app/">voir la maquette en ligne</a>, contenu fictif</div>
       </div>
     </article>
 
-    <article class="project">
+    <article class="project project--lead">
       <div class="project-head">
         <h3>Procom Solution, site vitrine</h3>
         <span class="status">livré</span>
@@ -116,6 +121,7 @@
         <figure class="frame"><a href="/assets/dev/figma-procom.webp" title="Agrandir"><div class="frame-bar"><i></i><i></i><i></i><span>Maquette Figma</span></div><img src="/assets/dev/figma-procom.webp" alt="Maquette Figma de l'accueil de Procom Solution" loading="lazy"></a></figure>
       </div>
       <div class="logline">
+        <div><span class="k">type:</span> site vitrine</div>
         <div><span class="k">stack:</span> HTML, CSS, JavaScript, Vercel</div>
         <div><span class="k">rôle:</span> solo, design UI et intégration, du brief à la mise en ligne</div>
         <div><span class="k">lien:</span> <a href="https://procomsolution.fr">voir le site en ligne</a></div>
@@ -123,9 +129,10 @@
     </article>
 
     <p class="section-label" style="margin-top:48px">// Logique métier et travail itératif</p>
-    <h3 style="font-family:Georgia,'Times New Roman',serif;font-weight:400;font-size:22px;color:var(--navy);margin:0 0 20px">Deux outils pour des serveurs de jeu de rôle (FiveM)</h3>
+    <h3 style="font-family:Georgia,'Times New Roman',serif;font-weight:400;font-size:22px;color:var(--navy);margin:0 0 8px">Deux outils pour des serveurs de jeu de rôle (FiveM)</h3>
+    <p class="group-intro">Des interfaces web développées pour simplifier la gestion et l'administration de serveurs de jeu de rôle : des utilisateurs réels, des données partagées en temps réel et des contraintes d'intégration qui ne pardonnent pas.</p>
 
-    <article class="project">
+    <article class="project project--side">
       <div class="project-head">
         <h3>OMC, intranet d'un hôpital sur serveur RP</h3>
         <span class="status">utilisé en jeu</span>
@@ -142,13 +149,14 @@
         <figure class="frame"><a href="/assets/dev/omc-chambres.webp" title="Agrandir"><div class="frame-bar"><i></i><i></i><i></i><span>Gestion des chambres</span></div><img src="/assets/dev/omc-chambres.webp" alt="Plan des chambres de l'hôpital avec occupation des lits" loading="lazy"></a></figure>
       </div>
       <div class="logline">
+        <div><span class="k">type:</span> application web temps réel</div>
         <div><span class="k">stack:</span> Firebase, Firestore, JavaScript</div>
         <div><span class="k">rôle:</span> solo dev, conception, code, déploiement</div>
         <div><span class="k">contrainte notable:</span> intégration NUI dans un environnement Chromium embarqué</div>
       </div>
     </article>
 
-    <article class="project">
+    <article class="project project--side">
       <div class="project-head">
         <h3>AGENDA, système de réservation FiveM</h3>
         <span class="status">23+ PR mergées</span>
@@ -183,6 +191,7 @@
         </div>
       </div>
       <div class="logline">
+        <div><span class="k">type:</span> script distribuable et interface de réservation</div>
         <div><span class="k">stack:</span> Lua, oxmysql, JavaScript</div>
         <div><span class="k">rôle:</span> solo dev, 23+ pull requests mergées au fil des itérations</div>
         <div><span class="k">contrainte notable:</span> conçu pour être configuré et réutilisé par des développeurs tiers, pas pour un seul serveur</div>
@@ -195,7 +204,7 @@
     <p class="section-label">// Jeux</p>
     <h2>À côté, du jeu vidéo</h2>
 
-    <article class="project">
+    <article class="project project--side">
       <div class="project-head">
         <h3>Les Cryptes Éternelles</h3>
         <span class="status">alpha, en dev</span>
@@ -207,13 +216,14 @@
         <li>Pipeline de build dédié : obfuscation du code JS pour la version publique, déploiement continu via GitHub Actions vers Firebase Hosting à chaque push</li>
       </ul>
       <div class="logline">
+        <div><span class="k">type:</span> jeu navigateur (PWA)</div>
         <div><span class="k">stack:</span> JavaScript, Firebase / Firestore, GitHub Actions</div>
         <div><span class="k">rôle:</span> solo dev, game design, code, infra de déploiement</div>
         <div><span class="k">contrainte notable:</span> tout le jeu (moteur, UI, sauvegarde) tient dans un seul fichier HTML, pensé pour rester distribuable et copiable-collable</div>
       </div>
     </article>
 
-    <article class="project">
+    <article class="project project--side">
       <div class="project-head">
         <h3>Horde de Chats</h3>
         <span class="status">alpha, dev local</span>
@@ -225,6 +235,7 @@
         <li>Système de biomes, boutique in-game, interface tactile pensée mobile-first</li>
       </ul>
       <div class="logline">
+        <div><span class="k">type:</span> prototype de jeu 3D navigateur</div>
         <div><span class="k">stack:</span> JavaScript, Three.js (WebGL)</div>
         <div><span class="k">rôle:</span> solo dev, game design, rendu 3D, gameplay</div>
         <div><span class="k">contrainte notable:</span> encore en développement local, pas de version publique pour l'instant</div>

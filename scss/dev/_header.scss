@@ -6,7 +6,15 @@
   padding: 20px 24px; border-bottom: 1px solid $mist;
   @include mono;
 
-  .brand { color: $navy; font-weight: 500; text-decoration: none; }
+  // Continuité de marque : le vrai logo, pas seulement le mot (audit 9.1).
+  .brand {
+    display: inline-flex; align-items: center; gap: 10px;
+    color: $navy; font-weight: 500; text-decoration: none;
+
+    img { display: block; height: 26px; width: auto; }
+    .brand-back { color: $cyan2; transition: transform .15s ease; }
+    &:hover .brand-back { transform: translateX(-3px); }
+  }
 
   nav a {
     margin-left: 20px; text-decoration: none; color: $ink; opacity: 0.75;

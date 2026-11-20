@@ -1,6 +1,15 @@
 @use 'variables' as *;
 @use 'mixins' as *;
 
+// Chapeau d'un groupe de projets : explique l'intérêt d'un univers que le
+// lecteur ne connaît pas forcément (audit 9.5).
+.group-intro {
+  max-width: 62ch;
+  margin: 0 0 20px;
+  color: $text;
+  font-size: 15px;
+}
+
 .section {
   padding: 56px 0;
   & + & { border-top: 1px solid $mist; }
